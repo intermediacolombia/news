@@ -23,7 +23,7 @@ $fechaHoy = ucfirst(strftime('%A, %d de %B de %Y'));
 ?>
 
 <!-- Navbar Start -->
-<div class="container-fluid sticky-top px-0">
+
 
     <!-- Topbar -->
     <div class="container-fluid topbar bg-dark d-none d-lg-block">
