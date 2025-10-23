@@ -1,5 +1,4 @@
-<!-- Topbar -->
-    <?php
+<?php
 require_once __DIR__ . '/../../../inc/config.php';
 setlocale(LC_TIME, 'es_ES.UTF-8', 'es_ES', 'spanish');
 date_default_timezone_set('America/Bogota');
@@ -17,14 +16,16 @@ $stmt = $pdo->query("
 ");
 $latestPosts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Fecha en español
+// Fecha actual en español
 $fechaHoy = ucfirst(strftime('%A, %d de %B de %Y'));
 ?>
 
 <div class="container-fluid topbar bg-dark d-none d-lg-block">
     <div class="container px-0">
-        <div class="topbar-top d-flex justify-content-between flex-lg-wrap">
-            <div class="top-info flex-grow-0 d-flex align-items-center">
+        <div class="topbar-top d-flex justify-content-between align-items-center flex-lg-nowrap">
+            
+            <!-- Tendencias -->
+            <div class="top-info d-flex align-items-center flex-nowrap">
                 <span class="rounded-circle btn-sm-square bg-primary me-2">
                     <i class="fas fa-bolt text-white"></i>
                 </span>
@@ -32,33 +33,21 @@ $fechaHoy = ucfirst(strftime('%A, %d de %B de %Y'));
                     <p class="mb-0 text-white fs-6 fw-normal">Tendencias</p>
                 </div>
 
-                <!-- Bloque con scroll automático igual al original -->
-                <div class="overflow-hidden" style="width:735px;">
-                    <div id="note" class="ps-2 d-inline-flex align-items-center animate__animated animate__slideInLeft" style="white-space: nowrap; animation: scrollText 45s linear infinite;">
-                        <?php foreach ($latestPosts as $post): ?>
-                            <div class="d-inline-flex align-items-center me-4">
-                                <img src="<?= !empty($post['image']) ? URLBASE . '/' . htmlspecialchars($post['image']) : URLBASE . '/public/images/no-image.jpg' ?>" 
-                                     class="img-fluid rounded-circle border border-3 border-primary me-2"
-                                     style="width:30px; height:30px; object-fit:cover;"
-                                     alt="<?= htmlspecialchars($post['title']) ?>">
-                                <a href="<?= URLBASE ?>/<?= htmlspecialchars($post['category_slug']) ?>/<?= htmlspecialchars($post['post_slug']) ?>/" class="text-white mb-0 link-hover text-nowrap">
-                                    <?= htmlspecialchars($post['title']) ?>
-                                </a>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
+                <!-- Bloque de noticias dinámicas -->
+                <div class="overflow-hidden" style="width: 735px;">
+                    <div id="newsTicker" class="ps-2 text-nowrap d-flex align-items-center"></div>
                 </div>
             </div>
 
-            <!-- Fecha y redes -->
-            <div class="top-link flex-lg-wrap d-flex align-items-center">
+            <!-- Fecha + Redes Sociales -->
+            <div class="top-link d-flex align-items-center flex-nowrap">
                 <i class="fas fa-calendar-alt text-white border-end border-secondary pe-2 me-2">
                     <span class="text-body ms-1"><?= $fechaHoy ?></span>
                 </i>
-                <div class="d-flex icon">
+                <div class="d-flex align-items-center">
                     <p class="mb-0 text-white me-2">Síguenos:</p>
                     <?php
-                    $redes = ['facebook', 'twitter', 'instagram', 'youtube', 'linkedin', 'tiktok'];
+                    $redes = ['facebook','twitter','instagram','youtube','linkedin','tiktok'];
                     $icons = [
                         'facebook' => 'fab fa-facebook-f',
                         'twitter' => 'fab fa-twitter',
@@ -79,11 +68,47 @@ $fechaHoy = ucfirst(strftime('%A, %d de %B de %Y'));
     </div>
 </div>
 
-<!-- Animación CSS tipo marquee original -->
+<!-- Script: Mostrar noticias una por una -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const posts = <?= json_encode($latestPosts, JSON_UNESCAPED_UNICODE) ?>;
+    const ticker = document.getElementById('newsTicker');
+    let i = 0;
+
+    function showPost() {
+        const post = posts[i];
+        if (!post) return;
+        const img = post.image ? '<?= URLBASE ?>/' + post.image : '<?= URLBASE ?>/public/images/no-image.jpg';
+        const link = `<?= URLBASE ?>/` + post.category_slug + `/` + post.post_slug + `/`;
+
+        ticker.innerHTML = `
+            <div class="d-flex align-items-center fadein">
+                <img src="${img}" class="img-fluid rounded-circle border border-3 border-primary me-2"
+                     style="width:30px; height:30px; object-fit:cover;" alt="">
+                <a href="${link}" class="text-white mb-0 link-hover text-nowrap">${post.title}</a>
+            </div>
+        `;
+        i = (i + 1) % posts.length;
+    }
+
+    showPost();
+    setInterval(showPost, 4500); // cambia cada 4.5 segundos
+});
+</script>
+
 <style>
-@keyframes scrollText {
-    0%   { transform: translateX(100%); }
-    100% { transform: translateX(-100%); }
+/* Corrige alineación y elimina salto de línea */
+.topbar-top { white-space: nowrap; }
+.top-info { flex-wrap: nowrap; }
+.top-link { flex-wrap: nowrap; }
+
+/* Animación suave de entrada */
+@keyframes fadein {
+  from {opacity: 0; transform: translateY(10px);}
+  to {opacity: 1; transform: translateY(0);}
+}
+.fadein {
+  animation: fadein 0.6s ease-in-out;
 }
 </style>
 
