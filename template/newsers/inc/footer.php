@@ -163,12 +163,12 @@
 <!-- JavaScript Libraries -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="<?= URLBASE ?>/template/news/lib/easing/easing.min.js"></script>
-<script src="<?= URLBASE ?>/template/news/lib/waypoints/waypoints.min.js"></script>
-<script src="<?= URLBASE ?>/template/news/lib/owlcarousel/owl.carousel.min.js"></script>
+<script src="<?= URLBASE ?>/template/newsers/lib/easing/easing.min.js"></script>
+<script src="<?= URLBASE ?>/template/newsers/lib/waypoints/waypoints.min.js"></script>
+<script src="<?= URLBASE ?>/template/newsers/lib/owlcarousel/owl.carousel.min.js"></script>
 
 <!-- Template Javascript -->
-<script src="<?= URLBASE ?>/template/news/js/main.js?<?= time(); ?>"></script>
+<script src="<?= URLBASE ?>/template/newsers/js/main.js?<?= time(); ?>"></script>
 <?= $sys['code_footer'] ?? '' ?>
 
 </body>
