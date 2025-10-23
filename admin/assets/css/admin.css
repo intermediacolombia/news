@@ -1,0 +1,150 @@
+/* Variables de colores Capell B5 */
+:root {
+  --gold:       #ddc686;
+  --graphite:   #2d2d2d;
+  --rose:       #c88aaa;
+  --sage:       #7ba085;
+  --warmwhite:  #faf9f6;
+  --taupe:      #a5998a;
+  --cream:      #f0efea;
+  --warmgray:   #e8e6e0;
+
+  --radius:     16px;
+  --shadow:     0 10px 25px rgba(0,0,0,.08);
+  --font-main: 'Inter', sans-serif;
+}
+
+/* Estilos globales */
+body {
+  background: var(--warmwhite);
+  font-family: var(--font-main);
+  color: var(--graphite);
+}
+
+/* Cards */
+.card {
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.card-header {
+  background: linear-gradient(135deg, var(--graphite), #3a3a3a);
+  color: #fff;
+}
+
+/* Botones */
+.btn-brand {
+  background: var(--gold);
+  color: var(--graphite);
+  font-weight: 600;
+  border: none;
+}
+.btn-brand:hover {
+  filter: brightness(0.95);
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--graphite);
+  border: 1px solid var(--warmgray);
+}
+
+/* Formularios */
+.form-label {
+  color: var(--graphite);
+  font-weight: 600;
+}
+.form-control,
+.form-select {
+  background: #fff;
+  border-color: var(--warmgray);
+  color: var(--graphite);
+}
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--rose);
+  box-shadow: 0 0 0 .2rem rgba(200,138,170,.15);
+}
+
+/* Utilidades */
+.hint {
+  color: var(--taupe);
+  font-size: .9rem;
+}
+.img-drop {
+  border: 1px dashed var(--warmgray);
+  border-radius: 14px;
+  padding: 16px;
+  background: var(--cream);
+}
+.preview-grid {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 12px;
+}
+.preview-grid img {
+  width: 100%;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid var(--warmgray);
+}
+
+/* Miniaturas en tablas */
+.thumb-sm {
+  height: 250px;
+  width: 250px;
+  object-fit: cover;       /* recorta para mantener proporción */
+  border-radius: 8px;      /* esquinas redondeadas */
+  border: 1px solid var(--warmgray);
+  display: block;
+  margin: 0 auto;          /* centra la imagen */
+}
+
+.thumb-wrap{
+  position: relative;
+}
+.thumb-wrap img{
+  width: 100%;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid var(--warmgray);
+}
+.btn-img-trash{
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--warmgray);
+  border-radius: 8px;
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-img-trash:hover{ background:#fff3f3; }
+.icon-trash{ width:18px; height:18px; }
+
+.badge-active {
+  display: inline-block;
+  background: #28a745;   /* Verde */
+  color: #fff;
+  padding: .35em .65em;
+  border-radius: .25rem;
+  font-size: .85rem;
+  font-weight: 600;
+}
+
+.badge-inactive {
+  display: inline-block;
+  background: #dc3545;   /* Rojo */
+  color: #fff;
+  padding: .35em .65em;
+  border-radius: .25rem;
+  font-size: .85rem;
+  font-weight: 600;
+}
+
+
+
+
