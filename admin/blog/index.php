@@ -47,26 +47,19 @@ $posts = $st->fetchAll();
   }
   .btn-trash:hover { background:#fff3f3; }
 
-  /* Barra fija inferior */
+  /* Contenedor de acciones masivas */
   #massActions {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 1050;
     display: none;
     background: #f8f9fa;
-    border-top: 2px solid #214A82;
-    box-shadow: 0 -3px 6px rgba(0,0,0,0.1);
-    padding: 10px 20px;
-  }
-  #countSelected {
-    font-weight: 500;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 10px 12px;
+    margin-bottom: 15px;
   }
 </style>
 </head>
 <body>
-<div class="container" style="padding: 0px; background:rgba(0,0,0,0.00)">
+<div class="container" style="padding: 0px;">
   <div class="portada">
     <h1><i class="bi bi-journal-text"></i> Blog</h1>
     <a class="btn btn-success float-end" href="<?= $url ?>/admin/blog/create.php">
@@ -78,6 +71,7 @@ $posts = $st->fetchAll();
 <?php include('../inc/menu.php'); ?>
 
 <div class="container-fluid">
+
   <!-- Mensajes -->
   <?php if(isset($_SESSION['error'])): ?>
     <div class="alert alert-danger alert-dismissible fade show"><?= $_SESSION['error']; unset($_SESSION['error']); ?></div>
@@ -88,6 +82,23 @@ $posts = $st->fetchAll();
 
   <div class="card shadow-sm">
     <div class="card-body">
+
+      <!-- 🔧 Acciones masivas (oculto por defecto) -->
+      <div id="massActions" class="d-flex justify-content-between align-items-center">
+        <div>
+          <button id="btnDeleteSelected" class="btn btn-outline-danger btn-sm me-2">
+            <i class="fa fa-trash"></i> Borrar seleccionados
+          </button>
+          <button id="btnDraftSelected" class="btn btn-outline-secondary btn-sm me-2">
+            <i class="fa fa-file"></i> Pasar a borrador
+          </button>
+          <button id="btnPublishSelected" class="btn btn-outline-success btn-sm">
+            <i class="fa fa-check"></i> Pasar a publicado
+          </button>
+        </div>
+        <small class="text-muted" id="countSelected"></small>
+      </div>
+
       <div class="table-responsive">
         <table id="postsTable" class="table table-striped table-hover align-middle nowrap" style="width:100%">
           <thead>
@@ -142,22 +153,6 @@ $posts = $st->fetchAll();
   </div>
 </div>
 
-<!-- Barra de acciones masivas (fija abajo) -->
-<div id="massActions" class="d-flex justify-content-between align-items-center">
-  <div>
-    <button id="btnDeleteSelected" class="btn btn-outline-danger btn-sm me-2">
-      <i class="fa fa-trash"></i> Borrar seleccionados
-    </button>
-    <button id="btnDraftSelected" class="btn btn-outline-secondary btn-sm me-2">
-      <i class="fa fa-file"></i> Pasar a borrador
-    </button>
-    <button id="btnPublishSelected" class="btn btn-outline-success btn-sm">
-      <i class="fa fa-check"></i> Pasar a publicado
-    </button>
-  </div>
-  <small id="countSelected" class="text-muted"></small>
-</div>
-
 <?php include('../inc/menu-footer.php'); ?>
 <?php include('../inc/flash_simple.php'); ?>
 
@@ -172,25 +167,24 @@ $(function(){
   const $massActions = $('#massActions');
   const $countSelected = $('#countSelected');
 
-  // Mostrar/ocultar barra de acciones
+  // === Mostrar / ocultar barra de acciones masivas ===
   function toggleMassActions() {
     const selected = $('.chkPost:checked').length;
     if (selected > 0) {
-      $massActions.fadeIn(200);
+      if (!$massActions.is(':visible')) $massActions.slideDown(150);
       $countSelected.text(`${selected} seleccionada${selected>1?'s':''}`);
     } else {
-      $massActions.fadeOut(200);
+      if ($massActions.is(':visible')) $massActions.slideUp(150);
       $countSelected.text('');
     }
   }
 
-  // Seleccionar/deseleccionar todos
+  // === Delegar eventos ===
   $(document).on('change', '#selectAll', function() {
     $('.chkPost').prop('checked', this.checked);
     toggleMassActions();
   });
 
-  // Control individual
   $(document).on('change', '.chkPost', function() {
     const all = $('.chkPost').length;
     const checked = $('.chkPost:checked').length;
@@ -198,7 +192,7 @@ $(function(){
     toggleMassActions();
   });
 
-  // Función genérica para acciones masivas
+  // === Acciones masivas ===
   function bulkAction(action, title, text, color) {
     const ids = $('.chkPost:checked').map(function(){ return this.value; }).get();
     if (ids.length === 0) return Swal.fire('Nada seleccionado','','info');
@@ -221,7 +215,7 @@ $(function(){
   $('#btnDraftSelected').on('click', () => bulkAction('draft', '¿Pasar a borrador?', 'Las entradas seleccionadas se marcarán como borrador.', '#6c757d'));
   $('#btnPublishSelected').on('click', () => bulkAction('publish', '¿Publicar seleccionados?', 'Las entradas seleccionadas se publicarán.', '#28a745'));
 
-  // Confirmación individual
+  // === Confirmación individual ===
   $(document).on('submit', '.del-form', function(e){
     e.preventDefault();
     const form = this;
@@ -240,6 +234,7 @@ $(function(){
 </script>
 </body>
 </html>
+
 
 
 
