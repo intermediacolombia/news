@@ -49,7 +49,6 @@ $posts = $st->fetchAll();
 
   /* Contenedor de acciones masivas */
   #massActions {
-    display: none;
     background: #f8f9fa;
     border: 1px solid #dee2e6;
     border-radius: 6px;
@@ -72,8 +71,7 @@ $posts = $st->fetchAll();
 
 <div class="container-fluid">
 
-  <!-- Mensajes -->
-  <?php if(isset($_SESSION['error'])): ?>
+    <?php if(isset($_SESSION['error'])): ?>
     <div class="alert alert-danger alert-dismissible fade show"><?= $_SESSION['error']; unset($_SESSION['error']); ?></div>
   <?php endif; ?>
   <?php if(isset($_SESSION['success'])): ?>
@@ -83,8 +81,8 @@ $posts = $st->fetchAll();
   <div class="card shadow-sm">
     <div class="card-body">
 
-      <!-- 🔧 Acciones masivas (oculto por defecto) -->
-      <div id="massActions" class="d-flex justify-content-between align-items-center">
+      <!-- CAMBIO AQUÍ: Agregado style="display:none;" -->
+      <div id="massActions" class="d-flex justify-content-between align-items-center" style="display:none;">
         <div>
           <button id="btnDeleteSelected" class="btn btn-outline-danger btn-sm me-2">
             <i class="fa fa-trash"></i> Borrar seleccionados
@@ -171,9 +169,11 @@ $(function(){
   function toggleMassActions() {
     const selected = $('.chkPost:checked').length;
     if (selected > 0) {
+      // Muestra el contenedor de acciones masivas
       if (!$massActions.is(':visible')) $massActions.slideDown(150);
       $countSelected.text(`${selected} seleccionada${selected>1?'s':''}`);
     } else {
+      // Oculta el contenedor de acciones masivas
       if ($massActions.is(':visible')) $massActions.slideUp(150);
       $countSelected.text('');
     }
