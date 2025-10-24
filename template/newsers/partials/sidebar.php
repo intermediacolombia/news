@@ -62,13 +62,13 @@ try {
         <div class="col-12">
             <div class="p-3 rounded border">
                 <!-- (Diseño original) Buscador -->
-                <div class="input-group w-100 mx-auto d-flex mb-4">
-                    <form method="get" action="<?= URLBASE ?>/buscar.php" class="m-0 p-0">
+                <!-- 🔍 Buscador (idéntico al tema original y ancho completo) -->
+<form method="get" action="<?= URLBASE ?>/buscar.php" class="m-0">
     <div class="input-group w-100 mx-auto d-flex mb-4">
         <input 
             type="search" 
             name="q" 
-            class="form-control p-3" 
+            class="form-control p-3 w-100" 
             placeholder="keywords" 
             aria-describedby="search-icon-1"
             value="<?= htmlspecialchars($_GET['q'] ?? '') ?>"
@@ -82,8 +82,6 @@ try {
     </div>
 </form>
 
-					
-                </div>
 
                 <!-- (Diseño original) Popular Categories -->
                 <h4 class="mb-4">Popular Categories</h4>
