@@ -158,37 +158,46 @@ $posts = $st->fetchAll();
 
 <script>
 $(function(){
-  const table = $('#postsTable').DataTable({
-    language: { url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json" },
-    order: [[6,'desc']],
-    pageLength: 25
-  });
-
   const $massActions = $('#massActions');
   const $countSelected = $('#countSelected');
 
-  // === Mostrar / ocultar barra de acciones masivas ===
   function toggleMassActions() {
     const selected = $('.chkPost:checked').length;
     if (selected > 0) {
       if (!$massActions.is(':visible')) $massActions.slideDown(150);
-      $countSelected.text(`${selected} seleccionada${selected>1?'s':''}`);
+      $countSelected.text(`${selected} seleccionada${selected > 1 ? 's' : ''}`);
     } else {
       if ($massActions.is(':visible')) $massActions.slideUp(150);
       $countSelected.text('');
     }
   }
 
-  // === Delegar eventos ===
+  // Inicializar DataTables
+  const table = $('#postsTable').DataTable({
+    language: { url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json" },
+    order: [[6, 'desc']],
+    pageLength: 25
+  });
+
+  // Asegurar que el estado de selección se mantenga coherente tras cada renderizado
+  $('#postsTable').on('draw.dt', function() {
+    const all = $('.chkPost').length;
+    const checked = $('.chkPost:checked').length;
+    $('#selectAll').prop('checked', all > 0 && all === checked);
+    toggleMassActions(); // en caso de selección persistente (raro, pero seguro)
+  });
+
+  // Evento para "Seleccionar todo"
   $(document).on('change', '#selectAll', function() {
     $('.chkPost').prop('checked', this.checked);
     toggleMassActions();
   });
 
+  // Evento para checkboxes individuales
   $(document).on('change', '.chkPost', function() {
     const all = $('.chkPost').length;
     const checked = $('.chkPost:checked').length;
-    $('#selectAll').prop('checked', all === checked);
+    $('#selectAll').prop('checked', all > 0 && all === checked);
     toggleMassActions();
   });
 
@@ -210,12 +219,12 @@ $(function(){
     });
   }
 
-  // Botones
+  // Botones de acciones masivas
   $('#btnDeleteSelected').on('click', () => bulkAction('delete', '¿Eliminar seleccionados?', 'Se eliminarán las entradas seleccionadas.', '#d33'));
   $('#btnDraftSelected').on('click', () => bulkAction('draft', '¿Pasar a borrador?', 'Las entradas seleccionadas se marcarán como borrador.', '#6c757d'));
   $('#btnPublishSelected').on('click', () => bulkAction('publish', '¿Publicar seleccionados?', 'Las entradas seleccionadas se publicarán.', '#28a745'));
 
-  // === Confirmación individual ===
+  // === Confirmación individual de eliminación ===
   $(document).on('submit', '.del-form', function(e){
     e.preventDefault();
     const form = this;
