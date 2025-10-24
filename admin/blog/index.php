@@ -46,23 +46,38 @@ $posts = $st->fetchAll();
     background:#fff; color:#dc3545;
   }
   .btn-trash:hover { background:#fff3f3; }
+
+  /* Barra fija inferior */
+  #massActions {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1050;
+    display: none;
+    background: #f8f9fa;
+    border-top: 2px solid #214A82;
+    box-shadow: 0 -3px 6px rgba(0,0,0,0.1);
+    padding: 10px 20px;
+  }
+  #countSelected {
+    font-weight: 500;
+  }
 </style>
 </head>
 <body>
 <div class="container" style="padding: 0px; background:rgba(0,0,0,0.00)">
   <div class="portada">
     <h1><i class="bi bi-journal-text"></i> Blog</h1>
-
-    <!-- BS5: data-bs-* -->
     <a class="btn btn-success float-end" href="<?= $url ?>/admin/blog/create.php">
       <i class="fa-solid fa-plus"></i> Nueva entrada
     </a>
   </div>
 </div>
+
 <?php include('../inc/menu.php'); ?>
 
 <div class="container-fluid">
-  
   <!-- Mensajes -->
   <?php if(isset($_SESSION['error'])): ?>
     <div class="alert alert-danger alert-dismissible fade show"><?= $_SESSION['error']; unset($_SESSION['error']); ?></div>
@@ -70,90 +85,77 @@ $posts = $st->fetchAll();
   <?php if(isset($_SESSION['success'])): ?>
     <div class="alert alert-success alert-dismissible fade show"><?= $_SESSION['success']; unset($_SESSION['success']); ?></div>
   <?php endif; ?>
-	
-	
-	<div class="card shadow-sm">
-  <div class="card-body">
 
-    <!-- 🔧 Barra de acciones masivas (oculta por defecto) -->
-    <div id="massActions" 
-         class="mass-actions bg-light p-2 mb-3 border rounded d-flex justify-content-between align-items-center shadow-sm"
-         style="display:none;">
-      <div>
-        <button id="btnDeleteSelected" class="btn btn-outline-danger btn-sm me-2">
-          <i class="fa fa-trash"></i> Borrar seleccionados
-        </button>
-        <button id="btnDraftSelected" class="btn btn-outline-secondary btn-sm me-2">
-          <i class="fa fa-file"></i> Pasar a borrador
-        </button>
-        <button id="btnPublishSelected" class="btn btn-outline-success btn-sm">
-          <i class="fa fa-check"></i> Pasar a publicado
-        </button>
-      </div>
-      <small class="text-muted" id="countSelected"></small>
-    </div>
-
-    <div class="table-responsive">
-      <table id="postsTable" class="table table-striped table-hover align-middle nowrap" style="width:100%">
-        <thead>
-          <tr>
-            <th><input type="checkbox" id="selectAll" class="form-check-input"></th>
-            <th>Imagen</th>
-            <th>Título</th>
-            <th>Categorías</th>
-            <th>Autor</th>
-            <th>Estado</th>
-            <th>Creado</th>
-            <th class="text-end no-click">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <?php foreach($posts as $p): ?>
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table id="postsTable" class="table table-striped table-hover align-middle nowrap" style="width:100%">
+          <thead>
             <tr>
-              <td>
-                <input type="checkbox" class="chkPost form-check-input" value="<?= (int)$p['id'] ?>">
-              </td>
-              <td>
-                <?php if($p['image']): ?>
-                  <img src="<?= $url ?>/<?= htmlspecialchars($p['image']) ?>" class="post-thumb">
-                <?php else: ?>
-                  <span class="text-muted">Sin imagen</span>
-                <?php endif; ?>
-              </td>
-              <td style="max-width:250px;" class="text-truncate" title="<?= htmlspecialchars($p['title']) ?>">
-                <strong><?= htmlspecialchars($p['title']) ?></strong>
-              </td>
-              <td><?= htmlspecialchars($p['categorias'] ?: '—') ?></td>
-              <td><?= htmlspecialchars($p['author']) ?></td>
-              <td>
-                <span class="badge <?= $p['status']==='published' ? 'bg-success' : 'bg-secondary' ?>">
-                  <?= $p['status']==='published' ? 'Publicado' : 'Borrador' ?>
-                </span>
-              </td>
-              <td><?= $p['created_at'] ?></td>
-              <td class="text-end no-click">
-                <a class="btn btn-sm btn-outline-primary" 
-                   href="<?= $url ?>/admin/blog/edit.php?id=<?= (int)$p['id'] ?>" 
-                   title="Editar">
-                  <i class="fa fa-pencil"></i>
-                </a>
-                <form method="post" action="<?= $url ?>/admin/blog/delete.php" 
-                      class="d-inline-block del-form" data-name="<?= htmlspecialchars($p['title']) ?>">
-                  <input type="hidden" name="id" value="<?= (int)$p['id'] ?>">
-                  <button type="submit" class="btn-trash" title="Eliminar">
-                    <i class="fa fa-trash"></i>
-                  </button>
-                </form>
-              </td>
+              <th><input type="checkbox" id="selectAll" class="form-check-input"></th>
+              <th>Imagen</th>
+              <th>Título</th>
+              <th>Categorías</th>
+              <th>Autor</th>
+              <th>Estado</th>
+              <th>Creado</th>
+              <th class="text-end no-click">Acciones</th>
             </tr>
-          <?php endforeach; ?>
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            <?php foreach($posts as $p): ?>
+              <tr>
+                <td><input type="checkbox" class="chkPost form-check-input" value="<?= (int)$p['id'] ?>"></td>
+                <td>
+                  <?php if($p['image']): ?>
+                    <img src="<?= $url ?>/<?= htmlspecialchars($p['image']) ?>" class="post-thumb">
+                  <?php else: ?>
+                    <span class="text-muted">Sin imagen</span>
+                  <?php endif; ?>
+                </td>
+                <td style="max-width:250px;" class="text-truncate" title="<?= htmlspecialchars($p['title']) ?>">
+                  <strong><?= htmlspecialchars($p['title']) ?></strong>
+                </td>
+                <td><?= htmlspecialchars($p['categorias'] ?: '—') ?></td>
+                <td><?= htmlspecialchars($p['author']) ?></td>
+                <td>
+                  <span class="badge <?= $p['status']==='published' ? 'bg-success' : 'bg-secondary' ?>">
+                    <?= $p['status']==='published' ? 'Publicado' : 'Borrador' ?>
+                  </span>
+                </td>
+                <td><?= $p['created_at'] ?></td>
+                <td class="text-end no-click">
+                  <a class="btn btn-sm btn-outline-primary" href="<?= $url ?>/admin/blog/edit.php?id=<?= (int)$p['id'] ?>" title="Editar">
+                    <i class="fa fa-pencil"></i>
+                  </a>
+                  <form method="post" action="<?= $url ?>/admin/blog/delete.php" class="d-inline-block del-form" data-name="<?= htmlspecialchars($p['title']) ?>">
+                    <input type="hidden" name="id" value="<?= (int)$p['id'] ?>">
+                    <button type="submit" class="btn-trash" title="Eliminar"><i class="fa fa-trash"></i></button>
+                  </form>
+                </td>
+              </tr>
+            <?php endforeach; ?>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>
-	
-	
+
+<!-- Barra de acciones masivas (fija abajo) -->
+<div id="massActions" class="d-flex justify-content-between align-items-center">
+  <div>
+    <button id="btnDeleteSelected" class="btn btn-outline-danger btn-sm me-2">
+      <i class="fa fa-trash"></i> Borrar seleccionados
+    </button>
+    <button id="btnDraftSelected" class="btn btn-outline-secondary btn-sm me-2">
+      <i class="fa fa-file"></i> Pasar a borrador
+    </button>
+    <button id="btnPublishSelected" class="btn btn-outline-success btn-sm">
+      <i class="fa fa-check"></i> Pasar a publicado
+    </button>
+  </div>
+  <small id="countSelected" class="text-muted"></small>
 </div>
 
 <?php include('../inc/menu-footer.php'); ?>
@@ -170,35 +172,40 @@ $(function(){
   const $massActions = $('#massActions');
   const $countSelected = $('#countSelected');
 
-  // === Función para mostrar/ocultar barra ===
+  // Mostrar/ocultar barra de acciones
   function toggleMassActions() {
     const selected = $('.chkPost:checked').length;
     if (selected > 0) {
-      $massActions.slideDown(150);
+      $massActions.fadeIn(200);
       $countSelected.text(`${selected} seleccionada${selected>1?'s':''}`);
     } else {
-      $massActions.slideUp(150);
+      $massActions.fadeOut(200);
+      $countSelected.text('');
     }
   }
 
-  // === Delegar eventos para que funcionen con DataTables ===
-  $(document).on('change', '.chkPost', toggleMassActions);
-
-  // Seleccionar todos
+  // Seleccionar/deseleccionar todos
   $(document).on('change', '#selectAll', function() {
     $('.chkPost').prop('checked', this.checked);
     toggleMassActions();
   });
 
-  // === Acciones masivas ===
+  // Control individual
+  $(document).on('change', '.chkPost', function() {
+    const all = $('.chkPost').length;
+    const checked = $('.chkPost:checked').length;
+    $('#selectAll').prop('checked', all === checked);
+    toggleMassActions();
+  });
+
+  // Función genérica para acciones masivas
   function bulkAction(action, title, text, color) {
     const ids = $('.chkPost:checked').map(function(){ return this.value; }).get();
     if (ids.length === 0) return Swal.fire('Nada seleccionado','','info');
 
     Swal.fire({
       icon: 'question',
-      title,
-      text,
+      title, text,
       showCancelButton: true,
       confirmButtonText: 'Sí, continuar',
       confirmButtonColor: color
@@ -210,19 +217,11 @@ $(function(){
   }
 
   // Botones
-  $(document).on('click', '#btnDeleteSelected', function(){
-    bulkAction('delete', '¿Eliminar seleccionados?', 'Se eliminarán las entradas seleccionadas.', '#d33');
-  });
+  $('#btnDeleteSelected').on('click', () => bulkAction('delete', '¿Eliminar seleccionados?', 'Se eliminarán las entradas seleccionadas.', '#d33'));
+  $('#btnDraftSelected').on('click', () => bulkAction('draft', '¿Pasar a borrador?', 'Las entradas seleccionadas se marcarán como borrador.', '#6c757d'));
+  $('#btnPublishSelected').on('click', () => bulkAction('publish', '¿Publicar seleccionados?', 'Las entradas seleccionadas se publicarán.', '#28a745'));
 
-  $(document).on('click', '#btnDraftSelected', function(){
-    bulkAction('draft', '¿Pasar a borrador?', 'Las entradas se marcarán como borrador.', '#6c757d');
-  });
-
-  $(document).on('click', '#btnPublishSelected', function(){
-    bulkAction('publish', '¿Publicar seleccionados?', 'Las entradas se marcarán como publicadas.', '#28a745');
-  });
-
-  // === Confirmación individual ===
+  // Confirmación individual
   $(document).on('submit', '.del-form', function(e){
     e.preventDefault();
     const form = this;
@@ -239,9 +238,9 @@ $(function(){
   });
 });
 </script>
-	
 </body>
 </html>
+
 
 
 
