@@ -63,12 +63,26 @@ try {
             <div class="p-3 rounded border">
                 <!-- (Diseño original) Buscador -->
                 <div class="input-group w-100 mx-auto d-flex mb-4">
-                    <form method="get" action="<?= URLBASE ?>/buscar.php" class="w-100 d-flex">
-                        <input type="search" name="q" class="form-control p-3" placeholder="keywords" aria-describedby="search-icon-1" value="<?= htmlspecialchars($_GET['q'] ?? '') ?>">
-                        <button type="submit" id="search-icon-1" class="btn btn-primary input-group-text p-3">
-                            <i class="fa fa-search text-white"></i>
-                        </button>
-                    </form>
+                    <form method="get" action="<?= URLBASE ?>/buscar.php" class="m-0 p-0">
+    <div class="input-group w-100 mx-auto d-flex mb-4">
+        <input 
+            type="search" 
+            name="q" 
+            class="form-control p-3" 
+            placeholder="keywords" 
+            aria-describedby="search-icon-1"
+            value="<?= htmlspecialchars($_GET['q'] ?? '') ?>"
+            required>
+        <button 
+            type="submit" 
+            id="search-icon-1" 
+            class="btn btn-primary input-group-text p-3 border-0">
+            <i class="fa fa-search text-white"></i>
+        </button>
+    </div>
+</form>
+
+					
                 </div>
 
                 <!-- (Diseño original) Popular Categories -->
