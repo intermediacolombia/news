@@ -73,9 +73,9 @@ $posts = $st->fetchAll();
 	
 	<div class="card shadow-sm">
   <div class="card-body">
-    
-    <!-- Acciones masivas -->
-    <div class="mb-3 d-flex justify-content-between align-items-center">
+
+    <!-- Contenedor de acciones masivas (oculto por defecto) -->
+    <div id="massActions" class="mb-3 d-flex justify-content-between align-items-center" style="display:none;">
       <div>
         <button id="btnDeleteSelected" class="btn btn-outline-danger btn-sm me-2">
           <i class="fa fa-trash"></i> Borrar seleccionados
@@ -84,6 +84,7 @@ $posts = $st->fetchAll();
           <i class="fa fa-file"></i> Pasar a borrador
         </button>
       </div>
+      <small class="text-muted" id="countSelected"></small>
     </div>
 
     <div class="table-responsive">
@@ -150,6 +151,7 @@ $posts = $st->fetchAll();
 <?php include('../inc/menu-footer.php'); ?>
 <?php include('../inc/flash_simple.php'); ?>
 
+
 <script>
 $(function(){
   const table = $('#postsTable').DataTable({
@@ -158,18 +160,44 @@ $(function(){
     pageLength: 25
   });
 
+  const $massActions = $('#massActions');
+  const $countSelected = $('#countSelected');
+
+  // === Mostrar / ocultar barra de acciones masivas ===
+  function toggleMassActions() {
+    const selected = $('.chkPost:checked').length;
+    if (selected > 0) {
+      $massActions.slideDown(150);
+      $countSelected.text(`${selected} seleccionadas`);
+    } else {
+      $massActions.slideUp(150);
+    }
+  }
+
   // Seleccionar/deseleccionar todos
-  $('#selectAll').on('click', function(){
+  $('#selectAll').on('change', function(){
     $('.chkPost').prop('checked', this.checked);
+    toggleMassActions();
   });
 
-  // Confirmar y eliminar seleccionados
+  // Control individual
+  $(document).on('change', '.chkPost', function(){
+    const all = $('.chkPost').length;
+    const checked = $('.chkPost:checked').length;
+    $('#selectAll').prop('checked', all === checked);
+    toggleMassActions();
+  });
+
+  // === Acción: eliminar seleccionados ===
   $('#btnDeleteSelected').on('click', function(){
     const ids = $('.chkPost:checked').map(function(){ return this.value; }).get();
-    if(ids.length === 0) return Swal.fire('Nada seleccionado','','info');
     Swal.fire({
-      icon:'warning', title:'¿Eliminar seleccionados?', text:`Se eliminarán ${ids.length} entradas.`,
-      showCancelButton:true, confirmButtonText:'Sí, eliminar', confirmButtonColor:'#d33'
+      icon:'warning',
+      title:'¿Eliminar seleccionados?',
+      text:`Se eliminarán ${ids.length} entradas.`,
+      showCancelButton:true,
+      confirmButtonText:'Sí, eliminar',
+      confirmButtonColor:'#d33'
     }).then(res=>{
       if(res.isConfirmed){
         $.post('bulk_actions.php', {action:'delete', ids:ids}, ()=>location.reload());
@@ -177,13 +205,16 @@ $(function(){
     });
   });
 
-  // Pasar a borrador
+  // === Acción: pasar a borrador ===
   $('#btnDraftSelected').on('click', function(){
     const ids = $('.chkPost:checked').map(function(){ return this.value; }).get();
-    if(ids.length === 0) return Swal.fire('Nada seleccionado','','info');
     Swal.fire({
-      icon:'question', title:'¿Pasar a borrador?', text:`${ids.length} entradas se marcarán como borrador.`,
-      showCancelButton:true, confirmButtonText:'Sí, continuar', confirmButtonColor:'#6c757d'
+      icon:'question',
+      title:'¿Pasar a borrador?',
+      text:`${ids.length} entradas se marcarán como borrador.`,
+      showCancelButton:true,
+      confirmButtonText:'Sí, continuar',
+      confirmButtonColor:'#6c757d'
     }).then(res=>{
       if(res.isConfirmed){
         $.post('bulk_actions.php', {action:'draft', ids:ids}, ()=>location.reload());
@@ -194,15 +225,20 @@ $(function(){
   // Confirmación individual
   $('.del-form').on('submit', function(e){
     e.preventDefault();
-    const form=this, name=form.dataset.name||'la entrada';
+    const form = this;
+    const name = form.dataset.name || 'la entrada';
     Swal.fire({
-      icon:'warning', title:'¿Eliminar?', text:`Se eliminará "${name}".`,
-      showCancelButton:true, confirmButtonText:'Sí, eliminar', cancelButtonText:'Cancelar', confirmButtonColor:'#d33'
+      icon:'warning',
+      title:'¿Eliminar?',
+      text:`Se eliminará "${name}".`,
+      showCancelButton:true,
+      confirmButtonText:'Sí, eliminar',
+      cancelButtonText:'Cancelar',
+      confirmButtonColor:'#d33'
     }).then(res=>{ if(res.isConfirmed) form.submit(); });
   });
 });
 </script>
-	
 </body>
 </html>
 
