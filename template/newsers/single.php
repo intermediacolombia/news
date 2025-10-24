@@ -169,10 +169,9 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                 <?php endif; ?>
             </div>
 
-            <!-- SIDEBAR -->
-            <div class="col-lg-4">
+            
                 <?php include __DIR__ . '/partials/sidebar.php'; ?>
-            </div>
+            
         </div>
     </div>
 </div>
