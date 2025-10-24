@@ -11,12 +11,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['ids']) && !empty($_P
       PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
     ]);
 
-    if ($_POST['action'] === 'delete') {
-      $stmt = $pdo->prepare("UPDATE blog_posts SET deleted=1 WHERE id IN ($in)");
-    } elseif ($_POST['action'] === 'draft') {
-      $stmt = $pdo->prepare("UPDATE blog_posts SET status='draft' WHERE id IN ($in)");
-    } else {
-      exit;
+    switch ($_POST['action']) {
+      case 'delete':
+        $stmt = $pdo->prepare("UPDATE blog_posts SET deleted=1 WHERE id IN ($in)");
+        break;
+      case 'draft':
+        $stmt = $pdo->prepare("UPDATE blog_posts SET status='draft' WHERE id IN ($in)");
+        break;
+      case 'publish':
+        $stmt = $pdo->prepare("UPDATE blog_posts SET status='published' WHERE id IN ($in)");
+        break;
+      default:
+        exit;
     }
 
     $stmt->execute($ids);

@@ -71,17 +71,23 @@ $posts = $st->fetchAll();
     <div class="alert alert-success alert-dismissible fade show"><?= $_SESSION['success']; unset($_SESSION['success']); ?></div>
   <?php endif; ?>
 	
+	
 	<div class="card shadow-sm">
   <div class="card-body">
 
-    <!-- Contenedor de acciones masivas (oculto por defecto) -->
-    <div id="massActions" class="mb-3 d-flex justify-content-between align-items-center" style="display:none;">
+    <!-- 🔧 Barra de acciones masivas (oculta por defecto) -->
+    <div id="massActions" 
+         class="mass-actions bg-light p-2 mb-3 border rounded d-flex justify-content-between align-items-center shadow-sm"
+         style="display:none;">
       <div>
         <button id="btnDeleteSelected" class="btn btn-outline-danger btn-sm me-2">
           <i class="fa fa-trash"></i> Borrar seleccionados
         </button>
-        <button id="btnDraftSelected" class="btn btn-outline-secondary btn-sm">
+        <button id="btnDraftSelected" class="btn btn-outline-secondary btn-sm me-2">
           <i class="fa fa-file"></i> Pasar a borrador
+        </button>
+        <button id="btnPublishSelected" class="btn btn-outline-success btn-sm">
+          <i class="fa fa-check"></i> Pasar a publicado
         </button>
       </div>
       <small class="text-muted" id="countSelected"></small>
@@ -91,9 +97,7 @@ $posts = $st->fetchAll();
       <table id="postsTable" class="table table-striped table-hover align-middle nowrap" style="width:100%">
         <thead>
           <tr>
-            <th>
-              <input type="checkbox" id="selectAll" class="form-check-input">
-            </th>
+            <th><input type="checkbox" id="selectAll" class="form-check-input"></th>
             <th>Imagen</th>
             <th>Título</th>
             <th>Categorías</th>
@@ -128,10 +132,13 @@ $posts = $st->fetchAll();
               </td>
               <td><?= $p['created_at'] ?></td>
               <td class="text-end no-click">
-                <a class="btn btn-sm btn-outline-primary" href="<?= $url ?>/admin/blog/edit.php?id=<?= (int)$p['id'] ?>" title="Editar">
+                <a class="btn btn-sm btn-outline-primary" 
+                   href="<?= $url ?>/admin/blog/edit.php?id=<?= (int)$p['id'] ?>" 
+                   title="Editar">
                   <i class="fa fa-pencil"></i>
                 </a>
-                <form method="post" action="<?= $url ?>/admin/blog/delete.php" class="d-inline-block del-form" data-name="<?= htmlspecialchars($p['title']) ?>">
+                <form method="post" action="<?= $url ?>/admin/blog/delete.php" 
+                      class="d-inline-block del-form" data-name="<?= htmlspecialchars($p['title']) ?>">
                   <input type="hidden" name="id" value="<?= (int)$p['id'] ?>">
                   <button type="submit" class="btn-trash" title="Eliminar">
                     <i class="fa fa-trash"></i>
@@ -145,12 +152,12 @@ $posts = $st->fetchAll();
     </div>
   </div>
 </div>
-
+	
+	
 </div>
 
 <?php include('../inc/menu-footer.php'); ?>
 <?php include('../inc/flash_simple.php'); ?>
-
 
 <script>
 $(function(){
@@ -163,67 +170,60 @@ $(function(){
   const $massActions = $('#massActions');
   const $countSelected = $('#countSelected');
 
-  // === Mostrar / ocultar barra de acciones masivas ===
+  // === Función para mostrar/ocultar barra ===
   function toggleMassActions() {
     const selected = $('.chkPost:checked').length;
     if (selected > 0) {
       $massActions.slideDown(150);
-      $countSelected.text(`${selected} seleccionadas`);
+      $countSelected.text(`${selected} seleccionada${selected>1?'s':''}`);
     } else {
       $massActions.slideUp(150);
     }
   }
 
-  // Seleccionar/deseleccionar todos
-  $('#selectAll').on('change', function(){
+  // === Delegar eventos para que funcionen con DataTables ===
+  $(document).on('change', '.chkPost', toggleMassActions);
+
+  // Seleccionar todos
+  $(document).on('change', '#selectAll', function() {
     $('.chkPost').prop('checked', this.checked);
     toggleMassActions();
   });
 
-  // Control individual
-  $(document).on('change', '.chkPost', function(){
-    const all = $('.chkPost').length;
-    const checked = $('.chkPost:checked').length;
-    $('#selectAll').prop('checked', all === checked);
-    toggleMassActions();
-  });
-
-  // === Acción: eliminar seleccionados ===
-  $('#btnDeleteSelected').on('click', function(){
+  // === Acciones masivas ===
+  function bulkAction(action, title, text, color) {
     const ids = $('.chkPost:checked').map(function(){ return this.value; }).get();
+    if (ids.length === 0) return Swal.fire('Nada seleccionado','','info');
+
     Swal.fire({
-      icon:'warning',
-      title:'¿Eliminar seleccionados?',
-      text:`Se eliminarán ${ids.length} entradas.`,
-      showCancelButton:true,
-      confirmButtonText:'Sí, eliminar',
-      confirmButtonColor:'#d33'
-    }).then(res=>{
-      if(res.isConfirmed){
-        $.post('bulk_actions.php', {action:'delete', ids:ids}, ()=>location.reload());
+      icon: 'question',
+      title,
+      text,
+      showCancelButton: true,
+      confirmButtonText: 'Sí, continuar',
+      confirmButtonColor: color
+    }).then(res => {
+      if (res.isConfirmed) {
+        $.post('bulk_actions.php', {action, ids}, () => location.reload());
       }
     });
+  }
+
+  // Botones
+  $(document).on('click', '#btnDeleteSelected', function(){
+    bulkAction('delete', '¿Eliminar seleccionados?', 'Se eliminarán las entradas seleccionadas.', '#d33');
   });
 
-  // === Acción: pasar a borrador ===
-  $('#btnDraftSelected').on('click', function(){
-    const ids = $('.chkPost:checked').map(function(){ return this.value; }).get();
-    Swal.fire({
-      icon:'question',
-      title:'¿Pasar a borrador?',
-      text:`${ids.length} entradas se marcarán como borrador.`,
-      showCancelButton:true,
-      confirmButtonText:'Sí, continuar',
-      confirmButtonColor:'#6c757d'
-    }).then(res=>{
-      if(res.isConfirmed){
-        $.post('bulk_actions.php', {action:'draft', ids:ids}, ()=>location.reload());
-      }
-    });
+  $(document).on('click', '#btnDraftSelected', function(){
+    bulkAction('draft', '¿Pasar a borrador?', 'Las entradas se marcarán como borrador.', '#6c757d');
   });
 
-  // Confirmación individual
-  $('.del-form').on('submit', function(e){
+  $(document).on('click', '#btnPublishSelected', function(){
+    bulkAction('publish', '¿Publicar seleccionados?', 'Las entradas se marcarán como publicadas.', '#28a745');
+  });
+
+  // === Confirmación individual ===
+  $(document).on('submit', '.del-form', function(e){
     e.preventDefault();
     const form = this;
     const name = form.dataset.name || 'la entrada';
@@ -239,6 +239,7 @@ $(function(){
   });
 });
 </script>
+	
 </body>
 </html>
 
