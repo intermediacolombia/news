@@ -62,7 +62,7 @@ try {
         <div class="col-12">
             <div class="p-3 rounded border">
                 <!-- (Diseño original) Buscador -->
-	<form method="get" action="<?= URLBASE ?>/buscar.php" class="m-0 p-0">			
+	<form method="get" action="<?= URLBASE ?>/search.php" class="m-0 p-0">			
      <div class="input-group w-100 mx-auto d-flex mb-4">
      
     <input type="search" class="form-control p-3" placeholder="keywords" aria-describedby="search-icon-1" value="<?= htmlspecialchars($_GET['q'] ?? '') ?>">
