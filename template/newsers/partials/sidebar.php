@@ -197,12 +197,7 @@ try {
                                 <?php endif; ?>
                             </div>
                         <?php else: ?>
-                            <img src="<?= URLBASE ?>/template/news/img/banner-2.jpg" class="img-fluid w-100 rounded" alt="">
-                            <div class="text-center banner-content-2">
-                                <h6 class="mb-2">The Most Populer</h6>
-                                <p class="text-white mb-2">News & Magazine WP Theme</p>
-                                <a href="#" class="btn btn-primary text-white px-4">Shop Now</a>
-                            </div>
+                            <?php include __DIR__ . '/ads5.php'; ?>
                         <?php endif; ?>
                     </div>
                 </div>
