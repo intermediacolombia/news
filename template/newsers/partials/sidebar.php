@@ -64,10 +64,10 @@ try {
                 <!-- (Diseño original) Buscador -->
 				
      <div class="input-group w-100 mx-auto d-flex mb-4">
-     <form method="get" action="<?= URLBASE ?>/buscar.php" class="m-0 p-0">
+     <!--form method="get" action="<?= URLBASE ?>/buscar.php" class="m-0 p-0"-->
     <input type="search" class="form-control p-3" placeholder="keywords" aria-describedby="search-icon-1" value="<?= htmlspecialchars($_GET['q'] ?? '') ?>">
     <span id="search-icon-1" class="btn btn-primary input-group-text p-3"><i class="fa fa-search text-white"></i></span>
-     </form>   
+     <!--/form-->   
     </div>
 
 
