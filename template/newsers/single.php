@@ -1,222 +1,183 @@
-<!-- Single Product Start -->
-        <div class="container-fluid py-5">
-            <div class="container py-5">
-                <ol class="breadcrumb justify-content-start mb-4">
-                    <li class="breadcrumb-item"><a href="#">Home</a></li>
-                    <li class="breadcrumb-item"><a href="#">Pages</a></li>
-                    <li class="breadcrumb-item active text-dark">Single Page</li>
-                </ol>
-                <div class="row g-4">
-                    <div class="col-lg-8">
-                        <div class="mb-4">
-                            <a href="#" class="h1 display-5">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</a>
-                        </div>
-                        <div class="position-relative rounded overflow-hidden mb-3">
-                            <img src="img/news-1.jpg" class="img-zoomin img-fluid rounded w-100" alt="">
-                            <div class="position-absolute text-white px-4 py-2 bg-primary rounded" style="top: 20px; right: 20px;">                                              
-                                Busimess
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <a href="#" class="text-dark link-hover me-3"><i class="fa fa-clock"></i> 06 minute read</a>
-                            <a href="#" class="text-dark link-hover me-3"><i class="fa fa-eye"></i> 3.5k Views</a>
-                            <a href="#" class="text-dark link-hover me-3"><i class="fa fa-comment-dots"></i> 05 Comment</a>
-                            <a href="#" class="text-dark link-hover"><i class="fa fa-arrow-up"></i> 1.5k Share</a>
-                        </div>
-                        <p class="my-4">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy Lorem Ipsum has been the industry's standard dummy type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic
-                            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-                        </p>
-                        <p class="my-4">
-                            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic
-                            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic
-                            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic
-                        </p>
-                        <div class="bg-light p-4 mb-4 rounded border-start border-3 border-primary">
-                            <h1 class="mb-2">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</h1>
-                        </div>
-                        <div class="row g-4">
-                            <div class="col-6">
-                                <div class="rounded overflow-hidden">
-                                    <img src="img/news-6.jpg" class="img-zoomin img-fluid rounded w-100" alt="">
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="rounded overflow-hidden">
-                                    <img src="img/news-5.jpg" class="img-zoomin img-fluid rounded w-100" alt="">
-                                </div>
-                            </div>
-                        </div>
-                        <p class="my-4">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy Lorem Ipsum has been the industry's standard dummy type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic
-                            Lorem Ipsum is simply dummy
-                        </p>
-                        <p class="my-4">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy Lorem Ipsum has been the industry's standard dummy type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic
-                            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been ther took It has survived not only five centuries, but also the leap into electronic
-                        </p>
-                        <div class="d-flex">
-                            <div class="me-2">
-                                <span class="fas fa-check-circle mb-3 fs-5"> Lorem Ipsum is simply dummy text of</span>
-                                <span class="fas fa-check-circle mb-3 fs-5"> Lorem Ipsum is simply dummy text of</span>
-                                <span class="fas fa-check-circle mb-3 fs-5"> Lorem Ipsum is simply dummy text of</span>
-                            </div>
-                            <div class="ms-2">
-                                <span class="fas fa-check-circle mb-3 fs-5"> Lorem Ipsum is simply dummy text of</span>
-                                <span class="fas fa-check-circle mb-3 fs-5"> Lorem Ipsum is simply dummy text of</span>
-                                <span class="fas fa-check-circle mb-3 fs-5"> Lorem Ipsum is simply dummy text of</span>
-                            </div>
-                        </div>
-                        <p class="my-4">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy Lorem Ipsum has been the industry's standard dummy type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic
-                            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been ther took It has survived not only five centuries, but also the leap into electronic
-                        </p>
-                        <div class="tab-class">
-                            <div class="d-flex justify-content-between border-bottom mb-4">
-                                <ul class="nav nav-pills d-inline-flex text-center">
-                                    <li class="nav-item mb-3">
-                                        <h5 class="mt-2 me-3 mb-0">Tags:</h5>
-                                    </li>
-                                    <li class="nav-item mb-3">
-                                        <a class="d-flex py-2 bg-light rounded-pill active me-2" data-bs-toggle="pill" href="#tab-1">
-                                            <span class="text-dark" style="width: 100px;">Sports</span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item mb-3">
-                                        <a class="d-flex py-2 bg-light rounded-pill me-2" data-bs-toggle="pill" href="#tab-2">
-                                            <span class="text-dark" style="width: 100px;">Magazine</span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item mb-3">
-                                        <a class="d-flex py-2 bg-light rounded-pill me-2" data-bs-toggle="pill" href="#tab-3">
-                                            <span class="text-dark" style="width: 100px;">Politics</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                                <div class="d-flex align-items-center">
-                                    <h5 class="mb-0 me-3">Share:</h5>
-                                    <i class="fab fa-facebook-f link-hover btn btn-square rounded-circle border-primary text-dark me-2"></i>
-                                    <i class="btn fab bi-twitter link-hover btn btn-square rounded-circle border-primary text-dark me-2"></i>
-                                    <i class="btn fab fa-instagram link-hover btn btn-square rounded-circle border-primary text-dark me-2"></i>
-                                    <i class="btn fab fa-linkedin-in link-hover btn btn-square rounded-circle border-primary text-dark"></i>
-                                </div>
-                            </div>
-                            <div class="tab-content">
-                                <div id="tab-1" class="tab-pane fade show active">
-                                    <div class="row g-4 align-items-center">
-                                        <div class="col-3">
-                                            <img src="img/footer-4.jpg" class="img-fluid w-100 rounded" alt="">
-                                        </div>
-                                        <div class="col-9">
-                                            <h3>Amelia Alex</h3>
-                                            <p class="mb-0">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy Lorem Ipsum has been the industry's standard dummy type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic
-                                             but also the leap into electronic.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div id="tab-2" class="tab-pane fade show">
-                                    <div class="row g-4 align-items-center">
-                                        <div class="col-3">
-                                            <img src="img/footer-5.jpg" class="img-fluid w-100 rounded" alt="">
-                                        </div>
-                                        <div class="col-9">
-                                            <h3>Amelia Alex</h3>
-                                            <p class="mb-0">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy Lorem Ipsum has been the industry's standard dummy type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic
-                                             but also the leap into electronic.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div id="tab-3" class="tab-pane fade show">
-                                    <div class="row g-4 align-items-center">
-                                        <div class="col-3">
-                                            <img src="img/footer-6.jpg" class="img-fluid w-100 rounded" alt="">
-                                        </div>
-                                        <div class="col-9">
-                                            <h3>Amelia Alex</h3>
-                                            <p class="mb-0">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy Lorem Ipsum has been the industry's standard dummy type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic
-                                             but also the leap into electronic.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bg-light rounded my-4 p-4">
-                            <h4 class="mb-4">You Might Also Like</h4>
-                            <div class="row g-4">
-                                <div class="col-lg-6">
-                                    <div class="d-flex align-items-center p-3 bg-white rounded">
-                                        <img src="img/chatGPT.jpg" class="img-fluid rounded" alt="">
-                                        <div class="ms-3">
-                                            <a href="#" class="h5 mb-2">Lorem Ipsum is simply dummy text of the printing</a>
-                                            <p class="text-dark mt-3 mb-0 me-3"><i class="fa fa-clock"></i> 06 minute read</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="d-flex align-items-center p-3 bg-white rounded">
-                                        <img src="img/chatGPT-1.jpg" class="img-fluid rounded" alt="">
-                                        <div class="ms-3">
-                                            <a href="#" class="h5 mb-2">Lorem Ipsum is simply dummy text of the printing</a>
-                                            <p class="text-dark mt-3 mb-0 me-3"><i class="fa fa-clock"></i> 06 minute read</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bg-light rounded p-4">
-                            <h4 class="mb-4">Comments</h4>
-                            <div class="p-4 bg-white rounded mb-4">
-                                <div class="row g-4">
-                                    <div class="col-3">
-                                        <img src="img/footer-4.jpg" class="img-fluid rounded-circle w-100" alt="">
-                                    </div>
-                                    <div class="col-9">
-                                        <div class="d-flex justify-content-between">
-                                            <h5>James Boreego</h5>
-                                            <a href="#" class="link-hover text-body fs-6"><i class="fas fa-long-arrow-alt-right me-1"></i> Reply</a>
-                                        </div>
-                                        <small class="text-body d-block mb-3"><i class="fas fa-calendar-alt me-1"></i> Dec 9, 2024</small>
-                                        <p class="mb-0">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy Lorem Ipsum has been the industry's standard dummy type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="p-4 bg-white rounded mb-0">
-                                <div class="row g-4">
-                                    <div class="col-3">
-                                        <img src="img/footer-4.jpg" class="img-fluid rounded-circle w-100" alt="">
-                                    </div>
-                                    <div class="col-9">
-                                        <div class="d-flex justify-content-between">
-                                            <h5>James Boreego</h5>
-                                            <a href="#" class="link-hover text-body fs-6"><i class="fas fa-long-arrow-alt-right me-1"></i> Reply</a>
-                                        </div>
-                                        <small class="text-body d-block mb-3"><i class="fas fa-calendar-alt me-1"></i> Dec 9, 2024</small>
-                                        <p class="mb-0">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy Lorem Ipsum has been the industry's standard dummy type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bg-light rounded p-4 my-4">
-                            <h4 class="mb-4">Leave A Comment</h4>
-                            <form action="#">
-                                <div class="row g-4">
-                                    <div class="col-lg-6">
-                                        <input type="text" class="form-control py-3" placeholder="Full Name">
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <input type="email" class="form-control py-3" placeholder="Email Address">
-                                    </div>
-                                    <div class="col-12">
-                                        <textarea class="form-control" name="textarea" id="" cols="30" rows="7" placeholder="Write Your Comment Here"></textarea>
-                                    </div>
-                                    <div class="col-12">
-                                        <button class="form-control btn btn-primary py-3" type="button">Submit Now</button>
-                                    </div>
-                                </div>
-                            </form>
+<?php
+require_once __DIR__ . '/../../inc/config.php';
+
+$categorySlug = $_GET['category'] ?? null;
+$postSlug     = $_GET['post'] ?? null;
+
+if (!$categorySlug || !$postSlug) {
+    http_response_code(404);
+    include __DIR__ . '/../404.php';
+    exit;
+}
+
+$stmt = $pdo->prepare("
+    SELECT p.*, pc.category_id, c.name AS category_name, c.slug AS category_slug
+    FROM blog_posts p
+    INNER JOIN blog_post_category pc ON pc.post_id = p.id
+    INNER JOIN blog_categories c ON c.id = pc.category_id
+    WHERE p.slug = ? AND c.slug = ?
+      AND p.status='published' AND p.deleted=0
+    LIMIT 1
+");
+$stmt->execute([$postSlug, $categorySlug]);
+$post = $stmt->fetch();
+
+if (!$post) {
+    http_response_code(404);
+    include __DIR__ . '/../404.php';
+    exit;
+}
+
+/* ================================
+   Registro de vistas por IP
+================================ */
+$ipAddress = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+$stmtView = $pdo->prepare("SELECT 1 FROM blog_post_views WHERE post_id=? AND ip_address=? LIMIT 1");
+$stmtView->execute([$post['id'], $ipAddress]);
+if (!$stmtView->fetch()) {
+    $pdo->prepare("INSERT INTO blog_post_views (post_id, ip_address) VALUES (?, ?)")->execute([$post['id'], $ipAddress]);
+}
+
+// Total de vistas
+$totalViews = (int)$pdo->query("SELECT COUNT(*) FROM blog_post_views WHERE post_id={$post['id']}")->fetchColumn();
+
+/* ================================
+   Variables SEO dinámicas
+================================ */
+$page_title       = $post['seo_title'] ?: $post['title'];
+$page_description = $post['seo_description'] ?: substr(strip_tags($post['content']), 0, 160);
+$page_keywords    = $post['seo_keywords'] ?: $post['title'];
+$page_author      = NOMBRE_SITIO;
+$page_image       = !empty($post['image']) ? URLBASE . '/' . ltrim($post['image'], '/') : URLBASE . FAVICON;
+$currentPath      = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
+?>
+
+<!-- Breadcrumb Start -->
+<div class="container-fluid py-3 bg-light">
+    <div class="container-bk">
+        <ol class="breadcrumb justify-content-start mb-4">
+            <li class="breadcrumb-item"><a href="<?= URLBASE ?>">Inicio</a></li>
+            <li class="breadcrumb-item">
+                <a href="<?= URLBASE ?>/noticias/<?= htmlspecialchars($post['category_slug']) ?>/">
+                    <?= htmlspecialchars($post['category_name']) ?>
+                </a>
+            </li>
+            <li class="breadcrumb-item active text-dark"><?= htmlspecialchars($post['title']) ?></li>
+        </ol>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+
+<!-- Single News Start -->
+<div class="container-fluid py-4">
+    <div class="container-bk">
+        <div class="row g-4">
+            <!-- Contenido principal -->
+            <div class="col-lg-8">
+                <!-- Título -->
+                <div class="mb-4">
+                    <h1 class="h2 text-dark fw-bold"><?= htmlspecialchars($post['title']) ?></h1>
+                </div>
+
+                <!-- Imagen principal -->
+                <?php if (!empty($post['image'])): ?>
+                    <div class="position-relative rounded overflow-hidden mb-3">
+                        <img src="<?= URLBASE . '/' . htmlspecialchars($post['image']) ?>"
+                             class="img-fluid rounded w-100 img-zoomin"
+                             alt="<?= htmlspecialchars($post['title']) ?>">
+                        <div class="position-absolute text-white px-3 py-2 bg-primary rounded"
+                             style="top: 20px; right: 20px;">
+                            <?= htmlspecialchars($post['category_name']) ?>
                         </div>
                     </div>
+                <?php endif; ?>
+
+                <!-- Meta info -->
+                <div class="d-flex flex-wrap justify-content-between text-secondary small mb-3 border-bottom pb-2">
+                    <span><i class="fa fa-calendar-alt me-1"></i><?= fecha_espanol(date("F d, Y", strtotime($post['created_at']))) ?></span>
+                    <span><i class="fa fa-eye me-1"></i><?= number_format($totalViews) ?> vistas</span>
+                </div>
+
+                <!-- Contenido -->
+                <div class="post-content mb-4">
+                    <?= $post['content'] ?>
+                </div>
+
+                <!-- Bloque destacado (opcional si existe campo resumen_destacado o cita) -->
+                <?php if (!empty($post['excerpt'])): ?>
+                    <div class="bg-light p-4 mb-4 rounded border-start border-3 border-primary">
+                        <h5 class="mb-0"><?= htmlspecialchars($post['excerpt']) ?></h5>
+                    </div>
+                <?php endif; ?>
+
+                <!-- Compartir -->
+                <div class="d-flex justify-content-between align-items-center border-top pt-3 mb-4">
+                    <div>
+                        <strong class="text-dark me-2">Compartir:</strong>
+                        <a href="https://facebook.com/sharer/sharer.php?u=<?= urlencode($page_canonical) ?>" target="_blank" class="btn btn-light btn-sm rounded-circle me-1"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://twitter.com/intent/tweet?url=<?= urlencode($page_canonical) ?>" target="_blank" class="btn btn-light btn-sm rounded-circle me-1"><i class="fab fa-twitter"></i></a>
+                        <a href="https://api.whatsapp.com/send?text=<?= urlencode($page_canonical) ?>" target="_blank" class="btn btn-light btn-sm rounded-circle me-1"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                    <div>
+                        <strong class="text-dark"><?= htmlspecialchars($post['category_name']) ?></strong>
+                    </div>
+                </div>
+
+                <!-- Comentarios de Facebook -->
+                <div class="bg-light rounded p-4 mb-4">
+                    <h4 class="mb-3">Comentarios</h4>
+                    <div class="fb-comments" data-href="<?= 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] ?>" data-width="100%" data-numposts="10"></div>
+                </div>
+
+                <!-- Noticias relacionadas -->
+                <?php
+                $stmtRelated = $pdo->prepare("
+                    SELECT p.id, p.title, p.slug, p.image, p.created_at, c.slug AS category_slug
+                    FROM blog_posts p
+                    INNER JOIN blog_post_category pc ON pc.post_id = p.id
+                    INNER JOIN blog_categories c ON c.id = pc.category_id
+                    WHERE p.status='published' AND p.deleted=0
+                      AND pc.category_id = ? AND p.id != ?
+                    ORDER BY p.created_at DESC
+                    LIMIT 3
+                ");
+                $stmtRelated->execute([$post['category_id'], $post['id']]);
+                $relatedPosts = $stmtRelated->fetchAll();
+                ?>
+
+                <?php if ($relatedPosts): ?>
+                    <div class="bg-light rounded p-4 my-4">
+                        <h4 class="mb-3">También te puede interesar</h4>
+                        <div class="row g-3">
+                            <?php foreach ($relatedPosts as $rel): ?>
+                                <div class="col-md-4">
+                                    <div class="rounded overflow-hidden position-relative">
+                                        <img src="<?= $rel['image'] ? URLBASE . '/' . htmlspecialchars($rel['image']) : URLBASE . '/template/newsers/img/news-1.jpg' ?>"
+                                             class="img-fluid w-100"
+                                             style="object-fit: cover; height:180px;"
+                                             alt="<?= htmlspecialchars($rel['title']) ?>">
+                                        <div class="p-2">
+                                            <a href="<?= URLBASE ?>/<?= htmlspecialchars($rel['category_slug']) ?>/<?= htmlspecialchars($rel['slug']) ?>/" class="h6 d-block text-dark link-hover">
+                                                <?= htmlspecialchars($rel['title']) ?>
+                                            </a>
+                                            <small class="text-muted"><i class="fa fa-calendar-alt me-1"></i><?= fecha_espanol(date("F d, Y", strtotime($rel['created_at']))) ?></small>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <!-- Sidebar -->
+            <?php include __DIR__ . '/partials/sidebar.php'; ?>
+        </div>
+    </div>
+</div>
+<!-- Single News End -->
+
                     <div class="col-lg-4">
                         <div class="row g-4">
                             <div class="col-12">
