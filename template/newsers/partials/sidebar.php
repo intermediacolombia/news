@@ -72,7 +72,7 @@ try {
 </form>  
 
 					
-                </div>
+                
 
                 <!-- (Diseño original) Popular Categories -->
                 <h4 class="mb-4">Popular Categories</h4>
