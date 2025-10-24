@@ -82,7 +82,7 @@ $posts = $st->fetchAll();
     <div class="card-body">
 
       <!-- Acciones masivas: OCULTO por defecto -->
-      <div id="massActions" class="d-flex justify-content-between align-items-center" style="display:none;">
+      <div id="massActions" class="justify-content-between align-items-center" style="display:none;">
         <div>
           <button id="btnDeleteSelected" class="btn btn-outline-danger btn-sm me-2">
             <i class="fa fa-trash"></i> Borrar seleccionados
@@ -154,8 +154,11 @@ $posts = $st->fetchAll();
 <?php include('../inc/menu-footer.php'); ?>
 <?php include('../inc/flash_simple.php'); ?>
 
-<!-- Asegurar jQuery y DataTables -->
+<!-- IMPORTANTE: Cargar jQuery primero (sin esto DataTables no funciona) -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<!-- Luego Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Finalmente DataTables -->
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
@@ -173,26 +176,19 @@ $(document).ready(function(){
   const $massActions = $('#massActions');
   const $countSelected = $('#countSelected');
 
-  // DEBUGGING: Verificar que los elementos existen
-  console.log('massActions encontrado:', $massActions.length);
-  console.log('Estado inicial display:', $massActions.css('display'));
-
   // === Mostrar / ocultar barra de acciones masivas ===
   function toggleMassActions() {
     const selected = $('.chkPost:checked').length;
-    console.log('Checkboxes seleccionados:', selected); // DEBUG
     
     if (selected > 0) {
       // Muestra el contenedor de acciones masivas
       if (!$massActions.is(':visible')) {
-        console.log('Mostrando massActions...'); // DEBUG
-        $massActions.slideDown(150);
+        $massActions.css('display', 'flex').hide().slideDown(150);
       }
       $countSelected.text(`${selected} seleccionada${selected>1?'s':''}`);
     } else {
       // Oculta el contenedor de acciones masivas
       if ($massActions.is(':visible')) {
-        console.log('Ocultando massActions...'); // DEBUG
         $massActions.slideUp(150);
       }
       $countSelected.text('');
@@ -201,13 +197,11 @@ $(document).ready(function(){
 
   // === Eventos de checkbox ===
   $('#selectAll').on('change', function() {
-    console.log('Select All cambiado:', this.checked); // DEBUG
     $('.chkPost').prop('checked', this.checked);
     toggleMassActions();
   });
 
   $('.chkPost').on('change', function() {
-    console.log('Checkbox individual cambiado'); // DEBUG
     const all = $('.chkPost').length;
     const checked = $('.chkPost:checked').length;
     $('#selectAll').prop('checked', all === checked);
