@@ -72,9 +72,7 @@ try {
             aria-describedby="search-icon-1"
             value="<?= htmlspecialchars($_GET['q'] ?? '') ?>"
             required>
-        <span id="search-icon-1" class="btn btn-primary input-group-text p-3" style="cursor:pointer;">
-            <i class="fa fa-search text-white"></i>
-        </span>
+        <span id="search-icon-1" class="btn btn-primary input-group-text p-3"><i class="fa fa-search text-white"></i></span>
         <button type="submit" class="d-none"></button>
     </div>
 </form>
