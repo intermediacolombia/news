@@ -129,41 +129,67 @@
                     <?php endforeach; ?>
                 <?php endif; ?>
 
-                <!-- 🏷️ Tags -->
-                <?php
-                $stmtTags = $pdo->query("
-                    SELECT DISTINCT LOWER(TRIM(t)) AS tag
-                    FROM (
-                        SELECT SUBSTRING_INDEX(SUBSTRING_INDEX(p.tags, ',', n.n), ',', -1) AS t
-                        FROM blog_posts p
-                        INNER JOIN (
-                            SELECT a.N + b.N * 10 + 1 AS n
-                            FROM (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
-                                  UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) a,
-                                 (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
-                                  UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) b
-                        ) n
-                        WHERE n.n <= 1 + (LENGTH(p.tags) - LENGTH(REPLACE(p.tags, ',', '')))
-                          AND p.tags IS NOT NULL
-                          AND p.tags <> ''
-                    ) tags
-                    WHERE tag <> ''
-                    ORDER BY RAND()
-                    LIMIT 10
-                ");
-                $tags = $stmtTags->fetchAll(PDO::FETCH_COLUMN);
-                ?>
+               <!-- 🏷️ Tags dinámicos -->
+<?php
+// Extraer texto de títulos y contenidos para generar etiquetas reales
+$stmt = $pdo->query("
+    SELECT CONCAT(title, ' ', content) AS texto
+    FROM blog_posts
+    WHERE status='published' AND deleted=0
+");
+$textos = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
-                <?php if ($tags): ?>
-                    <h4 class="my-4">Tags</h4>
-                    <div class="d-flex flex-wrap m-n1">
-                        <?php foreach ($tags as $tag): ?>
-                            <a href="<?= URLBASE ?>/buscar.php?tag=<?= urlencode($tag) ?>" class="btn btn-sm btn-outline-secondary m-1">
-                                <?= htmlspecialchars(ucfirst($tag)) ?>
-                            </a>
-                        <?php endforeach; ?>
-                    </div>
-                <?php endif; ?>
+// Unir todo el contenido
+$todoTexto = strtolower(strip_tags(implode(' ', $textos)));
+
+// Dividir en palabras
+$palabras = preg_split('/\W+/u', $todoTexto, -1, PREG_SPLIT_NO_EMPTY);
+
+// Palabras comunes a excluir
+$stopwords = [
+    'nbsp','a','acá','ahí','al','algo','algún','alguna','algunas','algunos','allá','allí','ante','antes','aquel','aquella','aquellas','aquellos','aquí',
+    'así','aunque','bajo','bien','cada','casi','cierta','ciertas','cierto','ciertos','como','con','contra','cual','cuando','cuanta','cuantas','cuanto',
+    'cuantos','cuyo','cuyos','cuyas','de','del','desde','donde','dos','el','ella','ellas','ello','ellos','en','entre','era','eran','es','esa','esas',
+    'ese','eso','esos','esta','estaba','estado','estamos','estan','estar','estas','este','esto','estos','está','están','fue','fueron','ha','había',
+    'habían','han','hasta','hay','la','las','le','les','lo','los','luego','me','mi','mis','muy','más','ni','no','nos','nosotros','nuestra','nuestras',
+    'nuestro','nuestros','nunca','o','otra','otras','otro','otros','para','pero','poco','por','porque','primero','puede','que','quien','quienes',
+    'se','sea','según','ser','si','sí','sin','sobre','solamente','solo','sólo','son','su','sus','también','tan','tanto','te','tenemos','tener',
+    'tengo','ti','tiene','tienen','todo','todos','tras','tu','tus','un','una','uno','unos','usted','ustedes','va','vamos','van','y','ya','yo',
+    'él','ésta','éstas','éste','éstos','esto','esta','estas','estos','sino','además','entonces','luego','aun','inclusive','según','durante','cuál',
+    'cuáles','dónde','cuándo','cuánto','cuántos','cuántas','qué','quién','quiénes','cómo','será','estar','estará','habrá','he','hemos','han','mismo',
+    'misma','mismos','mismas','propio','propia','propios','propias','ninguno','ninguna','bastante','poco','poca','mucho','mucha','muchos','muchas',
+    'demasiado','demasiada','demasiados','demasiadas','otro','otra','otros','otras','varios','varias','demás','algún','ningún','algunos','algunas',
+    'the','of','and','to','in','on','for','with','at','by','from','a','an','is','it','that','as','be','are','this','was','were','or','if','has','had',
+    'but','they','their','them','you','your','our','we','he','she','his','her','itself','which','what','where','when','how','why'
+];
+
+// Calcular frecuencia de palabras relevantes
+$frecuencias = [];
+foreach ($palabras as $pal) {
+    if (mb_strlen($pal) > 3 && !in_array($pal, $stopwords)) {
+        $frecuencias[$pal] = ($frecuencias[$pal] ?? 0) + 1;
+    }
+}
+
+// Ordenar por frecuencia
+arsort($frecuencias);
+
+// Tomar las 12 palabras más comunes
+$tags = array_slice(array_keys($frecuencias), 0, 12);
+?>
+
+<?php if (!empty($tags)): ?>
+    <h4 class="my-4">Tags</h4>
+    <div class="d-flex flex-wrap m-n1">
+        <?php foreach ($tags as $tag): ?>
+            <a href="<?= URLBASE ?>/buscar/<?= urlencode($tag) ?>/"
+               class="btn btn-sm btn-outline-secondary m-1">
+                <?= htmlspecialchars(ucfirst($tag)) ?>
+            </a>
+        <?php endforeach; ?>
+    </div>
+<?php endif; ?>
+
             </div>
         </div>
     </div>
