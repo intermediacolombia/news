@@ -4,14 +4,14 @@
             <div class="p-3 rounded border">
 
                 <!-- 🔍 Buscador -->
-                <form method="get" action="<?= URLBASE ?>/buscar.php" class="mb-4">
-                    <div class="input-group w-100 mx-auto d-flex">
+                <div class="input-group w-100 mx-auto d-flex mb-4">
+                    <form method="get" action="<?= URLBASE ?>/buscar.php" class="w-100 d-flex">
                         <input type="search" name="q" class="form-control p-3" placeholder="Buscar..." value="<?= htmlspecialchars($_GET['q'] ?? '') ?>">
-                        <button type="submit" class="btn btn-primary input-group-text p-3">
+                        <button type="submit" id="search-icon-1" class="btn btn-primary input-group-text p-3">
                             <i class="fa fa-search text-white"></i>
                         </button>
-                    </div>
-                </form>
+                    </form>
+                </div>
 
                 <!-- 📂 Categorías Populares -->
                 <?php
@@ -28,13 +28,13 @@
                 ?>
 
                 <?php if ($categories): ?>
-                    <h4 class="mb-4">Categorías Populares</h4>
+                    <h4 class="mb-4">Popular Categories</h4>
                     <div class="row g-2 mb-4">
                         <?php foreach ($categories as $cat): ?>
                             <div class="col-12">
                                 <a href="<?= URLBASE ?>/noticias/<?= htmlspecialchars($cat['slug']) ?>/"
                                    class="link-hover btn btn-light w-100 rounded text-uppercase text-dark py-3">
-                                   <?= htmlspecialchars($cat['name']) ?> (<?= $cat['total'] ?>)
+                                   <?= htmlspecialchars($cat['name']) ?>
                                 </a>
                             </div>
                         <?php endforeach; ?>
@@ -42,44 +42,51 @@
                 <?php endif; ?>
 
                 <!-- 🌐 Redes Sociales -->
-                <h4 class="my-4">Síguenos</h4>
-                <div class="row g-3 mb-4">
-                    <?php if (!empty($sys['facebook'])): ?>
-                        <a href="<?= htmlspecialchars($sys['facebook']) ?>" target="_blank" class="w-100 rounded btn btn-primary d-flex align-items-center p-3 mb-2">
-                            <i class="fab fa-facebook-f btn btn-light btn-square rounded-circle me-3"></i>
-                            <span class="text-white">Facebook</span>
-                        </a>
-                    <?php endif; ?>
-                    <?php if (!empty($sys['twitter'])): ?>
-                        <a href="<?= htmlspecialchars($sys['twitter']) ?>" target="_blank" class="w-100 rounded btn btn-dark d-flex align-items-center p-3 mb-2">
-                            <i class="fab fa-x-twitter btn btn-light btn-square rounded-circle me-3"></i>
-                            <span class="text-white">X (Twitter)</span>
-                        </a>
-                    <?php endif; ?>
-                    <?php if (!empty($sys['instagram'])): ?>
-                        <a href="<?= htmlspecialchars($sys['instagram']) ?>" target="_blank" class="w-100 rounded btn btn-danger d-flex align-items-center p-3 mb-2">
-                            <i class="fab fa-instagram btn btn-light btn-square rounded-circle me-3"></i>
-                            <span class="text-white">Instagram</span>
-                        </a>
-                    <?php endif; ?>
-                    <?php if (!empty($sys['tiktok'])): ?>
-                        <a href="<?= htmlspecialchars($sys['tiktok']) ?>" target="_blank" class="w-100 rounded btn btn-secondary d-flex align-items-center p-3 mb-2">
-                            <i class="fab fa-tiktok btn btn-light btn-square rounded-circle me-3"></i>
-                            <span class="text-white">TikTok</span>
-                        </a>
-                    <?php endif; ?>
-                    <?php if (!empty($sys['youtube'])): ?>
-                        <a href="<?= htmlspecialchars($sys['youtube']) ?>" target="_blank" class="w-100 rounded btn btn-danger d-flex align-items-center p-3 mb-2">
-                            <i class="fab fa-youtube btn btn-light btn-square rounded-circle me-3"></i>
-                            <span class="text-white">YouTube</span>
-                        </a>
-                    <?php endif; ?>
-                    <?php if (!empty($sys['whatsapp'])): ?>
-                        <a href="<?= htmlspecialchars($sys['whatsapp']) ?>" target="_blank" class="w-100 rounded btn btn-success d-flex align-items-center p-3 mb-2">
-                            <i class="fab fa-whatsapp btn btn-light btn-square rounded-circle me-3"></i>
-                            <span class="text-white">WhatsApp</span>
-                        </a>
-                    <?php endif; ?>
+                <h4 class="my-4">Stay Connected</h4>
+                <div class="row g-4">
+                    <div class="col-12">
+                        <?php if (!empty($sys['facebook'])): ?>
+                            <a href="<?= htmlspecialchars($sys['facebook']) ?>" target="_blank" class="w-100 rounded btn btn-primary d-flex align-items-center p-3 mb-2">
+                                <i class="fab fa-facebook-f btn btn-light btn-square rounded-circle me-3"></i>
+                                <span class="text-white">Facebook</span>
+                            </a>
+                        <?php endif; ?>
+
+                        <?php if (!empty($sys['twitter'])): ?>
+                            <a href="<?= htmlspecialchars($sys['twitter']) ?>" target="_blank" class="w-100 rounded btn btn-dark d-flex align-items-center p-3 mb-2">
+                                <i class="fab fa-x-twitter btn btn-light btn-square rounded-circle me-3"></i>
+                                <span class="text-white">X (Twitter)</span>
+                            </a>
+                        <?php endif; ?>
+
+                        <?php if (!empty($sys['youtube'])): ?>
+                            <a href="<?= htmlspecialchars($sys['youtube']) ?>" target="_blank" class="w-100 rounded btn btn-warning d-flex align-items-center p-3 mb-2">
+                                <i class="fab fa-youtube btn btn-light btn-square rounded-circle me-3"></i>
+                                <span class="text-white">YouTube</span>
+                            </a>
+                        <?php endif; ?>
+
+                        <?php if (!empty($sys['instagram'])): ?>
+                            <a href="<?= htmlspecialchars($sys['instagram']) ?>" target="_blank" class="w-100 rounded btn btn-dark d-flex align-items-center p-3 mb-2">
+                                <i class="fab fa-instagram btn btn-light btn-square rounded-circle me-3"></i>
+                                <span class="text-white">Instagram</span>
+                            </a>
+                        <?php endif; ?>
+
+                        <?php if (!empty($sys['tiktok'])): ?>
+                            <a href="<?= htmlspecialchars($sys['tiktok']) ?>" target="_blank" class="w-100 rounded btn btn-secondary d-flex align-items-center p-3 mb-2">
+                                <i class="fab fa-tiktok btn btn-light btn-square rounded-circle me-3"></i>
+                                <span class="text-white">TikTok</span>
+                            </a>
+                        <?php endif; ?>
+
+                        <?php if (!empty($sys['whatsapp'])): ?>
+                            <a href="<?= htmlspecialchars($sys['whatsapp']) ?>" target="_blank" class="w-100 rounded btn btn-success d-flex align-items-center p-3 mb-4">
+                                <i class="fab fa-whatsapp btn btn-light btn-square rounded-circle me-3"></i>
+                                <span class="text-white">WhatsApp</span>
+                            </a>
+                        <?php endif; ?>
+                    </div>
                 </div>
 
                 <!-- ⚡ Código personalizado desde sistema -->
@@ -101,96 +108,97 @@
                     WHERE p.status='published' AND p.deleted=0
                     GROUP BY p.id, p.title, p.slug, p.image, p.created_at, c.name, c.slug
                     ORDER BY RAND()
-                    LIMIT 5
+                    LIMIT 4
                 ");
                 $trendingPosts = $stmt->fetchAll();
                 ?>
 
                 <?php if ($trendingPosts): ?>
-                    <h4 class="my-4">Tendencias</h4>
-                    <?php foreach ($trendingPosts as $post): ?>
-                        <div class="d-flex mb-3">
-                            <img src="<?= $post['image'] ? URLBASE . '/' . htmlspecialchars($post['image']) : URLBASE . '/template/news/img/news-100x100-1.jpg' ?>"
-                                 style="width: 100px; height: 100px; object-fit: cover;"
-                                 alt="<?= htmlspecialchars($post['title']) ?>">
-                            <div class="w-100 d-flex flex-column justify-content-center bg-light px-3" style="height: 100px;">
-                                <div class="mb-1" style="font-size: 13px;">
-                                    <a href="<?= URLBASE ?>/noticias/<?= htmlspecialchars($post['category_slug']) ?>/">
-                                        <?= htmlspecialchars($post['category_name']) ?>
-                                    </a>
-                                    <span class="px-1">/</span>
-                                    <span><?= fecha_espanol(date("F d, Y", strtotime($post['created_at']))) ?></span>
+                    <h4 class="my-4">Popular News</h4>
+                    <div class="row g-4">
+                        <?php foreach ($trendingPosts as $post): ?>
+                            <div class="col-12">
+                                <div class="row g-4 align-items-center features-item">
+                                    <div class="col-4">
+                                        <div class="rounded-circle position-relative">
+                                            <div class="overflow-hidden rounded-circle">
+                                                <img src="<?= $post['image'] ? URLBASE . '/' . htmlspecialchars($post['image']) : URLBASE . '/template/news/img/news-100x100-1.jpg' ?>" 
+                                                     class="img-zoomin img-fluid rounded-circle w-100" 
+                                                     alt="<?= htmlspecialchars($post['title']) ?>">
+                                            </div>
+                                            <span class="rounded-circle border border-2 border-white bg-primary btn-sm-square text-white position-absolute" style="top: 10%; right: -10px;">+</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-8">
+                                        <div class="features-content d-flex flex-column">
+                                            <p class="text-uppercase mb-2"><?= htmlspecialchars($post['category_name']) ?></p>
+                                            <a href="<?= URLBASE ?>/<?= htmlspecialchars($post['category_slug']) ?>/<?= htmlspecialchars($post['slug']) ?>/" class="h6">
+                                                <?= htmlspecialchars($post['title']) ?>
+                                            </a>
+                                            <small class="text-body d-block">
+                                                <i class="fas fa-calendar-alt me-1"></i>
+                                                <?= fecha_espanol(date("F d, Y", strtotime($post['created_at']))) ?>
+                                            </small>
+                                        </div>
+                                    </div>
                                 </div>
-                                <a class="h6 m-0" href="<?= URLBASE ?>/<?= htmlspecialchars($post['category_slug']) ?>/<?= htmlspecialchars($post['slug']) ?>/">
-                                    <?= htmlspecialchars($post['title']) ?>
-                                </a>
                             </div>
-                        </div>
-                    <?php endforeach; ?>
+                        <?php endforeach; ?>
+                    </div>
                 <?php endif; ?>
 
-               <!-- 🏷️ Tags dinámicos -->
-<?php
-// Extraer texto de títulos y contenidos para generar etiquetas reales
-$stmt = $pdo->query("
-    SELECT CONCAT(title, ' ', content) AS texto
-    FROM blog_posts
-    WHERE status='published' AND deleted=0
-");
-$textos = $stmt->fetchAll(PDO::FETCH_COLUMN);
+                <!-- 🏷️ Tags dinámicos -->
+                <?php
+                $stmt = $pdo->query("
+                    SELECT CONCAT(title, ' ', content) AS texto
+                    FROM blog_posts
+                    WHERE status='published' AND deleted=0
+                ");
+                $textos = $stmt->fetchAll(PDO::FETCH_COLUMN);
+                $todoTexto = strtolower(strip_tags(implode(' ', $textos)));
+                $palabras = preg_split('/\W+/u', $todoTexto, -1, PREG_SPLIT_NO_EMPTY);
+                $stopwords = ['de','la','el','en','y','a','los','las','para','con','por','una','un','del','al','que','se','su','sus','ya','muy','más','como','es','son','esto','esta','estas','estos','sobre','the','of','and','to','in','on','for','with','at','by','from','as','are','was','were','be','an','is'];
+                $frecuencias = [];
+                foreach ($palabras as $pal) {
+                    if (mb_strlen($pal) > 3 && !in_array($pal, $stopwords)) {
+                        $frecuencias[$pal] = ($frecuencias[$pal] ?? 0) + 1;
+                    }
+                }
+                arsort($frecuencias);
+                $tags = array_slice(array_keys($frecuencias), 0, 8);
+                ?>
 
-// Unir todo el contenido
-$todoTexto = strtolower(strip_tags(implode(' ', $textos)));
+                <?php if ($tags): ?>
+                    <div class="col-lg-12">
+                        <div class="border-bottom my-3 pb-3">
+                            <h4 class="mb-0">Trending Tags</h4>
+                        </div>
+                        <ul class="nav nav-pills d-inline-flex text-center mb-4">
+                            <?php foreach ($tags as $tag): ?>
+                                <li class="nav-item mb-3">
+                                    <a class="d-flex py-2 bg-light rounded-pill me-2" href="<?= URLBASE ?>/buscar/<?= urlencode($tag) ?>/">
+                                        <span class="text-dark link-hover" style="width: 90px;"><?= htmlspecialchars(ucfirst($tag)) ?></span>
+                                    </a>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                <?php endif; ?>
 
-// Dividir en palabras
-$palabras = preg_split('/\W+/u', $todoTexto, -1, PREG_SPLIT_NO_EMPTY);
-
-// Palabras comunes a excluir
-$stopwords = [
-    'nbsp','a','acá','ahí','al','algo','algún','alguna','algunas','algunos','allá','allí','ante','antes','aquel','aquella','aquellas','aquellos','aquí',
-    'así','aunque','bajo','bien','cada','casi','cierta','ciertas','cierto','ciertos','como','con','contra','cual','cuando','cuanta','cuantas','cuanto',
-    'cuantos','cuyo','cuyos','cuyas','de','del','desde','donde','dos','el','ella','ellas','ello','ellos','en','entre','era','eran','es','esa','esas',
-    'ese','eso','esos','esta','estaba','estado','estamos','estan','estar','estas','este','esto','estos','está','están','fue','fueron','ha','había',
-    'habían','han','hasta','hay','la','las','le','les','lo','los','luego','me','mi','mis','muy','más','ni','no','nos','nosotros','nuestra','nuestras',
-    'nuestro','nuestros','nunca','o','otra','otras','otro','otros','para','pero','poco','por','porque','primero','puede','que','quien','quienes',
-    'se','sea','según','ser','si','sí','sin','sobre','solamente','solo','sólo','son','su','sus','también','tan','tanto','te','tenemos','tener',
-    'tengo','ti','tiene','tienen','todo','todos','tras','tu','tus','un','una','uno','unos','usted','ustedes','va','vamos','van','y','ya','yo',
-    'él','ésta','éstas','éste','éstos','esto','esta','estas','estos','sino','además','entonces','luego','aun','inclusive','según','durante','cuál',
-    'cuáles','dónde','cuándo','cuánto','cuántos','cuántas','qué','quién','quiénes','cómo','será','estar','estará','habrá','he','hemos','han','mismo',
-    'misma','mismos','mismas','propio','propia','propios','propias','ninguno','ninguna','bastante','poco','poca','mucho','mucha','muchos','muchas',
-    'demasiado','demasiada','demasiados','demasiadas','otro','otra','otros','otras','varios','varias','demás','algún','ningún','algunos','algunas',
-    'the','of','and','to','in','on','for','with','at','by','from','a','an','is','it','that','as','be','are','this','was','were','or','if','has','had',
-    'but','they','their','them','you','your','our','we','he','she','his','her','itself','which','what','where','when','how','why'
-];
-
-// Calcular frecuencia de palabras relevantes
-$frecuencias = [];
-foreach ($palabras as $pal) {
-    if (mb_strlen($pal) > 3 && !in_array($pal, $stopwords)) {
-        $frecuencias[$pal] = ($frecuencias[$pal] ?? 0) + 1;
-    }
-}
-
-// Ordenar por frecuencia
-arsort($frecuencias);
-
-// Tomar las 12 palabras más comunes
-$tags = array_slice(array_keys($frecuencias), 0, 12);
-?>
-
-<?php if (!empty($tags)): ?>
-    <h4 class="my-4">Tags</h4>
-    <div class="d-flex flex-wrap m-n1">
-        <?php foreach ($tags as $tag): ?>
-            <a href="<?= URLBASE ?>/buscar/<?= urlencode($tag) ?>/"
-               class="btn btn-sm btn-outline-secondary m-1">
-                <?= htmlspecialchars(ucfirst($tag)) ?>
-            </a>
-        <?php endforeach; ?>
-    </div>
-<?php endif; ?>
+                <!-- 📢 Banner inferior -->
+                <div class="col-lg-12">
+                    <div class="position-relative banner-2">
+                        <img src="<?= URLBASE ?>/template/news/img/banner-2.jpg" class="img-fluid w-100 rounded" alt="">
+                        <div class="text-center banner-content-2">
+                            <h6 class="mb-2">The Most Popular</h6>
+                            <p class="text-white mb-2">News & Magazine Theme</p>
+                            <a href="#" class="btn btn-primary text-white px-4">Shop Now</a>
+                        </div>
+                    </div>
+                </div>
 
             </div>
         </div>
     </div>
 </div>
+
