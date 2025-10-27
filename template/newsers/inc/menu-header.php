@@ -52,7 +52,7 @@
                     </div>
 
                    <div class="d-flex flex-nowrap border-top pt-3 pt-xl-0">
-                                <div id="ww_5a5d594e60352" v='1.3' loc='id' a='{"t":"horizontal","lang":"es","sl_lpl":1,"ids":["wl2306"],"font":"Arial","sl_ics":"one_a","sl_sot":"celsius","cl_bkg":"#FFFFFF00","cl_font":"#000000","cl_cloud":"#d4d4d4","cl_persp":"#2196F3","cl_sun":"#FFC107","cl_moon":"#FFC107","cl_thund":"#FF5722","el_whr":3,"el_phw":3}'></div><script async src="https://app3.weatherwidget.org/js/?id=ww_5a5d594e60352"></script>
+                                <div id="ww_5a5d594e60352" v='1.3' loc='id' a='{"t":"horizontal","lang":"es","sl_lpl":1,"ids":["wl2306"],"font":"Arial","sl_ics":"one_a","sl_sot":"celsius","cl_bkg":"#FFFFFF00","cl_font":"#000000","cl_cloud":"#d4d4d4","cl_persp":"#2196F3","cl_sun":"#FFC107","cl_moon":"#FFC107","cl_thund":"#FF5722","el_whr":3,"el_phw":3}'><a href="https://weatherwidget.org/" id="ww_5a5d594e60352_u" target="_blank">Html weather widget</a></div><script async src="https://app3.weatherwidget.org/js/?id=ww_5a5d594e60352"></script>
                                 <button class="btn-search btn border border-primary btn-md-square rounded-circle bg-white my-auto" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search text-primary"></i></button>
                             </div>
                 </div>
