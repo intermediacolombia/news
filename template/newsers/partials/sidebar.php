@@ -57,20 +57,12 @@ try {
 } catch (\Throwable $e) {}
 ?>
 
-<div class="col-lg-4">
+<div class="col-lg-4 col-xl-3">
     <div class="row g-4">
         <div class="col-12">
             <div class="p-3 rounded border">
                 <!-- (Diseño original) Buscador -->
-	<form method="get" action="<?= URLBASE ?>/search.php" class="m-0 p-0">			
-     <div class="input-group w-100 mx-auto d-flex mb-4">
-     
-    <input type="search" class="form-control p-3" placeholder="keywords" aria-describedby="search-icon-1" value="<?= htmlspecialchars($_GET['q'] ?? '') ?>">
-    <span id="search-icon-1" class="btn btn-primary input-group-text p-3"><i class="fa fa-search text-white"></i></span>
-      
-    </div>
-</form>  
-
+	
 					
                 
 
