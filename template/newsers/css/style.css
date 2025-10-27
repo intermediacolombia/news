@@ -469,22 +469,26 @@
 }
 
 /* === Corrige proporción circular en las imágenes de "Features" === */
+/* === Corrige el recorte del contador dentro del círculo === */
 .features-item .rounded-circle {
+  position: relative;
+  overflow: visible !important; /* permite que el número salga del círculo */
+}
+
+.features-item .rounded-circle .overflow-hidden {
+  overflow: hidden;
+  border-radius: 50%;
   width: 90px;
   height: 90px;
-  border-radius: 50%;
-  overflow: hidden;
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Imagen circular */
 .features-item .rounded-circle img {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* mantiene proporción sin deformar */
+  object-fit: cover;
   border-radius: 50%;
   transition: transform 0.3s ease;
 }
@@ -493,7 +497,7 @@
   transform: scale(1.08);
 }
 
-/* Número (posición fuera del círculo) */
+/* Contador fuera del círculo y centrado correctamente */
 .features-item .btn-sm-square {
   width: 28px;
   height: 28px;
@@ -502,32 +506,14 @@
   text-align: center;
   border-radius: 50%;
   position: absolute;
-  top: -6px;         /* lo sube un poco */
-  right: -12px;      /* lo mueve fuera del borde del círculo */
-  background-color: #0d6efd; /* color primario */
+  top: -6px;
+  right: -12px;
+  background-color: #0d6efd;
   color: #fff;
-  border: 2px solid #fff;
   font-weight: 600;
-  z-index: 5;        /* asegura que quede encima de la imagen */
+  border: 2px solid #fff;
+  z-index: 10; /* asegura que esté por encima */
 }
-
-/* Responsivo: tamaño más pequeño en móvil */
-@media (max-width: 576px) {
-  .features-item .rounded-circle {
-    width: 70px;
-    height: 70px;
-  }
-
-  .features-item .btn-sm-square {
-    width: 24px;
-    height: 24px;
-    font-size: 12px;
-    line-height: 24px;
-    top: -5px;
-    right: -10px;
-  }
-}
-
 
 
 
