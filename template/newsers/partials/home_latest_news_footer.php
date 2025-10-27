@@ -49,6 +49,40 @@ $sqlMostViews = "
   LIMIT 10
 ";
 $mostViewedNews = $pdo->query($sqlMostViews)->fetchAll();
+
+/* ===== Consulta: UNA categoría aleatoria con 2 posts destacados ===== */
+$sqlRandomCategory = "
+  SELECT c.id, c.name, c.slug
+  FROM blog_categories c
+  INNER JOIN blog_post_category pc ON c.id = pc.category_id
+  INNER JOIN blog_posts p ON p.id = pc.post_id AND p.status='published' AND p.deleted=0
+  WHERE c.status = 1
+  GROUP BY c.id, c.name, c.slug
+  HAVING COUNT(pc.post_id) >= 2
+  ORDER BY RAND()
+  LIMIT 1
+";
+$randomCategory = $pdo->query($sqlRandomCategory)->fetch();
+
+/* ===== Función para obtener 2 posts destacados por categoría ===== */
+function getFeaturedPostsByCategory($pdo, $categoryId, $limit = 2) {
+    $sql = "
+      SELECT p.id, p.title, p.slug, p.image, p.created_at, p.author,
+             c.name AS category_name, c.slug AS category_slug
+      FROM blog_posts p
+      INNER JOIN blog_post_category pc ON pc.post_id = p.id
+      INNER JOIN blog_categories c ON c.id = pc.category_id
+      WHERE p.status = 'published' AND p.deleted = 0 AND c.id = :category_id
+      GROUP BY p.id, p.title, p.slug, p.image, p.created_at, p.author, c.name, c.slug
+      ORDER BY p.created_at DESC
+      LIMIT :limit
+    ";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(':category_id', $categoryId, PDO::PARAM_INT);
+    $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchAll();
+}
 ?>
 
 <div class="container-fluid populer-news py-5">
@@ -195,8 +229,54 @@ $mostViewedNews = $pdo->query($sqlMostViews)->fetchAll();
                         <?php endforeach; ?>
                     </div>
                     
+                    <!-- UNA Categoría Aleatoria con 2 Posts -->
+                    <?php if ($randomCategory): ?>
+                        <?php $featuredPosts = getFeaturedPostsByCategory($pdo, $randomCategory['id'], 2); ?>
+                        <?php if (count($featuredPosts) >= 2): ?>
+                        <div class="mt-5 lifestyle">
+                            <div class="border-bottom mb-4">
+                                <h1 class="mb-4"><?= htmlspecialchars($randomCategory['name']) ?></h1>
+                            </div>
+                            <div class="row g-4">
+                                <?php foreach ($featuredPosts as $featPost): ?>
+                                <div class="col-lg-6">
+                                    <div class="lifestyle-item rounded position-relative overflow-hidden" style="height: 400px;">
+                                        <a href="<?= URLBASE ?>/<?= htmlspecialchars($featPost['category_slug']) ?>/<?= htmlspecialchars($featPost['slug']) ?>/">
+                                            <img src="<?= img_url($featPost['image']) ?>" 
+                                                 class="img-fluid w-100 h-100 rounded" 
+                                                 style="object-fit: cover; object-position: center;"
+                                                 alt="<?= htmlspecialchars($featPost['title']) ?>">
+                                        </a>
+                                        <div class="lifestyle-content">
+                                            <div class="mt-auto">
+                                                <a href="<?= URLBASE ?>/<?= htmlspecialchars($featPost['category_slug']) ?>/<?= htmlspecialchars($featPost['slug']) ?>/" 
+                                                   class="h4 text-white link-hover">
+                                                    <?= truncate_text($featPost['title'], 80) ?>
+                                                </a>
+                                                <div class="d-flex justify-content-between mt-4">
+                                                    <?php if (!empty($featPost['author'])): ?>
+                                                    <span class="small text-white link-hover">By <?= htmlspecialchars($featPost['author']) ?></span>
+                                                    <?php else: ?>
+                                                    <span class="small text-white link-hover">By <?= htmlspecialchars($sys['site_name'] ?? 'Admin') ?></span>
+                                                    <?php endif; ?>
+                                                    
+                                                    <small class="text-white d-block">
+                                                        <i class="fas fa-calendar-alt me-1"></i>
+                                                        <?= fecha_espanol(date("F d, Y", strtotime($featPost['created_at']))) ?>
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                    
                 </div>
-                <?php include __DIR__ . '/../partials/sidebar.php'; ?>
+                <?php include __DIR__ . '/partials/sidebar.php'; ?>
             </div>
         </div>
     </div>
