@@ -68,6 +68,7 @@
 
     <!-- Template Stylesheet -->
     <link href="<?= URLBASE ?>/template/newsers/css/style.css?<?= time(); ?>" rel="stylesheet">
+	<link href="<?= URLBASE ?>/template/newsers/css/custom.css" rel="stylesheet">
 
     <!-- Facebook SDK -->
     <div id="fb-root"></div>
