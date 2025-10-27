@@ -41,7 +41,7 @@
                   <p class="text-uppercase mb-2"><?= htmlspecialchars($p['category_name']) ?></p>
                   <a href="<?= URLBASE ?>/<?= htmlspecialchars($p['category_slug']) ?>/<?= htmlspecialchars($p['slug']) ?>/"
    class="h6">
-   <?= htmlspecialchars(mb_strimwidth($p['title'], 0, 80, '...')) ?>
+   <?= htmlspecialchars(mb_strimwidth($p['title'], 0, 70, '...')) ?>
 </a>
 
                   <small class="text-body d-block">
