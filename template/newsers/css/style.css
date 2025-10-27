@@ -468,33 +468,23 @@
   border-radius: 6px;
 }
 
-/* ==== Popular News - imágenes circulares ==== */
-.features-item .rounded-circle img {
-  width: 100px!important;
-  height: 100px!important;
-  object-fit: cover;
-  border-radius: 50%;
-  border: 3px solid #fff; /* opcional, mejora el contraste */
-  display: block;
-  margin: 0 auto;
-}
-
 /* === Corrige proporción circular en las imágenes de "Features" === */
 .features-item .rounded-circle {
   width: 90px;
   height: 90px;
-  position: relative;
-  overflow: hidden;
   border-radius: 50%;
+  overflow: hidden;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+/* Imagen circular */
 .features-item .rounded-circle img {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* mantiene proporción y recorta sin deformar */
+  object-fit: cover; /* mantiene proporción sin deformar */
   border-radius: 50%;
   transition: transform 0.3s ease;
 }
@@ -503,6 +493,7 @@
   transform: scale(1.08);
 }
 
+/* Número (posición fuera del círculo) */
 .features-item .btn-sm-square {
   width: 28px;
   height: 28px;
@@ -510,16 +501,33 @@
   line-height: 28px;
   text-align: center;
   border-radius: 50%;
+  position: absolute;
+  top: -6px;         /* lo sube un poco */
+  right: -12px;      /* lo mueve fuera del borde del círculo */
+  background-color: #0d6efd; /* color primario */
+  color: #fff;
+  border: 2px solid #fff;
+  font-weight: 600;
+  z-index: 5;        /* asegura que quede encima de la imagen */
 }
 
-
-
+/* Responsivo: tamaño más pequeño en móvil */
 @media (max-width: 576px) {
-  .features-item .rounded-circle img {
+  .features-item .rounded-circle {
     width: 70px;
     height: 70px;
   }
+
+  .features-item .btn-sm-square {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+    line-height: 24px;
+    top: -5px;
+    right: -10px;
+  }
 }
+
 
 
 
