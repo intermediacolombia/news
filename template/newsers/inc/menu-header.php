@@ -54,7 +54,7 @@
                    <div class="d-flex flex-nowrap border-top pt-3 pt-xl-0">
                                 <div class="d-flex">
                                     
-									<?php include __DIR__ . '/partials/weather-widget.php'; ?>
+									<?php include __DIR__ . '/../partials/weather-widget.php'; ?>
 
                                 </div>
                                 <button class="btn-search btn border border-primary btn-md-square rounded-circle bg-white my-auto" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search text-primary"></i></button>
