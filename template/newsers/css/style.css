@@ -470,8 +470,8 @@
 
 /* ==== Popular News - imágenes circulares ==== */
 .features-item .rounded-circle img {
-  width: 100px;
-  height: 100px;
+  width: 100px!important;
+  height: 100px!important;
   object-fit: cover;
   border-radius: 50%;
   border: 3px solid #fff; /* opcional, mejora el contraste */
