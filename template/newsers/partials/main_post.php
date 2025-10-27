@@ -167,11 +167,11 @@ $rightList = array_slice($posts, 3);    // items pequeños de la derecha
                 
                 <p class="fs-5 mb-0">
                   <i class="fa fa-clock"></i>
-                  <?= str_pad(read_time_minutes($right1['content']), 2, '0', STR_PAD_LEFT) ?> minute read
+                  <?= str_pad(read_time_minutes($right1['content']), 2, '0', STR_PAD_LEFT) ?> Minutos de Lectura
                 </p>
                 <p class="fs-5 mb-0">
                   <i class="fa fa-eye"></i>
-                  <?= number_format((int)$right1['views'], 0, ',', '.') ?> Views
+                  <?= number_format((int)$right1['views'], 0, ',', '.') ?> Vistas
                 </p>
                 <small class="text-body d-block mt-2">
                   <i class="fas fa-calendar-alt me-1"></i>
