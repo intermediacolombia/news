@@ -438,4 +438,24 @@
   border-radius: 6px;
 }
 
+/* ==== Popular News - imágenes circulares ==== */
+.features-item .rounded-circle img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid #fff; /* opcional, mejora el contraste */
+  display: block;
+  margin: 0 auto;
+}
+
+
+@media (max-width: 576px) {
+  .features-item .rounded-circle img {
+    width: 70px;
+    height: 70px;
+  }
+}
+
+
 
