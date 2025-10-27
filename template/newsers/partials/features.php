@@ -40,9 +40,10 @@
                 <div class="features-content d-flex flex-column">
                   <p class="text-uppercase mb-2"><?= htmlspecialchars($p['category_name']) ?></p>
                   <a href="<?= URLBASE ?>/<?= htmlspecialchars($p['category_slug']) ?>/<?= htmlspecialchars($p['slug']) ?>/"
-                     class="h6">
-                    <?= htmlspecialchars($p['title']) ?>
-                  </a>
+   class="h6">
+   <?= htmlspecialchars(mb_strimwidth($p['title'], 0, 80, '...')) ?>
+</a>
+
                   <small class="text-body d-block">
                     <i class="fas fa-calendar-alt me-1"></i>
                     <?= fecha_espanol(date("F d, Y", strtotime($p['created_at']))) ?>
