@@ -67,7 +67,7 @@ try {
                 
 
                 <!-- (Diseño original) Popular Categories -->
-                <h4 class="mb-4">Popular Categories</h4>
+                <h4 class="mb-4">Categorias</h4>
                 <div class="row g-2">
                     <?php foreach ($categories as $cat): ?>
                         <div class="col-12">
@@ -79,7 +79,7 @@ try {
                 </div>
 
                 <!-- (Diseño original) Stay Connected -->
-                <h4 class="my-4">Stay Connected</h4>
+                <h4 class="my-4">Síguenos</h4>
                 <div class="row g-4">
                     <div class="col-12">
                         <?php if (!empty($sys['facebook'])): ?>
@@ -120,7 +120,7 @@ try {
                 </div>
 
                 <!-- (Diseño original) Popular News -->
-                <h4 class="my-4">Popular News</h4>
+                <h4 class="my-4">Las Más Leídas</h4>
                 <div class="row g-4">
                     <?php foreach ($popular as $idx => $p): ?>
                         <div class="col-12">
@@ -154,13 +154,13 @@ try {
 
                 <!-- (Diseño original) View More -->
                 <div class="col-lg-12">
-                    <a href="<?= URLBASE ?>/noticias/" class="link-hover btn border border-primary rounded-pill text-dark w-100 py-3 mb-4">View More</a>
+                    <a href="<?= URLBASE ?>/noticias/" class="link-hover btn border border-primary rounded-pill text-dark w-100 py-3 mb-4">Ver Más</a>
                 </div>
 
                 <!-- (Diseño original) Trending Tags -->
                 <div class="col-lg-12">
                     <div class="border-bottom my-3 pb-3">
-                        <h4 class="mb-0">Trending Tags</h4>
+                        <h4 class="mb-0">Tags Tendencias</h4>
                     </div>
                     <ul class="nav nav-pills d-inline-flex text-center mb-4">
                         <?php foreach ($tags as $t): ?>
@@ -175,25 +175,8 @@ try {
 
                 <!-- (Diseño original) Banner inferior -->
                 <div class="col-lg-12">
-                    <div class="position-relative banner-2">
-                        <?php if ($bannerInferior && !empty($bannerInferior['image'])): ?>
-                            <a href="<?= !empty($bannerInferior['url']) ? htmlspecialchars($bannerInferior['url']) : '#' ?>" target="_blank" rel="noopener">
-                                <img src="<?= URLBASE . '/' . htmlspecialchars($bannerInferior['image']) ?>" class="img-fluid w-100 rounded" alt="<?= htmlspecialchars($bannerInferior['title'] ?? 'Banner') ?>">
-                            </a>
-                            <div class="text-center banner-content-2">
-                                <?php if (!empty($bannerInferior['title'])): ?>
-                                    <h6 class="mb-2"><?= htmlspecialchars($bannerInferior['title']) ?></h6>
-                                <?php endif; ?>
-                                <?php if (!empty($bannerInferior['subtitle'])): ?>
-                                    <p class="text-white mb-2"><?= htmlspecialchars($bannerInferior['subtitle']) ?></p>
-                                <?php endif; ?>
-                                <?php if (!empty($bannerInferior['url'])): ?>
-                                    <a href="<?= htmlspecialchars($bannerInferior['url']) ?>" class="btn btn-primary text-white px-4" target="_blank" rel="noopener">Shop Now</a>
-                                <?php endif; ?>
-                            </div>
-                        <?php else: ?>
-                            <?php include __DIR__ . '/ads5.php'; ?>
-                        <?php endif; ?>
+                    <div class="position-relative banner-2">                        
+                     <?php include __DIR__ . '/ads5.php'; ?>                        
                     </div>
                 </div>
 
