@@ -468,51 +468,23 @@
   border-radius: 6px;
 }
 
-/* === Corrige proporción circular en las imágenes de "Features" === */
-/* === Corrige el recorte del contador dentro del círculo === */
-.features-item .rounded-circle {
-  position: relative;
-  overflow: visible !important; /* permite que el número salga del círculo */
-}
-
-.features-item .rounded-circle .overflow-hidden {
-  overflow: hidden;
-  border-radius: 50%;
-  width: 90px;
-  height: 90px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
+/* ==== Popular News - imágenes circulares ==== */
 .features-item .rounded-circle img {
-  width: 100%;
-  height: 100%;
+  width: 100px;
+  height: 100px;
   object-fit: cover;
   border-radius: 50%;
-  transition: transform 0.3s ease;
+  border: 3px solid #fff; /* opcional, mejora el contraste */
+  display: block;
+  margin: 0 auto;
 }
 
-.features-item .rounded-circle img:hover {
-  transform: scale(1.08);
-}
 
-/* Contador fuera del círculo y centrado correctamente */
-.features-item .btn-sm-square {
-  width: 28px;
-  height: 28px;
-  font-size: 14px;
-  line-height: 28px;
-  text-align: center;
-  border-radius: 50%;
-  position: absolute;
-  top: -6px;
-  right: -12px;
-  background-color: #0d6efd;
-  color: #fff;
-  font-weight: 600;
-  border: 2px solid #fff;
-  z-index: 10; /* asegura que esté por encima */
+@media (max-width: 576px) {
+  .features-item .rounded-circle img {
+    width: 70px;
+    height: 70px;
+  }
 }
 
 
