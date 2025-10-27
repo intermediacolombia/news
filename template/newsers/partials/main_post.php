@@ -1,6 +1,4 @@
 <?php
-//require_once __DIR__ . '/inc/config.php';
-
 /* ===== Helpers ===== */
 function safe_excerpt(string $html, int $words = 35): string {
     $text = strip_tags($html);
@@ -8,39 +6,46 @@ function safe_excerpt(string $html, int $words = 35): string {
     if (count($parts) <= $words) return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
     return htmlspecialchars(implode(' ', array_slice($parts, 0, $words)) . '...', ENT_QUOTES, 'UTF-8');
 }
+
 function read_time_minutes(string $html, int $wpm = 200): int {
     $words = str_word_count(strip_tags($html));
-    return max(1, (int)ceil($words / max(120, $wpm))); // conservador, mínimo 1
+    return max(1, (int)ceil($words / max(120, $wpm)));
 }
+
 function post_url(array $p): string {
-    // Ajusta a tu ruta real de detalle
-    return URLBASE . '/noticias/' . urlencode($p['slug']);
+    // Ruta con categoría y slug del post
+    return URLBASE . '/' . urlencode($p['category_slug']) . '/' . urlencode($p['slug']) . '/';
 }
+
 function img_url(?string $filename): string {
-    $base = URLBASE . '/public/images/blog/';
-    return $filename ? ($base . rawurlencode($filename)) : (URLBASE . '/assets/img/placeholder-16x9.jpg');
+    if (empty($filename)) {
+        return URLBASE . '/template/news/img/features-sports-1.jpg'; // placeholder
+    }
+    // Si la imagen ya tiene la ruta completa
+    if (strpos($filename, '/') === 0) {
+        return URLBASE . $filename;
+    }
+    return URLBASE . '/' . $filename;
 }
 
-/* ===== Consulta: últimas 8 con vistas ===== */
-$pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $dbuser, $dbpass, [
-  PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION,
-  PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC
-]);
-
+/* ===== Consulta: últimas 8 con vistas y categoría ===== */
 $sql = "
   SELECT p.id, p.title, p.slug, p.image, p.created_at, p.content,
-         COALESCE(COUNT(v.id),0) AS views
+         c.name AS category_name, c.slug AS category_slug,
+         COALESCE(COUNT(v.id), 0) AS views
   FROM blog_posts p
   LEFT JOIN blog_post_views v ON v.post_id = p.id
-  WHERE p.status='published' AND p.deleted=0
-  GROUP BY p.id
+  LEFT JOIN blog_post_category pc ON pc.post_id = p.id
+  LEFT JOIN blog_categories c ON c.id = pc.category_id
+  WHERE p.status = 'published' AND p.deleted = 0
+  GROUP BY p.id, p.title, p.slug, p.image, p.created_at, p.content, c.name, c.slug
   ORDER BY p.created_at DESC
   LIMIT 8
 ";
 $posts = $pdo->query($sql)->fetchAll();
 
 $main   = $posts[0] ?? null;            // grande izquierda
-$top    = $posts[1] ?? null;            // “Top Story” dentro de la caja
+$top    = $posts[1] ?? null;            // "Top Story" dentro de la caja
 $right1 = $posts[2] ?? null;            // grande de la derecha
 $rightList = array_slice($posts, 3);    // items pequeños de la derecha
 ?>
@@ -64,9 +69,6 @@ $rightList = array_slice($posts, 3);    // items pequeños de la derecha
             <span class="text-white me-3 link-hover">
               <i class="fa fa-eye"></i> <?= number_format((int)$main['views'], 0, ',', '.') ?> Views
             </span>
-            <!-- Comentarios/Share: ajusta si tienes esos contadores -->
-            <!-- <span class="text-white me-3 link-hover"><i class="fa fa-comment-dots"></i> 05 Comment</span> -->
-            <!-- <span class="text-white link-hover"><i class="fa fa-arrow-up"></i> 1.5k Share</span> -->
           </div>
         </div>
 
@@ -75,9 +77,23 @@ $rightList = array_slice($posts, 3);    // items pequeños de la derecha
             <?= htmlspecialchars($main['title']) ?>
           </a>
         </div>
-        <p class="mt-3 mb-4">
+        
+        <?php if (!empty($main['category_name'])): ?>
+        <p class="text-uppercase text-primary mt-3 mb-2">
+          <a href="<?= URLBASE ?>/noticias/<?= htmlspecialchars($main['category_slug']) ?>/" class="link-hover">
+            <?= htmlspecialchars($main['category_name']) ?>
+          </a>
+        </p>
+        <?php endif; ?>
+        
+        <p class="mt-2 mb-4">
           <?= safe_excerpt($main['content'], 40) ?>
         </p>
+        
+        <small class="text-body d-block mb-4">
+          <i class="fas fa-calendar-alt me-1"></i>
+          <?= fecha_espanol(date("F d, Y", strtotime($main['created_at']))) ?>
+        </small>
         <?php endif; ?>
 
         <?php if ($top): ?>
@@ -95,7 +111,16 @@ $rightList = array_slice($posts, 3);    // items pequeños de la derecha
             </div>
             <div class="col-md-6">
               <div class="d-flex flex-column">
+                <?php if (!empty($top['category_name'])): ?>
+                <p class="text-uppercase mb-2">
+                  <a href="<?= URLBASE ?>/noticias/<?= htmlspecialchars($top['category_slug']) ?>/" class="link-hover">
+                    <?= htmlspecialchars($top['category_name']) ?>
+                  </a>
+                </p>
+                <?php endif; ?>
+                
                 <a href="<?= post_url($top) ?>" class="h3"><?= htmlspecialchars($top['title']) ?></a>
+                
                 <p class="mb-0 fs-5">
                   <i class="fa fa-clock"></i>
                   <?= str_pad(read_time_minutes($top['content']), 2, '0', STR_PAD_LEFT) ?> minute read
@@ -104,6 +129,10 @@ $rightList = array_slice($posts, 3);    // items pequeños de la derecha
                   <i class="fa fa-eye"></i>
                   <?= number_format((int)$top['views'], 0, ',', '.') ?> Views
                 </p>
+                <small class="text-body d-block mt-2">
+                  <i class="fas fa-calendar-alt me-1"></i>
+                  <?= fecha_espanol(date("F d, Y", strtotime($top['created_at']))) ?>
+                </small>
               </div>
             </div>
           </div>
@@ -126,7 +155,16 @@ $rightList = array_slice($posts, 3);    // items pequeños de la derecha
             </div>
             <div class="col-12">
               <div class="d-flex flex-column">
+                <?php if (!empty($right1['category_name'])): ?>
+                <p class="text-uppercase mb-2">
+                  <a href="<?= URLBASE ?>/noticias/<?= htmlspecialchars($right1['category_slug']) ?>/" class="link-hover">
+                    <?= htmlspecialchars($right1['category_name']) ?>
+                  </a>
+                </p>
+                <?php endif; ?>
+                
                 <a href="<?= post_url($right1) ?>" class="h4 mb-2"><?= htmlspecialchars($right1['title']) ?></a>
+                
                 <p class="fs-5 mb-0">
                   <i class="fa fa-clock"></i>
                   <?= str_pad(read_time_minutes($right1['content']), 2, '0', STR_PAD_LEFT) ?> minute read
@@ -135,6 +173,10 @@ $rightList = array_slice($posts, 3);    // items pequeños de la derecha
                   <i class="fa fa-eye"></i>
                   <?= number_format((int)$right1['views'], 0, ',', '.') ?> Views
                 </p>
+                <small class="text-body d-block mt-2">
+                  <i class="fas fa-calendar-alt me-1"></i>
+                  <?= fecha_espanol(date("F d, Y", strtotime($right1['created_at']))) ?>
+                </small>
               </div>
             </div>
             <?php endif; ?>
@@ -151,7 +193,14 @@ $rightList = array_slice($posts, 3);    // items pequeños de la derecha
                 </div>
                 <div class="col-7">
                   <div class="features-content d-flex flex-column">
+                    <?php if (!empty($p['category_name'])): ?>
+                    <p class="text-uppercase mb-1 small">
+                      <?= htmlspecialchars($p['category_name']) ?>
+                    </p>
+                    <?php endif; ?>
+                    
                     <a href="<?= post_url($p) ?>" class="h6"><?= htmlspecialchars($p['title']) ?></a>
+                    
                     <small>
                       <i class="fa fa-clock"></i>
                       <?= str_pad(read_time_minutes($p['content']), 2, '0', STR_PAD_LEFT) ?> minute read
@@ -159,6 +208,10 @@ $rightList = array_slice($posts, 3);    // items pequeños de la derecha
                     <small>
                       <i class="fa fa-eye"></i>
                       <?= number_format((int)$p['views'], 0, ',', '.') ?> Views
+                    </small>
+                    <small class="text-body">
+                      <i class="fas fa-calendar-alt me-1"></i>
+                      <?= fecha_espanol(date("F d, Y", strtotime($p['created_at']))) ?>
                     </small>
                   </div>
                 </div>
