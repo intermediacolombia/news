@@ -95,10 +95,12 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
 // =======================
 
 ?>
-<div class="container-fluid py-5">
+
 <!-- News With Sidebar Start -->
-<div class="container-fluid py-3">
-    <div class="container-bk">
+<div class="container-fluid py-5">
+<div class="container py-5">
+	
+   
         <div class="row">
             <div class="col-lg-8">
                 <div class="row">
@@ -254,7 +256,7 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
         </div>
     </div>
 </div>
-</div>
+
 <!-- News With Sidebar End -->
 
 
