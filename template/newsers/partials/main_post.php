@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/inc/config.php';
+//require_once __DIR__ . '/inc/config.php';
 
 /* ===== Helpers ===== */
 function safe_excerpt(string $html, int $words = 35): string {
