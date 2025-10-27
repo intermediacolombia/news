@@ -443,20 +443,51 @@
 
 /* ==== Popular News - imágenes circulares ==== */
 .features-item .rounded-circle img {
-  width: 100px!important;
-  height: 100px!important;
+  width: 100px !important;
+  height: 100px !important;
   object-fit: cover;
   border-radius: 50%;
-  border: 3px solid #fff; /* opcional, mejora el contraste */
+  border: 3px solid #fff; /* mejora contraste */
   display: block;
   margin: 0 auto;
+  transition: transform 0.3s ease;
 }
 
+.features-item .rounded-circle img:hover {
+  transform: scale(1.08);
+}
 
+/* Número: visible y en buena posición */
+.features-item .btn-sm-square {
+  width: 28px;
+  height: 28px;
+  font-size: 14px;
+  line-height: 28px;
+  text-align: center;
+  border-radius: 50%;
+  background-color: #0d6efd;
+  color: #fff;
+  font-weight: 600;
+  border: 2px solid #fff;
+  position: absolute;
+  top: -6px;
+  right: -12px;
+  z-index: 5;
+}
+
+/* Responsive */
 @media (max-width: 576px) {
   .features-item .rounded-circle img {
     width: 70px;
     height: 70px;
+  }
+
+  .features-item .btn-sm-square {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+    top: -4px;
+    right: -8px;
   }
 }
 
