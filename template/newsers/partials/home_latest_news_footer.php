@@ -196,7 +196,7 @@ $mostViewedNews = $pdo->query($sqlMostViews)->fetchAll();
                     </div>
                     
                 </div>
-                <?php include __DIR__ . '/partials/sidebar.php'; ?>
+                <?php include __DIR__ . '/../partials/sidebar.php'; ?>
             </div>
         </div>
     </div>
