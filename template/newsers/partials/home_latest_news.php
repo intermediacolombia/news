@@ -31,7 +31,7 @@ $latestNews = $pdo->query($sqlLatest)->fetchAll();
             <?php foreach ($latestNews as $news): ?>
             <div class="latest-news-item">
                 <div class="bg-light rounded">
-                    <div class="rounded-top overflow-hidden" style="height: 300px;">
+                    <div class="rounded-top overflow-hidden" style="height: 200px;">
                         <a href="<?= URLBASE ?>/<?= htmlspecialchars($news['category_slug']) ?>/<?= htmlspecialchars($news['slug']) ?>/">
                             <img src="<?= img_url($news['image']) ?>" 
                                  class="img-zoomin img-fluid rounded-top w-100 h-100" 
