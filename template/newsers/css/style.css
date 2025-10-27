@@ -427,5 +427,15 @@
 }
 /*** Footer End ***/
 
+/* ==== Imágenes destacadas del blog ==== */
+.news-thumb img,
+.position-relative.mb-3 > img,
+.blog-post img {
+  width: 100%;
+  height: 500px;
+  max-height: 500px;
+  object-fit: cover;
+  border-radius: 6px;
+}
 
 
