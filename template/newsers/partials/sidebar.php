@@ -58,7 +58,7 @@ try {
 ?>
 
 
-<div class="col-lg-4">
+<div class="col-lg-4 col-xl-3">
     <div class="row g-4">
         <div class="col-12">
             <div class="p-3 rounded border">

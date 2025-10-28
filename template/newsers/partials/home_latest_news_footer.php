@@ -277,9 +277,9 @@ function getFeaturedPostsByCategory($pdo, $categoryId, $limit = 2) {
                     
                 </div>
                 <!-- Columna sidebar -->
-  <div class="col-xl-3">
+
       <?php include __DIR__ . '/../partials/sidebar.php'; ?>
-  </div>
+
             </div>
 			
         </div>
