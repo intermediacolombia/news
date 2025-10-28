@@ -61,7 +61,7 @@ $weather_icon_svg = getWeatherIconSVG($weatherCode);
 <!-- ===========================
      Bloque visual del clima
      =========================== -->
-<style>
+<!--style>
 .weather-widget {
   display: flex;
   align-items: center;
@@ -89,7 +89,7 @@ $weather_icon_svg = getWeatherIconSVG($weatherCode);
   font-size: 0.85rem;
   color: #777;
 }
-</style>
+</style-->
 <div class="d-flex">
 <div class="weather-widget">
   <div class="weather-icon">
