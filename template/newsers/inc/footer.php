@@ -143,7 +143,7 @@
 
 <!-- Copyright Start -->
 <div class="container-fluid copyright bg-dark py-4"
-     <?= !empty($sys['code_player']) ? 'style="margin-bottom: '.$sys['player_height'].'px;"' : '' ?>>
+     <?= !empty($sys['code_player']) ? 'style="padding-bottom: '.$sys['player_height'].'px;"' : '' ?>>
 
     <div class="container text-center text-white small">
         <p class="mb-1">
