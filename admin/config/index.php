@@ -467,7 +467,7 @@ Generales</a></li>
 
 		
 		
-		<div class="tab-pane fade show active" id="code">
+		<div class="tab-pane fade" id="code">
         <div class="card mb-3">
           <div class="card-header bg-light"><strong>Codigo Personalizado</strong></div>
           <div class="card-body">
