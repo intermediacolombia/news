@@ -39,7 +39,9 @@ echo $sys['about_us']
 
             <!-- Sidebar -->
            
-                <?php include __DIR__ . '/partials/sidebar.php'; ?>
+                 <div class="col-lg-4">
+                <?php include __DIR__ . '/partials/sidebar.php'; ?>            
+        </div>
             
         </div>
     </div>
