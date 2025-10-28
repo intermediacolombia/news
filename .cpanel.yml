@@ -9,3 +9,4 @@ deployment:
     - /bin/chmod -R 775 $DEPLOYPATH/wp-content/uploads 2>/dev/null || true
     - /bin/chmod 640 $DEPLOYPATH/wp-config.php 2>/dev/null || true
     - echo "Despliegue completado - $(date)"
+	
