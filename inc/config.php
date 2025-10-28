@@ -2,7 +2,7 @@
 // Zona horaria
 date_default_timezone_set('America/Bogota');
 
-require_once __DIR__ . 'url_bd.php';
+require_once __DIR__ . '/url_bd.php';
 
 
 
