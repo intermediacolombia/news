@@ -142,8 +142,7 @@
 
 
 <!-- Copyright Start -->
-<div class="container-fluid copyright bg-dark py-4"
-     <?= !empty($sys['code_player']) ? 'style="padding-bottom: '.$sys['player_height'].'px;"' : '' ?>>
+<div class="container-fluid copyright bg-dark py-4">
 
     <div class="container text-center text-white small">
         <p class="mb-1">
@@ -175,10 +174,14 @@
 
 
 <?php if (!empty($sys['code_player'])): ?>
-
+<style>
+.container-fluid.copyright.bg-dark.py-4 {
+    padding-bottom: <?= $sys['player_height'] ?? 70 ?>px!important;
+}
+</style>
 <script>
 const direccionURL1 = `
-  <div style="bottom: 0;display: flex;height: <?= $sys['player_height'] ?? '70' ?>px;left: 0;position: fixed;right: 0;width: 100%;z-index: 1500;overflow: hidden;"><iframe src="<?= $sys['code_player'] ?? '' ?>" frameborder="0" scrolling="no" style="width: 100%;"></iframe></div>
+  <div style="bottom: 0;display: flex;height: <?= $sys['player_height'] ?? 70 ?>px;left: 0;position: fixed;right: 0;width: 100%;z-index: 1500;overflow: hidden;"><iframe src="<?= $sys['code_player'] ?? '' ?>" frameborder="0" scrolling="no" style="width: 100%;"></iframe></div>
 `;
 </script>
 <script src="<?= URLBASE ?>/template/newsers/js/navegacion.js?<?= time(); ?>"></script>
