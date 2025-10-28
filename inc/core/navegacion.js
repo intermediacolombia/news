@@ -29,7 +29,7 @@ async function cargarPagina(url) {
     if (nuevoContenido) {
       document.querySelector('#pageContent').innerHTML = nuevoContenido.innerHTML;
 
-      // 🔁 Reiniciar scripts y componentes tras cargar
+      //Reiniciar scripts y componentes tras cargar
       reactivarScripts();
     }
 
@@ -46,7 +46,7 @@ window.addEventListener('popstate', e => {
 
 // ====== REACTIVAR SCRIPTS TRAS CARGAR ======
 function reactivarScripts() {
-  // 1️⃣ Re-ejecutar <script> embebidos del contenido cargado
+  // Re-ejecutar <script> embebidos del contenido cargado
   document.querySelectorAll('#pageContent script').forEach(oldScript => {
     const newScript = document.createElement('script');
     if (oldScript.src) {
@@ -58,7 +58,7 @@ function reactivarScripts() {
     oldScript.remove();
   });
 
-  // 2️⃣ Reiniciar OwlCarousel si existe
+  // Reiniciar OwlCarousel si existe
   if (typeof $ !== 'undefined' && $('.owl-carousel').length) {
     $('.owl-carousel').owlCarousel({
       autoplay: true,
@@ -76,8 +76,14 @@ function reactivarScripts() {
     });
   }
 
-  // 3️⃣ Volver a ejecutar animaciones o librerías si las usas (ej. AOS)
+  // Volver a ejecutar animaciones (AOS, etc.)
   if (typeof AOS !== 'undefined') {
     AOS.refresh();
   }
+
+  // Reprocesar plugins de Facebook
+  if (typeof FB !== 'undefined' && FB.XFBML && typeof FB.XFBML.parse === 'function') {
+    FB.XFBML.parse(document.getElementById('pageContent'));
+  }
 }
+
