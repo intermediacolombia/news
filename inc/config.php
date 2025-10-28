@@ -68,6 +68,9 @@ define('SMTP_USER', $sys['mail_smtp_user'] ?? '');
 define('SMTP_PASS', $sys['mail_smtp_pass'] ?? '');
 define('SMTP_PORT', $sys['mail_smtp_port'] ?? '');
 
+define('COLOR_PRIMARY', $sys['primary'] ?? '');
+define('COLOR_PRIMARY_HOVER_LINK', $sys['primary'] ?? '');
+
 
 /* ========= Mensajes ws y mail ========= */
 
