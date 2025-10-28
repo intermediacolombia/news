@@ -94,17 +94,17 @@ require_once __DIR__ . '/login/session.php';
 	
 	<?php
 session_start();
-if(isset($_SESSION['error'])): ?>
-  <div class="alert alert-danger alert-dismissible fade show" role="alert">
-    <?php 
-      echo $_SESSION['error'];
-      unset($_SESSION['error']);
-    ?>
-    <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
-      <span aria-hidden="true">&times;</span>
-    </button>
+if (isset($_SESSION['error'])): ?>
+  <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0 mt-3 mx-auto" role="alert" style="max-width:600px;">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    <?= htmlspecialchars($_SESSION['error']) ?>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
   </div>
-<?php endif; ?>
+<?php 
+  unset($_SESSION['error']);
+endif; 
+?>
+
 
   <div class="container my-5">
     <!-- ——— Bienvenida + contador en una sola línea ——— -->
