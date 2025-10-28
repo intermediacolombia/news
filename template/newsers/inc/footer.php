@@ -1,3 +1,4 @@
+</main>
 <!-- Footer Start -->
 <div class="container-fluid bg-dark footer py-5 mt-5">
     <div class="container py-5">
@@ -169,6 +170,7 @@
 
 <!-- Template Javascript -->
 <script src="<?= URLBASE ?>/template/newsers/js/main.js?<?= time(); ?>"></script>
+<script src="<?= URLBASE ?>/template/newsers/js/navegacion.js?<?= time(); ?>"></script>
 <?= $sys['code_footer'] ?? '' ?>
 
 </body>
