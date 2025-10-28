@@ -1,7 +1,13 @@
 <?php include __DIR__ . '/partials/features.php'; ?>
 <?php include __DIR__ . '/partials/main_post.php'; ?>
-<?php include __DIR__ . '/partials/ads3.php'; ?>
 
+		<div class="container-fluid py-5">
+		<div class="container py-5">   
+        <div class="row">
+<?php include __DIR__ . '/partials/ads3.php'; ?>
+		</div>
+		</div>
+		</div>
        
 
 
