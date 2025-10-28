@@ -64,10 +64,10 @@ $rightList = array_slice($posts, 3);    // items pequeños de la derecha
           <div class="d-flex justify-content-center px-4 position-absolute flex-wrap" style="bottom: 10px; left: 0;">
             <a href="<?= post_url($main) ?>" class="text-white me-3 link-hover">
               <i class="fa fa-clock"></i>
-              <?= str_pad(read_time_minutes($main['content']), 2, '0', STR_PAD_LEFT) ?> minute read
+              <?= str_pad(read_time_minutes($main['content']), 2, '0', STR_PAD_LEFT) ?> Minutos
             </a>
             <span class="text-white me-3 link-hover">
-              <i class="fa fa-eye"></i> <?= number_format((int)$main['views'], 0, ',', '.') ?> Views
+              <i class="fa fa-eye"></i> <?= number_format((int)$main['views'], 0, ',', '.') ?> Vistas
             </span>
           </div>
         </div>
@@ -99,7 +99,7 @@ $rightList = array_slice($posts, 3);    // items pequeños de la derecha
         <?php if ($top): ?>
         <div class="bg-light p-4 rounded">
           <div class="news-2">
-            <h3 class="mb-4">Top Story</h3>
+            <h3 class="mb-4">Destacados</h3>
           </div>
           <div class="row g-4 align-items-center">
             <div class="col-md-6">
@@ -123,11 +123,11 @@ $rightList = array_slice($posts, 3);    // items pequeños de la derecha
                 
                 <p class="mb-0 fs-5">
                   <i class="fa fa-clock"></i>
-                  <?= str_pad(read_time_minutes($top['content']), 2, '0', STR_PAD_LEFT) ?> minute read
+                  <?= str_pad(read_time_minutes($top['content']), 2, '0', STR_PAD_LEFT) ?> Minutos
                 </p>
                 <p class="mb-0 fs-5">
                   <i class="fa fa-eye"></i>
-                  <?= number_format((int)$top['views'], 0, ',', '.') ?> Views
+                  <?= number_format((int)$top['views'], 0, ',', '.') ?> Vistas
                 </p>
                 <small class="text-body d-block mt-2">
                   <i class="fas fa-calendar-alt me-1"></i>
