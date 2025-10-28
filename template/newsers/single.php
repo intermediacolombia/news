@@ -55,7 +55,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
 <!-- Single Product Start -->
 <div class="container-fluid py-5">
     <div class="container py-5">
-        <!-- Breadcrumb -->
+        <!-- Breadcrumb --
         <ol class="breadcrumb justify-content-start mb-4">
             <li class="breadcrumb-item"><a href="<?= URLBASE ?>">Inicio</a></li>
             <li class="breadcrumb-item">
@@ -64,7 +64,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                 </a>
             </li>
             <li class="breadcrumb-item active text-dark"><?= htmlspecialchars($post['title']) ?></li>
-        </ol>
+        </ol>-->
 
         <div class="row g-4">
             <!-- CONTENIDO PRINCIPAL -->
