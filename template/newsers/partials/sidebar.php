@@ -57,16 +57,18 @@ try {
 } catch (\Throwable $e) {}
 ?>
 
-<div class="col-lg-4 col-xl-3">
+
+<div class="col-lg-4">
     <div class="row g-4">
         <div class="col-12">
             <div class="p-3 rounded border">
-                <!-- (Diseño original) Buscador -->
-	
-					
-                
+                <!-- Buscador -->
+                <div class="input-group w-100 mx-auto d-flex mb-4">
+                    <input type="search" class="form-control p-3" placeholder="keywords" aria-describedby="search-icon-1">
+                    <span id="search-icon-1" class="btn btn-primary input-group-text p-3"><i class="fa fa-search text-white"></i></span>
+                </div>
 
-                <!-- (Diseño original) Popular Categories -->
+                <!-- Popular Categories -->
                 <h4 class="mb-4">Categorias</h4>
                 <div class="row g-2">
                     <?php foreach ($categories as $cat): ?>
@@ -78,7 +80,7 @@ try {
                     <?php endforeach; ?>
                 </div>
 
-                <!-- (Diseño original) Stay Connected -->
+                <!-- Stay Connected -->
                 <h4 class="my-4">Síguenos</h4>
                 <div class="row g-4">
                     <div class="col-12">
@@ -119,7 +121,7 @@ try {
                     </div>
                 </div>
 
-                <!-- (Diseño original) Popular News -->
+                <!-- Popular News -->
                 <h4 class="my-4">Las Más Leídas</h4>
                 <div class="row g-4">
                     <?php foreach ($popular as $idx => $p): ?>
@@ -128,7 +130,7 @@ try {
                                 <div class="col-4">
                                     <div class="rounded-circle position-relative">
                                         <div class="overflow-hidden rounded-circle">
-                                            <img src="<?= $p['image'] ? URLBASE . '/' . htmlspecialchars($p['image']) : URLBASE . '/template/news/img/features-sports-1.jpg' ?>" class="img-zoomin img-fluid rounded-circle w-100" alt="<?= htmlspecialchars($p['title']) ?>">
+                                            <img src="<?= $p['image'] ? URLBASE . '/' . htmlspecialchars($p['image']) : URLBASE . '/template/news/img/features-sports-1.jpg' ?>" class="img-zoomin img-fluid rounded-circle w-100" alt="">
                                         </div>
                                         <span class="rounded-circle border border-2 border-white bg-primary btn-sm-square text-white position-absolute" style="top: 10%; right: -10px;">
                                             <?= $idx + 1 ?>
@@ -142,7 +144,7 @@ try {
                                             <?= htmlspecialchars($p['title']) ?>
                                         </a>
                                         <small class="text-body d-block">
-                                            <i class="fas fa-calendar-alt me-1"></i>
+                                            <i class="fas fa-calendar-alt me-1"></i> 
                                             <?= fecha_espanol(date("F d, Y", strtotime($p['created_at']))) ?>
                                         </small>
                                     </div>
@@ -150,38 +152,33 @@ try {
                             </div>
                         </div>
                     <?php endforeach; ?>
-                </div>
 
-                <!-- (Diseño original) View More -->
-                <div class="col-lg-12">
-                    <a href="<?= URLBASE ?>/noticias/" class="link-hover btn border border-primary rounded-pill text-dark w-100 py-3 mb-4">Ver Más</a>
-                </div>
-
-                <!-- (Diseño original) Trending Tags -->
-                <div class="col-lg-12">
-                    <div class="border-bottom my-3 pb-3">
-                        <h4 class="mb-0">Tags Tendencias</h4>
+                    <div class="col-lg-12">
+                        <a href="<?= URLBASE ?>/noticias/" class="link-hover btn border border-primary rounded-pill text-dark w-100 py-3 mb-4">Ver Más</a>
                     </div>
-                    <ul class="nav nav-pills d-inline-flex text-center mb-4">
-                        <?php foreach ($tags as $t): ?>
-                            <li class="nav-item mb-3">
-                                <a class="d-flex py-2 bg-light rounded-pill me-2" href="<?= URLBASE ?>/buscar/<?= urlencode($t) ?>/">
-                                    <span class="text-dark link-hover" style="width: 90px;"><?= htmlspecialchars(ucfirst($t)) ?></span>
-                                </a>
-                            </li>
-                        <?php endforeach; ?>
-                    </ul>
-                </div>
 
-                <!-- (Diseño original) Banner inferior -->
-                <div class="col-lg-12">
-                    <div class="position-relative banner-2">                        
-                     <?php include __DIR__ . '/ads5.php'; ?>                        
+                    <div class="col-lg-12">
+                        <div class="border-bottom my-3 pb-3">
+                            <h4 class="mb-0">Tags Tendencias</h4>
+                        </div>
+                        <ul class="nav nav-pills d-inline-flex text-center mb-4">
+                            <?php foreach ($tags as $t): ?>
+                                <li class="nav-item mb-3">
+                                    <a class="d-flex py-2 bg-light rounded-pill me-2" href="<?= URLBASE ?>/buscar/<?= urlencode($t) ?>/">
+                                        <span class="text-dark link-hover" style="width: 90px;"><?= htmlspecialchars(ucfirst($t)) ?></span>
+                                    </a>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+
+                    <div class="col-lg-12">
+                        <div class="position-relative banner-2">
+                            <?php include __DIR__ . '/ads5.php'; ?>
+                        </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
 </div>
-
