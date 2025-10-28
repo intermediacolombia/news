@@ -65,3 +65,15 @@ a:hover {
     color: var(--color-hover-link)!important;
 }
 
+.btn-primary:hover {
+    color: #000;
+    background-color: var(--primary) !important;
+    border-color: #328aff;
+}
+
+.btn-primary a:hover {
+    color: #fff;
+    background-color: var(--primary) !important;
+    border-color: #328aff;
+}
+
