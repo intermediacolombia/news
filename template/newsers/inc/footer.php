@@ -174,29 +174,15 @@
 <script src="<?= URLBASE ?>/template/newsers/js/main.js?<?= time(); ?>"></script>
 
 
-
 <?php if (!empty($sys['code_player'])): ?>
 
 <script>
 const direccionURL1 = `
-  <div style="
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    display: flex;
-    height: <?= intval($sys['player_height'] ?? 70) ?>px;
-    z-index: 1500;
-    overflow: hidden;
-  ">
-    <iframe src="<?= htmlspecialchars($sys['code_player']) ?>" frameborder="0" scrolling="no" style="width: 100%;"></iframe>
-  </div>
+  <div style="bottom: 0;display: flex;height: <?= $sys['player_height'] ?? '70' ?>px;left: 0;position: fixed;right: 0;width: 100%;z-index: 1500;overflow: hidden;"><iframe src="<?= $sys['code_player'] ?? '' ?>" frameborder="0" scrolling="no" style="width: 100%;"></iframe></div>
 `;
 </script>
+<script src="<?= URLBASE ?>/template/newsers/js/navegacion.js?<?= time(); ?>"></script>
 <?php endif; ?>
-
-
 
 
 
