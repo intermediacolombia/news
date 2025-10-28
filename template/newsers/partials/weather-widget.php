@@ -90,7 +90,7 @@ $weather_icon_svg = getWeatherIconSVG($weatherCode);
   color: #777;
 }
 </style>
-
+<div class="d-flex">
 <div class="weather-widget">
   <div class="weather-icon">
     <?= $weather_icon_svg ?>
@@ -102,4 +102,5 @@ $weather_icon_svg = getWeatherIconSVG($weatherCode);
       <small><?= htmlspecialchars($date) ?></small>
     </div>
   </div>
+</div>
 </div>
