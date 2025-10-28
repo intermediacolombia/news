@@ -142,7 +142,9 @@
 
 
 <!-- Copyright Start -->
-<div class="container-fluid copyright bg-dark py-4" style="margin-bottom: 90px">
+<div class="container-fluid copyright bg-dark py-4"
+     <?= !empty($sys['code_player']) ? 'style="margin-bottom: '.$sys['player_height'].'px;"' : '' ?>>
+
     <div class="container text-center text-white small">
         <p class="mb-1">
             &copy; <?= date('Y') ?> <strong><?= NOMBRE_SITIO ?></strong>. Todos los derechos reservados.
@@ -170,12 +172,38 @@
 
 <!-- Template Javascript -->
 <script src="<?= URLBASE ?>/template/newsers/js/main.js?<?= time(); ?>"></script>
+
+
+
+<?php if (!empty($sys['code_player'])): ?>
+<style>
+	body{
+		background: #000!important;
+	}
+</style>
 <script>
 const direccionURL1 = `
-  <div style="bottom: 0;display: flex;height: <?= $sys['player_height'] ?? '70' ?>px;left: 0;position: fixed;right: 0;width: 100%;z-index: 1500;overflow: hidden;"><iframe src="<?= $sys['code_player'] ?? '' ?>" frameborder="0" scrolling="no" style="width: 100%;"></iframe></div>
+  <div style="
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    display: flex;
+    height: <?= intval($sys['player_height'] ?? 70) ?>px;
+    z-index: 1500;
+    overflow: hidden;
+  ">
+    <iframe src="<?= htmlspecialchars($sys['code_player']) ?>" frameborder="0" scrolling="no" style="width: 100%;"></iframe>
+  </div>
 `;
 </script>
-<script src="<?= URLBASE ?>/template/newsers/js/navegacion.js?<?= time(); ?>"></script>
+<?php endif; ?>
+
+
+
+
+
 <?= $sys['code_footer'] ?? '' ?>
 
 </body>
