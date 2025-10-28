@@ -1,0 +1,35 @@
+---
+deployment:
+  tasks:
+    # 1. Definir la ruta de despliegue
+    - export DEPLOYPATH=/home/intermed/news.intermediacolombia.com
+    
+    # 2. Copiar todos los archivos del repositorio
+    - /bin/cp -R * $DEPLOYPATH
+    
+    # 3. Copiar archivos ocultos (.htaccess, .env, etc.)
+    - /bin/cp -R .[!.]* $DEPLOYPATH 2>/dev/null || true
+    
+    # 4. Establecer permisos seguros para directorios
+    - /bin/find $DEPLOYPATH -type d -exec chmod 755 {} \;
+    
+    # 5. Establecer permisos seguros para archivos
+    - /bin/find $DEPLOYPATH -type f -exec chmod 644 {} \;
+    
+    # 6. Permisos de escritura para directorios del CMS
+    - /bin/chmod -R 775 $DEPLOYPATH/wp-content/uploads 2>/dev/null || true
+    - /bin/chmod -R 775 $DEPLOYPATH/cache 2>/dev/null || true
+    - /bin/chmod -R 775 $DEPLOYPATH/tmp 2>/dev/null || true
+    - /bin/chmod -R 775 $DEPLOYPATH/logs 2>/dev/null || true
+    - /bin/chmod -R 775 $DEPLOYPATH/assets/uploads 2>/dev/null || true
+    
+    # 7. Proteger archivos de configuración sensibles
+    - /bin/chmod 640 $DEPLOYPATH/wp-config.php 2>/dev/null || true
+    - /bin/chmod 640 $DEPLOYPATH/config.php 2>/dev/null || true
+    - /bin/chmod 640 $DEPLOYPATH/.env 2>/dev/null || true
+    
+    # 8. Limpiar archivos de cache antiguos
+    - /bin/rm -rf $DEPLOYPATH/cache/* 2>/dev/null || true
+    
+    # 9. Registro de despliegue exitoso
+    - echo "✓ Despliegue completado en news.intermediacolombia.com - $(date '+%Y-%m-%d %H:%M:%S')"
