@@ -72,6 +72,9 @@ $fechaHoy = ucfirst(strftime('%A, %d de %B de %Y'));
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const posts = <?= json_encode($latestPosts, JSON_UNESCAPED_UNICODE) ?>;
+	window.latestPostsData = posts;
+window.URLBASE = '<?= URLBASE ?>';
+
     const ticker = document.getElementById('newsTicker');
     let i = 0;
 

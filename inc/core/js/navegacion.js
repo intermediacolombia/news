@@ -94,7 +94,7 @@ window.addEventListener('popstate', e => {
 // REACTIVAR TODO AUTOMÁTICAMENTE
 // ===============================
 function reactivarScripts() {
-  // Reejecutar scripts embebidos
+  // Reejecutar scripts embebidos del contenido cargado
   document.querySelectorAll('#pageContent script').forEach(oldScript => {
     const newScript = document.createElement('script');
     if (oldScript.src) {
@@ -106,44 +106,26 @@ function reactivarScripts() {
     oldScript.remove();
   });
 
-  // Reactivar librerías y SDKs de manera genérica
+  // Reactivar SDKs y librerías conocidas
   try {
-    // Facebook SDK
     if (window.FB && FB.XFBML && typeof FB.XFBML.parse === 'function') {
       FB.XFBML.parse(document.getElementById('pageContent'));
     }
-
-    // Twitter Widgets
     if (window.twttr && twttr.widgets && typeof twttr.widgets.load === 'function') {
       twttr.widgets.load(document.getElementById('pageContent'));
     }
-
-    // Instagram Embeds
     if (window.instgrm && instgrm.Embeds && typeof instgrm.Embeds.process === 'function') {
       instgrm.Embeds.process();
     }
-
-    // TikTok Embeds
     if (window.tiktokEmbed && typeof tiktokEmbed.init === 'function') {
       tiktokEmbed.init();
     }
-
-    // YouTube API
-    if (window.YT && typeof YT.ready === 'function') {
-      YT.ready();
-    }
-
-    // AOS (Animate On Scroll)
     if (window.AOS && typeof AOS.refresh === 'function') {
       AOS.refresh();
     }
-
-    // WOW.js (animaciones)
     if (window.WOW && typeof WOW === 'function') {
       new WOW().init();
     }
-
-    // Owl Carousel
     if (typeof $ !== 'undefined' && $('.owl-carousel').length && typeof $('.owl-carousel').owlCarousel === 'function') {
       $('.owl-carousel').owlCarousel({
         autoplay: true,
@@ -160,33 +142,34 @@ function reactivarScripts() {
         responsive: { 0: { items: 1 }, 768: { items: 2 }, 992: { items: 3 } }
       });
     }
+  } catch (err) {
+    console.warn('Error al reactivar librerías:', err);
+  }
 
-    // Re-inicializar tu ticker de noticias si existe
+  // Reiniciar el ticker de noticias si existe
+  if (window.latestPostsData && document.getElementById('newsTicker')) {
     const ticker = document.getElementById('newsTicker');
-    if (ticker && window.latestPostsData && !window.newsTickerRunning) {
-      window.newsTickerRunning = true;
-      let i = 0;
-      function showPost() {
-        const post = window.latestPostsData[i];
-        if (!post) return;
-        const img = post.image ? `${window.URLBASE}/${post.image}` : `${window.URLBASE}/public/images/no-image.jpg`;
-        const link = `${window.URLBASE}/${post.category_slug}/${post.post_slug}/`;
-        ticker.innerHTML = `
-          <div class="d-flex align-items-center fadein">
-            <img src="${img}" class="img-fluid rounded-circle border border-3 border-primary me-2"
-                 style="width:30px; height:30px; object-fit:cover;" alt="">
-            <a href="${link}" class="text-white mb-0 link-hover text-nowrap">${post.title}</a>
-          </div>`;
-        i = (i + 1) % window.latestPostsData.length;
-      }
-      showPost();
-      setInterval(showPost, 4500);
+    let i = 0;
+
+    function showPost() {
+      const post = window.latestPostsData[i];
+      if (!post) return;
+      const img = post.image ? `${window.URLBASE}/${post.image}` : `${window.URLBASE}/public/images/no-image.jpg`;
+      const link = `${window.URLBASE}/${post.category_slug}/${post.post_slug}/`;
+      ticker.innerHTML = `
+        <div class="d-flex align-items-center fadein">
+          <img src="${img}" class="img-fluid rounded-circle border border-3 border-primary me-2"
+               style="width:30px; height:30px; object-fit:cover;" alt="">
+          <a href="${link}" class="text-white mb-0 link-hover text-nowrap">${post.title}</a>
+        </div>`;
+      i = (i + 1) % window.latestPostsData.length;
     }
 
-  } catch (err) {
-    console.warn('Error al reactivar scripts:', err);
+    // Evita múltiples intervalos duplicados
+    if (window.newsTickerInterval) clearInterval(window.newsTickerInterval);
+    showPost();
+    window.newsTickerInterval = setInterval(showPost, 4500);
   }
 }
-
 
 
