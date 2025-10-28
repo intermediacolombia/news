@@ -117,3 +117,6 @@ $cats = $st->fetchAll(PDO::FETCH_ASSOC);
         </nav>
     </div>
     <!-- Navbar End -->
+
+<div id="link1" class="radio-player"></div>
+<main id="pageContent">
