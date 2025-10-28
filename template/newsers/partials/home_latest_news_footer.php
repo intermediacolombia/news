@@ -97,7 +97,7 @@ function getFeaturedPostsByCategory($pdo, $categoryId, $limit = 2) {
                             <li class="nav-item mb-3">
                                 <a class="d-flex py-2 bg-light rounded-pill <?= $index === 0 ? 'active' : '' ?> me-2" 
                                    data-bs-toggle="pill" 
-                                   href="#tab-<?= $cat['id'] ?>">
+                                   href="#tab-<?= $cat['id'] ?>" style="padding: 15px;">
                                     <span class="text-dark" style="width: 100px;">
                                         <?= htmlspecialchars($cat['name']) ?>
                                     </span>
