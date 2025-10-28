@@ -1,6 +1,11 @@
 <?php
 require_once __DIR__ . '/../../inc/config.php';
-require_once __DIR__ . '/../login/session.php';
+
+require_once __DIR__ . '/../login/session.php';  // Inicia la sesión y carga la información del usuario
+$permisopage = 'Editar Entrada';
+require_once __DIR__ . '/../login/restriction.php';
+session_start();
+
 require_once __DIR__ . '/../inc/flash_helpers.php';
 require_once __DIR__ . '/blog_controller.php'; // donde cargamos categorías de blog
 

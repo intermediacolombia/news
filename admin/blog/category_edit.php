@@ -1,5 +1,9 @@
 <?php
-require_once __DIR__ . '/../login/session.php';
+require_once __DIR__ . '/../login/session.php';  // Inicia la sesión y carga la información del usuario
+$permisopage = 'Editar Categorias';
+require_once __DIR__ . '/../login/restriction.php';
+session_start();
+
 require_once __DIR__ . '/../../inc/config.php';
 
 $id = (int)($_GET['id'] ?? 0);
