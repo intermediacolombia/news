@@ -9669,7 +9669,7 @@ h6,
 
 
 /* ==== Imágenes destacadas del blog ==== */
-.news-thumb img,
+.img-fluid, .news-thumb img,
 .position-relative.mb-3 > img,
 .blog-post img {
   width: 100%;
