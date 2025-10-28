@@ -137,11 +137,11 @@ function getFeaturedPostsByCategory($pdo, $categoryId, $limit = 2) {
                                         <div class="d-flex justify-content-between">
                                             <span class="text-dark me-3">
                                                 <i class="fa fa-clock"></i> 
-                                                <?= str_pad(read_time_minutes($mainPost['content']), 2, '0', STR_PAD_LEFT) ?> minute read
+                                                <?= str_pad(read_time_minutes($mainPost['content']), 2, '0', STR_PAD_LEFT) ?> Minutos
                                             </span>
                                             <span class="text-dark me-3">
                                                 <i class="fa fa-eye"></i> 
-                                                <?= number_format((int)$mainPost['views'], 0, ',', '.') ?> Views
+                                                <?= number_format((int)$mainPost['views'], 0, ',', '.') ?> Vistas
                                             </span>
                                         </div>
                                         <p class="my-4">
@@ -191,7 +191,7 @@ function getFeaturedPostsByCategory($pdo, $categoryId, $limit = 2) {
                     
                     <!-- Most Views News -->
                     <div class="border-bottom mb-4">
-                        <h2 class="my-4">Most Views News</h2>
+                        <h2 class="my-4">Las Más Leídas</h2>
                     </div>
                     <div class="whats-carousel owl-carousel">
                         <?php foreach ($mostViewedNews as $newsItem): ?>
@@ -213,9 +213,9 @@ function getFeaturedPostsByCategory($pdo, $categoryId, $limit = 2) {
                                     </a>
                                     <div class="d-flex justify-content-between">
                                         <?php if (!empty($newsItem['author'])): ?>
-                                        <span class="small text-body">by <?= htmlspecialchars($newsItem['author']) ?></span>
+                                        <span class="small text-body">Por <?= htmlspecialchars($newsItem['author']) ?></span>
                                         <?php else: ?>
-                                        <span class="small text-body">by <?= htmlspecialchars($sys['site_name'] ?? 'Admin') ?></span>
+                                        <span class="small text-body">Por <?= htmlspecialchars($sys['site_name'] ?? 'Admin') ?></span>
                                         <?php endif; ?>
                                         
                                         <small class="text-body d-block">
@@ -255,9 +255,9 @@ function getFeaturedPostsByCategory($pdo, $categoryId, $limit = 2) {
                                                 </a>
                                                 <div class="d-flex justify-content-between mt-4">
                                                     <?php if (!empty($featPost['author'])): ?>
-                                                    <span class="small text-white link-hover">By <?= htmlspecialchars($featPost['author']) ?></span>
+                                                    <span class="small text-white link-hover">Por <?= htmlspecialchars($featPost['author']) ?></span>
                                                     <?php else: ?>
-                                                    <span class="small text-white link-hover">By <?= htmlspecialchars($sys['site_name'] ?? 'Admin') ?></span>
+                                                    <span class="small text-white link-hover">Por <?= htmlspecialchars($sys['site_name'] ?? 'Admin') ?></span>
                                                     <?php endif; ?>
                                                     
                                                     <small class="text-white d-block">
