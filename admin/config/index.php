@@ -650,7 +650,7 @@ Generales</a></li>
     <div class="card-body">
       <?php
         // Leer los temas disponibles en la carpeta Template
-        $themesDir = __DIR__ . '/../template/';
+        $themesDir = __DIR__ . '/../../template/';
         $themes = [];
         if (is_dir($themesDir)) {
           foreach (scandir($themesDir) as $file) {
