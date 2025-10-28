@@ -1,5 +1,11 @@
 <?php 
-require_once __DIR__ . '/../login/session.php';
+require_once __DIR__ . '/../login/session.php';  // Inicia la sesión y carga la información del usuario
+$permisopage = 'Crear Entrada';
+require_once __DIR__ . '/../login/restriction.php';
+session_start();
+
+
+
 require_once __DIR__ . '/blog_controller.php'; // <- controlador de blog (similar al de productos)
 
 // Recoger y limpiar errores/old de sesión
