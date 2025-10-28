@@ -1,4 +1,3 @@
----
 deployment:
   tasks:
     - export DEPLOYPATH=/home/intermed/news.intermediacolombia.com
@@ -6,7 +5,8 @@ deployment:
     - /bin/cp -R .[!.]* $DEPLOYPATH 2>/dev/null || true
     - /bin/find $DEPLOYPATH -type d -exec chmod 755 {} \;
     - /bin/find $DEPLOYPATH -type f -exec chmod 644 {} \;
-    - /bin/chmod -R 775 $DEPLOYPATH/wp-content/uploads 2>/dev/null || true
-    - /bin/chmod 640 $DEPLOYPATH/wp-config.php 2>/dev/null || true
-    - echo "Despliegue completado - $(date)"
+    - /bin/chmod -R 775 $DEPLOYPATH/public 2>/dev/null || true
+    - /bin/chmod -R 775 $DEPLOYPATH/storage 2>/dev/null || true
+    - /bin/chmod 640 $DEPLOYPATH/.env 2>/dev/null || true
+    - echo "✅ Despliegue completado - $(date)"
 	
