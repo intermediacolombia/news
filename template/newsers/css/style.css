@@ -206,7 +206,7 @@
 .navbar .nav-item:hover .dropdown-menu {
     transform: rotateX(0deg);
     visibility: visible;
-    background: var(--bs-light) !important;
+    background: #000 !important;
     border-radius: 10px !important;
     transition: .5s;
     opacity: 1;
