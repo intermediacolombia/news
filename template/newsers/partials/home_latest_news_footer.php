@@ -91,7 +91,7 @@ function getFeaturedPostsByCategory($pdo, $categoryId, $limit = 2) {
             <div class="row g-4">
                 <div class="col-lg-8 col-xl-9">
                     <div class="d-flex flex-column flex-md-row justify-content-md-between border-bottom mb-4">
-                        <h1 class="mb-4">¡Que hay de nuevo?</h1>
+                        <h1 class="mb-4">¿Que hay de nuevo?</h1>
                         <ul class="nav nav-pills d-inline-flex text-center">
                             <?php foreach ($topCategories as $index => $cat): ?>
                             <li class="nav-item mb-3">
@@ -274,10 +274,11 @@ function getFeaturedPostsByCategory($pdo, $categoryId, $limit = 2) {
                         </div>
                         <?php endif; ?>
                     <?php endif; ?>
-                    <?php include __DIR__ . '/../partials/sidebar.php'; ?>
+                    
                 </div>
                 
             </div>
+			<?php include __DIR__ . '/../partials/sidebar.php'; ?>
         </div>
     </div>
 </div>
