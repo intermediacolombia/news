@@ -226,9 +226,8 @@ table tbody tr {
 }
 
 /* === Tabs más visibles y profesionales === */
-/* === Tabs modernizados === */
 .nav-tabs {
-  border-bottom: 2px solid #e0e0e0;
+  border-bottom: 2px solid #e9ecef;
   background: #ffffff;
   border-radius: 10px 10px 0 0;
   overflow: hidden;
@@ -236,7 +235,7 @@ table tbody tr {
 }
 
 .nav-tabs .nav-link {
-  color: #555555;
+  color: #555;
   font-weight: 500;
   border: none;
   padding: 12px 22px;
@@ -252,55 +251,55 @@ table tbody tr {
 }
 
 .nav-tabs .nav-link:hover {
-  background-color: #f4f4f4;
-  color: #28a745;
+  background-color: #f8f9fa;
+  color: var(--primary)!important;
 }
 
 .nav-tabs .nav-link.active {
-  background: #28a745;
-  color: #ffffff !important;
+  background: var(--primary)!important;
+  color: #fff !important;
   box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
   font-weight: 600;
 }
 
 /* === Contenido de pestañas === */
 .tab-content {
-  background: #ffffff;
+  background: #fff;
   border: 1px solid #dee2e6;
   border-top: none;
   border-radius: 0 0 10px 10px;
   padding: 25px 30px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
 }
 
-/* === Tarjetas === */
+/* === Encabezados de tarjetas === */
 .card {
   border-radius: 10px;
   overflow: hidden;
-  border: 1px solid #dcdcdc;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
   margin-bottom: 20px;
 }
 
 .card-header {
-  background: #f8f9fa;
+  background: #f9fafb;
   font-weight: 600;
   font-size: 15px;
-  color: #333333;
-  border-bottom: 1px solid #e0e0e0;
+  color: #333;
+  border-bottom: 1px solid #e6e6e6;
   padding: 12px 18px;
   text-transform: uppercase;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.4px;
 }
 
 .card-body {
-  background: #ffffff;
+  background: #fff;
   padding: 20px;
 }
 
 /* === Botón principal === */
 .btn-success {
-  background: #28a745;
+  background: var(--primary)!important;
   border: none;
   font-weight: 600;
   padding: 10px 22px;
@@ -309,43 +308,25 @@ table tbody tr {
 }
 
 .btn-success:hover {
-  background: #218838;
+  background: #4db000;
   transform: translateY(-1px);
 }
 
-/* === Inputs === */
-.form-control,
-.form-select {
+/* === Formularios más modernos === */
+.form-control, .form-select {
   border-radius: 6px;
-  border: 1px solid #cccccc;
+  border: 1px solid #ced4da;
   box-shadow: none;
 }
 
-.form-control:focus,
-.form-select:focus {
-  border-color: #28a745;
-  box-shadow: 0 0 0 0.15rem rgba(40, 167, 69, 0.25);
+.form-control:focus, .form-select:focus {
+  border-color: var(--primary)!important;
+  box-shadow: 0 0 0 0.15rem rgba(95, 202, 0, 0.25);
 }
 
-/* === Labels === */
 label.form-label {
   font-weight: 500;
-  color: #333333;
-}
-
-/* === Ajuste general del fondo del panel === */
-body {
-  background-color: #f2f4f6;
-}
-
-/* === Encabezado principal === */
-h1.mb-4 {
-  color: #222222;
-  font-size: 1.8rem;
-  font-weight: 600;
-  border-left: 5px solid #28a745;
-  padding-left: 10px;
-  margin-bottom: 25px;
+  color: #333;
 }
 
 
