@@ -75,7 +75,7 @@
             </div>
 
             <div class="modal-body d-flex align-items-center">
-                <form id="formSearchModal" class="input-group w-75 mx-auto d-flex" method="get" action="<?= URLBASE ?>/search.php">
+                <form id="formSearchModal" class="input-group w-75 mx-auto d-flex" method="get" action="<?= URLBASE ?>/buscar">
                     <input type="search" name="q" id="searchInputModal" class="form-control p-3"
                         placeholder="Escribe una palabra clave..."
                         aria-describedby="search-icon-1" required>
