@@ -49,7 +49,7 @@ a {
     text-decoration: none;
 }
 a:hover {
-    color: var(--primary) !important;
+    color: var(--color-hover-link)!important;
     text-decoration: none;
 }
 
@@ -58,5 +58,10 @@ a:hover {
   background-color: rgba(var(--primary-rgb), 0.1) !important;
   border-color: var(--primary) !important;
   color: var(--primary) !important;
+}
+
+.text-dark:hover
+ {
+    color: var(--color-hover-link)!important;
 }
 
