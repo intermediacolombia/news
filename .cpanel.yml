@@ -1,12 +1,15 @@
+---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/intermed/news.intermediacolombia.com
-    - /bin/cp -R * $DEPLOYPATH
-    - /bin/cp -R .[!.]* $DEPLOYPATH 2>/dev/null || true
-    - /bin/find $DEPLOYPATH -type d -exec chmod 755 {} \;
-    - /bin/find $DEPLOYPATH -type f -exec chmod 644 {} \;
-    - /bin/chmod -R 775 $DEPLOYPATH/public 2>/dev/null || true
-    - /bin/chmod -R 775 $DEPLOYPATH/storage 2>/dev/null || true
-    - /bin/chmod 640 $DEPLOYPATH/.env 2>/dev/null || true
-    - echo "✅ Despliegue completado - $(date)"
+    - export DEPLOYPATH=/home/intermed/news.intermediacolombia.com/
+    - /bin/cp -R index.php $DEPLOYPATH
+    - /bin/cp -R .htaccess $DEPLOYPATH
+    - /bin/cp -R inc $DEPLOYPATH
+    - /bin/cp -R admin $DEPLOYPATH
+    - /bin/cp -R assets $DEPLOYPATH
+    - /bin/cp -R public $DEPLOYPATH
+    - /bin/cp -R vendor $DEPLOYPATH
+    - /bin/cp -R style.css $DEPLOYPATH
+    - echo "✅ Despliegue completado en $DEPLOYPATH el $(date)"
+
 	
