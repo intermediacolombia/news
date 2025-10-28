@@ -1,3 +1,6 @@
+<div id="link1" class="radio-player"></div>
+<main id="pageContent">
+	
 <div class="container-fluid sticky-top px-0">
 
 <?php include __DIR__ . '/../partials/header-bar.php'; ?><!-- Topbar Start -->
@@ -88,5 +91,4 @@
     </div>
 </div>
 <!-- Modal Search End -->
-<div id="link1" class="radio-player"></div>
-<main id="pageContent">
+
