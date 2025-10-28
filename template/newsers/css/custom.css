@@ -1,62 +1,58 @@
 /* custom.css */
-:root {
-  /* Tu color principal */
-  --bs-primary: #DF0209;
-  --bs-primary-rgb: 30, 144, 255;
-  
-  /* Variaciones para hover y active */
-  --bs-primary-hover: #1873cc;
-  --bs-primary-active: #155fa8;
-}
 
 /* Botones */
 .btn-primary {
-  --bs-btn-bg: var(--bs-primary);
-  --bs-btn-border-color: var(--bs-primary);
-  --bs-btn-hover-bg: var(--bs-primary-hover);
-  --bs-btn-hover-border-color: var(--bs-primary-hover);
-  --bs-btn-active-bg: var(--bs-primary-active);
-  --bs-btn-active-border-color: var(--bs-primary-active);
+  --bs-btn-bg: var(--primary);
+  --bs-btn-border-color: var(--primary);
+  --bs-btn-hover-bg: var(--primary-hover);
+  --bs-btn-hover-border-color: var(--primary-hover);
+  --bs-btn-active-bg: var(--primary-active);
+  --bs-btn-active-border-color: var(--primary-active);
 }
 
 /* Backgrounds */
 .bg-primary {
-  background-color: var(--bs-primary) !important;
+  background-color: var(--primary) !important;
 }
 
 /* Textos */
 .text-primary {
-  color: var(--bs-primary) !important;
+  color: var(--primary) !important;
 }
 
 /* Bordes */
 .border-primary {
-  border-color: var(--bs-primary) !important;
+  border-color: var(--primary) !important;
 }
 
 /* Links */
 .link-primary {
-  color: var(--bs-primary) !important;
+  color: var(--primary) !important;
 }
 
 .link-primary:hover {
-  color: var(--bs-primary-hover) !important;
+  color: var(--primary-hover) !important;
 }
 
 /* Badges */
 .badge.bg-primary {
-  background-color: var(--bs-primary) !important;
+  background-color: var(--primary) !important;
 }
 
 /* Nav Pills */
 .nav-pills .nav-link.active {
-  background-color: var(--bs-primary) !important;
+  background-color: var(--primary) !important;
+}
+
+a {
+    color: var(--primary) !important;
+    text-decoration: none;
 }
 
 /* Alerts */
 .alert-primary {
-  background-color: rgba(var(--bs-primary-rgb), 0.1) !important;
-  border-color: var(--bs-primary) !important;
-  color: var(--bs-primary) !important;
+  background-color: rgba(var(--primary-rgb), 0.1) !important;
+  border-color: var(--primary) !important;
+  color: var(--primary) !important;
 }
 
