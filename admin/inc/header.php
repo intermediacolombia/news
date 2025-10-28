@@ -1,5 +1,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
+<style>
+        :root {
+            --primary: <?= COLOR_PRIMARY ?? '#007bff' ?>;
+            --color-hover-link: <?= COLOR_PRIMARY_HOVER_LINK  ?? '#0056b3' ?>;
+            --color-TEST1: <?= COLOR_PRIMARY ?>;
+            --color-TEST2: <?= COLOR_PRIMARY_HOVER_LINK ?>;
+        }
+    </style>
 <!-- Favicon -->
 <link rel="shortcut icon" type="image/x-icon" href="<?php echo URLBASE; ?><?php echo FAVICON ?>">
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -35,11 +42,3 @@
 <!-- Script custom -->
 <script src="<?= htmlspecialchars($url) ?>/template/assets/js/departamentos.js" crossorigin="anonymous"></script>
 
-<style>
-        :root {
-            --primary: <?= COLOR_PRIMARY ?? '#007bff' ?>;
-            --color-hover-link: <?= COLOR_PRIMARY_HOVER_LINK  ?? '#0056b3' ?>;
-            --color-TEST1: <?= COLOR_PRIMARY ?>;
-            --color-TEST2: <?= COLOR_PRIMARY_HOVER_LINK ?>;
-        }
-    </style>

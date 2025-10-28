@@ -69,7 +69,7 @@ define('SMTP_PASS', $sys['mail_smtp_pass'] ?? '');
 define('SMTP_PORT', $sys['mail_smtp_port'] ?? '');
 
 define('COLOR_PRIMARY', $sys['primary'] ?? '');
-define('COLOR_PRIMARY_HOVER_LINK', $sys['primary'] ?? '');
+define('COLOR_PRIMARY_HOVER_LINK', $sys['color-hover-link'] ?? '');
 
 
 /* ========= Mensajes ws y mail ========= */
