@@ -1,6 +1,6 @@
 <?php include __DIR__ . '/partials/features.php'; ?>
 <?php include __DIR__ . '/partials/main_post.php'; ?>
-
+<?php include __DIR__ . '/partials/ads3.php'; ?>
 
        
 
@@ -30,6 +30,12 @@
         <!-- Banner End -->
 
 
-      <?php include __DIR__ . '/partials/home_latest_news.php'; ?>  
-      <?php include __DIR__ . '/partials/home_latest_news_footer.php'; ?>  
+      <?php include __DIR__ . '/partials/home_latest_news.php'; ?> 
+		<?php include __DIR__ . '/partials/ads4.php'; ?>
+      <?php include __DIR__ . '/partials/home_latest_news_footer.php'; ?> 
 
+	<?php if (!empty($sys['banner_inferior'])): ?>
+  <div class="footer-banner text-center my-3">
+    <img src="<?= htmlspecialchars($sys['banner_inferior'], ENT_QUOTES, 'UTF-8') ?>" alt="Banner Inferior" class="img-fluid">
+  </div>
+	<?php endif; ?>
