@@ -89,9 +89,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		'feature4_icon','feature4_text',
 		'special_menu_text','special_menu_link',
 		
-		// Colores
-'primary',
-'color-hover-link',
+		// Apariencia y Colores
+		'primary',
+		'color-hover-link',		
+		'site_theme',
+
 
 
     ];
@@ -244,8 +246,10 @@ $defaults = [
 	'special_menu_link' => '#',
 	
 	// Colores
-'primary' => '#5fca00',
-'color-hover-link' => '#214A82',
+	'primary' => '#5fca00',
+	'color-hover-link' => '#214A82',
+	'site_theme' => '',
+
 
 
 ];
@@ -296,7 +300,7 @@ Generales</a></li>
 	  <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#code"><i class="fa-solid fa-code"></i> Codigo HTML</a></li>
     <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#seo"><i class="fa-brands fa-google"></i> SEO</a></li>      
     <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#email"><i class="fa-solid fa-envelope"></i> Email</a></li>	
-	<li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#colores"><i class="fa-solid fa-palette"></i> Colores</a></li>
+	<li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#apariencia"><i class="fa-solid fa-brush"></i> Apariencia</a></li>
 
 
   </ul>
@@ -638,45 +642,56 @@ Generales</a></li>
 		<!-- Secciones -->
 <!-- Secciones -->
 
-<div class="tab-pane fade" id="colores">
+<div class="tab-pane fade" id="apariencia">
   <div class="card mb-3">
     <div class="card-header bg-light">
-      <strong>Configuración de Colores</strong>
+      <strong>Configuración de Apariencia</strong>
     </div>
     <div class="card-body">
+      <?php
+        // Leer los temas disponibles en la carpeta Template
+        $themesDir = __DIR__ . '/../../Template/';
+        $themes = [];
+        if (is_dir($themesDir)) {
+          foreach (scandir($themesDir) as $file) {
+            if ($file !== '.' && $file !== '..' && is_dir($themesDir . $file)) {
+              $themes[] = $file;
+            }
+          }
+        }
+      ?>
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Tema visual</label>
+        <select name="site_theme" class="form-select">
+          <?php foreach ($themes as $theme): ?>
+            <option value="<?= htmlspecialchars($theme) ?>"
+              <?= ($configs['site_theme'] ?? '') === $theme ? 'selected' : '' ?>>
+              <?= ucfirst($theme) ?>
+            </option>
+          <?php endforeach; ?>
+        </select>
+        <div class="form-text">Selecciona el tema de diseño que deseas aplicar.</div>
+      </div>
+
+      <hr>
+
       <div class="row g-3">
-
-        <!-- Color Primario -->
         <div class="col-md-3">
-          <label class="form-label fw-semibold">Color Primario</label>
+          <label class="form-label fw-semibold">Color primario</label>
           <input type="color" name="primary" class="form-control form-control-color w-100"
-                 value="<?= htmlspecialchars($configs['primary'], ENT_QUOTES, 'UTF-8') ?>"
-                 title="Elige el color primario">
+                 value="<?= htmlspecialchars($configs['primary'], ENT_QUOTES, 'UTF-8') ?>">
         </div>
-
-        <!-- Hover Links -->
         <div class="col-md-3">
           <label class="form-label fw-semibold">Hover Links</label>
           <input type="color" name="color-hover-link" class="form-control form-control-color w-100"
-                 value="<?= htmlspecialchars($configs['color-hover-link'], ENT_QUOTES, 'UTF-8') ?>"
-                 title="Elige el color hover para los links">
+                 value="<?= htmlspecialchars($configs['color-hover-link'], ENT_QUOTES, 'UTF-8') ?>">
         </div>
-
-        <!-- Espacios vacíos para futuros colores -->
-        <div class="col-md-3">
-          <label class="form-label fw-semibold text-muted">Próximo Color</label>
-          <input type="color" class="form-control form-control-color w-100" value="#cccccc" disabled>
-        </div>
-
-        <div class="col-md-3">
-          <label class="form-label fw-semibold text-muted">Próximo Color</label>
-          <input type="color" class="form-control form-control-color w-100" value="#cccccc" disabled>
-        </div>
-
       </div>
     </div>
   </div>
 </div>
+
 
 
 <style>
