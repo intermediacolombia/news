@@ -176,11 +176,7 @@
 
 
 <?php if (!empty($sys['code_player'])): ?>
-<style>
-	body{
-		background: #000!important;
-	}
-</style>
+
 <script>
 const direccionURL1 = `
   <div style="
