@@ -80,8 +80,13 @@ define('WS_SHIPPED_ORDER', $sys['ws_shipped_message'] ?? '');
 define('EMAIL_DELIVERED_ORDER', $sys['mail_delivered_message'] ?? '');
 define('WS_DELIVERED_ORDER', $sys['ws_delivered_message'] ?? '');
 
-
 /* =========Fin Mensajes ws y mail ========= */
+
+/* =========Apariencia ========= */
+define('THEME', $sys['site_theme'] ?? '');
+
+
+/* =========Fin Apariencia ========= */
 
 
 

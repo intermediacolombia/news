@@ -21,7 +21,7 @@ if ($parts[0] === 'buscar') {
         $_GET['q'] = urldecode($_GET['q']);
     }
 
-    $templateFile = __DIR__ . "/template/newsers/search.php";
+    $templateFile = __DIR__ . "/template/" . THEME . "/search.php";
 
 // ===============================
 // Noticias
@@ -48,7 +48,7 @@ if ($parts[0] === 'buscar') {
         $_GET['page_num'] = 1;
     }
 
-    $templateFile = __DIR__ . "/template/newsers/noticias.php";
+    $templateFile = __DIR__ . "/template/" . THEME . "/noticias.php";
 
 // ===============================
 // Single post: /categoria/post/
@@ -56,21 +56,21 @@ if ($parts[0] === 'buscar') {
 } elseif (count($parts) === 2) {
     $_GET['category'] = $parts[0];
     $_GET['post']     = $parts[1];
-    $templateFile     = __DIR__ . "/template/newsers/single.php";
+    $templateFile     = __DIR__ . "/template/" . THEME . "/single.php";
 
 // ===============================
 // Página estática: /pagina/
 // ===============================
 } elseif (count($parts) === 1 && $parts[0] !== '') {
     $_GET['page']     = $parts[0];
-    $templateFile     = __DIR__ . "/template/newsers/{$_GET['page']}.php";
+    $templateFile     = __DIR__ . "/template/" . THEME . "/{$_GET['page']}.php";
 
 // ===============================
 // Home
 // ===============================
 } else {
     $_GET['page']     = 'index';
-    $templateFile     = __DIR__ . "/template/newsers/index.php";
+    $templateFile     = __DIR__ . "/template/" . THEME . "/index.php";
 }
 
 // ===============================
@@ -81,16 +81,16 @@ if ($templateFile && file_exists($templateFile)) {
     include $templateFile;
     $pageContent = ob_get_clean();
 
-    include __DIR__ . "/template/newsers/inc/header.php";
+    include __DIR__ . "/template/" . THEME . "/inc/header.php";
     echo $pageContent;
-    include __DIR__ . "/template/newsers/inc/footer.php";
+    include __DIR__ . "/template/" . THEME . "/inc/footer.php";
 } else {
     http_response_code(404);
-    $errorFile = __DIR__ . "/template/newsers/404.php";
+    $errorFile = __DIR__ . "/template/" . THEME . "/404.php";
     if (file_exists($errorFile)) {
-        include __DIR__ . "/template/newsers/inc/header.php";
+        include __DIR__ . "/template/" . THEME . "/inc/header.php";
         include $errorFile;
-        include __DIR__ . "/template/newsers/inc/footer.php";
+        include __DIR__ . "/template/" . THEME . "/inc/footer.php";
     } else {
         // Fallback si no existe tu 404.php
         echo "<div style='text-align:center;padding:100px;'>
