@@ -39,6 +39,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		'code_head',
 		'code_footer',
 		'code_sliderbar',
+		'code_player',
+		'player_height',
 		
 		//identidad		
 		'about_us',
@@ -190,6 +192,8 @@ $defaults = [
 	'code_head' => '',
 	'code_footer' => '',
 	'code_sliderbar' => '',
+	'code_player' => '',
+	'player_height' => '',
 	
 	//redes
 	
@@ -486,6 +490,20 @@ Generales</a></li>
               <textarea name="code_sliderbar" class="form-control"><?= $configs['code_sliderbar'] ?></textarea>
 
             </div>
+			  
+			  <div class="mb-3">
+              <label class="form-label">URL Reproductor Horizontal</label>
+              <input type="text" name="code_player" class="form-control"
+                     value="<?= $configs['code_player'] ?>">
+            </div>
+			  
+			  <div class="mb-3">
+  <label class="form-label">Alto del Reproductor (px)</label>
+  <input type="number" name="player_height" class="form-control"
+         value="<?= htmlspecialchars($configs['player_height'] ?? '70') ?>"
+         placeholder="Ej: 90">
+</div>
+
 			  
           </div>
         </div>
