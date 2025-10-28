@@ -46,7 +46,7 @@ window.addEventListener('popstate', e => {
 
 // ====== REACTIVAR SCRIPTS TRAS CARGAR ======
 function reactivarScripts() {
-  // Re-ejecutar <script> embebidos del contenido cargado
+  //  Re-ejecutar <script> embebidos dentro de #pageContent
   document.querySelectorAll('#pageContent script').forEach(oldScript => {
     const newScript = document.createElement('script');
     if (oldScript.src) {
@@ -58,32 +58,63 @@ function reactivarScripts() {
     oldScript.remove();
   });
 
-  // Reiniciar OwlCarousel si existe
-  if (typeof $ !== 'undefined' && $('.owl-carousel').length) {
-    $('.owl-carousel').owlCarousel({
-      autoplay: true,
-      smartSpeed: 1000,
-      margin: 25,
-      loop: true,
-      center: true,
-      dots: false,
-      nav: true,
-      navText: [
-        '<i class="bi bi-chevron-left"></i>',
-        '<i class="bi bi-chevron-right"></i>'
-      ],
-      responsive: { 0: { items: 1 }, 768: { items: 2 }, 992: { items: 3 } }
-    });
-  }
+  //  Detectar y reactivar librerías automáticamente
+  try {
+    // Facebook SDK
+    if (window.FB && FB.XFBML && typeof FB.XFBML.parse === 'function') {
+      FB.XFBML.parse(document.getElementById('pageContent'));
+    }
 
-  // Volver a ejecutar animaciones (AOS, etc.)
-  if (typeof AOS !== 'undefined') {
-    AOS.refresh();
-  }
+    // Twitter Widgets
+    if (window.twttr && twttr.widgets && typeof twttr.widgets.load === 'function') {
+      twttr.widgets.load(document.getElementById('pageContent'));
+    }
 
-  // Reprocesar plugins de Facebook
-  if (typeof FB !== 'undefined' && FB.XFBML && typeof FB.XFBML.parse === 'function') {
-    FB.XFBML.parse(document.getElementById('pageContent'));
+    // Instagram Embeds
+    if (window.instgrm && instgrm.Embeds && typeof instgrm.Embeds.process === 'function') {
+      instgrm.Embeds.process();
+    }
+
+    // TikTok Embeds
+    if (window.tiktokEmbed && typeof tiktokEmbed.init === 'function') {
+      tiktokEmbed.init();
+    }
+
+    // YouTube iframes (revisa API)
+    if (window.YT && typeof YT.ready === 'function') {
+      YT.ready();
+    }
+
+    // AOS (Animate on Scroll)
+    if (window.AOS && typeof AOS.refresh === 'function') {
+      AOS.refresh();
+    }
+
+    // OwlCarousel
+    if (typeof $ !== 'undefined' && $('.owl-carousel').length && typeof $('.owl-carousel').owlCarousel === 'function') {
+      $('.owl-carousel').owlCarousel({
+        autoplay: true,
+        smartSpeed: 1000,
+        margin: 25,
+        loop: true,
+        center: true,
+        dots: false,
+        nav: true,
+        navText: [
+          '<i class="bi bi-chevron-left"></i>',
+          '<i class="bi bi-chevron-right"></i>'
+        ],
+        responsive: { 0: { items: 1 }, 768: { items: 2 }, 992: { items: 3 } }
+      });
+    }
+
+    // WOW.js
+    if (window.WOW && typeof WOW === 'function') {
+      new WOW().init();
+    }
+
+  } catch (err) {
+    console.warn('Error al reactivar scripts:', err);
   }
 }
 
