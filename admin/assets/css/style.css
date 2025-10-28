@@ -226,8 +226,9 @@ table tbody tr {
 }
 
 /* === Tabs más visibles y profesionales === */
+/* === Tabs modernizados === */
 .nav-tabs {
-  border-bottom: 2px solid #e9ecef;
+  border-bottom: 2px solid #e0e0e0;
   background: #ffffff;
   border-radius: 10px 10px 0 0;
   overflow: hidden;
@@ -235,7 +236,7 @@ table tbody tr {
 }
 
 .nav-tabs .nav-link {
-  color: #555;
+  color: #555555;
   font-weight: 500;
   border: none;
   padding: 12px 22px;
@@ -251,55 +252,55 @@ table tbody tr {
 }
 
 .nav-tabs .nav-link:hover {
-  background-color: #f8f9fa;
-  color: var(--primary);
+  background-color: #f4f4f4;
+  color: #28a745;
 }
 
 .nav-tabs .nav-link.active {
-  background: var(--primary);
-  color: #fff !important;
+  background: #28a745;
+  color: #ffffff !important;
   box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
   font-weight: 600;
 }
 
 /* === Contenido de pestañas === */
 .tab-content {
-  background: #fff;
+  background: #ffffff;
   border: 1px solid #dee2e6;
   border-top: none;
   border-radius: 0 0 10px 10px;
   padding: 25px 30px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
 }
 
-/* === Encabezados de tarjetas === */
+/* === Tarjetas === */
 .card {
   border-radius: 10px;
   overflow: hidden;
-  border: 1px solid #e0e0e0;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  border: 1px solid #dcdcdc;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
   margin-bottom: 20px;
 }
 
 .card-header {
-  background: #f9fafb;
+  background: #f8f9fa;
   font-weight: 600;
   font-size: 15px;
-  color: #333;
-  border-bottom: 1px solid #e6e6e6;
+  color: #333333;
+  border-bottom: 1px solid #e0e0e0;
   padding: 12px 18px;
   text-transform: uppercase;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.3px;
 }
 
 .card-body {
-  background: #fff;
+  background: #ffffff;
   padding: 20px;
 }
 
 /* === Botón principal === */
 .btn-success {
-  background: var(--primary);
+  background: #28a745;
   border: none;
   font-weight: 600;
   padding: 10px 22px;
@@ -308,25 +309,43 @@ table tbody tr {
 }
 
 .btn-success:hover {
-  background: #4db000;
+  background: #218838;
   transform: translateY(-1px);
 }
 
-/* === Formularios más modernos === */
-.form-control, .form-select {
+/* === Inputs === */
+.form-control,
+.form-select {
   border-radius: 6px;
-  border: 1px solid #ced4da;
+  border: 1px solid #cccccc;
   box-shadow: none;
 }
 
-.form-control:focus, .form-select:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 0.15rem rgba(95, 202, 0, 0.25);
+.form-control:focus,
+.form-select:focus {
+  border-color: #28a745;
+  box-shadow: 0 0 0 0.15rem rgba(40, 167, 69, 0.25);
 }
 
+/* === Labels === */
 label.form-label {
   font-weight: 500;
-  color: #333;
+  color: #333333;
+}
+
+/* === Ajuste general del fondo del panel === */
+body {
+  background-color: #f2f4f6;
+}
+
+/* === Encabezado principal === */
+h1.mb-4 {
+  color: #222222;
+  font-size: 1.8rem;
+  font-weight: 600;
+  border-left: 5px solid #28a745;
+  padding-left: 10px;
+  margin-bottom: 25px;
 }
 
 

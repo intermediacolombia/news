@@ -35,9 +35,3 @@
 <!-- Script custom -->
 <script src="<?= htmlspecialchars($url) ?>/template/assets/js/departamentos.js" crossorigin="anonymous"></script>
 
-<style>
-        :root {
-            --primary: <?= $sys['primary'] ?? '#007bff' ?>;
-            --color-hover-link: <?= $sys['color-hover-link'] ?? '#0056b3' ?>;
-        }
-    </style>
