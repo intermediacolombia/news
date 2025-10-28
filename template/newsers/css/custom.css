@@ -4,8 +4,8 @@
 .btn-primary {
   --bs-btn-bg: var(--primary);
   --bs-btn-border-color: var(--primary);
-  --bs-btn-hover-bg: var(--primary-hover);
-  --bs-btn-hover-border-color: var(--primary-hover);
+  --bs-btn-hover-bg: var(--color-hover-link);
+  --bs-btn-hover-border-color: var(--color-hover-link);
   --bs-btn-active-bg: var(--primary-active);
   --bs-btn-active-border-color: var(--primary-active);
 }
@@ -31,9 +31,12 @@
 }
 
 .link-primary:hover {
-  color: var(--primary-hover) !important;
+  color: var(--color-hover-link) !important;
 }
 
+.link:hover {
+  color: var(--color-hover-link) !important;
+}
 /* Badges */
 .badge.bg-primary {
   background-color: var(--primary) !important;
