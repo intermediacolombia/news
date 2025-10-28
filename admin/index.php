@@ -97,7 +97,7 @@ session_start();
 if (isset($_SESSION['error'])): ?>
   <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0 mt-3 mx-auto" role="alert" style="max-width:600px;">
     <i class="bi bi-exclamation-triangle-fill me-2"></i>
-    <?= htmlspecialchars($_SESSION['error']) ?>
+    <?= $_SESSION['error'] ?> <!-- sin htmlspecialchars -->
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
   </div>
 <?php 
