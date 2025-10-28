@@ -80,7 +80,7 @@
 }
 
 .link-hover:hover {
-    color: var(--bs-primary) !important;
+    color: var(--primary) !important;
 }
 
 
@@ -140,7 +140,7 @@
 }
 
 .topbar .top-link a small:hover i {
-    color: var(--bs-primary) !important;
+    color: var(--primary) !important;
 }
 
 #note {
@@ -171,7 +171,7 @@
 .navbar .navbar-nav .nav-link.active,
 .sticky-top.bg-white .navbar .navbar-nav .nav-link:hover,
 .sticky-top.bg-white .navbar .navbar-nav .nav-link.active {
-    color: var(--bs-primary);
+    color: var(--primary);
 }
 
 .navbar .dropdown-toggle::after {
@@ -200,7 +200,7 @@
 
 .dropdown .dropdown-menu a:hover {
     background: var(--bs-secondary);
-    color: var(--bs-primary);
+    color: var(--primary);
 }
 
 .navbar .nav-item:hover .dropdown-menu {
@@ -268,7 +268,7 @@
     padding: 2px 20px;
     transition: 0.5s;
     margin-right: 10px;
-    border: 1px solid var(--bs-primary);
+    border: 1px solid var(--primary);
     color: var(--bs-dark);
     border-radius: 20px;
 }
@@ -281,14 +281,14 @@
     margin-left: 10px;
     padding: 2px 20px;
     transition: 0.5s;
-    border: 1px solid var(--bs-primary);
+    border: 1px solid var(--primary);
     color: var(--bs-dark);
     border-radius: 20px;
 }
 
 .latest-news .latest-news-carousel.owl-carousel .owl-nav .owl-prev:hover,
 .latest-news .latest-news-carousel.owl-carousel .owl-nav .owl-next:hover {
-    background: var(--bs-primary);
+    background: var(--primary);
     color: var(--bs-white);
     border-radius: 10px;
 }
@@ -308,7 +308,7 @@
     padding: 2px 20px;
     transition: 0.5s;
     margin-right: 10px;
-    border: 1px solid var(--bs-primary);
+    border: 1px solid var(--primary);
     color: var(--bs-dark);
     border-radius: 20px;
 }
@@ -321,20 +321,20 @@
     margin-left: 10px;
     padding: 2px 20px;
     transition: 0.5s;
-    border: 1px solid var(--bs-primary);
+    border: 1px solid var(--primary);
     color: var(--bs-dark);
     border-radius: 20px;
 }
 
 .populer-news .whats-carousel.owl-carousel .owl-nav .owl-prev:hover,
 .populer-news .whats-carousel.owl-carousel .owl-nav .owl-next:hover {
-    background: var(--bs-primary);
+    background: var(--primary);
     color: var(--bs-white);
     border-radius: 10px;
 }
 
 .populer-news .tab-class .nav-item a.active {
-    background: var(--bs-primary) !important;
+    background: var(--primary) !important;
 }
 
 .lifestyle .lifestyle-item {
@@ -390,7 +390,7 @@
 /*** Footer Start ***/
 .footer button:hover {
     background: var(--bs-white) !important;
-    color: var(--bs-primary) !important;
+    color: var(--primary) !important;
 }
 
 .footer .footer-item-1 .line-h {
@@ -402,7 +402,7 @@
 }
 
 .footer .footer-item-1 a:hover i {
-    color: var(--bs-primary) !important;
+    color: var(--primary) !important;
 }
 
 .footer .footer-item-3 a {
@@ -414,7 +414,7 @@
 }
 
 .footer .footer-item-2 a:hover {
-    color: var(--bs-primary) !important;
+    color: var(--primary) !important;
 }
 
 .footer .footer-item-3 a {
@@ -422,7 +422,7 @@
 }
 
 .footer .footer-item-3 a:hover {
-    color: var(--bs-primary) !important;
+    color: var(--primary) !important;
 }
 
 .copyright {
