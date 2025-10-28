@@ -30,7 +30,7 @@
   color: var(--primary) !important;
 }
 
-.link-primary:hover {
+.link-hover:hover {
   color: var(--color-hover-link) !important;
 }
 
