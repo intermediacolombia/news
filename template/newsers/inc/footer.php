@@ -176,7 +176,7 @@
 <?php if (!empty($sys['code_player'])): ?>
 <style>
 .container-fluid.copyright.bg-dark.py-4 {
-    padding-bottom: <?= $sys['player_height'] ?? 70 ?>px!important;
+    padding-bottom: <?= $sys['player_height'] + 5 ?? 70 ?>px!important;
 }
 </style>
 <script>
