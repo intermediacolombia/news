@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../../inc/config.php';
 
 require_once __DIR__ . '/../login/session.php';
-$permisopage = 'Ver y Editar Usuarios';
+$permisopage = 'Ver Blogs';
 include('../login/restriction.php');
 session_start();
 
