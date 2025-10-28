@@ -142,7 +142,7 @@
 
 
 <!-- Copyright Start -->
-<div class="container-fluid copyright bg-dark py-4">
+<div class="container-fluid copyright bg-dark py-4" style="margin-bottom: 90px">
     <div class="container text-center text-white small">
         <p class="mb-1">
             &copy; <?= date('Y') ?> <strong><?= NOMBRE_SITIO ?></strong>. Todos los derechos reservados.
