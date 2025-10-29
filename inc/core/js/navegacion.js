@@ -97,20 +97,51 @@ function reactivarScripts() {
   // Reejecutar scripts embebidos del contenido cargado
   document.querySelectorAll('#pageContent script').forEach(oldScript => {
     const newScript = document.createElement('script');
-    if (oldScript.src) newScript.src = oldScript.src;
-    else newScript.textContent = oldScript.textContent;
+    if (oldScript.src) {
+      newScript.src = oldScript.src;
+    } else {
+      newScript.textContent = oldScript.textContent;
+    }
     document.body.appendChild(newScript);
     oldScript.remove();
   });
 
   // Reactivar SDKs y librerías conocidas
   try {
-    if (window.FB?.XFBML?.parse) FB.XFBML.parse(document.getElementById('pageContent'));
-    if (window.twttr?.widgets?.load) twttr.widgets.load(document.getElementById('pageContent'));
-    if (window.instgrm?.Embeds?.process) instgrm.Embeds.process();
-    if (window.tiktokEmbed?.init) tiktokEmbed.init();
-    if (window.AOS?.refresh) AOS.refresh();
-    if (typeof WOW === 'function') new WOW().init();
+    if (window.FB && FB.XFBML && typeof FB.XFBML.parse === 'function') {
+      FB.XFBML.parse(document.getElementById('pageContent'));
+    }
+    if (window.twttr && twttr.widgets && typeof twttr.widgets.load === 'function') {
+      twttr.widgets.load(document.getElementById('pageContent'));
+    }
+    if (window.instgrm && instgrm.Embeds && typeof instgrm.Embeds.process === 'function') {
+      instgrm.Embeds.process();
+    }
+    if (window.tiktokEmbed && typeof tiktokEmbed.init === 'function') {
+      tiktokEmbed.init();
+    }
+    if (window.AOS && typeof AOS.refresh === 'function') {
+      AOS.refresh();
+    }
+    if (window.WOW && typeof WOW === 'function') {
+      new WOW().init();
+    }
+    if (typeof $ !== 'undefined' && $('.owl-carousel').length && typeof $('.owl-carousel').owlCarousel === 'function') {
+      $('.owl-carousel').owlCarousel({
+        autoplay: true,
+        smartSpeed: 1000,
+        margin: 25,
+        loop: true,
+        center: true,
+        dots: false,
+        nav: true,
+        navText: [
+          '<i class="bi bi-chevron-left"></i>',
+          '<i class="bi bi-chevron-right"></i>'
+        ],
+        responsive: { 0: { items: 1 }, 768: { items: 2 }, 992: { items: 3 } }
+      });
+    }
   } catch (err) {
     console.warn('Error al reactivar librerías:', err);
   }
@@ -134,28 +165,37 @@ function reactivarScripts() {
       i = (i + 1) % window.latestPostsData.length;
     }
 
+    // Evita múltiples intervalos duplicados
     if (window.newsTickerInterval) clearInterval(window.newsTickerInterval);
     showPost();
     window.newsTickerInterval = setInterval(showPost, 4500);
   }
+	
+	// ===============================
+// Reejecutar main.js si existe
+// ===============================
+try {
+  const mainPath = `${window.URLBASE}/template/news/js/main.js`;
+  const existing = document.querySelector(`script[src="${mainPath}"]`);
 
-  // ===============================
-  // Reejecutar main.js si existe
-  // ===============================
-  try {
-    const mainPath = `${window.URLBASE}/template/news/js/main.js`;
-    // Borra versiones anteriores que se hayan inyectado dinámicamente
-    document.querySelectorAll(`script[src^="${mainPath}"]`).forEach(s => s.remove());
-
+  // Si el archivo ya estaba cargado, recargarlo para reactivar sliders
+  if (existing) {
+    const clone = document.createElement('script');
+    clone.src = mainPath + '?v=' + Date.now(); // cache-buster
+    clone.async = false;
+    document.head.appendChild(clone);
+  } else {
+    // Si no estaba en el DOM, insertarlo
     const s = document.createElement('script');
-    s.src = mainPath + '?v=' + Date.now(); // Cache-buster para asegurar recarga
+    s.src = mainPath;
     s.async = false;
     document.head.appendChild(s);
-  } catch (err) {
-    console.warn('No se pudo recargar main.js:', err);
   }
+} catch (err) {
+  console.warn('No se pudo recargar main.js:', err);
 }
 
+}
 
 
 
