@@ -6,9 +6,11 @@
 </style>
 
 <!-- PLAYER CON IFRAME (se mantiene igual) -->
-<div class="music-player" style="bottom: 0;display: flex;height: <?= $sys['player_height'] ?? 70 ?>px;left: 0;position: fixed;right: 0;width: 100%;z-index: 1500;overflow: hidden;">
+<div class="ajax-persist"
+     style="bottom: 0;display: flex;height: <?= $sys['player_height'] ?? 70 ?>px;left: 0;position: fixed;right: 0;width: 100%;z-index: 1500;overflow: hidden;">
     <iframe src="<?= $sys['code_player'] ?? '' ?>" frameborder="0" scrolling="no" style="width: 100%;"></iframe>
 </div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const contentWrapper = document.getElementById('pageContent');
