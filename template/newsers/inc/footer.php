@@ -241,15 +241,16 @@
 }
 </style>
 
-<!-- PLAYER SIN IFRAME -->
-<div style="bottom: 0;display: flex;height: <?= $sys['player_height'] ?? 70 ?>px;left: 0;position: fixed;right: 0;width: 100%;z-index: 1500;overflow: hidden;"><iframe src="<?= $sys['code_player'] ?? '' ?>" frameborder="0" scrolling="no" style="width: 100%;"></iframe></div>
+<!-- PLAYER CON IFRAME (se mantiene igual) -->
+<div style="bottom: 0;display: flex;height: <?= $sys['player_height'] ?? 70 ?>px;left: 0;position: fixed;right: 0;width: 100%;z-index: 1500;overflow: hidden;">
+    <iframe src="<?= $sys['code_player'] ?? '' ?>" frameborder="0" scrolling="no" style="width: 100%;"></iframe>
+</div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const contentWrapper = document.getElementById('pageContent');
-    const player = document.getElementById('radio-player');
     
-    if (!contentWrapper || !player) return;
+    if (!contentWrapper) return;
     
     // Función para reinicializar TODO (Bootstrap, jQuery, etc)
     function reinitAllComponents() {
@@ -267,7 +268,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return new bootstrap.Popover(popoverTriggerEl);
             });
             
-            // Dropdowns (se inicializan automáticamente pero por si acaso)
+            // Dropdowns
             const dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
             dropdownElementList.map(function (dropdownToggleEl) {
                 return new bootstrap.Dropdown(dropdownToggleEl);
@@ -279,16 +280,41 @@ document.addEventListener('DOMContentLoaded', function() {
                 return new bootstrap.Modal(modalEl);
             });
             
-            // Carousels
+            // CARRUSELES - FIX MEJORADO
             const carouselElementList = [].slice.call(document.querySelectorAll('.carousel'));
-            carouselElementList.map(function (carouselEl) {
-                return new bootstrap.Carousel(carouselEl);
+            carouselElementList.forEach(function (carouselEl) {
+                // Destruir instancia anterior si existe
+                const oldInstance = bootstrap.Carousel.getInstance(carouselEl);
+                if (oldInstance) {
+                    oldInstance.dispose();
+                }
+                
+                // Crear nueva instancia
+                const newCarousel = new bootstrap.Carousel(carouselEl, {
+                    interval: carouselEl.getAttribute('data-bs-interval') || 5000,
+                    wrap: carouselEl.getAttribute('data-bs-wrap') !== 'false',
+                    keyboard: carouselEl.getAttribute('data-bs-keyboard') !== 'false',
+                    pause: carouselEl.getAttribute('data-bs-pause') || 'hover',
+                    ride: carouselEl.getAttribute('data-bs-ride') || false,
+                    touch: carouselEl.getAttribute('data-bs-touch') !== 'false'
+                });
+                
+                // Si tiene data-bs-ride="carousel", iniciarlo automáticamente
+                if (carouselEl.getAttribute('data-bs-ride') === 'carousel') {
+                    newCarousel.cycle();
+                }
             });
             
             // Toasts
             const toastElList = [].slice.call(document.querySelectorAll('.toast'));
             toastElList.map(function (toastEl) {
                 return new bootstrap.Toast(toastEl);
+            });
+            
+            // Offcanvas
+            const offcanvasElementList = [].slice.call(document.querySelectorAll('.offcanvas'));
+            offcanvasElementList.map(function (offcanvasEl) {
+                return new bootstrap.Offcanvas(offcanvasEl);
             });
         }
         
@@ -298,29 +324,22 @@ document.addEventListener('DOMContentLoaded', function() {
             const newScript = document.createElement('script');
             
             if (oldScript.src) {
-                // Script externo
                 newScript.src = oldScript.src;
-                newScript.async = false; // Mantener orden de ejecución
+                newScript.async = false;
             } else {
-                // Script inline
                 newScript.textContent = oldScript.textContent;
             }
             
-            // Copiar todos los atributos
             Array.from(oldScript.attributes).forEach(attr => {
                 newScript.setAttribute(attr.name, attr.value);
             });
             
-            // Reemplazar el script
             oldScript.parentNode.replaceChild(newScript, oldScript);
         });
         
         // 3. Reinicializar jQuery si existe
         if (window.jQuery) {
-            // Trigger para tus scripts personalizados
             jQuery(document).trigger('contentLoaded');
-            
-            // Re-bindear eventos de jQuery que usen delegación
             jQuery(contentWrapper).find('a, button, input, select, textarea').off();
         }
         
@@ -337,7 +356,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // 6. Lazy loading de imágenes si lo usas
+        // 6. Lazy loading de imágenes
         if ('loading' in HTMLImageElement.prototype) {
             const images = contentWrapper.querySelectorAll('img[loading="lazy"]');
             images.forEach(img => {
@@ -352,15 +371,14 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('click', function(e) {
         const link = e.target.closest('a');
         
-        // Validaciones para usar AJAX
         if (link && 
             link.href && 
             link.hostname === window.location.hostname &&
             !link.hasAttribute('download') &&
             !link.hasAttribute('target') &&
             !link.classList.contains('no-ajax') &&
-            !link.hasAttribute('data-bs-toggle') && // Excluir modales/dropdowns de Bootstrap
-            !link.hasAttribute('data-toggle') && // Bootstrap 4
+            !link.hasAttribute('data-bs-toggle') &&
+            !link.hasAttribute('data-toggle') &&
             link.getAttribute('href') !== '#' &&
             !link.getAttribute('href')?.startsWith('#') &&
             !link.getAttribute('href')?.includes('javascript:')) {
@@ -370,19 +388,16 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const url = link.href;
             
-            // Indicador de carga
             contentWrapper.style.transition = 'opacity 0.3s';
             contentWrapper.style.opacity = '0.5';
             contentWrapper.style.pointerEvents = 'none';
             
-            // Mostrar loader (opcional)
             const loader = document.createElement('div');
             loader.id = 'ajax-loader';
             loader.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9999;';
             loader.innerHTML = '<div class="spinner-border text-primary" role="status"><span class="visually-hidden">Cargando...</span></div>';
             document.body.appendChild(loader);
             
-            // Cargar contenido vía AJAX
             fetch(url, {
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',
@@ -402,21 +417,31 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (newContent) {
                     // Limpiar event listeners anteriores de Bootstrap
                     if (typeof bootstrap !== 'undefined') {
-                        // Destruir tooltips activos
+                        // Destruir tooltips
                         const tooltips = contentWrapper.querySelectorAll('[data-bs-toggle="tooltip"]');
                         tooltips.forEach(el => {
                             const instance = bootstrap.Tooltip.getInstance(el);
                             if (instance) instance.dispose();
                         });
                         
-                        // Destruir popovers activos
+                        // Destruir popovers
                         const popovers = contentWrapper.querySelectorAll('[data-bs-toggle="popover"]');
                         popovers.forEach(el => {
                             const instance = bootstrap.Popover.getInstance(el);
                             if (instance) instance.dispose();
                         });
                         
-                        // Cerrar modales abiertos
+                        // Destruir carruseles ANTES de actualizar contenido
+                        const carousels = contentWrapper.querySelectorAll('.carousel');
+                        carousels.forEach(el => {
+                            const instance = bootstrap.Carousel.getInstance(el);
+                            if (instance) {
+                                instance.pause();
+                                instance.dispose();
+                            }
+                        });
+                        
+                        // Cerrar modales
                         const modals = document.querySelectorAll('.modal.show');
                         modals.forEach(modalEl => {
                             const instance = bootstrap.Modal.getInstance(modalEl);
@@ -440,7 +465,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         currentDesc.setAttribute('content', newDesc.getAttribute('content'));
                     }
                     
-                    // Actualizar canonical (SEO)
+                    // Actualizar canonical
                     const newCanonical = doc.querySelector('link[rel="canonical"]');
                     const currentCanonical = document.querySelector('link[rel="canonical"]');
                     if (newCanonical && currentCanonical) {
@@ -453,7 +478,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Scroll arriba
                     window.scrollTo({top: 0, behavior: 'smooth'});
                     
-                    // Pequeño delay para que el DOM se estabilice
+                    // Delay más largo para que las imágenes del carrusel se carguen
                     setTimeout(() => {
                         // Reinicializar TODO
                         reinitAllComponents();
@@ -465,7 +490,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         // Remover loader
                         const loaderEl = document.getElementById('ajax-loader');
                         if (loaderEl) loaderEl.remove();
-                    }, 50);
+                    }, 100); // Aumentado a 100ms para carruseles
                     
                     // Google Analytics
                     if (typeof gtag !== 'undefined') {
@@ -486,7 +511,6 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .catch(error => {
                 console.error('Error en navegación AJAX:', error);
-                // En caso de error, navegar normalmente
                 window.location.href = url;
             });
         }
@@ -517,6 +541,16 @@ document.addEventListener('DOMContentLoaded', function() {
                         const instance = bootstrap.Tooltip.getInstance(el);
                         if (instance) instance.dispose();
                     });
+                    
+                    // Limpiar carruseles
+                    const carousels = contentWrapper.querySelectorAll('.carousel');
+                    carousels.forEach(el => {
+                        const instance = bootstrap.Carousel.getInstance(el);
+                        if (instance) {
+                            instance.pause();
+                            instance.dispose();
+                        }
+                    });
                 }
                 
                 contentWrapper.innerHTML = newContent.innerHTML;
@@ -530,7 +564,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 setTimeout(() => {
                     reinitAllComponents();
-                }, 50);
+                }, 100);
             }
         })
         .catch(error => {
@@ -543,7 +577,9 @@ document.addEventListener('DOMContentLoaded', function() {
     window.history.replaceState({path: window.location.href}, '', window.location.href);
     
     // Inicializar componentes en la carga inicial
-    reinitAllComponents();
+    setTimeout(() => {
+        reinitAllComponents();
+    }, 100);
 });
 </script>
 <?php endif; ?>
