@@ -4,10 +4,26 @@
  * Autor: Edisson Medina Bedoya
  **********************************************/
 
-// === CONFIGURACIÓN ===
-$cityName = "Santa Marta";
-$latitude  = 11.2408;
-$longitude = -74.1990;
+// === Si el visitante permite geolocalización, usar sus coordenadas ===
+if (isset($_GET['lat']) && isset($_GET['lon'])) {
+  $latitude  = floatval($_GET['lat']);
+  $longitude = floatval($_GET['lon']);
+
+  // Obtener ciudad aproximada
+  $geoUrl = "https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=$latitude&longitude=$longitude&localityLanguage=es";
+  $geoResponse = @file_get_contents($geoUrl);
+  if ($geoResponse) {
+    $geo = json_decode($geoResponse, true);
+    $cityName = $geo['city'] ?? $geo['locality'] ?? 'Ubicación actual';
+  } else {
+    $cityName = "Ubicación actual";
+  }
+} else {
+  // === CONFIGURACIÓN PREDETERMINADA ===
+  $cityName = "Santa Marta";
+  $latitude  = 11.2408;
+  $longitude = -74.1990;
+}
 
 // === Consultar la API ===
 $apiUrl = "https://api.open-meteo.com/v1/forecast?latitude=$latitude&longitude=$longitude&current_weather=true&timezone=auto";
@@ -105,3 +121,23 @@ $weather_icon_svg = getWeatherIconSVG($weatherCode);
   </div>
 </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(pos) {
+      const lat = pos.coords.latitude;
+      const lon = pos.coords.longitude;
+
+      // Recargar el widget con coordenadas
+      fetch('<?= basename(__FILE__) ?>?lat=' + lat + '&lon=' + lon)
+        .then(r => r.text())
+        .then(html => {
+          document.querySelector('.weather-widget').outerHTML =
+            new DOMParser().parseFromString(html, 'text/html').querySelector('.weather-widget').outerHTML;
+        })
+        .catch(console.error);
+    });
+  }
+});
+</script>
