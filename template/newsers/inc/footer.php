@@ -234,7 +234,7 @@
 <script src="<?= URLBASE ?>/template/newsers/js/main.js?<?= time(); ?>"></script>
 
 
-<?php include __DIR__ . '/inc/core/player.php'; ?>
+<?php include __DIR__ . '/../../../inc/core/player.php'; ?>
 
 
 
