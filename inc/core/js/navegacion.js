@@ -194,10 +194,10 @@ try {
 } catch (err) {
   console.warn('No se pudo recargar main.js:', err);
 }
-
-}
-
-// ===============================
+	
+	
+	
+	// ===============================
 // CORRECCIÓN SOLO PARA TEMA "NEWS"
 // ===============================
 document.addEventListener('DOMContentLoaded', () => {
@@ -247,6 +247,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const observer = new MutationObserver(() => fixNewsTheme());
   observer.observe(pageContent, { childList: true, subtree: true });
 });
+
+}
+
+
 
 
 
