@@ -71,6 +71,8 @@
     <a href="#" class="btn btn-dark back-to-top"><i class="fa fa-angle-up"></i></a>
 
 
+
+	</div>
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
@@ -89,7 +91,7 @@
 
 <?= $sys['code_footer'] ?>
 
-</div>
+
 <?php include __DIR__ . '/../../../inc/core/player.php'; ?>
 </body>
 
