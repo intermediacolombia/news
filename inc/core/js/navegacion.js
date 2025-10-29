@@ -170,82 +170,36 @@ function reactivarScripts() {
     showPost();
     window.newsTickerInterval = setInterval(showPost, 4500);
   }
+	
+	// ===============================
+// Reejecutar main.js si existe
+// ===============================
+try {
+  const mainPath = `${window.URLBASE}/template/news/js/main.js`;
+  const existing = document.querySelector(`script[src="${mainPath}"]`);
+
+  // Si el archivo ya estaba cargado, recargarlo para reactivar sliders
+  if (existing) {
+    const clone = document.createElement('script');
+    clone.src = mainPath + '?v=' + Date.now(); // cache-buster
+    clone.async = false;
+    document.head.appendChild(clone);
+  } else {
+    // Si no estaba en el DOM, insertarlo
+    const s = document.createElement('script');
+    s.src = mainPath;
+    s.async = false;
+    document.head.appendChild(s);
+  }
+} catch (err) {
+  console.warn('No se pudo recargar main.js:', err);
+}
+
 }
 
 
 
 
-
-// ===============================
-// PREVENIR REINICIO DE SLIDERS
-// ===============================
-document.addEventListener('DOMContentLoaded', () => {
-  // Evita que OwlCarousel se reinicie múltiples veces
-  const observer = new MutationObserver(() => {
-    if (typeof $ !== 'undefined' && $('.owl-carousel').length) {
-      $('.owl-carousel').not('.carousel-item-1, .carousel-item-2, .carousel-item-3, .carousel-item-4').each(function () {
-        const $this = $(this);
-        // Si ya tiene la clase 'owl-loaded', significa que ya está inicializado
-        if ($this.hasClass('owl-loaded')) return;
-        // Inicializa solo si no estaba cargado
-        if (typeof $.fn.owlCarousel === 'function') {
-          $this.owlCarousel({
-            autoplay: false,       // evita movimiento automático
-            loop: false,           // evita bucles infinitos
-            margin: 25,
-            nav: true,
-            dots: false,
-            navText: [
-              '<i class="bi bi-chevron-left"></i>',
-              '<i class="bi bi-chevron-right"></i>'
-            ],
-            responsive: {
-              0: { items: 1 },
-              768: { items: 2 },
-              992: { items: 3 }
-            }
-          });
-        }
-      });
-    }
-  });
-
-  // Observa cambios en el contenedor principal (donde se reemplaza el contenido AJAX)
-  const pageContent = document.getElementById('pageContent');
-  if (pageContent) {
-    observer.observe(pageContent, { childList: true, subtree: true });
-  }
-});
-
-
-
-// ===============================
-// RESETEAR SLIDERS DUPLICADOS
-// ===============================
-document.addEventListener('DOMContentLoaded', () => {
-  const fixOwlDuplicados = () => {
-    document.querySelectorAll('.owl-carousel.owl-loaded').forEach(carousel => {
-      // Detectar si Owl duplicó estructura interna
-      const wrappers = carousel.querySelectorAll('.owl-stage-outer');
-      if (wrappers.length > 1) {
-        // Eliminar todo y reconstruir limpio
-        const originalHTML = carousel.innerHTML;
-        $(carousel).trigger('destroy.owl.carousel'); // destruir instancia previa
-        carousel.innerHTML = originalHTML;
-      }
-    });
-  };
-
-  // Ejecutar al cargar
-  fixOwlDuplicados();
-
-  // Ejecutar cada vez que se cambie contenido AJAX
-  const pageContent = document.getElementById('pageContent');
-  if (pageContent) {
-    const observerFix = new MutationObserver(() => fixOwlDuplicados());
-    observerFix.observe(pageContent, { childList: true, subtree: true });
-  }
-});
 
 
 
