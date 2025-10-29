@@ -194,6 +194,43 @@ try {
 } catch (err) {
   console.warn('No se pudo recargar main.js:', err);
 }
+	
+	
+	
+	
+	try {
+  if (typeof initAllCarousels === 'function') {
+    // Si main.js expone su función global (por ejemplo initAllCarousels), la ejecutamos
+    initAllCarousels(document.getElementById('pageContent'));
+  } else if (typeof $ !== 'undefined' && $.fn.owlCarousel) {
+    // Si no existe función global, solo refrescamos los sliders visibles
+    $('#pageContent .owl-carousel').each(function () {
+      const $this = $(this);
+      if (!$this.hasClass('owl-loaded')) {
+        $this.owlCarousel({
+          autoplay: false,
+          loop: false,
+          margin: 25,
+          nav: true,
+          dots: false,
+          navText: [
+            '<i class="bi bi-chevron-left"></i>',
+            '<i class="bi bi-chevron-right"></i>'
+          ],
+          responsive: {
+            0: { items: 1 },
+            768: { items: 2 },
+            992: { items: 3 }
+          }
+        });
+      }
+    });
+  }
+} catch (err) {
+  console.warn('No se pudo reactivar main.js ni los sliders:', err);
+}
+	
+	
 
 }
 
