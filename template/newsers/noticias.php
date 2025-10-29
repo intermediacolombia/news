@@ -415,12 +415,12 @@ body {
 }
 
 .pagination .page-item .page-link:hover {
-  background-color: #0d6efd;
+  background-color: var(--primary);
   color: #fff;
 }
 
 .pagination .page-item.active .page-link {
-  background-color: #0d6efd;
+  background-color: var(--primary);
   color: #fff;
   box-shadow: 0 3px 10px rgba(13,110,253,0.3);
 }
