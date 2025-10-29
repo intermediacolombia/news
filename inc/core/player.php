@@ -14,36 +14,35 @@ document.addEventListener('DOMContentLoaded', function() {
     const contentWrapper = document.getElementById('pageContent');
     if (!contentWrapper) return;
 
-    // ===========================
-    // Clases o elementos persistentes
-    // ===========================
+    // ============================================
+    // Configuración: Clases / elementos persistentes
+    // ============================================
     const persistentClasses = [
         'owl-carousel',
-        'owl-carousel-1',
         'keep-alive',
         'no-reload',
         'music-player',
         'sticky-widget'
     ];
 
-    // Selectores completos (por ejemplo, tu player)
+    // Selectores de elementos que NUNCA deben recargarse
     const persistentSelectors = [
-        '.ajax-persist' // tu reproductor iframe debe tener esta clase
+        '.ajax-persist' // tu reproductor
     ];
 
     function shouldPreserveElement(el) {
         return persistentClasses.some(cls => el.classList.contains(cls));
     }
 
-    // ===========================
-    // Reinicializar componentes
-    // ===========================
+    // ============================================
+    // Reinicializar componentes dinámicos
+    // ============================================
     function reinitAllComponents() {
-        // 1. DESTRUIR Owl Carousel (excepto los que se preservan)
+        // Destruir Owl Carousel (excepto los persistentes)
         if (window.jQuery && typeof jQuery.fn.owlCarousel !== 'undefined') {
             jQuery('.owl-carousel').each(function() {
                 const $carousel = jQuery(this);
-                if (shouldPreserveElement(this)) return; // no destruir los "protegidos"
+                if (shouldPreserveElement(this)) return;
                 if ($carousel.data('owl.carousel')) {
                     $carousel.trigger('destroy.owl.carousel');
                     $carousel.removeClass('owl-loaded owl-drag owl-grab');
@@ -52,40 +51,27 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
-        // 2. Reinicializar Bootstrap
+        // Reinicializar Bootstrap
         if (typeof bootstrap !== 'undefined') {
-            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            tooltipTriggerList.map(el => new bootstrap.Tooltip(el));
+            document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => new bootstrap.Tooltip(el));
+            document.querySelectorAll('[data-bs-toggle="popover"]').forEach(el => new bootstrap.Popover(el));
+            document.querySelectorAll('.dropdown-toggle').forEach(el => new bootstrap.Dropdown(el));
+            document.querySelectorAll('.offcanvas').forEach(el => new bootstrap.Offcanvas(el));
+            document.querySelectorAll('.toast').forEach(el => new bootstrap.Toast(el));
 
-            const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
-            popoverTriggerList.map(el => new bootstrap.Popover(el));
-
-            const dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
-            dropdownElementList.map(el => new bootstrap.Dropdown(el));
-
-            const modalElementList = [].slice.call(document.querySelectorAll('.modal'));
-            modalElementList.map(el => new bootstrap.Modal(el));
-
-            const carouselElementList = [].slice.call(document.querySelectorAll('.carousel'));
-            carouselElementList.forEach(el => {
-                const oldInstance = bootstrap.Carousel.getInstance(el);
-                if (oldInstance) oldInstance.dispose();
-                const newCarousel = new bootstrap.Carousel(el);
-                if (el.getAttribute('data-bs-ride') === 'carousel') newCarousel.cycle();
+            document.querySelectorAll('.carousel').forEach(el => {
+                const old = bootstrap.Carousel.getInstance(el);
+                if (old) old.dispose();
+                const c = new bootstrap.Carousel(el);
+                if (el.getAttribute('data-bs-ride') === 'carousel') c.cycle();
             });
-
-            const toastElList = [].slice.call(document.querySelectorAll('.toast'));
-            toastElList.map(el => new bootstrap.Toast(el));
-
-            const offcanvasElementList = [].slice.call(document.querySelectorAll('.offcanvas'));
-            offcanvasElementList.map(el => new bootstrap.Offcanvas(el));
         }
 
-        // 3. REINICIALIZAR Owl Carousel (solo si no es persistente)
+        // Reinstanciar Owl Carousel
         if (window.jQuery && typeof jQuery.fn.owlCarousel !== 'undefined') {
-            setTimeout(function() {
+            setTimeout(() => {
                 jQuery('.owl-carousel').each(function() {
-                    if (shouldPreserveElement(this)) return; // no reinicializar los persistentes
+                    if (shouldPreserveElement(this)) return;
                     const $carousel = jQuery(this);
                     const options = {
                         loop: $carousel.data('loop') ?? true,
@@ -106,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 50);
         }
 
-        // 4. Ejecutar scripts inline nuevos
+        // Ejecutar scripts inline nuevos
         const scripts = contentWrapper.querySelectorAll('script');
         scripts.forEach(oldScript => {
             const newScript = document.createElement('script');
@@ -122,13 +108,13 @@ document.addEventListener('DOMContentLoaded', function() {
             oldScript.parentNode.replaceChild(newScript, oldScript);
         });
 
-        // 5. Reinicializar jQuery o lanzar eventos
+        // Reinicializar jQuery o lanzar eventos
         if (window.jQuery) jQuery(document).trigger('contentLoaded');
         window.dispatchEvent(new CustomEvent('pageContentLoaded', { detail: { container: contentWrapper } }));
     }
 
     // ============================================
-    //  Interceptar enlaces y preservar elementos
+    // Interceptar enlaces y preservar elementos
     // ============================================
     document.addEventListener('click', function(e) {
         const link = e.target.closest('a');
@@ -169,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const doc = parser.parseFromString(html, 'text/html');
                 const newContent = doc.querySelector('#pageContent');
                 if (newContent) {
-                    // ?? Guardar los persistentes
+                    // Guardar los persistentes
                     const persistents = [];
                     persistentSelectors.forEach(sel => {
                         document.querySelectorAll(sel).forEach(el => {
@@ -180,7 +166,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Reemplazar contenido
                     contentWrapper.innerHTML = newContent.innerHTML;
 
-                    // ?? Restaurar los persistentes (player, etc.)
+                    // Restaurar los persistentes (player, etc.)
                     persistents.forEach(({ el, parent, next }) => {
                         if (!document.body.contains(el)) {
                             if (next) parent.insertBefore(el, next);
@@ -188,14 +174,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     });
 
-                    // Reinit
                     reinitAllComponents();
                     contentWrapper.style.opacity = '1';
                     contentWrapper.style.pointerEvents = 'auto';
                     const loaderEl = document.getElementById('ajax-loader');
                     if (loaderEl) loaderEl.remove();
 
-                    // Actualizar título
                     const newTitle = doc.querySelector('title');
                     if (newTitle) document.title = newTitle.textContent;
 
@@ -213,5 +197,6 @@ document.addEventListener('DOMContentLoaded', function() {
     setTimeout(() => reinitAllComponents(), 150);
 });
 </script>
+
 
 <?php endif; ?>
