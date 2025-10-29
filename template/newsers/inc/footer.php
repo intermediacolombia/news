@@ -32,6 +32,7 @@
       <!-- Contacto -->
       <div class="col-lg-4">
         <div class="footer-item">
+		<p><?= htmlspecialchars($sys['info_footer']) ?></p>
           <h4 class="text-white mb-4 fw-semibold">Contáctanos</h4>
           <p class="text-secondary mb-1"><i class="fa fa-map-marker-alt text-primary me-2"></i><?= htmlspecialchars($sys['business_address'] ?? '') ?></p>
           <p class="text-secondary mb-1"><i class="fa fa-envelope text-primary me-2"></i><?= htmlspecialchars($sys['site_email'] ?? '') ?></p>
