@@ -240,12 +240,204 @@
     padding-bottom: <?= $sys['player_height'] + 10 ?? 70 ?>px!important;
 }
 </style>
+
+<!-- NUEVO PLAYER SIN IFRAME -->
+<div id="player-container" style="bottom: 0;display: flex;height: <?= $sys['player_height'] ?? 70 ?>px;left: 0;position: fixed;right: 0;width: 100%;z-index: 1500;overflow: hidden;background: #000;">
+    <audio id="radio-player" controls style="width: 100%;height: 100%;">
+        <source src="<?= $sys['code_player'] ?? '' ?>" type="audio/mpeg">
+        Tu navegador no soporta el reproductor de audio.
+    </audio>
+</div>
+
 <script>
-const direccionURL1 = `
-  <div style="bottom: 0;display: flex;height: <?= $sys['player_height'] ?? 70 ?>px;left: 0;position: fixed;right: 0;width: 100%;z-index: 1500;overflow: hidden;"><iframe src="<?= $sys['code_player'] ?? '' ?>" frameborder="0" scrolling="no" style="width: 100%;"></iframe></div>
-`;
+// Sistema de navegación AJAX sin detener el reproductor
+document.addEventListener('DOMContentLoaded', function() {
+    const contentWrapper = document.getElementById('pageContent');
+    const player = document.getElementById('radio-player');
+    
+    if (!contentWrapper || !player) return;
+    
+    // Función para reinicializar scripts
+    function reinitScripts() {
+        const scripts = contentWrapper.querySelectorAll('script');
+        scripts.forEach(oldScript => {
+            const newScript = document.createElement('script');
+            
+            if (oldScript.src) {
+                newScript.src = oldScript.src;
+                // Agregar timestamp para forzar recarga si es necesario
+                if (oldScript.src.includes('?')) {
+                    newScript.src = oldScript.src;
+                }
+            } else {
+                newScript.textContent = oldScript.textContent;
+            }
+            
+            Array.from(oldScript.attributes).forEach(attr => {
+                newScript.setAttribute(attr.name, attr.value);
+            });
+            
+            oldScript.parentNode.replaceChild(newScript, oldScript);
+        });
+        
+        // Reinicializar jQuery si existe
+        if (window.jQuery) {
+            jQuery(document).trigger('contentLoaded');
+        }
+        
+        // Evento personalizado para tus scripts
+        window.dispatchEvent(new Event('pageContentLoaded'));
+    }
+    
+    // Interceptar clicks en enlaces internos
+    document.addEventListener('click', function(e) {
+        const link = e.target.closest('a');
+        
+        // Validaciones para usar AJAX
+        if (link && 
+            link.href && 
+            link.hostname === window.location.hostname &&
+            !link.hasAttribute('download') &&
+            !link.hasAttribute('target') &&
+            !link.classList.contains('no-ajax') &&
+            link.getAttribute('href') !== '#' &&
+            !link.getAttribute('href')?.startsWith('#')) {
+            
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const url = link.href;
+            
+            // Indicador de carga (opcional)
+            contentWrapper.style.opacity = '0.6';
+            contentWrapper.style.pointerEvents = 'none';
+            
+            // Cargar contenido vía AJAX
+            fetch(url, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-Ajax-Navigation': 'true'
+                },
+                credentials: 'same-origin'
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Error HTTP: ' + response.status);
+                return response.text();
+            })
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const newContent = doc.querySelector('#pageContent');
+                
+                if (newContent) {
+                    // Actualizar contenido
+                    contentWrapper.innerHTML = newContent.innerHTML;
+                    
+                    // Actualizar título
+                    const newTitle = doc.querySelector('title');
+                    if (newTitle) {
+                        document.title = newTitle.textContent;
+                    }
+                    
+                    // Actualizar meta description (SEO)
+                    const newDesc = doc.querySelector('meta[name="description"]');
+                    const currentDesc = document.querySelector('meta[name="description"]');
+                    if (newDesc && currentDesc) {
+                        currentDesc.setAttribute('content', newDesc.getAttribute('content'));
+                    }
+                    
+                    // Actualizar URL
+                    window.history.pushState({path: url}, '', url);
+                    
+                    // Scroll arriba
+                    window.scrollTo({top: 0, behavior: 'smooth'});
+                    
+                    // Reinicializar scripts del nuevo contenido
+                    reinitScripts();
+                    
+                    // Restaurar interacción
+                    contentWrapper.style.opacity = '1';
+                    contentWrapper.style.pointerEvents = 'auto';
+                    
+                    // Google Analytics (si lo usas)
+                    if (typeof gtag !== 'undefined') {
+                        gtag('config', 'GA_MEASUREMENT_ID', {
+                            page_path: new URL(url).pathname
+                        });
+                    }
+                    
+                    // Facebook Pixel (si lo usas)
+                    if (typeof fbq !== 'undefined') {
+                        fbq('track', 'PageView');
+                    }
+                    
+                } else {
+                    // Si no encuentra #pageContent, navegar normalmente
+                    console.warn('No se encontró #pageContent, navegando normalmente');
+                    window.location.href = url;
+                }
+            })
+            .catch(error => {
+                console.error('Error en navegación AJAX:', error);
+                // En caso de error, navegar normalmente
+                window.location.href = url;
+            });
+        }
+    });
+    
+    // Manejar botón atrás/adelante del navegador
+    window.addEventListener('popstate', function(e) {
+        if (e.state && e.state.path) {
+            fetch(e.state.path, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-Ajax-Navigation': 'true'
+                },
+                credentials: 'same-origin'
+            })
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const newContent = doc.querySelector('#pageContent');
+                
+                if (newContent) {
+                    contentWrapper.innerHTML = newContent.innerHTML;
+                    
+                    const newTitle = doc.querySelector('title');
+                    if (newTitle) {
+                        document.title = newTitle.textContent;
+                    }
+                    
+                    window.scrollTo({top: 0, behavior: 'smooth'});
+                    reinitScripts();
+                }
+            })
+            .catch(error => {
+                console.error('Error en popstate:', error);
+                location.reload();
+            });
+        } else {
+            location.reload();
+        }
+    });
+    
+    // Guardar estado inicial en el historial
+    window.history.replaceState({path: window.location.href}, '', window.location.href);
+    
+    // Prevenir que el reproductor se pause al perder el foco
+    player.addEventListener('pause', function(e) {
+        // Si no fue una pausa manual del usuario, continuar
+        if (!player.seeking && player.readyState > 2) {
+            setTimeout(() => {
+                if (player.paused && !player.ended) {
+                    player.play().catch(err => console.log('Auto-play prevención:', err));
+                }
+            }, 100);
+        }
+    });
+});
 </script>
-<script src="<?= URLBASE ?>/inc/core/js/navegacion.js?<?= time(); ?>"></script>
 <?php endif; ?>
 
 
