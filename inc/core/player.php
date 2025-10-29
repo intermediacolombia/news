@@ -328,35 +328,57 @@
     });
   }
 
-  // === Reinicializar Owl Carousel ===
-  function reinitOwlCarousels() {
-    if (!window.jQuery || !jQuery.fn.owlCarousel) return;
-    setTimeout(() => {
-      jQuery('.owl-carousel').each(function () {
-        const $c = jQuery(this);
-        if ($c.data('owl.carousel')) {
-          $c.trigger('destroy.owl.carousel');
-          $c.removeClass('owl-loaded owl-drag owl-grab');
-          $c.find('.owl-stage-outer').children().unwrap();
-        }
-        const options = {
-          loop: $c.data('loop') ?? true,
-          margin: $c.data('margin') || 10,
-          nav: $c.data('nav') ?? true,
-          dots: $c.data('dots') ?? true,
-          autoplay: $c.data('autoplay') ?? false,
-          autoplayTimeout: $c.data('autoplay-timeout') || 3000,
-          autoplayHoverPause: $c.data('autoplay-hover-pause') ?? true,
-          responsive: $c.data('responsive') || {
-            0: { items: $c.data('items-mobile') || 1 },
-            600: { items: $c.data('items-tablet') || 2 },
-            1000: { items: $c.data('items') || 3 }
-          }
-        };
-        $c.owlCarousel(options);
-      });
-    }, 200);
+  
+  // === Reinicializar Owl Carousel (versión mejorada) ===
+function reinitOwlCarousels() {
+  if (!window.jQuery || !jQuery.fn.owlCarousel) return;
+
+  // Esperar a que todas las fuentes (Bootstrap Icons incluidas) estén cargadas
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => initOwl());
+  } else {
+    // Fallback si el navegador no soporta document.fonts
+    setTimeout(initOwl, 250);
   }
+
+  function initOwl() {
+    jQuery('.owl-carousel').each(function () {
+      const $c = jQuery(this);
+
+      // Destruir instancia previa si existe
+      if ($c.data('owl.carousel')) {
+        $c.trigger('destroy.owl.carousel');
+        $c.removeClass('owl-loaded owl-drag owl-grab');
+        $c.find('.owl-stage-outer').children().unwrap();
+      }
+
+      // Configuración automática
+      const options = {
+        loop: $c.data('loop') ?? true,
+        margin: $c.data('margin') || 10,
+        nav: $c.data('nav') ?? true,
+        dots: $c.data('dots') ?? true,
+        autoplay: $c.data('autoplay') ?? false,
+        autoplayTimeout: $c.data('autoplay-timeout') || 3000,
+        autoplayHoverPause: $c.data('autoplay-hover-pause') ?? true,
+        responsive: $c.data('responsive') || {
+          0: { items: $c.data('items-mobile') || 1 },
+          600: { items: $c.data('items-tablet') || 2 },
+          1000: { items: $c.data('items') || 3 }
+        },
+        // Flechas con íconos Bootstrap
+        navText: [
+          '<i class="bi bi-chevron-left"></i>',
+          '<i class="bi bi-chevron-right"></i>'
+        ]
+      };
+
+      // Iniciar
+      $c.owlCarousel(options);
+    });
+  }
+}
+
 
   // === Reemplazar #appRoot y reinicializar ===
   function swapAppRoot(fromDoc) {
