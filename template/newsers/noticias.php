@@ -258,6 +258,192 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
     </div>
 </div>
 
+<style>
+/* ===============================
+   ESTILOS MODERNOS DE LISTADO DE NOTICIAS
+   =============================== */
+body {
+  background-color: #f5f7fa;
+  font-family: "Roboto", sans-serif;
+  color: #333;
+}
+
+/* ======= Título de categoría ======= */
+.title-widgets {
+  border-left: 4px solid #0d6efd;
+  background-color: #f8f9fa;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  padding: 0.75rem 1rem;
+  transition: all 0.3s ease;
+}
+
+.title-widgets:hover {
+  background-color: #eef3ff;
+}
+
+.title-widgets h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #222;
+}
+
+.title-widgets a {
+  font-weight: 500;
+  color: #6c757d;
+  text-decoration: none;
+}
+
+.title-widgets a:hover {
+  color: #0d6efd;
+}
+
+/* ======= Tarjeta principal de noticia ======= */
+.position-relative.mb-3 {
+  background: #fff;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  border: none;
+}
+
+.position-relative.mb-3:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+
+.position-relative.mb-3 img {
+  height: 220px;
+  object-fit: cover;
+  border-radius: 0.75rem 0.75rem 0 0;
+  transition: transform 0.5s ease;
+}
+
+.position-relative.mb-3:hover img {
+  transform: scale(1.05);
+}
+
+/* ======= Contenido de noticia ======= */
+.overlay {
+  padding: 1.25rem;
+  background-color: #fff;
+}
+
+.overlay a.h4 {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #212529;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.overlay a.h4:hover {
+  color: #0d6efd;
+}
+
+.overlay p {
+  font-size: 0.95rem;
+  color: #666;
+  margin-top: 0.5rem;
+  line-height: 1.4;
+}
+
+.overlay .mb-2 a {
+  color: #0d6efd;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.overlay .mb-2 a:hover {
+  text-decoration: underline;
+}
+
+/* ======= Mini posts ======= */
+.d-flex.mb-3 {
+  background-color: #fff;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+  transition: all 0.3s ease;
+}
+
+.d-flex.mb-3:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+}
+
+.d-flex.mb-3 img {
+  border-radius: 0.75rem 0 0 0.75rem;
+}
+
+.d-flex.mb-3 .h6 {
+  font-weight: 600;
+  color: #222;
+}
+
+.d-flex.mb-3 .h6:hover {
+  color: #0d6efd;
+}
+
+/* ======= Banner de publicidad ======= */
+.mb-3.pb-3 img {
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+}
+
+.mb-3.pb-3 img:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+/* ======= Paginación moderna ======= */
+.pagination {
+  margin-top: 1rem;
+}
+
+.pagination .page-item .page-link {
+  border: none;
+  border-radius: 0.5rem;
+  margin: 0 0.2rem;
+  color: #0d6efd;
+  background-color: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+}
+
+.pagination .page-item .page-link:hover {
+  background-color: #0d6efd;
+  color: #fff;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: #0d6efd;
+  color: #fff;
+  box-shadow: 0 3px 10px rgba(13,110,253,0.3);
+}
+
+/* ======= Sidebar ======= */
+.col-lg-4 {
+  border-left: 1px solid #dee2e6;
+}
+
+@media (max-width: 991px) {
+  .col-lg-4 {
+    border-left: none;
+    margin-top: 2rem;
+  }
+}
+
+/* ======= Animaciones pequeñas ======= */
+a, img, .pagination .page-link {
+  transition: all 0.3s ease;
+}
+</style>
+
+
 <!-- News With Sidebar End -->
 
 
