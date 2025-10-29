@@ -87,5 +87,5 @@
 </head>
 
 <body>
-
+<div id="appRoot">
     <?php include __DIR__ . "/menu-header.php"; ?>
