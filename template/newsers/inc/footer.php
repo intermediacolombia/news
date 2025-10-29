@@ -152,6 +152,7 @@
 
 .footer-item a {
   transition: all 0.3s ease;
+	color: #fff !important;
 }
 
 .footer-item a:hover {
