@@ -20,9 +20,9 @@ if (isset($_GET['lat']) && isset($_GET['lon'])) {
   }
 } else {
   // === CONFIGURACIÓN PREDETERMINADA ===
-  $cityName = "Santa Marta";
-  $latitude  = 11.2408;
-  $longitude = -74.1990;
+    $cityName = "Bogotá";
+  $latitude  = 4.7110;
+  $longitude = -74.0721;
 }
 
 // === Consultar la API ===
