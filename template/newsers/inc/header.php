@@ -1,3 +1,4 @@
+<div id="mainWrapper">
 <!DOCTYPE html>
 <html lang="es">
 

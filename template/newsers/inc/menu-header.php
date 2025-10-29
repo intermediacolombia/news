@@ -1,4 +1,4 @@
-<div id="mainWrapper">
+
 	
 <div class="container-fluid sticky-top px-0">
 
