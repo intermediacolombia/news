@@ -24,7 +24,8 @@ document.addEventListener('DOMContentLoaded', function() {
         'keep-alive',
         'no-reload',
         'music-player',
-        'sticky-widget'
+        'sticky-widget',
+		'ps-2'
     ];
 
     // Selectores de elementos que NUNCA deben recargarse
