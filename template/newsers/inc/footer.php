@@ -226,7 +226,7 @@
 
 
 
-</div>
+
 
 <!-- JavaScript Libraries -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
@@ -239,6 +239,7 @@
 <script src="<?= URLBASE ?>/template/newsers/js/main.js?<?= time(); ?>"></script>
 <?= $sys['code_footer'] ?? '' ?>
 
+</div>
 <?php include __DIR__ . '/../../../inc/core/player.php'; ?>
 </body>
 

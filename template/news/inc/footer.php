@@ -1,4 +1,4 @@
-</main>
+
 <!-- Footer Start -->
     <div class="container-fluid bg-light pt-5 px-sm-3 px-md-5">
         <div class="row">
@@ -85,9 +85,12 @@
     <script src="<?php echo URLBASE; ?>/template/news/js/main.js?<?php echo time();?>"></script>
 
 
-	<?php include __DIR__ . '/../../../inc/core/player.php'; ?>
+	
 
 <?= $sys['code_footer'] ?>
+
+</div>
+<?php include __DIR__ . '/../../../inc/core/player.php'; ?>
 </body>
 
 </html>

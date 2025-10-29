@@ -138,3 +138,4 @@
 </head>
 <body>
 	<?php include __DIR__ . "/menu-header.php";?>
+	<div id="appRoot">
