@@ -208,7 +208,8 @@
 
 <script>
 (function () {
-  // === 1) Utilidades para assets en <head> ===
+
+  // === 1) Funciones auxiliares ===
   function assetKey(el) {
     if (el.tagName === 'LINK') return (el.getAttribute('rel') || '') + '|' + new URL(el.href, location.href).href;
     if (el.tagName === 'SCRIPT' && el.src) return new URL(el.src, location.href).href;
@@ -237,21 +238,18 @@
     };
   }
 
-  // Agrega los <link rel="stylesheet"> que falten. No elimina los existentes.
+  // === 2) Cargar librerías del <head> si faltan ===
   function addMissingLinks(newLinks, currKeys) {
-    const toAppend = [];
     newLinks.forEach(link => {
       const key = assetKey(link);
       if (!currKeys.has(key)) {
         const n = document.createElement('link');
         Array.from(link.attributes).forEach(a => n.setAttribute(a.name, a.value));
-        toAppend.push(n);
+        document.head.appendChild(n);
       }
     });
-    toAppend.forEach(n => document.head.appendChild(n));
   }
 
-  // Agrega scripts externos del head que falten, de forma secuencial (respeta dependencias).
   function addMissingHeadScriptsSequential(newScripts, currKeys) {
     const list = newScripts
       .filter(s => !currKeys.has(assetKey(s)))
@@ -264,57 +262,83 @@
 
     return list.reduce((p, s) => p.then(() => new Promise((res, rej) => {
       s.onload = () => res();
-      s.onerror = () => rej(new Error('Fallo cargando script de <head>: ' + (s.src || 'inline')));
+      s.onerror = () => rej(new Error('Error al cargar script: ' + (s.src || 'inline')));
       document.head.appendChild(s);
       if (!s.src) res();
     })), Promise.resolve());
   }
 
-  // === 2) Reemplazar SOLO el interior de #appRoot ===
+  // === 3) Reemplazar contenido dinámico (#appRoot) ===
   function swapAppRoot(fromDoc) {
     const newApp = fromDoc.querySelector('#appRoot');
     const app = document.getElementById('appRoot');
     if (!app || !newApp) return false;
 
     app.innerHTML = newApp.innerHTML;
-
-    // Ejecutar scripts en orden dentro del nuevo #appRoot
     return executeScriptsSequential(app).then(() => {
-      // Re-inicializar Owl Carousel automáticamente si está disponible
+      reinitBootstrapComponents();
       reinitOwlCarousels();
     });
   }
 
-  // Ejecuta scripts (externos e inline) en orden. Respeta dependencias.
+  // === 4) Ejecutar scripts inline/externos de la nueva página ===
   function executeScriptsSequential(container) {
     const scripts = Array.from(container.querySelectorAll('script'));
     const tasks = scripts.map(old => () => new Promise((resolve, reject) => {
       const s = document.createElement('script');
       Array.from(old.attributes).forEach(a => s.setAttribute(a.name, a.value));
       if (!old.hasAttribute('async')) s.async = false;
-
-      if (old.parentNode) {
-        old.parentNode.insertBefore(s, old);
-        old.parentNode.removeChild(old);
-      }
-
+      old.parentNode.insertBefore(s, old);
+      old.parentNode.removeChild(old);
       if (s.src) {
         s.onload = () => resolve();
-        s.onerror = () => reject(new Error('Fallo cargando script del body: ' + s.src));
+        s.onerror = () => reject(new Error('Error al cargar script: ' + s.src));
       } else {
         s.textContent = old.textContent || '';
         resolve();
       }
     }));
-
     return tasks.reduce((p, task) => p.then(task), Promise.resolve());
   }
 
-  // === 3) Compatibilidad automática con Owl Carousel ===
+  // === 5) Reinicializar Bootstrap ===
+  function reinitBootstrapComponents() {
+    if (typeof bootstrap === 'undefined') return;
+
+    const tooltipList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipList.map(el => new bootstrap.Tooltip(el));
+
+    const popoverList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+    popoverList.map(el => new bootstrap.Popover(el));
+
+    const dropdownList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
+    dropdownList.map(el => new bootstrap.Dropdown(el));
+
+    const offcanvasList = [].slice.call(document.querySelectorAll('.offcanvas'));
+    offcanvasList.map(el => new bootstrap.Offcanvas(el));
+
+    const toastList = [].slice.call(document.querySelectorAll('.toast'));
+    toastList.map(el => new bootstrap.Toast(el));
+
+    const modalList = [].slice.call(document.querySelectorAll('.modal'));
+    modalList.map(el => new bootstrap.Modal(el));
+
+    const carouselList = [].slice.call(document.querySelectorAll('.carousel'));
+    carouselList.map(el => {
+      const existing = bootstrap.Carousel.getInstance(el);
+      if (existing) existing.dispose();
+      const c = new bootstrap.Carousel(el, {
+        interval: el.getAttribute('data-bs-interval') || 5000,
+        ride: el.getAttribute('data-bs-ride') || false,
+        wrap: el.getAttribute('data-bs-wrap') !== 'false'
+      });
+      if (el.getAttribute('data-bs-ride') === 'carousel') c.cycle();
+    });
+  }
+
+  // === 6) Reinicializar Owl Carousel ===
   function reinitOwlCarousels() {
     if (!window.jQuery || !jQuery.fn.owlCarousel) return;
-
-    // Espera un pequeño delay para asegurar que el DOM esté renderizado
     setTimeout(() => {
       jQuery('.owl-carousel').each(function () {
         const $c = jQuery(this);
@@ -339,32 +363,30 @@
         };
         $c.owlCarousel(options);
       });
-    }, 100);
+    }, 150);
   }
 
-  // === 4) Aplicar documento nuevo: <head> (add-only) + #appRoot ===
+  // === 7) Aplicar nuevo documento ===
   function fullyApplyDocument(fromDoc) {
     const curr = currentHeadAssets();
     const nxt = mapHeadAssets(fromDoc);
-
     addMissingLinks(nxt.links, curr.linkKeys);
-
     return addMissingHeadScriptsSequential(nxt.scripts, curr.scriptKeys)
       .then(() => {
-        const swappedOrPromise = swapAppRoot(fromDoc);
-        if (swappedOrPromise === false) {
+        const result = swapAppRoot(fromDoc);
+        if (result === false) {
           location.href = location.href;
           return;
         }
-        return swappedOrPromise;
+        return result;
       })
       .then(() => {
-        const t = fromDoc.querySelector('title');
-        if (t) document.title = t.textContent;
+        const title = fromDoc.querySelector('title');
+        if (title) document.title = title.textContent;
       });
   }
 
-  // === 5) Navegación ===
+  // === 8) Navegación AJAX principal ===
   function navigateTo(url, pushState = true) {
     const app = document.getElementById('appRoot');
     if (app) {
@@ -395,25 +417,23 @@
       });
   }
 
-  // Interceptar enlaces internos
+  // === 9) Interceptar enlaces internos ===
   document.addEventListener('click', function (e) {
     const a = e.target.closest('a');
     if (!a) return;
-
     const sameHost = a.hostname === location.hostname;
     const safe = !a.hasAttribute('download') &&
                  !a.hasAttribute('target') &&
                  a.getAttribute('href') &&
                  a.getAttribute('href') !== '#' &&
                  !a.getAttribute('href').startsWith('javascript:');
-
     if (sameHost && safe) {
       e.preventDefault();
       navigateTo(a.href, true);
     }
   });
 
-  // Back/forward
+  // === 10) Botones atrás / adelante ===
   window.addEventListener('popstate', function (e) {
     const url = (e.state && e.state.path) ? e.state.path : location.href;
     navigateTo(url, false);
