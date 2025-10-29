@@ -204,7 +204,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const loader = document.createElement('div');
             loader.id = 'ajax-loader';
             loader.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9999;';
-            loader.innerHTML = '<div class="spinner-border text-primary" role="status"><span class="visually-hidden">Cargando...</span></div>';
+            loader.innerHTML = '<div class="spinner-border text-primary" role="status"><span class="visually-hidden"></span></div>';
             document.body.appendChild(loader);
             
             fetch(url, {
