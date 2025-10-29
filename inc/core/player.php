@@ -9,14 +9,13 @@
 <div class="music-player" style="bottom: 0;display: flex;height: <?= $sys['player_height'] ?? 70 ?>px;left: 0;position: fixed;right: 0;width: 100%;z-index: 1500;overflow: hidden;">
     <iframe src="<?= $sys['code_player'] ?? '' ?>" frameborder="0" scrolling="no" style="width: 100%;"></iframe>
 </div>
-
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const contentWrapper = document.getElementById('pageContent');
     if (!contentWrapper) return;
 
     // ===========================
-    // 🔒 Clases que NO se destruyen
+    // Clases o elementos persistentes
     // ===========================
     const persistentClasses = [
         'owl-carousel',
@@ -25,6 +24,11 @@ document.addEventListener('DOMContentLoaded', function() {
         'no-reload',
         'music-player',
         'sticky-widget'
+    ];
+
+    // Selectores completos (por ejemplo, tu player)
+    const persistentSelectors = [
+        '.ajax-persist' // tu reproductor iframe debe tener esta clase
     ];
 
     function shouldPreserveElement(el) {
@@ -123,8 +127,90 @@ document.addEventListener('DOMContentLoaded', function() {
         window.dispatchEvent(new CustomEvent('pageContentLoaded', { detail: { container: contentWrapper } }));
     }
 
-    // 🔹 Aquí continúa tu código AJAX tal cual...
-    // (No se toca nada de la parte del fetch, popstate o history)
+    // ============================================
+    //  Interceptar enlaces y preservar elementos
+    // ============================================
+    document.addEventListener('click', function(e) {
+        const link = e.target.closest('a');
+        if (
+            link &&
+            link.href &&
+            link.hostname === window.location.hostname &&
+            !link.hasAttribute('download') &&
+            !link.hasAttribute('target') &&
+            !link.classList.contains('no-ajax') &&
+            !link.hasAttribute('data-bs-toggle') &&
+            !link.hasAttribute('data-toggle') &&
+            link.getAttribute('href') !== '#' &&
+            !link.getAttribute('href')?.startsWith('#') &&
+            !link.getAttribute('href')?.includes('javascript:')
+        ) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const url = link.href;
+            contentWrapper.style.transition = 'opacity 0.3s';
+            contentWrapper.style.opacity = '0.5';
+            contentWrapper.style.pointerEvents = 'none';
+
+            const loader = document.createElement('div');
+            loader.id = 'ajax-loader';
+            loader.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9999;';
+            loader.innerHTML = '<div class="spinner-border text-primary" role="status"><span class="visually-hidden">Cargando...</span></div>';
+            document.body.appendChild(loader);
+
+            fetch(url, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-Ajax-Navigation': 'true' },
+                credentials: 'same-origin'
+            })
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const newContent = doc.querySelector('#pageContent');
+                if (newContent) {
+                    // ?? Guardar los persistentes
+                    const persistents = [];
+                    persistentSelectors.forEach(sel => {
+                        document.querySelectorAll(sel).forEach(el => {
+                            persistents.push({ el, parent: el.parentNode, next: el.nextSibling });
+                        });
+                    });
+
+                    // Reemplazar contenido
+                    contentWrapper.innerHTML = newContent.innerHTML;
+
+                    // ?? Restaurar los persistentes (player, etc.)
+                    persistents.forEach(({ el, parent, next }) => {
+                        if (!document.body.contains(el)) {
+                            if (next) parent.insertBefore(el, next);
+                            else parent.appendChild(el);
+                        }
+                    });
+
+                    // Reinit
+                    reinitAllComponents();
+                    contentWrapper.style.opacity = '1';
+                    contentWrapper.style.pointerEvents = 'auto';
+                    const loaderEl = document.getElementById('ajax-loader');
+                    if (loaderEl) loaderEl.remove();
+
+                    // Actualizar t�tulo
+                    const newTitle = doc.querySelector('title');
+                    if (newTitle) document.title = newTitle.textContent;
+
+                    window.history.pushState({ path: url }, '', url);
+                } else {
+                    window.location.href = url;
+                }
+            })
+            .catch(() => (window.location.href = url));
+        }
+    });
+
+    // Estado inicial
+    window.history.replaceState({ path: window.location.href }, '', window.location.href);
+    setTimeout(() => reinitAllComponents(), 150);
 });
 </script>
 
