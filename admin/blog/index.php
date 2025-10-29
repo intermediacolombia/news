@@ -17,16 +17,43 @@ try {
   ]);
 } catch(Throwable $e) { die("DB error: ".$e->getMessage()); }
 
-$st = $pdo->query("
-  SELECT p.*,
-         GROUP_CONCAT(c.name SEPARATOR ', ') AS categorias
-  FROM blog_posts p
-  LEFT JOIN blog_post_category pc ON pc.post_id = p.id
-  LEFT JOIN blog_categories c ON c.id = pc.category_id AND c.deleted=0
-  WHERE p.deleted=0
-  GROUP BY p.id
-  ORDER BY p.created_at DESC
-");
+// =============================
+// FILTRO POR PERMISO DE USUARIO
+// =============================
+$canViewOthers = isset($_SESSION['user_permissions']) && in_array('Ver Otras Entradas', $_SESSION['user_permissions']);
+
+// Obtener el nombre del autor actual (de la sesión)
+$currentUser = $_SESSION['username'] ?? $nombre ?? null;
+
+if ($canViewOthers) {
+    // Puede ver todas las entradas
+    $sql = "
+        SELECT p.*,
+               GROUP_CONCAT(c.name SEPARATOR ', ') AS categorias
+        FROM blog_posts p
+        LEFT JOIN blog_post_category pc ON pc.post_id = p.id
+        LEFT JOIN blog_categories c ON c.id = pc.category_id AND c.deleted=0
+        WHERE p.deleted=0
+        GROUP BY p.id
+        ORDER BY p.created_at DESC
+    ";
+    $st = $pdo->query($sql);
+} else {
+    // Solo sus propias entradas
+    $sql = "
+        SELECT p.*,
+               GROUP_CONCAT(c.name SEPARATOR ', ') AS categorias
+        FROM blog_posts p
+        LEFT JOIN blog_post_category pc ON pc.post_id = p.id
+        LEFT JOIN blog_categories c ON c.id = pc.category_id AND c.deleted=0
+        WHERE p.deleted=0 AND p.author = :author
+        GROUP BY p.id
+        ORDER BY p.created_at DESC
+    ";
+    $st = $pdo->prepare($sql);
+    $st->execute([':author' => $currentUser]);
+}
+
 $posts = $st->fetchAll();
 ?>
 <!doctype html>
