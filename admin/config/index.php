@@ -20,6 +20,27 @@ $pdo->exec("SET NAMES utf8mb4");
 $pdo->exec("SET CHARACTER SET utf8mb4");
 $pdo->exec("SET SESSION collation_connection = utf8mb4_general_ci");
 
+
+// === Eliminar banner inferior ===
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_banner_inferior'])) {
+    $stmt = $pdo->prepare("SELECT value FROM system_settings WHERE setting_name='banner_inferior' LIMIT 1");
+    $stmt->execute();
+    $banner = $stmt->fetchColumn();
+
+    if ($banner) {
+        $filePath = __DIR__ . '/../../' . ltrim($banner, '/');
+        if (file_exists($filePath)) {
+            unlink($filePath);
+        }
+    }
+
+    $pdo->prepare("DELETE FROM system_settings WHERE setting_name='banner_inferior'")->execute();
+    setFlash('success', 'El banner inferior fue eliminado correctamente.');
+    header("Location: index.php");
+    exit;
+}
+
+
 // === Guardar cambios ===
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $textKeys = [
@@ -339,12 +360,25 @@ Generales</a></li>
 			  
 			  
 			<div class="mb-3">
-			  <label class="form-label">Banner Inferior</label><br>
-			  <?php if(!empty($configs['banner_inferior'])): ?>
-				<img src="<?= htmlspecialchars($configs['banner_inferior'], ENT_QUOTES, 'UTF-8') ?>" alt="Banner Inferior" style="max-height:100px;">
-			  <?php endif; ?>
-			  <input type="file" name="banner_inferior" class="form-control mt-2" accept=".png,.jpg,.jpeg,.webp,.gif">
-			</div>
+  <label class="form-label">Banner Inferior</label><br>
+
+  <?php if(!empty($configs['banner_inferior'])): ?>
+    <div class="d-flex align-items-center gap-3 mb-2">
+      <img src="<?= htmlspecialchars($configs['banner_inferior'], ENT_QUOTES, 'UTF-8') ?>" 
+           alt="Banner Inferior" 
+           style="max-height:100px; border:1px solid #ccc; border-radius:6px;">
+      <form method="post" onsubmit="return confirm('¿Seguro que deseas eliminar el banner inferior?');" style="display:inline;">
+        <input type="hidden" name="delete_banner_inferior" value="1">
+        <button type="submit" class="btn btn-sm btn-danger">
+          <i class="fa fa-trash"></i> Eliminar
+        </button>
+      </form>
+    </div>
+  <?php endif; ?>
+
+  <input type="file" name="banner_inferior" class="form-control mt-2" accept=".png,.jpg,.jpeg,.webp,.gif">
+</div>
+
 
 			  
 			  
