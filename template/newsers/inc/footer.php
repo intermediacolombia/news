@@ -252,9 +252,23 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (!contentWrapper) return;
     
-    // Función para reinicializar TODO (Bootstrap, jQuery, etc)
+    // Función para reinicializar TODO (Bootstrap, jQuery, Owl Carousel, etc)
     function reinitAllComponents() {
-        // 1. Reinicializar componentes de Bootstrap
+        // 1. DESTRUIR Owl Carousel existentes PRIMERO
+        if (window.jQuery && typeof jQuery.fn.owlCarousel !== 'undefined') {
+            jQuery('.owl-carousel').each(function() {
+                const $carousel = jQuery(this);
+                
+                // Destruir instancia anterior si existe
+                if ($carousel.data('owl.carousel')) {
+                    $carousel.trigger('destroy.owl.carousel');
+                    $carousel.removeClass('owl-loaded owl-drag owl-grab');
+                    $carousel.find('.owl-stage-outer').children().unwrap();
+                }
+            });
+        }
+        
+        // 2. Reinicializar componentes de Bootstrap
         if (typeof bootstrap !== 'undefined') {
             // Tooltips
             const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
@@ -280,16 +294,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 return new bootstrap.Modal(modalEl);
             });
             
-            // CARRUSELES - FIX MEJORADO
+            // Carruseles Bootstrap
             const carouselElementList = [].slice.call(document.querySelectorAll('.carousel'));
             carouselElementList.forEach(function (carouselEl) {
-                // Destruir instancia anterior si existe
                 const oldInstance = bootstrap.Carousel.getInstance(carouselEl);
                 if (oldInstance) {
                     oldInstance.dispose();
                 }
                 
-                // Crear nueva instancia
                 const newCarousel = new bootstrap.Carousel(carouselEl, {
                     interval: carouselEl.getAttribute('data-bs-interval') || 5000,
                     wrap: carouselEl.getAttribute('data-bs-wrap') !== 'false',
@@ -299,7 +311,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     touch: carouselEl.getAttribute('data-bs-touch') !== 'false'
                 });
                 
-                // Si tiene data-bs-ride="carousel", iniciarlo automáticamente
                 if (carouselEl.getAttribute('data-bs-ride') === 'carousel') {
                     newCarousel.cycle();
                 }
@@ -318,7 +329,42 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
         
-        // 2. Ejecutar scripts inline del nuevo contenido
+        // 3. REINICIALIZAR Owl Carousel
+        if (window.jQuery && typeof jQuery.fn.owlCarousel !== 'undefined') {
+            // Pequeño delay para asegurar que el DOM está listo
+            setTimeout(function() {
+                jQuery('.owl-carousel').each(function() {
+                    const $carousel = jQuery(this);
+                    
+                    // Obtener configuración del data-attribute o usar default
+                    const options = {
+                        loop: $carousel.data('loop') !== undefined ? $carousel.data('loop') : true,
+                        margin: $carousel.data('margin') || 10,
+                        nav: $carousel.data('nav') !== undefined ? $carousel.data('nav') : true,
+                        dots: $carousel.data('dots') !== undefined ? $carousel.data('dots') : true,
+                        autoplay: $carousel.data('autoplay') !== undefined ? $carousel.data('autoplay') : false,
+                        autoplayTimeout: $carousel.data('autoplay-timeout') || 3000,
+                        autoplayHoverPause: $carousel.data('autoplay-hover-pause') !== undefined ? $carousel.data('autoplay-hover-pause') : true,
+                        responsive: $carousel.data('responsive') || {
+                            0: {
+                                items: $carousel.data('items-mobile') || 1
+                            },
+                            600: {
+                                items: $carousel.data('items-tablet') || 2
+                            },
+                            1000: {
+                                items: $carousel.data('items') || 3
+                            }
+                        }
+                    };
+                    
+                    // Inicializar Owl Carousel
+                    $carousel.owlCarousel(options);
+                });
+            }, 50);
+        }
+        
+        // 4. Ejecutar scripts inline del nuevo contenido
         const scripts = contentWrapper.querySelectorAll('script');
         scripts.forEach(oldScript => {
             const newScript = document.createElement('script');
@@ -337,18 +383,17 @@ document.addEventListener('DOMContentLoaded', function() {
             oldScript.parentNode.replaceChild(newScript, oldScript);
         });
         
-        // 3. Reinicializar jQuery si existe
+        // 5. Reinicializar jQuery si existe
         if (window.jQuery) {
             jQuery(document).trigger('contentLoaded');
-            jQuery(contentWrapper).find('a, button, input, select, textarea').off();
         }
         
-        // 4. Evento personalizado global
+        // 6. Evento personalizado global
         window.dispatchEvent(new CustomEvent('pageContentLoaded', {
             detail: { container: contentWrapper }
         }));
         
-        // 5. Reinicializar validaciones de formularios HTML5
+        // 7. Reinicializar validaciones de formularios HTML5
         const forms = contentWrapper.querySelectorAll('form');
         forms.forEach(form => {
             if (form.hasAttribute('novalidate')) {
@@ -356,7 +401,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // 6. Lazy loading de imágenes
+        // 8. Lazy loading de imágenes
         if ('loading' in HTMLImageElement.prototype) {
             const images = contentWrapper.querySelectorAll('img[loading="lazy"]');
             images.forEach(img => {
@@ -415,23 +460,31 @@ document.addEventListener('DOMContentLoaded', function() {
                 const newContent = doc.querySelector('#pageContent');
                 
                 if (newContent) {
-                    // Limpiar event listeners anteriores de Bootstrap
+                    // Limpiar Owl Carousel antes de cambiar contenido
+                    if (window.jQuery && typeof jQuery.fn.owlCarousel !== 'undefined') {
+                        jQuery('.owl-carousel').each(function() {
+                            const $carousel = jQuery(this);
+                            if ($carousel.data('owl.carousel')) {
+                                $carousel.trigger('destroy.owl.carousel');
+                                $carousel.removeClass('owl-loaded owl-drag owl-grab');
+                            }
+                        });
+                    }
+                    
+                    // Limpiar Bootstrap components
                     if (typeof bootstrap !== 'undefined') {
-                        // Destruir tooltips
                         const tooltips = contentWrapper.querySelectorAll('[data-bs-toggle="tooltip"]');
                         tooltips.forEach(el => {
                             const instance = bootstrap.Tooltip.getInstance(el);
                             if (instance) instance.dispose();
                         });
                         
-                        // Destruir popovers
                         const popovers = contentWrapper.querySelectorAll('[data-bs-toggle="popover"]');
                         popovers.forEach(el => {
                             const instance = bootstrap.Popover.getInstance(el);
                             if (instance) instance.dispose();
                         });
                         
-                        // Destruir carruseles ANTES de actualizar contenido
                         const carousels = contentWrapper.querySelectorAll('.carousel');
                         carousels.forEach(el => {
                             const instance = bootstrap.Carousel.getInstance(el);
@@ -441,7 +494,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             }
                         });
                         
-                        // Cerrar modales
                         const modals = document.querySelectorAll('.modal.show');
                         modals.forEach(modalEl => {
                             const instance = bootstrap.Modal.getInstance(modalEl);
@@ -478,7 +530,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Scroll arriba
                     window.scrollTo({top: 0, behavior: 'smooth'});
                     
-                    // Delay más largo para que las imágenes del carrusel se carguen
+                    // Delay para que las imágenes se carguen antes de inicializar Owl
                     setTimeout(() => {
                         // Reinicializar TODO
                         reinitAllComponents();
@@ -490,7 +542,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         // Remover loader
                         const loaderEl = document.getElementById('ajax-loader');
                         if (loaderEl) loaderEl.remove();
-                    }, 100); // Aumentado a 100ms para carruseles
+                    }, 150); // 150ms para Owl Carousel
                     
                     // Google Analytics
                     if (typeof gtag !== 'undefined') {
@@ -534,7 +586,18 @@ document.addEventListener('DOMContentLoaded', function() {
             const newContent = doc.querySelector('#pageContent');
             
             if (newContent) {
-                // Limpiar Bootstrap components
+                // Limpiar Owl Carousel
+                if (window.jQuery && typeof jQuery.fn.owlCarousel !== 'undefined') {
+                    jQuery('.owl-carousel').each(function() {
+                        const $carousel = jQuery(this);
+                        if ($carousel.data('owl.carousel')) {
+                            $carousel.trigger('destroy.owl.carousel');
+                            $carousel.removeClass('owl-loaded owl-drag owl-grab');
+                        }
+                    });
+                }
+                
+                // Limpiar Bootstrap
                 if (typeof bootstrap !== 'undefined') {
                     const tooltips = contentWrapper.querySelectorAll('[data-bs-toggle="tooltip"]');
                     tooltips.forEach(el => {
@@ -542,7 +605,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         if (instance) instance.dispose();
                     });
                     
-                    // Limpiar carruseles
                     const carousels = contentWrapper.querySelectorAll('.carousel');
                     carousels.forEach(el => {
                         const instance = bootstrap.Carousel.getInstance(el);
@@ -564,7 +626,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 setTimeout(() => {
                     reinitAllComponents();
-                }, 100);
+                }, 150);
             }
         })
         .catch(error => {
@@ -579,7 +641,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Inicializar componentes en la carga inicial
     setTimeout(() => {
         reinitAllComponents();
-    }, 100);
+    }, 150);
 });
 </script>
 <?php endif; ?>
