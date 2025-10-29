@@ -24,7 +24,8 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
 // =======================
 
 ?>
-
+<div class="container-fluid py-5">
+<div class="container py-5">
 <!-- News With Sidebar Start -->
 <div class="container-fluid py-3">
     <div class="container-bk">
@@ -43,5 +44,7 @@ echo $sys['terms-and-conditions']
             
         </div>
     </div>
+</div>
+</div>
 </div>
 <!-- News With Sidebar End -->
