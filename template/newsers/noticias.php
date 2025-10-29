@@ -270,8 +270,8 @@ body {
 
 /* ======= Título de categoría ======= */
 .title-widgets {
-  border-left: 4px solid #0d6efd;
-  background-color: #f8f9fa;
+  border-left: 4px solid var(--primary) !important;
+  background-color: var(--primary) !important;
   border-radius: 0.5rem;
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   padding: 0.75rem 1rem;
@@ -295,7 +295,7 @@ body {
 }
 
 .title-widgets a:hover {
-  color: #0d6efd;
+  color: var(--primary) !important;
 }
 
 /* ======= Tarjeta principal de noticia ======= */
@@ -340,7 +340,7 @@ body {
 }
 
 .overlay a.h4:hover {
-  color: #0d6efd;
+  color: var(--primary) !important;
 }
 
 .overlay p {
@@ -351,7 +351,7 @@ body {
 }
 
 .overlay .mb-2 a {
-  color: #0d6efd;
+  color: var(--primary) !important;
   font-weight: 500;
   text-decoration: none;
 }
@@ -384,7 +384,7 @@ body {
 }
 
 .d-flex.mb-3 .h6:hover {
-  color: #0d6efd;
+  color: var(--primary) !important;
 }
 
 /* ======= Banner de publicidad ======= */
@@ -408,19 +408,19 @@ body {
   border: none;
   border-radius: 0.5rem;
   margin: 0 0.2rem;
-  color: #0d6efd;
+  color: var(--primary) !important;
   background-color: #fff;
   box-shadow: 0 2px 6px rgba(0,0,0,0.08);
   transition: all 0.3s ease;
 }
 
 .pagination .page-item .page-link:hover {
-  background-color: #0d6efd;
+  background-color: var(--primary) !important;
   color: #fff;
 }
 
 .pagination .page-item.active .page-link {
-  background-color: #0d6efd;
+  background-color: var(--primary) !important;
   color: #fff;
   box-shadow: 0 3px 10px rgba(13,110,253,0.3);
 }
