@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../../../inc/config.php';
 
-// Obtener solo las categorías que tengan al menos 1 post publicado
+// Solo categorías con publicaciones activas
 $categories = $pdo->query("
     SELECT c.id, c.name, c.slug, COUNT(p.id) AS total_posts
     FROM blog_categories c
@@ -18,22 +18,18 @@ $categories = $pdo->query("
 
 <?php if ($categories): ?>
 <!-- Category News Slider Start -->
-<div class="container-fluid py-4">
-    <div class="container">
+<div class="container-fluid">
+    <div class="container-bk">
         <div class="row">
             <?php foreach ($categories as $cat): ?>
-                <div class="col-lg-6 col-md-12 mb-4">
-                    <div class="bg-white rounded shadow-sm p-3 mb-3 d-flex align-items-center justify-content-between">
+                <div class="col-lg-6 py-3">
+                    <div class="d-flex justify-content-between align-items-center mb-3 bg-light px-4 py-2 rounded-top shadow-sm">
                         <h3 class="m-0 text-primary fw-bold"><?= htmlspecialchars($cat['name']) ?></h3>
-                        <a href="<?= URLBASE ?>/noticias/<?= htmlspecialchars($cat['slug']) ?>/" 
-                           class="btn btn-sm btn-outline-primary rounded-pill">
-                            Ver más
-                        </a>
+                        <a href="<?= URLBASE ?>/noticias/<?= htmlspecialchars($cat['slug']) ?>/" class="btn btn-sm btn-outline-primary rounded-pill">Ver más</a>
                     </div>
 
                     <div class="owl-carousel owl-carousel-3 carousel-item-2 position-relative">
                         <?php
-                        // Obtener las últimas 3 noticias de esta categoría
                         $stmtPosts = $pdo->prepare("
                             SELECT p.id, p.title, p.slug, p.image, p.created_at
                             FROM blog_posts p
@@ -49,22 +45,21 @@ $categories = $pdo->query("
                         ?>
 
                         <?php foreach ($posts as $post): ?>
-                            <div class="news-card position-relative overflow-hidden rounded shadow-sm">
-                                <div class="ratio ratio-16x9">
-                                    <img class="img-fluid w-100" 
-                                         src="<?= $post['image'] ? URLBASE . '/' . htmlspecialchars($post['image']) : URLBASE . '/template/news/img/news-500x280-1.jpg' ?>"
-                                         alt="<?= htmlspecialchars($post['title']) ?>"
-                                         style="object-fit: cover; transition: transform 0.3s ease;">
+                            <div class="news-card rounded overflow-hidden shadow-sm bg-white">
+                                <div class="image-container">
+                                    <img class="img-fluid w-100"
+                                         src="<?= !empty($post['image']) ? htmlspecialchars(URLBASE . '/' . $post['image']) : URLBASE . '/template/news/img/news-500x280-1.jpg' ?>"
+                                         alt="<?= htmlspecialchars($post['title']) ?>">
                                 </div>
-                                <div class="overlay bg-white p-3 border-top">
-                                    <div class="text-muted small mb-2">
+                                <div class="p-3">
+                                    <div class="small text-muted mb-2">
                                         <a href="<?= URLBASE ?>/noticias/<?= htmlspecialchars($cat['slug']) ?>/" class="text-primary">
                                             <?= htmlspecialchars($cat['name']) ?>
                                         </a>
                                         <span class="mx-1">•</span>
                                         <span><?= fecha_espanol(date("F d, Y", strtotime($post['created_at']))) ?></span>
                                     </div>
-                                    <a class="h5 fw-semibold text-dark d-block text-truncate-2"
+                                    <a class="h5 text-dark d-block fw-semibold text-truncate-2"
                                        href="<?= URLBASE ?>/<?= htmlspecialchars($cat['slug']) ?>/<?= htmlspecialchars($post['slug']) ?>/">
                                         <?= htmlspecialchars($post['title']) ?>
                                     </a>
@@ -80,20 +75,36 @@ $categories = $pdo->query("
 <!-- Category News Slider End -->
 
 <style>
-/* --- Modern Category Slider --- */
+/* === Modernización visual === */
 .news-card {
-  border-radius: 12px;
-  overflow: hidden;
-  background: #fff;
+  border: 1px solid #e9ecef;
   transition: all 0.3s ease;
+  background: #fff;
 }
 .news-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 18px rgba(0,0,0,0.1);
+  transform: translateY(-4px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
 }
-.news-card img:hover {
+
+/* Imágenes uniformes en proporción 16:9 */
+.image-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #f8f9fa;
+}
+.image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+.image-container:hover img {
   transform: scale(1.05);
 }
+
+/* Título truncado a 2 líneas */
 .text-truncate-2 {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -101,11 +112,20 @@ $categories = $pdo->query("
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
-.title-widgets h3 {
-  font-weight: 600;
+
+/* Botones y encabezado */
+.btn-outline-primary {
+  border-color: var(--primary);
+  color: var(--primary);
 }
+.btn-outline-primary:hover {
+  background: var(--primary);
+  color: #fff;
+}
+
+/* Owl Carousel ajustes */
 .owl-carousel .owl-item {
-  padding: 5px;
+  padding: 6px;
 }
 .owl-carousel .owl-nav button.owl-prev,
 .owl-carousel .owl-nav button.owl-next {
@@ -114,9 +134,9 @@ $categories = $pdo->query("
   background: #fff;
   color: #333;
   border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  width: 34px;
+  height: 34px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
   transition: 0.3s;
 }
 .owl-carousel .owl-nav button.owl-prev:hover,
@@ -128,3 +148,4 @@ $categories = $pdo->query("
 .owl-carousel .owl-nav button.owl-next { right: -15px; }
 </style>
 <?php endif; ?>
+
