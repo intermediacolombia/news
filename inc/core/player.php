@@ -250,8 +250,8 @@
       }
     });
     toAppend.forEach(n => document.head.appendChild(n));
-    // Esperar a que los CSS estén aplicados antes de continuar
-    return new Promise(resolve => setTimeout(resolve, 120));
+    // Esperar a que los CSS y fuentes (ej. Bootstrap Icons) estén aplicados antes de continuar
+    return new Promise(resolve => setTimeout(resolve, 200));
   }
 
   // === Cargar scripts externos nuevos ===
@@ -328,77 +328,81 @@
     });
   }
 
-  
-  // === Reinicializar Owl Carousel (versión mejorada) ===
-function reinitOwlCarousels() {
-  if (!window.jQuery || !jQuery.fn.owlCarousel) return;
+  // === Reinicializar Owl Carousel (espera fuentes como Bootstrap Icons) ===
+  function reinitOwlCarousels() {
+    if (!window.jQuery || !jQuery.fn.owlCarousel) return;
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => initOwl());
+    } else {
+      setTimeout(initOwl, 300);
+    }
 
-  // Esperar a que todas las fuentes (Bootstrap Icons incluidas) estén cargadas
-  if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(() => initOwl());
-  } else {
-    // Fallback si el navegador no soporta document.fonts
-    setTimeout(initOwl, 250);
-  }
-
-  function initOwl() {
-    jQuery('.owl-carousel').each(function () {
-      const $c = jQuery(this);
-
-      // Destruir instancia previa si existe
-      if ($c.data('owl.carousel')) {
-        $c.trigger('destroy.owl.carousel');
-        $c.removeClass('owl-loaded owl-drag owl-grab');
-        $c.find('.owl-stage-outer').children().unwrap();
-      }
-
-      // Configuración automática
-      const options = {
-        loop: $c.data('loop') ?? true,
-        margin: $c.data('margin') || 10,
-        nav: $c.data('nav') ?? true,
-        dots: $c.data('dots') ?? true,
-        autoplay: $c.data('autoplay') ?? false,
-        autoplayTimeout: $c.data('autoplay-timeout') || 3000,
-        autoplayHoverPause: $c.data('autoplay-hover-pause') ?? true,
-        responsive: $c.data('responsive') || {
-          0: { items: $c.data('items-mobile') || 1 },
-          600: { items: $c.data('items-tablet') || 2 },
-          1000: { items: $c.data('items') || 3 }
-        },
-        // Flechas con íconos Bootstrap
-        navText: [
-          '<i class="bi bi-chevron-left"></i>',
-          '<i class="bi bi-chevron-right"></i>'
-        ]
-      };
-
-      // Iniciar
-      $c.owlCarousel(options);
-    });
-  }
-}
-	
-	
-	// === Reprocesar plugins de Facebook (comentarios, botones, etc.) ===
-function reinitFacebookPlugins() {
-  // Si el SDK ya está cargado
-  if (typeof FB !== 'undefined' && FB.XFBML && typeof FB.XFBML.parse === 'function') {
-    // Reprocesar todo el contenido dinámico
-    FB.XFBML.parse(document.getElementById('appRoot'));
-  } else {
-    // Si aún no se ha cargado el SDK, intentar cargarlo de nuevo
-    const existing = document.getElementById('facebook-jssdk');
-    if (!existing) {
-      const js = document.createElement('script');
-      js.id = 'facebook-jssdk';
-      js.src = 'https://connect.facebook.net/es_LA/sdk.js#xfbml=1&version=v18.0';
-      document.body.appendChild(js);
+    function initOwl() {
+      jQuery('.owl-carousel').each(function () {
+        const $c = jQuery(this);
+        if ($c.data('owl.carousel')) {
+          $c.trigger('destroy.owl.carousel');
+          $c.removeClass('owl-loaded owl-drag owl-grab');
+          $c.find('.owl-stage-outer').children().unwrap();
+        }
+        const options = {
+          loop: $c.data('loop') ?? true,
+          margin: $c.data('margin') || 10,
+          nav: $c.data('nav') ?? true,
+          dots: $c.data('dots') ?? true,
+          autoplay: $c.data('autoplay') ?? false,
+          autoplayTimeout: $c.data('autoplay-timeout') || 3000,
+          autoplayHoverPause: $c.data('autoplay-hover-pause') ?? true,
+          responsive: $c.data('responsive') || {
+            0: { items: $c.data('items-mobile') || 1 },
+            600: { items: $c.data('items-tablet') || 2 },
+            1000: { items: $c.data('items') || 3 }
+          },
+          navText: [
+            '<i class="bi bi-chevron-left"></i>',
+            '<i class="bi bi-chevron-right"></i>'
+          ]
+        };
+        $c.owlCarousel(options);
+      });
     }
   }
-}
 
+  // === Reprocesar plugins de Facebook ===
+  function refreshFacebookComments() {
+    const container = document.getElementById('appRoot');
+    if (!container) return;
 
+    if (!container.querySelector('.fb-comments, .fb-like, .fb-share-button, .fb-page')) return;
+
+    // Actualizar data-href con la URL actual
+    const abs = new URL(location.href, location.origin).href;
+    container.querySelectorAll('.fb-comments').forEach(node => {
+      const href = node.getAttribute('data-href');
+      if (!href || href === 'auto' || href === '#') node.setAttribute('data-href', abs);
+    });
+
+    // Si el SDK existe, volver a parsear; si no, cargarlo.
+    if (typeof window.FB !== 'undefined' && window.FB.XFBML && typeof window.FB.XFBML.parse === 'function') {
+      window.FB.XFBML.parse(container);
+    } else {
+      const existing = document.getElementById('facebook-jssdk');
+      if (!existing) {
+        const js = document.createElement('script');
+        js.id = 'facebook-jssdk';
+        js.async = true;
+        js.defer = true;
+        js.src = 'https://connect.facebook.net/es_LA/sdk.js#xfbml=1&version=v18.0';
+        document.body.appendChild(js);
+      } else {
+        setTimeout(() => {
+          if (typeof window.FB !== 'undefined' && window.FB.XFBML) {
+            window.FB.XFBML.parse(container);
+          }
+        }, 1500);
+      }
+    }
+  }
 
   // === Reemplazar #appRoot y reinicializar ===
   function swapAppRoot(fromDoc) {
@@ -409,6 +413,7 @@ function reinitFacebookPlugins() {
     return executeScriptsSequential(app).then(() => {
       reinitBootstrapComponents();
       reinitOwlCarousels();
+      refreshFacebookComments();
     });
   }
 
@@ -452,6 +457,7 @@ function reinitFacebookPlugins() {
           }
           if (pushState) history.pushState({ path: url }, '', url);
           window.scrollTo({ top: 0, behavior: 'smooth' });
+          refreshFacebookComments();
         });
       })
       .catch(err => {
@@ -483,7 +489,6 @@ function reinitFacebookPlugins() {
   });
 
 })();
-
 </script>
 
 
