@@ -38,7 +38,7 @@
                         ?>
 
                         <div class="nav-item dropdown">
-                            <a href="<?= URLBASE ?>/noticias/" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                                 Categorías
                             </a>
                             <div class="dropdown-menu m-0 bg-secondary rounded-0">
