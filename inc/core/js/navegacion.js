@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Evita que OwlCarousel se reinicie múltiples veces
   const observer = new MutationObserver(() => {
     if (typeof $ !== 'undefined' && $('.owl-carousel').length) {
-      $('.owl-carousel').each(function () {
+      $('.owl-carousel').not('.carousel-item-1, .carousel-item-2, .carousel-item-3, .carousel-item-4').each(function () {
         const $this = $(this);
         // Si ya tiene la clase 'owl-loaded', significa que ya está inicializado
         if ($this.hasClass('owl-loaded')) return;
