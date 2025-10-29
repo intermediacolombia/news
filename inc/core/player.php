@@ -1,6 +1,6 @@
 <?php if (!empty($sys['code_player'])): ?>
 <style>
-.container-fluid.copyright.bg-dark.py-4 {
+.container-fluid.copyright.bg-dark.py-4, p.m-0.text-center {
     padding-bottom: <?= $sys['player_height'] + 10 ?? 70 ?>px!important;
 }
 </style>
@@ -378,6 +378,26 @@ function reinitOwlCarousels() {
     });
   }
 }
+	
+	
+	// === Reprocesar plugins de Facebook (comentarios, botones, etc.) ===
+function reinitFacebookPlugins() {
+  // Si el SDK ya está cargado
+  if (typeof FB !== 'undefined' && FB.XFBML && typeof FB.XFBML.parse === 'function') {
+    // Reprocesar todo el contenido dinámico
+    FB.XFBML.parse(document.getElementById('appRoot'));
+  } else {
+    // Si aún no se ha cargado el SDK, intentar cargarlo de nuevo
+    const existing = document.getElementById('facebook-jssdk');
+    if (!existing) {
+      const js = document.createElement('script');
+      js.id = 'facebook-jssdk';
+      js.src = 'https://connect.facebook.net/es_LA/sdk.js#xfbml=1&version=v18.0';
+      document.body.appendChild(js);
+    }
+  }
+}
+
 
 
   // === Reemplazar #appRoot y reinicializar ===
