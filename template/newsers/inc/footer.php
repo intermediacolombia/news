@@ -146,7 +146,7 @@
   display: block;
   width: 40px;
   height: 2px;
-  background: var(--bs-primary);
+  background: var(--primary);
   margin-top: 6px;
 }
 
@@ -159,8 +159,8 @@
 }
 
 .footer-item .btn-outline-light:hover {
-  background-color: var(--bs-primary);
-  border-color: var(--bs-primary);
+  background-color: var(--primary);
+  border-color: var(--primary);
   color: #fff;
 }
 
