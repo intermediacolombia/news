@@ -11,18 +11,21 @@ try {
   die("DB error: ".$e->getMessage());
 }
 
-// Si es GET, cargamos categorías para el selector
+// Cargar categorías activas
 $cats = $pdo->query("SELECT id, name FROM blog_categories WHERE deleted=0 AND status='active' ORDER BY name")->fetchAll();
 
-// Procesar guardado
-// Procesar guardado
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $title   = trim($_POST['title'] ?? '');
   $slug    = trim($_POST['slug'] ?? '');
   $content = trim($_POST['content'] ?? '');
   $status  = $_POST['status'] ?? 'draft';
   $catsSel = $_POST['categories'] ?? [];
-  $author  = $_SESSION['user']['nombre'].' '.$_SESSION['user']['apellido'] ?? 'Admin';
+
+  // Autor visible (nombre completo)
+  $author = ($_SESSION['user']['nombre'] ?? 'Admin') . ' ' . ($_SESSION['user']['apellido'] ?? '');
+
+  // Autor interno (nombre de usuario)
+  $authorUser = $_SESSION['user']['username'] ?? $_SESSION['user']['correo'] ?? 'sistema';
 
   // Campos SEO
   $seoTitle       = trim($_POST['seo_title'] ?? '');
@@ -40,11 +43,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $errors['content'] = "El contenido no puede estar vacío.";
   }
   if ($slug === '') {
-    // Generamos slug básico
     $slug = strtolower(preg_replace('/[^a-z0-9]+/i', '-', $title));
   }
 
-  // Verificar slug único
+  // Slug único
   $st = $pdo->prepare("SELECT COUNT(*) FROM blog_posts WHERE slug=? AND deleted=0");
   $st->execute([$slug]);
   if ($st->fetchColumn() > 0) {
@@ -63,9 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors['image'] = "La imagen supera los 5MB.";
       } else {
         $uploadDir = realpath(__DIR__ . '/../../public/images') . '/blog/';
-        if (!is_dir($uploadDir)) {
-          mkdir($uploadDir, 0755, true);
-        }
+        if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
         $fileName = time().'_'.preg_replace('/[^a-z0-9\.-]/i','_', $file['name']);
         $destino  = $uploadDir.$fileName;
         if (move_uploaded_file($file['tmp_name'], $destino)) {
@@ -77,6 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
   }
 
+  // Si hay errores, redirigir de nuevo
   if (!empty($errors)) {
     $_SESSION['errors'] = $errors;
     $_SESSION['old']    = $old;
@@ -84,15 +85,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
   }
 
-  // Guardar entrada con SEO
+  // =============================
+  // GUARDAR ENTRADA CON author_user
+  // =============================
   $sql = "INSERT INTO blog_posts 
-          (title, slug, content, image, author, status, seo_title, seo_description, seo_keywords, deleted) 
-          VALUES (?,?,?,?,?,?,?,?,?,0)";
+          (title, slug, content, image, author, author_user, status, seo_title, seo_description, seo_keywords, deleted)
+          VALUES (?,?,?,?,?,?,?,?,?,?,0)";
   $st  = $pdo->prepare($sql);
   $st->execute([
-    $title, $slug, $content, $imagePath, $author, $status,
-    $seoTitle, $seoDescription, $seoKeywords
+    $title,
+    $slug,
+    $content,
+    $imagePath,
+    $author,
+    $authorUser,
+    $status,
+    $seoTitle,
+    $seoDescription,
+    $seoKeywords
   ]);
+
   $postId = $pdo->lastInsertId();
 
   // Guardar categorías
