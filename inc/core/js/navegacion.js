@@ -173,3 +173,49 @@ function reactivarScripts() {
 }
 
 
+
+
+
+// ===============================
+// PREVENIR REINICIO DE SLIDERS
+// ===============================
+document.addEventListener('DOMContentLoaded', () => {
+  // Evita que OwlCarousel se reinicie múltiples veces
+  const observer = new MutationObserver(() => {
+    if (typeof $ !== 'undefined' && $('.owl-carousel').length) {
+      $('.owl-carousel').each(function () {
+        const $this = $(this);
+        // Si ya tiene la clase 'owl-loaded', significa que ya está inicializado
+        if ($this.hasClass('owl-loaded')) return;
+        // Inicializa solo si no estaba cargado
+        if (typeof $.fn.owlCarousel === 'function') {
+          $this.owlCarousel({
+            autoplay: false,       // evita movimiento automático
+            loop: false,           // evita bucles infinitos
+            margin: 25,
+            nav: true,
+            dots: false,
+            navText: [
+              '<i class="bi bi-chevron-left"></i>',
+              '<i class="bi bi-chevron-right"></i>'
+            ],
+            responsive: {
+              0: { items: 1 },
+              768: { items: 2 },
+              992: { items: 3 }
+            }
+          });
+        }
+      });
+    }
+  });
+
+  // Observa cambios en el contenedor principal (donde se reemplaza el contenido AJAX)
+  const pageContent = document.getElementById('pageContent');
+  if (pageContent) {
+    observer.observe(pageContent, { childList: true, subtree: true });
+  }
+});
+
+
+
