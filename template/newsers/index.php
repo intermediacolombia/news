@@ -1,4 +1,35 @@
 <?php include __DIR__ . '/partials/features.php'; ?>
+
+<div class="container-fluid py-5">
+	<div class="container py-5">   
+        <div class="row">
+<?php
+    $stmt = $pdo->prepare("
+        SELECT * FROM ads 
+        WHERE position = 1 AND status = 'active' 
+        LIMIT 1
+    ");
+    $stmt->execute();
+    $ad = $stmt->fetch(PDO::FETCH_ASSOC);
+    ?>
+
+    <?php if ($ad && !empty($ad['image_url'])): ?>
+        <?php if (!empty($ad['target_url'])): ?>
+            <a href="<?= htmlspecialchars($ad['target_url']) ?>" target="_blank" rel="noopener">
+                <img class="img-fluid"
+                     src="<?= URLBASE . htmlspecialchars($ad['image_url']) ?>"
+                     alt="<?= htmlspecialchars($ad['title'] ?? 'Publicidad') ?>">
+            </a>
+        <?php else: ?>
+            <img class="img-fluid"
+                 src="<?= URLBASE . htmlspecialchars($ad['image_url']) ?>"
+                 alt="<?= htmlspecialchars($ad['title'] ?? 'Publicidad') ?>">
+        <?php endif; ?>
+    <?php endif; ?>
+		</div>
+	</div>
+	</div>
+
 <?php include __DIR__ . '/partials/main_post.php'; ?>
 
 		

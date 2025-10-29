@@ -12,7 +12,9 @@ $cuadrados    = array_filter($ads, fn($a)=>$a['type']==='square');
 
 <!-- HORIZONTALES -->
 <?php if ($horizontales): ?>
-<div class="container-fluid py-3">
+<div class="container-fluid py-5">
+	<div class="container py-5">   
+        <div class="row">
     <div class="container-bk">
   <div class="mb-4">
     <?php foreach ($horizontales as $ad): ?>
@@ -43,6 +45,8 @@ $cuadrados    = array_filter($ads, fn($a)=>$a['type']==='square');
         <?php endif; ?>
       </div>
     <?php endforeach; ?>
+  </div>
+  </div>
   </div>
   </div>
   </div>
