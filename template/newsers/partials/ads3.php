@@ -35,6 +35,9 @@ $cuadrados    = array_filter($ads, fn($a)=>$a['type']==='square');
 
 <!-- CUADRADOS -->
 <?php if ($cuadrados): ?>
+	<div class="container-fluid py-5">
+	<div class="container py-5">   
+        <div class="row">
   <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 mb-4">
     <?php foreach ($cuadrados as $ad): ?>
       <div class="col">
@@ -45,6 +48,10 @@ $cuadrados    = array_filter($ads, fn($a)=>$a['type']==='square');
         <?php else: ?>
           <img src="<?= htmlspecialchars($ad['image_url']) ?>" alt="Banner Cuadrado" class="img-fluid" style="margin: 5px;">
         <?php endif; ?>
+      </div>
+      </div>
+      </div>
+      </div>
       </div>
     <?php endforeach; ?>
   </div>
