@@ -17,7 +17,7 @@ $categories = $pdo->query("
 ?>
 
 <?php if ($categories): ?>
-<!-- Category News Slider Start -->
+<!-- Category News Fixed Start -->
 <div class="container-fluid">
     <div class="container-bk">
         <div class="row">
@@ -28,7 +28,7 @@ $categories = $pdo->query("
                         <a href="<?= URLBASE ?>/noticias/<?= htmlspecialchars($cat['slug']) ?>/" class="btn btn-sm btn-outline-primary rounded-pill">Ver más</a>
                     </div>
 
-                    <div class="owl-carousel owl-carousel-3 carousel-item-2 position-relative">
+                    <div class="row g-3">
                         <?php
                         $stmtPosts = $pdo->prepare("
                             SELECT p.id, p.title, p.slug, p.image, p.created_at
@@ -45,24 +45,26 @@ $categories = $pdo->query("
                         ?>
 
                         <?php foreach ($posts as $post): ?>
-                            <div class="news-card rounded overflow-hidden shadow-sm bg-white">
-                                <div class="image-container">
-                                    <img class="img-fluid w-100"
-                                         src="<?= !empty($post['image']) ? htmlspecialchars(URLBASE . '/' . $post['image']) : URLBASE . '/template/news/img/news-500x280-1.jpg' ?>"
-                                         alt="<?= htmlspecialchars($post['title']) ?>">
-                                </div>
-                                <div class="p-3">
-                                    <div class="small text-muted mb-2">
-                                        <a href="<?= URLBASE ?>/noticias/<?= htmlspecialchars($cat['slug']) ?>/" class="text-primary">
-                                            <?= htmlspecialchars($cat['name']) ?>
-                                        </a>
-                                        <span class="mx-1">•</span>
-                                        <span><?= fecha_espanol(date("F d, Y", strtotime($post['created_at']))) ?></span>
+                            <div class="col-md-4">
+                                <div class="news-card rounded overflow-hidden shadow-sm bg-white h-100">
+                                    <div class="image-container">
+                                        <img class="img-fluid w-100"
+                                             src="<?= !empty($post['image']) ? htmlspecialchars(URLBASE . '/' . $post['image']) : URLBASE . '/template/news/img/news-500x280-1.jpg' ?>"
+                                             alt="<?= htmlspecialchars($post['title']) ?>">
                                     </div>
-                                    <a class="h5 text-dark d-block fw-semibold text-truncate-2"
-                                       href="<?= URLBASE ?>/<?= htmlspecialchars($cat['slug']) ?>/<?= htmlspecialchars($post['slug']) ?>/">
-                                        <?= htmlspecialchars($post['title']) ?>
-                                    </a>
+                                    <div class="p-3">
+                                        <div class="small text-muted mb-2">
+                                            <a href="<?= URLBASE ?>/noticias/<?= htmlspecialchars($cat['slug']) ?>/" class="text-primary">
+                                                <?= htmlspecialchars($cat['name']) ?>
+                                            </a>
+                                            <span class="mx-1">•</span>
+                                            <span><?= fecha_espanol(date("F d, Y", strtotime($post['created_at']))) ?></span>
+                                        </div>
+                                        <a class="h6 text-dark d-block fw-semibold text-truncate-2"
+                                           href="<?= URLBASE ?>/<?= htmlspecialchars($cat['slug']) ?>/<?= htmlspecialchars($post['slug']) ?>/">
+                                            <?= htmlspecialchars($post['title']) ?>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         <?php endforeach; ?>
@@ -72,10 +74,10 @@ $categories = $pdo->query("
         </div>
     </div>
 </div>
-<!-- Category News Slider End -->
+<!-- Category News Fixed End -->
 
 <style>
-/* === Modernización visual === */
+/* === Diseño limpio y moderno === */
 .news-card {
   border: 1px solid #e9ecef;
   transition: all 0.3s ease;
@@ -86,7 +88,7 @@ $categories = $pdo->query("
   box-shadow: 0 6px 18px rgba(0,0,0,0.1);
 }
 
-/* Imágenes uniformes en proporción 16:9 */
+/* Imágenes con proporción 16:9 */
 .image-container {
   position: relative;
   width: 100%;
@@ -122,30 +124,6 @@ $categories = $pdo->query("
   background: var(--primary);
   color: #fff;
 }
-
-/* Owl Carousel ajustes */
-.owl-carousel .owl-item {
-  padding: 6px;
-}
-.owl-carousel .owl-nav button.owl-prev,
-.owl-carousel .owl-nav button.owl-next {
-  position: absolute;
-  top: 40%;
-  background: #fff;
-  color: #333;
-  border-radius: 50%;
-  width: 34px;
-  height: 34px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-  transition: 0.3s;
-}
-.owl-carousel .owl-nav button.owl-prev:hover,
-.owl-carousel .owl-nav button.owl-next:hover {
-  background: var(--primary);
-  color: #fff;
-}
-.owl-carousel .owl-nav button.owl-prev { left: -15px; }
-.owl-carousel .owl-nav button.owl-next { right: -15px; }
 </style>
 <?php endif; ?>
 
