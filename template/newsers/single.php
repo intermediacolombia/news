@@ -82,10 +82,16 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                 </div>
                 <?php endif; ?>
 
-                <div class="d-flex justify-content-between text-secondary small mb-3 border-bottom pb-2">
-                    <span><i class="fa fa-calendar-alt me-1"></i> <?= fecha_espanol(date("F d, Y", strtotime($post['created_at']))) ?></span>
-                    <span><i class="fa fa-eye me-1"></i> <?= number_format($totalViews) ?> vistas</span>
-                </div>
+                <div class="d-flex justify-content-between align-items-center text-secondary small mb-3 border-bottom pb-2 flex-wrap">
+    <div class="d-flex align-items-center flex-wrap gap-3">
+        <span><i class="fa fa-calendar-alt me-1 text-primary"></i> <?= fecha_espanol(date("F d, Y", strtotime($post['created_at']))) ?></span>
+        <?php if (!empty($post['author'])): ?>
+            <span><i class="fa fa-user-edit me-1 text-primary"></i> <?= htmlspecialchars($post['author']) ?></span>
+        <?php endif; ?>
+    </div>
+    <span><i class="fa fa-eye me-1 text-primary"></i> <?= number_format($totalViews) ?> vistas</span>
+</div>
+
 
                 <div class="my-4 post-content">
                     <?= $post['content'] ?>
@@ -177,6 +183,16 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
     </div>
 </div>
 <!-- Single Product End -->
+<style>
+.text-secondary.small i {
+  opacity: 0.7;
+}
+.text-secondary.small span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+</style>
 
 
 
