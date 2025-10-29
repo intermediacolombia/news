@@ -209,7 +209,7 @@
 <script>
 (function () {
 
-  // === 1) Funciones auxiliares ===
+  // === Utilidades de comparación de assets ===
   function assetKey(el) {
     if (el.tagName === 'LINK') return (el.getAttribute('rel') || '') + '|' + new URL(el.href, location.href).href;
     if (el.tagName === 'SCRIPT' && el.src) return new URL(el.src, location.href).href;
@@ -238,18 +238,23 @@
     };
   }
 
-  // === 2) Cargar librerías del <head> si faltan ===
+  // === Cargar CSS nuevos ===
   function addMissingLinks(newLinks, currKeys) {
+    const toAppend = [];
     newLinks.forEach(link => {
       const key = assetKey(link);
       if (!currKeys.has(key)) {
         const n = document.createElement('link');
         Array.from(link.attributes).forEach(a => n.setAttribute(a.name, a.value));
-        document.head.appendChild(n);
+        toAppend.push(n);
       }
     });
+    toAppend.forEach(n => document.head.appendChild(n));
+    // Esperar a que los CSS estén aplicados antes de continuar
+    return new Promise(resolve => setTimeout(resolve, 120));
   }
 
+  // === Cargar scripts externos nuevos ===
   function addMissingHeadScriptsSequential(newScripts, currKeys) {
     const list = newScripts
       .filter(s => !currKeys.has(assetKey(s)))
@@ -262,26 +267,13 @@
 
     return list.reduce((p, s) => p.then(() => new Promise((res, rej) => {
       s.onload = () => res();
-      s.onerror = () => rej(new Error('Error al cargar script: ' + (s.src || 'inline')));
+      s.onerror = () => rej(new Error('Error al cargar script de head: ' + s.src));
       document.head.appendChild(s);
       if (!s.src) res();
     })), Promise.resolve());
   }
 
-  // === 3) Reemplazar contenido dinámico (#appRoot) ===
-  function swapAppRoot(fromDoc) {
-    const newApp = fromDoc.querySelector('#appRoot');
-    const app = document.getElementById('appRoot');
-    if (!app || !newApp) return false;
-
-    app.innerHTML = newApp.innerHTML;
-    return executeScriptsSequential(app).then(() => {
-      reinitBootstrapComponents();
-      reinitOwlCarousels();
-    });
-  }
-
-  // === 4) Ejecutar scripts inline/externos de la nueva página ===
+  // === Ejecutar scripts del nuevo contenido ===
   function executeScriptsSequential(container) {
     const scripts = Array.from(container.querySelectorAll('script'));
     const tasks = scripts.map(old => () => new Promise((resolve, reject) => {
@@ -301,7 +293,7 @@
     return tasks.reduce((p, task) => p.then(task), Promise.resolve());
   }
 
-  // === 5) Reinicializar Bootstrap ===
+  // === Reinicializar Bootstrap ===
   function reinitBootstrapComponents() {
     if (typeof bootstrap === 'undefined') return;
 
@@ -336,7 +328,7 @@
     });
   }
 
-  // === 6) Reinicializar Owl Carousel ===
+  // === Reinicializar Owl Carousel ===
   function reinitOwlCarousels() {
     if (!window.jQuery || !jQuery.fn.owlCarousel) return;
     setTimeout(() => {
@@ -363,21 +355,30 @@
         };
         $c.owlCarousel(options);
       });
-    }, 150);
+    }, 200);
   }
 
-  // === 7) Aplicar nuevo documento ===
+  // === Reemplazar #appRoot y reinicializar ===
+  function swapAppRoot(fromDoc) {
+    const newApp = fromDoc.querySelector('#appRoot');
+    const app = document.getElementById('appRoot');
+    if (!app || !newApp) return false;
+    app.innerHTML = newApp.innerHTML;
+    return executeScriptsSequential(app).then(() => {
+      reinitBootstrapComponents();
+      reinitOwlCarousels();
+    });
+  }
+
+  // === Aplicar nuevo documento ===
   function fullyApplyDocument(fromDoc) {
     const curr = currentHeadAssets();
     const nxt = mapHeadAssets(fromDoc);
-    addMissingLinks(nxt.links, curr.linkKeys);
-    return addMissingHeadScriptsSequential(nxt.scripts, curr.scriptKeys)
+    return addMissingLinks(nxt.links, curr.linkKeys)
+      .then(() => addMissingHeadScriptsSequential(nxt.scripts, curr.scriptKeys))
       .then(() => {
         const result = swapAppRoot(fromDoc);
-        if (result === false) {
-          location.href = location.href;
-          return;
-        }
+        if (result === false) location.href = location.href;
         return result;
       })
       .then(() => {
@@ -386,7 +387,7 @@
       });
   }
 
-  // === 8) Navegación AJAX principal ===
+  // === Navegación ===
   function navigateTo(url, pushState = true) {
     const app = document.getElementById('appRoot');
     if (app) {
@@ -412,12 +413,12 @@
         });
       })
       .catch(err => {
-        console.error('Error en navegación SPA:', err);
+        console.error('Error SPA:', err);
         window.location.href = url;
       });
   }
 
-  // === 9) Interceptar enlaces internos ===
+  // === Interceptar enlaces internos ===
   document.addEventListener('click', function (e) {
     const a = e.target.closest('a');
     if (!a) return;
@@ -433,12 +434,14 @@
     }
   });
 
-  // === 10) Botones atrás / adelante ===
+  // === Back/forward ===
   window.addEventListener('popstate', function (e) {
     const url = (e.state && e.state.path) ? e.state.path : location.href;
     navigateTo(url, false);
   });
+
 })();
+
 </script>
 
 
