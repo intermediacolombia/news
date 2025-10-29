@@ -1,12 +1,9 @@
 <?php
 require_once __DIR__ . '/../../inc/config.php';
-
 require_once __DIR__ . '/../login/session.php';
 $permisopage = 'Ver Blogs';
 include('../login/restriction.php');
 session_start();
-
-
 
 require_once __DIR__ . '/../inc/flash_helpers.php';
 
@@ -22,14 +19,14 @@ try {
 // =============================
 $canViewOthers = isset($_SESSION['user_permissions']) && in_array('Ver Otras Entradas', $_SESSION['user_permissions']);
 
-// Obtener el nombre del autor actual (de la sesión)
-$currentUser = $_SESSION['username'] ?? $nombre ?? null;
+// Usuario actual del sistema (identificador interno)
+$currentUser = $_SESSION['user']['username'] ?? $_SESSION['user']['correo'] ?? null;
 
+// Consulta principal
 if ($canViewOthers) {
-    // Puede ver todas las entradas
+    //  Puede ver todas las entradas
     $sql = "
-        SELECT p.*,
-               GROUP_CONCAT(c.name SEPARATOR ', ') AS categorias
+        SELECT p.*, GROUP_CONCAT(c.name SEPARATOR ', ') AS categorias
         FROM blog_posts p
         LEFT JOIN blog_post_category pc ON pc.post_id = p.id
         LEFT JOIN blog_categories c ON c.id = pc.category_id AND c.deleted=0
@@ -39,23 +36,23 @@ if ($canViewOthers) {
     ";
     $st = $pdo->query($sql);
 } else {
-    // Solo sus propias entradas
+    //  Solo puede ver las suyas (basadas en author_user)
     $sql = "
-        SELECT p.*,
-               GROUP_CONCAT(c.name SEPARATOR ', ') AS categorias
+        SELECT p.*, GROUP_CONCAT(c.name SEPARATOR ', ') AS categorias
         FROM blog_posts p
         LEFT JOIN blog_post_category pc ON pc.post_id = p.id
         LEFT JOIN blog_categories c ON c.id = pc.category_id AND c.deleted=0
-        WHERE p.deleted=0 AND p.author = :author
+        WHERE p.deleted=0 AND p.author_user = :user
         GROUP BY p.id
         ORDER BY p.created_at DESC
     ";
     $st = $pdo->prepare($sql);
-    $st->execute([':author' => $currentUser]);
+    $st->execute([':user' => $currentUser]);
 }
 
 $posts = $st->fetchAll();
 ?>
+
 <!doctype html>
 <html lang="es">
 <head>
