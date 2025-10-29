@@ -1,5 +1,3 @@
-
-	
 <div class="container-fluid sticky-top px-0">
 
 <?php include __DIR__ . '/../partials/header-bar.php'; ?><!-- Topbar Start -->

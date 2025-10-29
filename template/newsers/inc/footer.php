@@ -240,7 +240,9 @@
 
 <?= $sys['code_footer'] ?? '' ?>
 
-</div>
-<?php include __DIR__ . '/../../../inc/core/player.php'; ?>
+
+
 </body>
+
+<?php include __DIR__ . '/../../../inc/core/player.php'; ?>
 </html>
