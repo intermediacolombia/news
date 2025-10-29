@@ -242,12 +242,7 @@
 </style>
 
 <!-- PLAYER SIN IFRAME -->
-<div id="player-container" style="bottom: 0;display: flex;height: <?= $sys['player_height'] ?? 70 ?>px;left: 0;position: fixed;right: 0;width: 100%;z-index: 1500;overflow: hidden;background: #000;">
-    <audio id="radio-player" controls style="width: 100%;height: 100%;">
-        <source src="<?= $sys['code_player'] ?? '' ?>" type="audio/mpeg">
-        Tu navegador no soporta el reproductor de audio.
-    </audio>
-</div>
+<div style="bottom: 0;display: flex;height: <?= $sys['player_height'] ?? 70 ?>px;left: 0;position: fixed;right: 0;width: 100%;z-index: 1500;overflow: hidden;"><iframe src="<?= $sys['code_player'] ?? '' ?>" frameborder="0" scrolling="no" style="width: 100%;"></iframe></div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
