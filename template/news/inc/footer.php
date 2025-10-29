@@ -85,19 +85,7 @@
     <script src="<?php echo URLBASE; ?>/template/news/js/main.js?<?php echo time();?>"></script>
 
 
-<?php if (!empty($sys['code_player'])): ?>
-<style>
-p.m-0.text-center {
-    padding-bottom: <?= $sys['player_height'] + 10 ?? 70 ?>px!important;
-}
-</style>
-<script>
-const direccionURL1 = `
-  <div style="bottom: 0;display: flex;height: <?= $sys['player_height'] ?? 70 ?>px;left: 0;position: fixed;right: 0;width: 100%;z-index: 1500;overflow: hidden;"><iframe src="<?= $sys['code_player'] ?? '' ?>" frameborder="0" scrolling="no" style="width: 100%;"></iframe></div>
-`;
-</script>
-<script src="<?= URLBASE ?>/inc/core/js/navegacion.js?<?= time(); ?>"></script>
-<?php endif; ?>
+	<?php include __DIR__ . '/../../../inc/core/player.php'; ?>
 
 <?= $sys['code_footer'] ?>
 </body>
