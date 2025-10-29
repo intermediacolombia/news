@@ -219,5 +219,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
+// ===============================
+// RESETEAR SLIDERS DUPLICADOS
+// ===============================
+document.addEventListener('DOMContentLoaded', () => {
+  const fixOwlDuplicados = () => {
+    document.querySelectorAll('.owl-carousel.owl-loaded').forEach(carousel => {
+      // Detectar si Owl duplicó estructura interna
+      const wrappers = carousel.querySelectorAll('.owl-stage-outer');
+      if (wrappers.length > 1) {
+        // Eliminar todo y reconstruir limpio
+        const originalHTML = carousel.innerHTML;
+        $(carousel).trigger('destroy.owl.carousel'); // destruir instancia previa
+        carousel.innerHTML = originalHTML;
+      }
+    });
+  };
+
+  // Ejecutar al cargar
+  fixOwlDuplicados();
+
+  // Ejecutar cada vez que se cambie contenido AJAX
+  const pageContent = document.getElementById('pageContent');
+  if (pageContent) {
+    const observerFix = new MutationObserver(() => fixOwlDuplicados());
+    observerFix.observe(pageContent, { childList: true, subtree: true });
+  }
+});
+
+
+
 
 
