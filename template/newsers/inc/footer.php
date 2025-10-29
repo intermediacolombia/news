@@ -1,4 +1,4 @@
-</main>
+
 <!-- Footer Start -->
 <div class="container-fluid bg-dark footer py-5 mt-5">
   <div class="container py-5">
@@ -234,11 +234,13 @@
 <script src="<?= URLBASE ?>/template/newsers/js/main.js?<?= time(); ?>"></script>
 
 
-<?php include __DIR__ . '/../../../inc/core/player.php'; ?>
+
 
 
 
 <?= $sys['code_footer'] ?? '' ?>
 
+</div>
+<?php include __DIR__ . '/../../../inc/core/player.php'; ?>
 </body>
 </html>
