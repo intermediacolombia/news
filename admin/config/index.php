@@ -367,17 +367,31 @@ Generales</a></li>
       <img src="<?= htmlspecialchars($configs['banner_inferior'], ENT_QUOTES, 'UTF-8') ?>" 
            alt="Banner Inferior" 
            style="max-height:100px; border:1px solid #ccc; border-radius:6px;">
-      <form method="post" onsubmit="return confirm('¿Seguro que deseas eliminar el banner inferior?');" style="display:inline;">
-        <input type="hidden" name="delete_banner_inferior" value="1">
-        <button type="submit" class="btn btn-sm btn-danger">
-          <i class="fa fa-trash"></i> Eliminar
-        </button>
-      </form>
+      <button type="button" class="btn btn-sm btn-danger" id="deleteBannerBtn">
+        <i class="fa fa-trash"></i> Eliminar
+      </button>
     </div>
   <?php endif; ?>
 
   <input type="file" name="banner_inferior" class="form-control mt-2" accept=".png,.jpg,.jpeg,.webp,.gif">
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  const btn = document.getElementById('deleteBannerBtn');
+  if(btn){
+    btn.addEventListener('click', function(){
+      if(!confirm('¿Seguro que deseas eliminar el banner inferior?')) return;
+      fetch(window.location.href, {
+        method: 'POST',
+        headers: {'Content-Type':'application/x-www-form-urlencoded'},
+        body: 'delete_banner_inferior=1'
+      }).then(()=>location.reload());
+    });
+  }
+});
+</script>
+
 
 
 			  
