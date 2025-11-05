@@ -117,7 +117,7 @@ $stats = $visitCounter->getStats();
 
 <!-- WIDGET DE ESTADÍSTICAS DE VISITAS (COMPACTO) -->
 <section class="py-3">
-  <div class="container">
+  
     <div class="card border-0 shadow-sm rounded-3">
       <div class="card-body p-3">
 	<!-- TÍTULO -->
@@ -152,6 +152,6 @@ $stats = $visitCounter->getStats();
         </div>
       </div>
     </div>
-  </div>
+
 </section>
 
