@@ -3,7 +3,7 @@
  * Widget Contador de Visitas
  * Archivo: widgets/visit-counter.php
  */
-require_once __DIR__ . '/../inc/config.php';
+require_once __DIR__ . '/../../../inc/config.php';
 
 // ============================================
 // CLASE CONTADOR DE VISITAS
@@ -125,6 +125,7 @@ $visitCounter->track();
 $stats = $visitCounter->getStats();
 ?>
 
+<!-- WIDGET DE ESTADÍSTICAS DE VISITAS -->
 <!-- WIDGET DE ESTADÍSTICAS DE VISITAS (COMPACTO) -->
 <section class="py-3">
   <div class="container">
@@ -153,7 +154,4 @@ $stats = $visitCounter->getStats();
     </div>
   </div>
 </section>
-
-<!-- ICONOS BOOTSTRAP (si no están incluidos) -->
-
 
