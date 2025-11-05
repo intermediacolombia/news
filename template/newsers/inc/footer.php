@@ -57,6 +57,10 @@
                 </a>
             <?php endif; endforeach; ?>
           </div>
+			
+			
+<?php include __DIR__ . '/partials/visit-counter.php'; ?>
+			
         </div>
       </div>
 
