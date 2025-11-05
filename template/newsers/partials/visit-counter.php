@@ -3,7 +3,7 @@
  * Widget Contador de Visitas
  * Archivo: widgets/visit-counter.php
  */
-require_once __DIR__ . '/../inc/config.php';
+require_once __DIR__ . '/../../../inc/config.php';
 
 // ============================================
 // CLASE CONTADOR DE VISITAS
