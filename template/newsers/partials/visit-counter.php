@@ -120,6 +120,11 @@ $stats = $visitCounter->getStats();
   <div class="container">
     <div class="card border-0 shadow-sm rounded-3">
       <div class="card-body p-3">
+	<!-- TÍTULO -->
+        <h6 class="text-uppercase text-secondary fw-semibold mb-3 text-center small">
+          <i class="fas fa-eye me-2"></i>Visitas
+        </h6>
+		  
         <div class="row g-3 align-items-center text-center">
           <!-- HOY -->
           <div class="col-4">
