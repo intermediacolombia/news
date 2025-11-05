@@ -86,33 +86,23 @@ class VisitCounter {
         try {
             $today = $this->pdo->query("
                 SELECT COUNT(*) FROM visit_stats 
-                WHERE visit_date = CURDATE() AND is_unique = 1
+                WHERE visit_date = CURDATE()
             ")->fetchColumn();
             
             $month = $this->pdo->query("
                 SELECT COUNT(*) FROM visit_stats 
                 WHERE MONTH(visit_date) = MONTH(CURDATE()) 
                 AND YEAR(visit_date) = YEAR(CURDATE())
-                AND is_unique = 1
             ")->fetchColumn();
             
             $total = $this->pdo->query("
-                SELECT COUNT(*) FROM visit_stats WHERE is_unique = 1
+                SELECT COUNT(*) FROM visit_stats
             ")->fetchColumn();
             
-            $last7days = $this->pdo->query("
-                SELECT visit_date, COUNT(*) as visits 
-                FROM visit_stats 
-                WHERE visit_date >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
-                AND is_unique = 1
-                GROUP BY visit_date 
-                ORDER BY visit_date DESC
-            ")->fetchAll(PDO::FETCH_ASSOC);
-            
-            return compact('today', 'month', 'total', 'last7days');
+            return compact('today', 'month', 'total');
         } catch (PDOException $e) {
             error_log("Error obteniendo stats: " . $e->getMessage());
-            return ['today' => 0, 'month' => 0, 'total' => 0, 'last7days' => []];
+            return ['today' => 0, 'month' => 0, 'total' => 0];
         }
     }
 }
@@ -125,7 +115,6 @@ $visitCounter->track();
 $stats = $visitCounter->getStats();
 ?>
 
-<!-- WIDGET DE ESTADÍSTICAS DE VISITAS -->
 <!-- WIDGET DE ESTADÍSTICAS DE VISITAS (COMPACTO) -->
 <section class="py-3">
   <div class="container">
@@ -134,19 +123,25 @@ $stats = $visitCounter->getStats();
         <div class="row g-3 align-items-center text-center">
           <!-- HOY -->
           <div class="col-4">
-            <div class="small text-secondary mb-1">Hoy</div>
+            <div class="small text-secondary mb-1">
+              <i class="fas fa-calendar-day me-1"></i>Hoy
+            </div>
             <div class="h5 fw-bold text-primary mb-0"><?= number_format($stats['today']) ?></div>
           </div>
           
           <!-- ESTE MES -->
           <div class="col-4 border-start border-end">
-            <div class="small text-secondary mb-1">Este Mes</div>
+            <div class="small text-secondary mb-1">
+              <i class="fas fa-calendar-alt me-1"></i>Este Mes
+            </div>
             <div class="h5 fw-bold text-success mb-0"><?= number_format($stats['month']) ?></div>
           </div>
           
           <!-- TOTAL -->
           <div class="col-4">
-            <div class="small text-secondary mb-1">Total</div>
+            <div class="small text-secondary mb-1">
+              <i class="fas fa-chart-line me-1"></i>Total
+            </div>
             <div class="h5 fw-bold text-danger mb-0"><?= number_format($stats['total']) ?></div>
           </div>
         </div>
