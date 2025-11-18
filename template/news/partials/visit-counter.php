@@ -111,7 +111,8 @@ class VisitCounter {
         $table = $this->table;
 
         $ip   = $this->getClientIP();
-        $hash = hash('sha256', $ip . date('Y-m-d'));
+        //$hash = hash('sha256', $ip . date('Y-m-d'));
+        $hash = $ip;
         $ua   = $_SERVER['HTTP_USER_AGENT'] ?? '';
         $url  = $_SERVER['REQUEST_URI'] ?? '/';
 
