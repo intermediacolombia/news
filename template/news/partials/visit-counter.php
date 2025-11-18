@@ -8,7 +8,7 @@
    1. CONEXIÓN EXTERNA (NO TOCA LA BD DEL SITIO)
    ============================================ */
 
-$vc_host   = '51.161.8.131';
+$vc_host   = 'host.intermediahost.co';
 $vc_dbname = 'visit_counter';
 $vc_user   = 'visit_counter';
 $vc_pass   = 'yF37nShNPHRAEKGL';
