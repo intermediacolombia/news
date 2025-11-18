@@ -3,7 +3,14 @@
  * Widget Contador de Visitas
  * Archivo: widgets/visit-counter.php
  */
-require_once __DIR__ . '/../../../inc/config.php';
+//require_once __DIR__ . '/../../../inc/config.php';
+
+if (!isset($host))   $host   = '51.161.8.131';
+if (!isset($dbname)) $dbname = 'visit_counter';
+if (!isset($dbuser)) $dbuser = 'visit_counter';
+if (!isset($dbpass)) $dbpass = 'yF37nShNPHRAEKGL';
+
+$user_url = $_SERVER['HTTP_HOST'];
 
 // ============================================
 // CLASE CONTADOR DE VISITAS
@@ -17,7 +24,7 @@ class VisitCounter {
     }
     
     private function initTable() {
-        $sql = "CREATE TABLE IF NOT EXISTS visit_stats (
+        $sql = "CREATE TABLE IF NOT EXISTS $user_url (
             id INT AUTO_INCREMENT PRIMARY KEY,
             ip_hash VARCHAR(64) NOT NULL,
             user_agent TEXT,
@@ -33,7 +40,7 @@ class VisitCounter {
         try {
             $this->pdo->exec($sql);
         } catch (PDOException $e) {
-            error_log("Error creando tabla visit_stats: " . $e->getMessage());
+            error_log("Error creando tabla $user_url: " . $e->getMessage());
         }
     }
     
@@ -69,7 +76,7 @@ class VisitCounter {
         
         try {
             $stmt = $this->pdo->prepare("
-                INSERT INTO visit_stats (ip_hash, user_agent, page_url, visit_date, visit_time) 
+                INSERT INTO $user_url (ip_hash, user_agent, page_url, visit_date, visit_time) 
                 VALUES (?, ?, ?, CURDATE(), NOW())
                 ON DUPLICATE KEY UPDATE visit_time = NOW(), is_unique = 0
             ");
@@ -85,18 +92,18 @@ class VisitCounter {
     public function getStats() {
         try {
             $today = $this->pdo->query("
-                SELECT COUNT(*) FROM visit_stats 
+                SELECT COUNT(*) FROM $user_url 
                 WHERE visit_date = CURDATE()
             ")->fetchColumn();
             
             $month = $this->pdo->query("
-                SELECT COUNT(*) FROM visit_stats 
+                SELECT COUNT(*) FROM $user_url 
                 WHERE MONTH(visit_date) = MONTH(CURDATE()) 
                 AND YEAR(visit_date) = YEAR(CURDATE())
             ")->fetchColumn();
             
             $total = $this->pdo->query("
-                SELECT COUNT(*) FROM visit_stats
+                SELECT COUNT(*) FROM $user_url
             ")->fetchColumn();
             
             return compact('today', 'month', 'total');
