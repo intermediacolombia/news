@@ -14,37 +14,16 @@ $vc_user   = 'visit_counter';
 $vc_pass   = 'yF37nShNPHRAEKGL';
 
 try {
-
-    // DEBUG → Mostrar que inicio conexión
-    echo "<pre style='background:#000;color:#0f0;padding:10px;'>Intentando conectar a BD externa...</pre>";
-
     $vc_pdo = new PDO(
-        "mysql:host=$vc_host;port=3306;dbname=$vc_dbname;charset=utf8mb4",
+        "mysql:host=$vc_host;dbname=$vc_dbname;charset=utf8mb4",
         $vc_user,
         $vc_pass,
         [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
     );
-
-    echo "<pre style='background:#000;color:#0f0;padding:10px;'>✔ Conexión OK</pre>";
-
 } catch (PDOException $e) {
-
-    // Mostrar error en pantalla (sin romper la web)
-    echo "<pre style='background:#300;color:#f55;padding:10px;'>
-❌ ERROR DE CONEXIÓN A LA BD EXTERNA
-Mensaje: {$e->getMessage()}
-Host: $vc_host
-BD: $vc_dbname
-Usuario: $vc_user
-PUERTO PROBADO: 3306
-</pre>";
-
-    // Registrar error en el log de PHP
-    error_log("Error VisitCounter Connection: " . $e->getMessage());
-
-    return; // evita que el resto del archivo falle
+    error_log("Error conexión VisitCounter: " . $e->getMessage());
+    return; // evita romper la web si falla
 }
-
 
 
 /* ============================================
