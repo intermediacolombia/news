@@ -2,10 +2,17 @@
 /**
  * Contador de Visitas (BD EXTERNA)
  * Archivo: visit-counter.php
+ *
+ * Versión sin page_url, guardando solo:
+ * - IP
+ * - User Agent
+ * - Fecha
+ * - Hora
+ * - Visita única
  */
 
 /* ============================================
-   1. CONEXIÓN EXTERNA (NO TOCA LA BD DEL SITIO)
+   1. CONEXIÓN A LA BD EXTERNA
    ============================================ */
 
 $vc_host   = 'host.intermediahost.co';
@@ -15,19 +22,19 @@ $vc_pass   = 'yF37nShNPHRAEKGL';
 
 try {
     $vc_pdo = new PDO(
-        "mysql:host=$vc_host;dbname=$vc_dbname;charset=utf8mb4",
+        "mysql:host=$vc_host;port=3306;dbname=$vc_dbname;charset=utf8mb4",
         $vc_user,
         $vc_pass,
         [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
     );
 } catch (PDOException $e) {
     error_log("Error conexión VisitCounter: " . $e->getMessage());
-    return; // evita romper la web si falla
+    return; // Evita romper páginas
 }
 
 
 /* ============================================
-   2. OBTENER DOMINIO PARA NOMBRE DE TABLA
+   2. TABLA POR DOMINIO
    ============================================ */
 
 $user_url = $_SERVER['HTTP_HOST'] ?? 'default_site';
@@ -45,20 +52,22 @@ class VisitCounter {
     public function __construct(PDO $pdo, string $tableName) {
         $this->pdo = $pdo;
 
-        // Sanitizar nombre tabla
+        // Nombre de tabla seguro
         $this->table = preg_replace('/[^a-zA-Z0-9_]/', '_', $tableName);
 
         $this->initTable();
     }
 
+    /**
+     * Crear tabla dinámica sin columna URL
+     */
     private function initTable() {
         $table = $this->table;
 
         $sql = "CREATE TABLE IF NOT EXISTS `$table` (
             id INT AUTO_INCREMENT PRIMARY KEY,
-            ip_hash VARCHAR(64) NOT NULL,
+            ip_hash VARCHAR(45) NOT NULL,
             user_agent TEXT,
-            page_url VARCHAR(255),
             visit_date DATE NOT NULL,
             visit_time DATETIME NOT NULL,
             is_unique TINYINT(1) DEFAULT 1,
@@ -74,6 +83,9 @@ class VisitCounter {
         }
     }
 
+    /**
+     * Detectar IP real del cliente
+     */
     private function getClientIP() {
         $keys = [
             'HTTP_CF_CONNECTING_IP',
@@ -81,6 +93,7 @@ class VisitCounter {
             'HTTP_X_REAL_IP',
             'REMOTE_ADDR'
         ];
+
         foreach ($keys as $key) {
             if (!empty($_SERVER[$key])) {
                 return trim(explode(',', $_SERVER[$key])[0]);
@@ -89,6 +102,9 @@ class VisitCounter {
         return '0.0.0.0';
     }
 
+    /**
+     * Ignorar bots de Google
+     */
     private function isGoogleBot() {
         $ua = $_SERVER['HTTP_USER_AGENT'] ?? '';
         $bots = [
@@ -97,12 +113,16 @@ class VisitCounter {
             'Mediapartners-Google',
             'Google-InspectionTool'
         ];
+
         foreach ($bots as $bot) {
             if (stripos($ua, $bot) !== false) return true;
         }
         return false;
     }
 
+    /**
+     * Registrar visita única por día
+     */
     public function track() {
         if ($this->isGoogleBot() || isset($_COOKIE['visitor_tracked'])) {
             return false;
@@ -111,19 +131,17 @@ class VisitCounter {
         $table = $this->table;
 
         $ip   = $this->getClientIP();
-        //$hash = hash('sha256', $ip . date('Y-m-d'));
-        $hash = $ip;
         $ua   = $_SERVER['HTTP_USER_AGENT'] ?? '';
-        $url  = $_SERVER['REQUEST_URI'] ?? '/';
 
         try {
             $stmt = $this->pdo->prepare("
-                INSERT INTO `$table` (ip_hash, user_agent, page_url, visit_date, visit_time)
-                VALUES (?, ?, ?, CURDATE(), NOW())
+                INSERT INTO `$table` (ip_hash, user_agent, visit_date, visit_time)
+                VALUES (?, ?, CURDATE(), NOW())
                 ON DUPLICATE KEY UPDATE visit_time = NOW(), is_unique = 0
             ");
-            $stmt->execute([$hash, $ua, $url]);
+            $stmt->execute([$ip, $ua]);
 
+            // Evita doble registro el mismo día
             setcookie('visitor_tracked', '1', time() + 86400, '/');
             return true;
 
@@ -133,17 +151,26 @@ class VisitCounter {
         }
     }
 
+    /**
+     * Obtener estadísticas resumidas
+     */
     public function getStats() {
         $table = $this->table;
 
         try {
-            $today = $this->pdo->query("SELECT COUNT(*) FROM `$table` WHERE visit_date = CURDATE()")->fetchColumn();
+            $today = $this->pdo->query("
+                SELECT COUNT(*) FROM `$table` WHERE visit_date = CURDATE()
+            ")->fetchColumn();
+
             $month = $this->pdo->query("
                 SELECT COUNT(*) FROM `$table`
-                WHERE MONTH(visit_date)=MONTH(CURDATE()) 
-                  AND YEAR(visit_date)=YEAR(CURDATE())
+                WHERE MONTH(visit_date)=MONTH(CURDATE())
+                AND YEAR(visit_date)=YEAR(CURDATE())
             ")->fetchColumn();
-            $total = $this->pdo->query("SELECT COUNT(*) FROM `$table`")->fetchColumn();
+
+            $total = $this->pdo->query("
+                SELECT COUNT(*) FROM `$table`
+            ")->fetchColumn();
 
             return compact('today','month','total');
 
@@ -156,7 +183,7 @@ class VisitCounter {
 
 
 /* ============================================
-   4. INICIALIZAR CONTADOR (USANDO SOLO BD EXTERNA)
+   4. INICIALIZAR Y REGISTRAR VISITA
    ============================================ */
 
 $vc = new VisitCounter($vc_pdo, $user_url);
@@ -164,6 +191,7 @@ $vc->track();
 $stats = $vc->getStats();
 
 ?>
+
 
 <!-- WIDGET DE ESTADÍSTICAS DE VISITAS (COMPACTO) -->
 <section class="py-3">
