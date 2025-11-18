@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const lon = pos.coords.longitude;
 
       // Recargar el widget con coordenadas
-      fetch('<?= basename(__FILE__) ?>?lat=' + lat + '&lon=' + lon)
+      fetch('/partials/<?= basename(__FILE__) ?>?lat=' + lat + '&lon=' + lon)
         .then(r => r.text())
         .then(html => {
           document.querySelector('.weather-widget').outerHTML =
