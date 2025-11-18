@@ -37,7 +37,15 @@ try {
    2. TABLA POR DOMINIO
    ============================================ */
 
+/* ============================================
+   2. TABLA POR DOMINIO (NORMALIZADO)
+   ============================================ */
+
 $user_url = $_SERVER['HTTP_HOST'] ?? 'default_site';
+
+// Normalizar dominio
+$user_url = strtolower($user_url);             // todo en minúsculas
+$user_url = preg_replace('/^www\./', '', $user_url); // quitar www.
 
 
 /* ============================================
@@ -191,7 +199,6 @@ $vc->track();
 $stats = $vc->getStats();
 
 ?>
-
 
 <!-- WIDGET DE ESTADÍSTICAS DE VISITAS (COMPACTO) -->
 <section class="py-3">
