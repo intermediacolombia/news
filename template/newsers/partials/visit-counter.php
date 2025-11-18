@@ -1,30 +1,60 @@
 <?php
 /**
- * Widget Contador de Visitas
- * Archivo: widgets/visit-counter.php
+ * Contador de Visitas (BD EXTERNA)
+ * Archivo: visit-counter.php
  */
-//require_once __DIR__ . '/../../../inc/config.php';
 
-if (!isset($host))   $host   = '51.161.8.131';
-if (!isset($dbname)) $dbname = 'visit_counter';
-if (!isset($dbuser)) $dbuser = 'visit_counter';
-if (!isset($dbpass)) $dbpass = 'yF37nShNPHRAEKGL';
+/* ============================================
+   1. CONEXIÓN EXTERNA (NO TOCA LA BD DEL SITIO)
+   ============================================ */
 
-$user_url = $_SERVER['HTTP_HOST'];
+$vc_host   = '51.161.8.131';
+$vc_dbname = 'visit_counter';
+$vc_user   = 'visit_counter';
+$vc_pass   = 'yF37nShNPHRAEKGL';
 
-// ============================================
-// CLASE CONTADOR DE VISITAS
-// ============================================
+try {
+    $vc_pdo = new PDO(
+        "mysql:host=$vc_host;dbname=$vc_dbname;charset=utf8mb4",
+        $vc_user,
+        $vc_pass,
+        [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+    );
+} catch (PDOException $e) {
+    error_log("Error conexión VisitCounter: " . $e->getMessage());
+    return; // evita romper la web si falla
+}
+
+
+/* ============================================
+   2. OBTENER DOMINIO PARA NOMBRE DE TABLA
+   ============================================ */
+
+$user_url = $_SERVER['HTTP_HOST'] ?? 'default_site';
+
+
+/* ============================================
+   3. CLASE CONTADOR
+   ============================================ */
+
 class VisitCounter {
+
     private $pdo;
-    
-    public function __construct($pdo) {
+    private $table;
+
+    public function __construct(PDO $pdo, string $tableName) {
         $this->pdo = $pdo;
+
+        // Sanitizar nombre tabla
+        $this->table = preg_replace('/[^a-zA-Z0-9_]/', '_', $tableName);
+
         $this->initTable();
     }
-    
+
     private function initTable() {
-        $sql = "CREATE TABLE IF NOT EXISTS $user_url (
+        $table = $this->table;
+
+        $sql = "CREATE TABLE IF NOT EXISTS `$table` (
             id INT AUTO_INCREMENT PRIMARY KEY,
             ip_hash VARCHAR(64) NOT NULL,
             user_agent TEXT,
@@ -36,90 +66,102 @@ class VisitCounter {
             INDEX idx_ip (ip_hash),
             UNIQUE KEY unique_visit (ip_hash, visit_date)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
-        
+
         try {
             $this->pdo->exec($sql);
         } catch (PDOException $e) {
-            error_log("Error creando tabla $user_url: " . $e->getMessage());
+            error_log("VisitCounter error creando tabla `$table`: " . $e->getMessage());
         }
     }
-    
+
     private function getClientIP() {
-        $keys = ['HTTP_CF_CONNECTING_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_REAL_IP', 'REMOTE_ADDR'];
+        $keys = [
+            'HTTP_CF_CONNECTING_IP',
+            'HTTP_X_FORWARDED_FOR',
+            'HTTP_X_REAL_IP',
+            'REMOTE_ADDR'
+        ];
         foreach ($keys as $key) {
             if (!empty($_SERVER[$key])) {
-                $ip = trim(explode(',', $_SERVER[$key])[0]);
-                return $ip;
+                return trim(explode(',', $_SERVER[$key])[0]);
             }
         }
         return '0.0.0.0';
     }
-    
+
     private function isGoogleBot() {
         $ua = $_SERVER['HTTP_USER_AGENT'] ?? '';
-        $bots = ['Googlebot', 'AdsBot-Google', 'Mediapartners-Google', 'Google-InspectionTool'];
+        $bots = [
+            'Googlebot',
+            'AdsBot-Google',
+            'Mediapartners-Google',
+            'Google-InspectionTool'
+        ];
         foreach ($bots as $bot) {
             if (stripos($ua, $bot) !== false) return true;
         }
         return false;
     }
-    
+
     public function track() {
         if ($this->isGoogleBot() || isset($_COOKIE['visitor_tracked'])) {
             return false;
         }
-        
-        $ip = $this->getClientIP();
+
+        $table = $this->table;
+
+        $ip   = $this->getClientIP();
         $hash = hash('sha256', $ip . date('Y-m-d'));
-        $ua = $_SERVER['HTTP_USER_AGENT'] ?? '';
-        $url = $_SERVER['REQUEST_URI'] ?? '/';
-        
+        $ua   = $_SERVER['HTTP_USER_AGENT'] ?? '';
+        $url  = $_SERVER['REQUEST_URI'] ?? '/';
+
         try {
             $stmt = $this->pdo->prepare("
-                INSERT INTO $user_url (ip_hash, user_agent, page_url, visit_date, visit_time) 
+                INSERT INTO `$table` (ip_hash, user_agent, page_url, visit_date, visit_time)
                 VALUES (?, ?, ?, CURDATE(), NOW())
                 ON DUPLICATE KEY UPDATE visit_time = NOW(), is_unique = 0
             ");
             $stmt->execute([$hash, $ua, $url]);
+
             setcookie('visitor_tracked', '1', time() + 86400, '/');
             return true;
+
         } catch (PDOException $e) {
-            error_log("Error tracking visit: " . $e->getMessage());
+            error_log("VisitCounter error tracking: " . $e->getMessage());
             return false;
         }
     }
-    
+
     public function getStats() {
+        $table = $this->table;
+
         try {
-            $today = $this->pdo->query("
-                SELECT COUNT(*) FROM $user_url 
-                WHERE visit_date = CURDATE()
-            ")->fetchColumn();
-            
+            $today = $this->pdo->query("SELECT COUNT(*) FROM `$table` WHERE visit_date = CURDATE()")->fetchColumn();
             $month = $this->pdo->query("
-                SELECT COUNT(*) FROM $user_url 
-                WHERE MONTH(visit_date) = MONTH(CURDATE()) 
-                AND YEAR(visit_date) = YEAR(CURDATE())
+                SELECT COUNT(*) FROM `$table`
+                WHERE MONTH(visit_date)=MONTH(CURDATE()) 
+                  AND YEAR(visit_date)=YEAR(CURDATE())
             ")->fetchColumn();
-            
-            $total = $this->pdo->query("
-                SELECT COUNT(*) FROM $user_url
-            ")->fetchColumn();
-            
-            return compact('today', 'month', 'total');
+            $total = $this->pdo->query("SELECT COUNT(*) FROM `$table`")->fetchColumn();
+
+            return compact('today','month','total');
+
         } catch (PDOException $e) {
-            error_log("Error obteniendo stats: " . $e->getMessage());
-            return ['today' => 0, 'month' => 0, 'total' => 0];
+            error_log("VisitCounter error stats: " . $e->getMessage());
+            return ['today'=>0,'month'=>0,'total'=>0];
         }
     }
 }
 
-// ============================================
-// INICIALIZAR Y TRACKEAR
-// ============================================
-$visitCounter = new VisitCounter($pdo);
-$visitCounter->track();
-$stats = $visitCounter->getStats();
+
+/* ============================================
+   4. INICIALIZAR CONTADOR (USANDO SOLO BD EXTERNA)
+   ============================================ */
+
+$vc = new VisitCounter($vc_pdo, $user_url);
+$vc->track();
+$stats = $vc->getStats();
+
 ?>
 
 <!-- WIDGET DE ESTADÍSTICAS DE VISITAS (COMPACTO) -->
