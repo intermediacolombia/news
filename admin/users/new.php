@@ -1,10 +1,11 @@
 <?php
-session_start();
+session_start(); // SIEMPRE PRIMERO
 
-require_once '../../inc/config.php';
-require_once '../login/session.php';
+require_once '../../inc/config.php';    // Debe carga db()
+require_once '../login/session.php';    // Carga datos usuario
+
 $permisopage = 'Ver y Editar Usuarios';
-include('../login/restriction.php');
+require_once '../login/restriction.php';
 
 
 // Manejo del envío del formulario

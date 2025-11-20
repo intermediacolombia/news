@@ -1,9 +1,4 @@
 <?php
-// O puedes mostrar solo errores graves, ocultando warnings:
-error_reporting(E_ERROR | E_PARSE);
-?>
-
-<?php
 // session.php
 require_once __DIR__ . '/../../inc/config.php';
 $cookieDomain = str_replace(['https://','http://'], '', $url);
