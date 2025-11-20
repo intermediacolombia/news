@@ -8,7 +8,7 @@
 session_start();
 
 // Cargar config con ruta absoluta para evitar duplicaciones
-require_once realpath(__DIR__ . '/../inc/config.php');
+require_once realpath(__DIR__ . '/../../inc/config.php');
 
 try {
     // Vaciar tabla
