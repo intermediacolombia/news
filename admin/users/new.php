@@ -12,7 +12,7 @@ require_once '../login/restriction.php';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Credenciales de la base de datos
-    include('../../inc/config.php');
+   
 // Conexión a la base de datos mediante PDO
     // Recuperar y sanitizar los datos del formulario
     $nombre   = trim($_POST['nombre'] ?? '');
