@@ -1,8 +1,11 @@
 <?php
-include('../login/session.php');  // Inicia la sesión y carga la información del usuario
+session_start();
+
+require_once '../../inc/config.php';
+require_once '../login/session.php';
 $permisopage = 'Ver y Editar Usuarios';
 include('../login/restriction.php');
-session_start();
+
 
 // Manejo del envío del formulario
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
