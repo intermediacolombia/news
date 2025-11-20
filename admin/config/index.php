@@ -16,14 +16,14 @@ ini_set('default_charset', 'UTF-8');
 mb_internal_encoding('UTF-8');
 
 /* ========= Forzar UTF-8 en PDO ========= */
-$pdo->exec("SET NAMES utf8mb4");
-$pdo->exec("SET CHARACTER SET utf8mb4");
-$pdo->exec("SET SESSION collation_connection = utf8mb4_general_ci");
+db()->exec("SET NAMES utf8mb4");
+db()->exec("SET CHARACTER SET utf8mb4");
+db()->exec("SET SESSION collation_connection = utf8mb4_general_ci");
 
 
 // === Eliminar banner inferior ===
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_banner_inferior'])) {
-    $stmt = $pdo->prepare("SELECT value FROM system_settings WHERE setting_name='banner_inferior' LIMIT 1");
+    $stmt = db()->prepare("SELECT value FROM system_settings WHERE setting_name='banner_inferior' LIMIT 1");
     $stmt->execute();
     $banner = $stmt->fetchColumn();
 
@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_banner_inferio
         }
     }
 
-    $pdo->prepare("DELETE FROM system_settings WHERE setting_name='banner_inferior'")->execute();
+    db()->prepare("DELETE FROM system_settings WHERE setting_name='banner_inferior'")->execute();
     setFlash('success', 'El banner inferior fue eliminado correctamente.');
     header("Location: index.php");
     exit;
@@ -137,42 +137,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $enabled = isset($_POST[$k . '_enabled']) ? 1 : 0;
         }
 
-        $stmt = $pdo->prepare("INSERT INTO system_settings (setting_name,value,enabled)
+        $stmt = db()->prepare("INSERT INTO system_settings (setting_name,value,enabled)
                                VALUES (?,?,?)
                                ON DUPLICATE KEY UPDATE value=VALUES(value), enabled=VALUES(enabled)");
         $stmt->execute([$k, $val, $enabled]);
     }
 
     // Subida de imágenes
-    function saveImageSetting(PDO $pdo, string $fieldName, string $targetPrefix, string $settingName) {
-        if (empty($_FILES[$fieldName]['name']) || $_FILES[$fieldName]['error'] !== UPLOAD_ERR_OK) {
-            return;
-        }
-        $allowed = ['png','jpg','jpeg','webp','gif','ico'];
-        $ext = strtolower(pathinfo($_FILES[$fieldName]['name'], PATHINFO_EXTENSION));
-        if (!in_array($ext, $allowed)) {
-            setFlash('error', "El archivo de {$fieldName} debe ser imagen (" . implode(', ', $allowed) . ").");
-            return;
-        }
-        $uploadDir = __DIR__ . '/../../public/images/';
-        $fileName  = $targetPrefix . '_' . time() . '.' . $ext;
-        $target    = $uploadDir . $fileName;
-
-        if (!move_uploaded_file($_FILES[$fieldName]['tmp_name'], $target)) {
-            setFlash('error', "No se pudo subir el archivo de {$fieldName}.");
-            return;
-        }
-
-        $stmt = $pdo->prepare("INSERT INTO system_settings (setting_name,value,enabled)
-                               VALUES (?,?,1)
-                               ON DUPLICATE KEY UPDATE value=VALUES(value)");
-        $stmt->execute([$settingName, '/public/images/' . $fileName]);
-        setFlash('success', ucfirst(str_replace('_',' ', $fieldName)).' actualizado.');
+    
+	function saveImageSetting(string $fieldName, string $targetPrefix, string $settingName) {
+    if (empty($_FILES[$fieldName]['name']) || $_FILES[$fieldName]['error'] !== UPLOAD_ERR_OK) {
+        return;
     }
 
-    saveImageSetting($pdo, 'site_logo', 'logo', 'site_logo');
-    saveImageSetting($pdo, 'site_favicon', 'favicon', 'site_favicon');
-	saveImageSetting($pdo, 'banner_inferior', 'bannerinferior', 'banner_inferior');
+    $allowed = ['png','jpg','jpeg','webp','gif','ico'];
+    $ext = strtolower(pathinfo($_FILES[$fieldName]['name'], PATHINFO_EXTENSION));
+
+    if (!in_array($ext, $allowed)) {
+        setFlash('error', "El archivo de {$fieldName} debe ser imagen (" . implode(', ', $allowed) . ").");
+        return;
+    }
+
+    $uploadDir = __DIR__ . '/../../public/images/';
+    $fileName  = $targetPrefix . '_' . time() . '.' . $ext;
+    $target    = $uploadDir . $fileName;
+
+    if (!move_uploaded_file($_FILES[$fieldName]['tmp_name'], $target)) {
+        setFlash('error', "No se pudo subir el archivo de {$fieldName}.");
+        return;
+    }
+
+    $stmt = db()->prepare("
+        INSERT INTO system_settings (setting_name, value, enabled)
+        VALUES (?, ?, 1)
+        ON DUPLICATE KEY UPDATE value = VALUES(value)
+    ");
+    $stmt->execute([$settingName, '/public/images/' . $fileName]);
+
+    setFlash('success', ucfirst(str_replace('_',' ', $fieldName)).' actualizado.');
+}
+
+    saveImageSetting('site_logo', 'logo', 'site_logo');
+	saveImageSetting('site_favicon', 'favicon', 'site_favicon');
+	saveImageSetting('banner_inferior', 'bannerinferior', 'banner_inferior');
+
 
 
     setFlash('success', 'Configuraciones guardadas correctamente.');
@@ -181,7 +189,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // === Cargar configuraciones existentes ===
-$stmt = $pdo->query("SELECT setting_name, value, enabled FROM system_settings ORDER BY setting_name ASC");
+$stmt = db()->query("SELECT setting_name, value, enabled FROM system_settings ORDER BY setting_name ASC");
 $configs = [];
 $configs_enabled = [];
 foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {

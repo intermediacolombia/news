@@ -3,7 +3,7 @@ require_once __DIR__ . '/../../../inc/config.php';
 
 
 // Últimas 5 noticias publicadas
-$stmt = $pdo->query("
+$stmt = db()->query("
     SELECT p.id, p.title, p.slug, p.image, p.created_at, c.name AS category, c.slug AS category_slug
     FROM blog_posts p
     LEFT JOIN blog_post_category pc ON pc.post_id = p.id
@@ -57,7 +57,7 @@ $latestPosts = $stmt->fetchAll();
     </div>
     <?php
     // Seleccionar 4 categorías activas al azar
-    $cats = $pdo->query("
+    $cats = db()->query("
         SELECT id, name, slug 
         FROM blog_categories 
         WHERE status='active' AND deleted=0 
@@ -67,7 +67,7 @@ $latestPosts = $stmt->fetchAll();
 
     foreach ($cats as $cat):
         // Buscar imagen aleatoria de un post de esa categoría
-        $stmtImg = $pdo->prepare("
+        $stmtImg = db()->prepare("
             SELECT p.image 
             FROM blog_posts p
             INNER JOIN blog_post_category pc ON pc.post_id = p.id

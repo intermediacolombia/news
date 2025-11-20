@@ -20,7 +20,7 @@ $sqlLatest = "
   ORDER BY p.created_at DESC
   LIMIT 10
 ";
-$latestNews = $pdo->query($sqlLatest)->fetchAll();
+$latestNews = db()->query($sqlLatest)->fetchAll();
 ?>
 
 <!-- Latest News Start -->

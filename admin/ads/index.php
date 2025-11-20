@@ -9,12 +9,12 @@ session_start();
 require_once __DIR__ . '/../inc/flash_helpers.php';
 
 if (!headers_sent()) header('Content-Type: text/html; charset=UTF-8');
-$pdo->exec("SET NAMES utf8mb4");
+db()->exec("SET NAMES utf8mb4");
 
 /* ========= Eliminar bloque fijo (Sección 1 y 2) ========= */
 if (isset($_GET['delete'])) {
     $pos = (int)$_GET['delete'];
-    $pdo->prepare("DELETE FROM ads WHERE position=?")->execute([$pos]);
+    db()->prepare("DELETE FROM ads WHERE position=?")->execute([$pos]);
     setFlash('success', "Bloque $pos eliminado.");
     header("Location: index.php#block$pos");
     exit;
@@ -24,7 +24,7 @@ if (isset($_GET['delete'])) {
 if (isset($_GET['delete_gallery'])) {
     $id      = (int)($_GET['delete_gallery'] ?? 0);
     $section = (int)($_GET['section'] ?? 3);
-    $pdo->prepare("DELETE FROM ads_gallery WHERE id=?")->execute([$id]);
+    db()->prepare("DELETE FROM ads_gallery WHERE id=?")->execute([$id]);
     setFlash('success', "Banner eliminado.");
     header("Location: index.php#gallery$section");
     exit;
@@ -57,13 +57,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['position'])) {
                 ON DUPLICATE KEY UPDATE 
                 title=VALUES(title), target_url=VALUES(target_url),
                 status=VALUES(status), image_url=VALUES(image_url)";
-        $pdo->prepare($sql)->execute([$pos,$title,$imageUrl,$url,$status]);
+        db()->prepare($sql)->execute([$pos,$title,$imageUrl,$url,$status]);
     } else {
         $sql = "INSERT INTO ads (position,title,target_url,status)
                 VALUES (?,?,?,?)
                 ON DUPLICATE KEY UPDATE 
                 title=VALUES(title), target_url=VALUES(target_url), status=VALUES(status)";
-        $pdo->prepare($sql)->execute([$pos,$title,$url,$status]);
+        db()->prepare($sql)->execute([$pos,$title,$url,$status]);
     }
 
     setFlash('success',"Bloque $pos actualizado.");
@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_gallery'])) {
             $url    = trim($_POST["url_{$type}_{$section}"][$i] ?? '');
             $status = $_POST["status_{$type}_{$section}"][$i] ?? 'inactive';
 
-            $pdo->prepare("INSERT INTO ads_gallery (section,title,type,image_url,target_url,status)
+            db()->prepare("INSERT INTO ads_gallery (section,title,type,image_url,target_url,status)
                            VALUES (?,?,?,?,?,?)")
                 ->execute([$section,'',$type,"/public/images/ads/$file",$url,$status]);
         }
@@ -108,13 +108,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_gallery'])) {
 /* ========= Cargar datos ========= */
 $ads = [];
 foreach ([1,2] as $pos) {
-    $st = $pdo->prepare("SELECT * FROM ads WHERE position=? LIMIT 1");
+    $st = db()->prepare("SELECT * FROM ads WHERE position=? LIMIT 1");
     $st->execute([$pos]);
     $ads[$pos] = $st->fetch(PDO::FETCH_ASSOC);
 }
-$gallery3 = $pdo->query("SELECT * FROM ads_gallery WHERE section=3 ORDER BY created_at DESC")->fetchAll(PDO::FETCH_ASSOC);
-$gallery4 = $pdo->query("SELECT * FROM ads_gallery WHERE section=4 ORDER BY created_at DESC")->fetchAll(PDO::FETCH_ASSOC);
-$gallery5 = $pdo->query("SELECT * FROM ads_gallery WHERE section=5 AND type='square' ORDER BY created_at DESC")->fetchAll(PDO::FETCH_ASSOC);
+$gallery3 = db()->query("SELECT * FROM ads_gallery WHERE section=3 ORDER BY created_at DESC")->fetchAll(PDO::FETCH_ASSOC);
+$gallery4 = db()->query("SELECT * FROM ads_gallery WHERE section=4 ORDER BY created_at DESC")->fetchAll(PDO::FETCH_ASSOC);
+$gallery5 = db()->query("SELECT * FROM ads_gallery WHERE section=5 AND type='square' ORDER BY created_at DESC")->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!doctype html>
 <html lang="es">

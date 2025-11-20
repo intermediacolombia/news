@@ -4,7 +4,7 @@ setlocale(LC_TIME, 'es_ES.UTF-8', 'es_ES', 'spanish');
 date_default_timezone_set('America/Bogota');
 
 // Últimas publicaciones
-$stmt = $pdo->query("
+$stmt = db()->query("
     SELECT p.title, p.slug AS post_slug, p.image,
            c.slug AS category_slug
     FROM blog_posts p

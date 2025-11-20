@@ -20,7 +20,7 @@ if ($id <= 0) {
 }
 
 // 1) Verificar si existe
-$stmt = $pdo->prepare("SELECT * FROM blog_posts WHERE id=? AND deleted=0 LIMIT 1");
+$stmt = db()->prepare("SELECT * FROM blog_posts WHERE id=? AND deleted=0 LIMIT 1");
 $stmt->execute([$id]);
 $post = $stmt->fetch();
 
@@ -31,10 +31,10 @@ if (!$post) {
 }
 
 // 2) Borrado lógico
-$pdo->prepare("UPDATE blog_posts SET deleted=1, updated_at=NOW() WHERE id=?")->execute([$id]);
+db()->prepare("UPDATE blog_posts SET deleted=1, updated_at=NOW() WHERE id=?")->execute([$id]);
 
 // 3) Opcional: limpiar relaciones en blog_post_category
-$pdo->prepare("DELETE FROM blog_post_category WHERE post_id=?")->execute([$id]);
+db()->prepare("DELETE FROM blog_post_category WHERE post_id=?")->execute([$id]);
 
 // 4) Mensaje de éxito
 flash_set('success', '¡Entrada eliminada!', 'La entrada del blog fue eliminada correctamente.');

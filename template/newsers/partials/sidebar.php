@@ -2,7 +2,7 @@
 // === Datos dinámicos previos ===
 
 // Categorías populares (6 con más posts publicados)
-$stmtCat = $pdo->query("
+$stmtCat = db()->query("
     SELECT c.name, c.slug, COUNT(pc.post_id) AS total
     FROM blog_categories c
     LEFT JOIN blog_post_category pc ON c.id = pc.category_id
@@ -14,7 +14,7 @@ $stmtCat = $pdo->query("
 $categories = $stmtCat->fetchAll();
 
 // Noticias populares por vistas (TOP 4)
-$stmtPop = $pdo->query("
+$stmtPop = db()->query("
     SELECT p.id, p.title, p.slug, p.image, p.created_at,
            c.name AS category_name, c.slug AS category_slug,
            COUNT(v.id) AS total_views
@@ -30,7 +30,7 @@ $stmtPop = $pdo->query("
 $popular = $stmtPop->fetchAll();
 
 // Tags dinámicos (desde títulos + contenido)
-$stmtTxt = $pdo->query("
+$stmtTxt = db()->query("
     SELECT CONCAT(title, ' ', content) AS texto
     FROM blog_posts
     WHERE status='published' AND deleted=0
@@ -51,7 +51,7 @@ $tags = array_slice(array_keys($freq), 0, 8);
 // Banner inferior dinámico opcional (misma estructura visual)
 $bannerInferior = null;
 try {
-    $qBanner = $pdo->prepare("SELECT title, subtitle, image, url FROM ads WHERE position = 6 LIMIT 1");
+    $qBanner = db()->prepare("SELECT title, subtitle, image, url FROM ads WHERE position = 6 LIMIT 1");
     $qBanner->execute();
     $bannerInferior = $qBanner->fetch();
 } catch (\Throwable $e) {}

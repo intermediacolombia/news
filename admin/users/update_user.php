@@ -29,11 +29,8 @@ if ($rol <= 0) {
 // Datos de conexión
 include('../../inc/config.php');
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $dbuser, $dbpass);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
     // Verificar que el rol exista
-    $stmtCheckRole = $pdo->prepare("SELECT id FROM roles WHERE id = :id AND borrado = 0");
+    $stmtCheckRole = db()->prepare("SELECT id FROM roles WHERE id = :id AND borrado = 0");
     $stmtCheckRole->execute([':id' => $rol]);
     if (!$stmtCheckRole->fetch(PDO::FETCH_ASSOC)) {
         $_SESSION['error'] = "El rol seleccionado no existe o está inactivo.";
@@ -71,7 +68,7 @@ try {
         ];
     }
 
-    $stmt = $pdo->prepare($sql);
+    $stmt = db()->prepare($sql);
     $stmt->execute($params);
 
     $_SESSION['success'] = "Usuario actualizado correctamente.";

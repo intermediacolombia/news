@@ -3,7 +3,7 @@ require_once __DIR__ . '/../../inc/config.php';
 require_once __DIR__ . '/../inc/flash_helpers.php';
 
 try {
-  $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $dbuser, $dbpass, [
+  db() = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $dbuser, $dbpass, [
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
   ]);
@@ -12,7 +12,7 @@ try {
 }
 
 // Cargar categorías activas
-$cats = $pdo->query("SELECT id, name FROM blog_categories WHERE deleted=0 AND status='active' ORDER BY name")->fetchAll();
+$cats = db()->query("SELECT id, name FROM blog_categories WHERE deleted=0 AND status='active' ORDER BY name")->fetchAll();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $title   = trim($_POST['title'] ?? '');
@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 
   // Slug único
-  $st = $pdo->prepare("SELECT COUNT(*) FROM blog_posts WHERE slug=? AND deleted=0");
+  $st = db()->prepare("SELECT COUNT(*) FROM blog_posts WHERE slug=? AND deleted=0");
   $st->execute([$slug]);
   if ($st->fetchColumn() > 0) {
     $errors['slug'] = "El slug ya existe, elige otro.";
@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $sql = "INSERT INTO blog_posts 
           (title, slug, content, image, author, author_user, status, seo_title, seo_description, seo_keywords, deleted)
           VALUES (?,?,?,?,?,?,?,?,?,?,0)";
-  $st  = $pdo->prepare($sql);
+  $st  = db()->prepare($sql);
   $st->execute([
     $title,
     $slug,
@@ -105,11 +105,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $seoKeywords
   ]);
 
-  $postId = $pdo->lastInsertId();
+  $postId = db()->lastInsertId();
 
   // Guardar categorías
   if (!empty($catsSel)) {
-    $stCat = $pdo->prepare("INSERT INTO blog_post_category (post_id, category_id) VALUES (?,?)");
+    $stCat = db()->prepare("INSERT INTO blog_post_category (post_id, category_id) VALUES (?,?)");
     foreach ($catsSel as $cid) {
       $stCat->execute([$postId, (int)$cid]);
     }

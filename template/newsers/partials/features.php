@@ -6,7 +6,7 @@
       // ======================
       // Últimas 4 noticias reales
       // ======================
-      $stmt = $pdo->query("
+      $stmt = db()->query("
         SELECT p.id, p.title, p.slug, p.image, p.created_at,
                c.name AS category_name, c.slug AS category_slug
         FROM blog_posts p

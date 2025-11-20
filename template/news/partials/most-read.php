@@ -1,6 +1,6 @@
 <?php
 // Consultar los 10 posts mÃ¡s leÃ­dos
-$stmt = $pdo->query("
+$stmt = db()->query("
     SELECT p.id, p.title, p.slug, p.image, p.created_at, 
            c.name AS category_name, c.slug AS category_slug,
            COUNT(v.id) AS total_views

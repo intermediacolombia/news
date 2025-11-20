@@ -4,33 +4,65 @@ date_default_timezone_set('America/Bogota');
 
 require_once __DIR__ . '/url_bd.php';
 
-
-
-
-
 // inc/config.php
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 /* ========= Conexión PDO (única instancia) ========= */
-if (!isset($GLOBALS['pdo']) || !($GLOBALS['pdo'] instanceof PDO)) {
+function db() {
+    static $pdo = null;
+
+    if ($pdo !== null) {
+        return $pdo;
+    }
+
     try {
-        $dsn = "mysql:host={$host};dbname={$dbname};charset=utf8mb4";
-        $GLOBALS['pdo'] = new PDO($dsn, $dbuser, $dbpass, [
-            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        ]);
-        $GLOBALS['pdo']->exec("SET NAMES 'utf8mb4'");
+
+        // Extraer variables desde config
+        $host   = $GLOBALS['host'];
+        $dbname = $GLOBALS['dbname'];
+        $dbuser = $GLOBALS['dbuser'];
+        $dbpass = $GLOBALS['dbpass'];
+
+        $pdo = new PDO(
+            "mysql:host=$host;dbname=$dbname;charset=utf8mb4",
+            $dbuser,
+            $dbpass,
+            [
+                PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+            ]
+        );
+
+        return $pdo;
+
     } catch (PDOException $e) {
-        // En producción, loguea y muestra un mensaje amigable
-        die('Error de conexión a la base de datos.');
+
+        // Detectar si es AJAX o API
+        $isAjax =
+            (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+             strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest')
+            ||
+            (str_contains($_SERVER['CONTENT_TYPE'] ?? '', 'application/json'));
+
+        if ($isAjax) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'status'  => 'error',
+                'message' => 'Error de conexión a la base de datos.',
+                'code'    => $e->getCode()
+            ]);
+            exit;
+        }
+
+        // Página normal HTML
+        die("Error de conexión. Intenta más tarde.");
     }
 }
-$pdo = $GLOBALS['pdo'];
 
 /* ========= Carga de ajustes del sistema (con cache global) ========= */
 if (!isset($GLOBALS['SYS_SETTINGS'])) {
     try {
-        $stmt = $pdo->query("SELECT setting_name, value FROM system_settings");
+        $stmt = db()->query("SELECT setting_name, value FROM system_settings");
         $GLOBALS['SYS_SETTINGS'] = [];
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $GLOBALS['SYS_SETTINGS'][$row['setting_name']] = $row['value'];

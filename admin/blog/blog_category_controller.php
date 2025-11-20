@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
-        $stmt = $pdo->prepare("INSERT INTO blog_categories (name, slug, description, status) VALUES (?,?,?,?)");
+        $stmt = db()->prepare("INSERT INTO blog_categories (name, slug, description, status) VALUES (?,?,?,?)");
         $stmt->execute([$name, $slug, $description, $status]);
 
         flash_set('success', '¡Éxito!', 'Categoría creada correctamente.');

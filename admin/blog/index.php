@@ -7,13 +7,6 @@ session_start();
 
 require_once __DIR__ . '/../inc/flash_helpers.php';
 
-try {
-  $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $dbuser, $dbpass, [
-    PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC
-  ]);
-} catch(Throwable $e) { die("DB error: ".$e->getMessage()); }
-
 // =============================
 // FILTRO POR PERMISO DE USUARIO
 // =============================
@@ -34,7 +27,7 @@ if ($canViewOthers) {
         GROUP BY p.id
         ORDER BY p.created_at DESC
     ";
-    $st = $pdo->query($sql);
+    $st = db()->query($sql);
 } else {
     //  Solo puede ver las suyas (basadas en author_user)
     $sql = "
@@ -46,7 +39,7 @@ if ($canViewOthers) {
         GROUP BY p.id
         ORDER BY p.created_at DESC
     ";
-    $st = $pdo->prepare($sql);
+    $st = db()->prepare($sql);
     $st->execute([':user' => $currentUser]);
 }
 

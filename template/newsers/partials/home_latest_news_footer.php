@@ -1,5 +1,6 @@
 <?php
 /* ===== Consulta: Obtener las 5 categorías con más posts ===== */
+/* ===== Consulta: Obtener las 5 categorías con más posts ===== */
 $sqlCategories = "
   SELECT c.id, c.name, c.slug, COUNT(pc.post_id) AS total_posts
   FROM blog_categories c
@@ -10,10 +11,10 @@ $sqlCategories = "
   ORDER BY total_posts DESC
   LIMIT 5
 ";
-$topCategories = $pdo->query($sqlCategories)->fetchAll();
+$topCategories = db()->query($sqlCategories)->fetchAll();
 
 /* ===== Función para obtener posts por categoría ===== */
-function getPostsByCategory($pdo, $categoryId, $limit = 6) {
+function getPostsByCategory($categoryId, $limit = 6) {
     $sql = "
       SELECT p.id, p.title, p.slug, p.image, p.created_at, p.content, p.author,
              c.name AS category_name, c.slug AS category_slug,
@@ -27,14 +28,14 @@ function getPostsByCategory($pdo, $categoryId, $limit = 6) {
       ORDER BY p.created_at DESC
       LIMIT :limit
     ";
-    $stmt = $pdo->prepare($sql);
+    $stmt = db()->prepare($sql);
     $stmt->bindValue(':category_id', $categoryId, PDO::PARAM_INT);
-    $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+    $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
     $stmt->execute();
     return $stmt->fetchAll();
 }
 
-/* ===== Consulta: Most Views News (noticias más vistas) ===== */
+/* ===== Noticias más vistas ===== */
 $sqlMostViews = "
   SELECT p.id, p.title, p.slug, p.image, p.created_at, p.author,
          c.name AS category_name, c.slug AS category_slug,
@@ -48,9 +49,9 @@ $sqlMostViews = "
   ORDER BY views DESC, p.created_at DESC
   LIMIT 10
 ";
-$mostViewedNews = $pdo->query($sqlMostViews)->fetchAll();
+$mostViewedNews = db()->query($sqlMostViews)->fetchAll();
 
-/* ===== Consulta: UNA categoría aleatoria con 2 posts destacados ===== */
+/* ===== Categoría aleatoria con al menos 2 posts ===== */
 $sqlRandomCategory = "
   SELECT c.id, c.name, c.slug
   FROM blog_categories c
@@ -62,10 +63,10 @@ $sqlRandomCategory = "
   ORDER BY RAND()
   LIMIT 1
 ";
-$randomCategory = $pdo->query($sqlRandomCategory)->fetch();
+$randomCategory = db()->query($sqlRandomCategory)->fetch();
 
-/* ===== Función para obtener 2 posts destacados por categoría ===== */
-function getFeaturedPostsByCategory($pdo, $categoryId, $limit = 2) {
+/* ===== Obtener posts destacados por categoría ===== */
+function getFeaturedPostsByCategory($categoryId, $limit = 2) {
     $sql = "
       SELECT p.id, p.title, p.slug, p.image, p.created_at, p.author,
              c.name AS category_name, c.slug AS category_slug
@@ -77,12 +78,13 @@ function getFeaturedPostsByCategory($pdo, $categoryId, $limit = 2) {
       ORDER BY p.created_at DESC
       LIMIT :limit
     ";
-    $stmt = $pdo->prepare($sql);
+    $stmt = db()->prepare($sql);
     $stmt->bindValue(':category_id', $categoryId, PDO::PARAM_INT);
-    $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+    $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
     $stmt->execute();
     return $stmt->fetchAll();
 }
+
 ?>
 
 <div class="container-fluid populer-news py-5">
@@ -109,7 +111,7 @@ function getFeaturedPostsByCategory($pdo, $categoryId, $limit = 2) {
                     
                     <div class="tab-content mb-4">
                         <?php foreach ($topCategories as $index => $cat): ?>
-                            <?php $categoryPosts = getPostsByCategory($pdo, $cat['id'], 6); ?>
+                            <?php $categoryPosts = getPostsByCategory($cat['id'], 6); ?>
                             <?php $mainPost = $categoryPosts[0] ?? null; ?>
                             <?php $sidePosts = array_slice($categoryPosts, 1, 5); ?>
                             
@@ -231,7 +233,7 @@ function getFeaturedPostsByCategory($pdo, $categoryId, $limit = 2) {
                     
                     <!-- UNA Categoría Aleatoria con 2 Posts -->
                     <?php if ($randomCategory): ?>
-                        <?php $featuredPosts = getFeaturedPostsByCategory($pdo, $randomCategory['id'], 2); ?>
+                        <?php $featuredPosts = getFeaturedPostsByCategory($randomCategory['id'], 2); ?>
                         <?php if (count($featuredPosts) >= 2): ?>
                         <div class="mt-5 lifestyle">
                             <div class="border-bottom mb-4">

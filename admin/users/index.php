@@ -8,17 +8,9 @@ require_once __DIR__ . '/../../inc/config.php';
 
 // ===== Conexión única PDO =====
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $dbuser, $dbpass, [
-        PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-    ]);
-} catch (Throwable $e) {
-    die("DB error: " . $e->getMessage());
-}
-
 // ===== Roles activos para selects =====
 try {
-    $stmtRoles = $pdo->prepare("SELECT * FROM roles WHERE borrado = 0");
+    $stmtRoles = db()->prepare("SELECT * FROM roles WHERE borrado = 0");
     $stmtRoles->execute();
     $roles = $stmtRoles->fetchAll();
 } catch (PDOException $e) {
@@ -31,7 +23,7 @@ try {
             FROM usuarios u
             LEFT JOIN roles r ON u.rol_id = r.id
             WHERE u.borrado = 0";
-    $stmtUsers = $pdo->query($sql);
+    $stmtUsers = db()->query($sql);
     $usuarios  = $stmtUsers->fetchAll();
 } catch (PDOException $e) {
     $usuarios = [];

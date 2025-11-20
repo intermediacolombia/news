@@ -8,14 +8,9 @@ session_start();
 
 require_once __DIR__ . '/../inc/flash_helpers.php';
 
-try {
-  $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $dbuser, $dbpass, [
-    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-  ]);
-} catch(Throwable $e) { die("DB error: " . $e->getMessage()); }
 
-$st = $pdo->query("SELECT * FROM blog_categories WHERE deleted=0 ORDER BY created_at DESC");
+
+$st = db()->query("SELECT * FROM blog_categories WHERE deleted=0 ORDER BY created_at DESC");
 $categories = $st->fetchAll();
 ?>
 <!doctype html>

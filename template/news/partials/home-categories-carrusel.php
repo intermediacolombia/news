@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../../../inc/config.php';
 
 // Solo categorías con publicaciones activas
-$categories = $pdo->query("
+$categories = db()->query("
     SELECT c.id, c.name, c.slug, COUNT(p.id) AS total_posts
     FROM blog_categories c
     INNER JOIN blog_post_category pc ON pc.category_id = c.id
@@ -30,7 +30,7 @@ $categories = $pdo->query("
 
                     <div class="row g-3">
                         <?php
-                        $stmtPosts = $pdo->prepare("
+                        $stmtPosts = db()->prepare("
                             SELECT p.id, p.title, p.slug, p.image, p.created_at
                             FROM blog_posts p
                             INNER JOIN blog_post_category pc ON pc.post_id = p.id

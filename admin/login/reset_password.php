@@ -1,12 +1,5 @@
 <?php require_once('../../inc/config.php');
 
-// Conectar a la base de datos mediante PDO
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $dbuser, $dbpass);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch(PDOException $e) {
-    die("Error de conexión: " . $e->getMessage());
-}
 
 // Recuperar el token desde la URL
 $token = $_GET['token'] ?? '';
@@ -19,7 +12,7 @@ if (!$token) {
 }
 
 // Buscar el token en la base de datos y verificar que no haya expirado
-$stmt = $pdo->prepare("SELECT user_id, expires_at FROM password_resets WHERE token = :token LIMIT 1");
+$stmt = db()->prepare("SELECT user_id, expires_at FROM password_resets WHERE token = :token LIMIT 1");
 $stmt->execute([':token' => $token]);
 $resetRequest = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -43,13 +36,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
-        $stmt = $pdo->prepare("UPDATE usuarios SET password = :password WHERE id = :id");
+        $stmt = db()->prepare("UPDATE usuarios SET password = :password WHERE id = :id");
         $stmt->execute([
             ':password' => $passwordHash,
             ':id'       => $resetRequest['user_id']
         ]);
 
-        $stmt = $pdo->prepare("DELETE FROM password_resets WHERE token = :token");
+        $stmt = db()->prepare("DELETE FROM password_resets WHERE token = :token");
         $stmt->execute([':token' => $token]);
 
         $message = "Tu contraseña ha sido actualizada correctamente. Ahora puedes iniciar sesión con tu nueva contraseña.";

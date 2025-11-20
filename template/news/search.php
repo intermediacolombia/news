@@ -5,7 +5,7 @@ $q = trim($_GET['q'] ?? '');
 $results = [];
 
 if ($q !== '') {
-    $stmt = $pdo->prepare("
+    $stmt = db()->prepare("
         SELECT p.*, c.name AS category_name, c.slug AS category_slug
         FROM blog_posts p
         INNER JOIN blog_post_category pc ON pc.post_id = p.id

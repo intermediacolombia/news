@@ -13,13 +13,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($id > 0) {
         try {
-            $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $dbuser, $dbpass, [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            ]);
-
             // Marcamos como eliminada en lugar de borrar físicamente
-            $st = $pdo->prepare("UPDATE blog_categories SET deleted = 1 WHERE id = ?");
+            $st = db()->prepare("UPDATE blog_categories SET deleted = 1 WHERE id = ?");
             $st->execute([$id]);
 
             flash_set("success", "¡Exito!", "Categoría eliminada correctamente.");

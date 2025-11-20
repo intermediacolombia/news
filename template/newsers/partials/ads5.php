@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../../../inc/config.php';
 
-$stmt = $pdo->query("
+$stmt = db()->query("
     SELECT * FROM ads_gallery 
     WHERE section = 5 AND type = 'square' AND status = 'active' 
     ORDER BY created_at DESC

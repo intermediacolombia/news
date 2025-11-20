@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../../../inc/config.php';
 
 // Traer todas las categorías que tengan al menos un post publicado
-$stmt = $pdo->query("
+$stmt = db()->query("
     SELECT DISTINCT c.id, c.name, c.slug
     FROM blog_categories c
     INNER JOIN blog_post_category pc ON pc.category_id = c.id

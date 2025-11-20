@@ -16,11 +16,8 @@ $id = intval($_GET['id']);
 // Datos de conexión a la base de datos
 include('../../inc/config.php');
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $dbuser, $dbpass);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-    // Obtener los datos del usuario por ID
-    $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE id = :id LIMIT 1");
+	// Obtener los datos del usuario por ID
+    $stmt = db()->prepare("SELECT * FROM usuarios WHERE id = :id LIMIT 1");
     $stmt->execute([':id' => $id]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
     if (!$user) {

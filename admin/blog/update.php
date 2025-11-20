@@ -21,12 +21,11 @@ ini_set('default_charset', 'UTF-8');
 if (function_exists('mb_internal_encoding')) {
     mb_internal_encoding('UTF-8');
 }
-if (isset($pdo) && $pdo instanceof PDO) {
-    $pdo->exec("SET NAMES utf8mb4");
-    $pdo->exec("SET CHARACTER SET utf8mb4");
-    // Recomendado en MySQL 5.7/8.0 para idiomas latinos:
-    $pdo->exec("SET SESSION collation_connection = utf8mb4_unicode_ci");
-}
+// Forzar UTF-8 en toda la conexión
+db()->exec("SET NAMES utf8mb4");
+db()->exec("SET CHARACTER SET utf8mb4");
+db()->exec("SET SESSION collation_connection = utf8mb4_unicode_ci");
+
 
 /* ========= ID ========= */
 $id = (int)($_POST['id'] ?? 0);
@@ -56,7 +55,7 @@ if (trim($content) === '') {
 }
 
 /* ========= Traer post existente ========= */
-$stmt = $pdo->prepare("SELECT * FROM blog_posts WHERE id=? AND deleted=0 LIMIT 1");
+$stmt = db()->prepare("SELECT * FROM blog_posts WHERE id=? AND deleted=0 LIMIT 1");
 $stmt->execute([$id]);
 $post = $stmt->fetch();
 if (!$post) {
@@ -73,7 +72,7 @@ $slug = preg_replace('/-+/', '-', $slug);
 $slug = trim($slug, '-');
 
 /* ========= Slug único (excluyendo el propio ID) ========= */
-$stSlug = $pdo->prepare("SELECT COUNT(*) FROM blog_posts WHERE slug=? AND id<>? AND deleted=0");
+$stSlug = db()->prepare("SELECT COUNT(*) FROM blog_posts WHERE slug=? AND id<>? AND deleted=0");
 $stSlug->execute([$slug, $id]);
 if ((int)$stSlug->fetchColumn() > 0) {
     $errors['slug'] = "El slug ya existe, elige otro.";
@@ -140,7 +139,7 @@ $sql = "UPDATE blog_posts
             seo_title=?, seo_description=?, seo_keywords=?, 
             updated_at=NOW()
         WHERE id=?";
-$stmt = $pdo->prepare($sql);
+$stmt = db()->prepare($sql);
 $stmt->execute([
     $title,
     $slug,
@@ -154,9 +153,9 @@ $stmt->execute([
 ]);
 
 /* ========= Actualizar categorías ========= */
-$pdo->prepare("DELETE FROM blog_post_category WHERE post_id=?")->execute([$id]);
+db()->prepare("DELETE FROM blog_post_category WHERE post_id=?")->execute([$id]);
 if (!empty($cats) && is_array($cats)) {
-    $ins = $pdo->prepare("INSERT INTO blog_post_category (post_id, category_id) VALUES (?, ?)");
+    $ins = db()->prepare("INSERT INTO blog_post_category (post_id, category_id) VALUES (?, ?)");
     foreach ($cats as $catId) {
         $ins->execute([$id, (int)$catId]);
     }

@@ -5,7 +5,7 @@ $q = trim($_GET['q'] ?? '');
 $results = [];
 
 if ($q !== '') {
-    $stmt = $pdo->prepare("
+    $stmt = db()->prepare("
         SELECT p.*, c.name AS category_name, c.slug AS category_slug
         FROM blog_posts p
         INNER JOIN blog_post_category pc ON pc.post_id = p.id
@@ -113,7 +113,7 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
         <!-- Banner Publicitario -->
         <div class="mt-4 mb-5 text-center">
           <?php
-          $stmt = $pdo->prepare("SELECT * FROM ads WHERE position = 2 AND status='active' LIMIT 1");
+          $stmt = db()->prepare("SELECT * FROM ads WHERE position = 2 AND status='active' LIMIT 1");
           $stmt->execute();
           $ad = $stmt->fetch(PDO::FETCH_ASSOC);
           if ($ad && !empty($ad['image_url'])):

@@ -23,7 +23,7 @@
 
                         <?php
                         // Categorías dinámicas
-                        $st = $pdo->query("
+                        $st = db()->query("
                             SELECT c.name, c.slug, COUNT(p.id) AS total
                             FROM blog_categories c
                             INNER JOIN blog_post_category pc ON pc.category_id = c.id

@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../../../inc/config.php';
 
 // Obtener las últimas 5 noticias publicadas con su categoría
-$topNews = $pdo->query("
+$topNews = db()->query("
     SELECT p.id, p.title, p.slug, p.image, c.slug AS category_slug
     FROM blog_posts p
     INNER JOIN blog_post_category pc ON pc.post_id = p.id

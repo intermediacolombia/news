@@ -2,7 +2,7 @@
 
 
 <?php
-    $stmt = $pdo->prepare("
+    $stmt = db()->prepare("
         SELECT * FROM ads 
         WHERE position = 1 AND status = 'active' 
         LIMIT 1

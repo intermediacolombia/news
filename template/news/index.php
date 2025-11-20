@@ -63,7 +63,7 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
 					
                     <div class="mb-3 pb-3">
                         <?php
-    $stmt = $pdo->prepare("
+    $stmt = db()->prepare("
         SELECT * FROM ads 
         WHERE position = 2 AND status = 'active' 
         LIMIT 1

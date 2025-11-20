@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../../../inc/config.php';
 
 // Obtener banners de la Sección 3
-$stmt = $pdo->query("
+$stmt = db()->query("
     SELECT * FROM ads_gallery 
     WHERE section = 3 AND status = 'active' 
     ORDER BY created_at DESC

@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../../../inc/config.php';
 
 // Obtener las últimas 6 noticias publicadas
-$stmt = $pdo->query("
+$stmt = db()->query("
     SELECT p.id, p.title, p.slug, p.image, p.created_at, p.content,
            c.name AS category_name, c.slug AS category_slug
     FROM blog_posts p

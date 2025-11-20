@@ -11,7 +11,7 @@ if (!$categorySlug || !$postSlug) {
 }
 
 // Buscar la noticia
-$stmt = $pdo->prepare("
+$stmt = db()->prepare("
     SELECT p.*, pc.category_id, c.name AS category_name, c.slug AS category_slug
     FROM blog_posts p
     INNER JOIN blog_post_category pc ON pc.post_id = p.id
@@ -33,12 +33,12 @@ if (!$post) {
    Registro de vistas
 ================================ */
 $ipAddress = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
-$stmtView = $pdo->prepare("SELECT 1 FROM blog_post_views WHERE post_id=? AND ip_address=? LIMIT 1");
+$stmtView = db()->prepare("SELECT 1 FROM blog_post_views WHERE post_id=? AND ip_address=? LIMIT 1");
 $stmtView->execute([$post['id'], $ipAddress]);
 if (!$stmtView->fetch()) {
-    $pdo->prepare("INSERT INTO blog_post_views (post_id, ip_address) VALUES (?, ?)")->execute([$post['id'], $ipAddress]);
+    db()->prepare("INSERT INTO blog_post_views (post_id, ip_address) VALUES (?, ?)")->execute([$post['id'], $ipAddress]);
 }
-$totalViews = (int)$pdo->query("SELECT COUNT(*) FROM blog_post_views WHERE post_id={$post['id']}")->fetchColumn();
+$totalViews = (int)db()->query("SELECT COUNT(*) FROM blog_post_views WHERE post_id={$post['id']}")->fetchColumn();
 
 /* ================================
    SEO dinámico
@@ -139,7 +139,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
 
                 <!-- Noticias relacionadas -->
                 <?php
-                $stmtRelated = $pdo->prepare("
+                $stmtRelated = db()->prepare("
                     SELECT p.id, p.title, p.slug, p.image, p.created_at, c.slug AS category_slug
                     FROM blog_posts p
                     INNER JOIN blog_post_category pc ON pc.post_id = p.id

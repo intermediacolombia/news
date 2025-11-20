@@ -15,11 +15,9 @@ $id = intval($_GET['id']);
 // Datos de conexión
 include('../../inc/config.php');
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $dbuser, $dbpass);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
+     
     // Actualizar el campo "borrado" a 1 para el usuario con el id indicado
-    $stmt = $pdo->prepare("UPDATE usuarios SET borrado = 1 WHERE id = :id");
+    $stmt = db()->prepare("UPDATE usuarios SET borrado = 1 WHERE id = :id");
     $stmt->execute([':id' => $id]);
     
     if($stmt->rowCount() > 0) {

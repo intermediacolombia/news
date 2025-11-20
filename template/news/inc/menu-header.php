@@ -12,7 +12,7 @@
             </div>
             <div class="col-lg-8 text-center text-lg-right">
     <?php
-    $stmt = $pdo->prepare("
+    $stmt = db()->prepare("
         SELECT * FROM ads 
         WHERE position = 1 AND status = 'active' 
         LIMIT 1
@@ -61,7 +61,7 @@
 					
 					<?php
 // Cargar categorías con al menos 1 post publicado y no borrado
-$st = $pdo->query("
+$st = db()->query("
     SELECT c.name, c.slug, COUNT(p.id) AS total
     FROM blog_categories c
     INNER JOIN blog_post_category pc ON pc.category_id = c.id

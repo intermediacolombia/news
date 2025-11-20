@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../../../inc/config.php';
 
 // Obtener las 6 noticias más leídas (2 principales grandes + 4 secundarias)
-$stmt = $pdo->query("
+$stmt = db()->query("
     SELECT p.id, p.title, p.slug, p.image, p.created_at, p.content,
            c.name AS category_name, c.slug AS category_slug,
            COUNT(v.id) AS total_views

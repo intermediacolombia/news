@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../../../inc/config.php';
 // Obtener todos los textos (títulos + contenido) de posts publicados
-$stmt = $pdo->query("
+$stmt = db()->query("
     SELECT CONCAT(title, ' ', content) AS texto
     FROM blog_posts
     WHERE status='published' AND deleted=0

@@ -72,7 +72,7 @@
 //require_once __DIR__ . '/../../../inc/config.php';
 
 // Obtener 5 noticias populares (aleatorias entre las más vistas en total)
-$stmt = $pdo->query("
+$stmt = db()->query("
     SELECT p.id, p.title, p.slug, p.image, p.created_at,
            c.name AS category_name, c.slug AS category_slug,
            COUNT(v.id) AS total_views

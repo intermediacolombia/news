@@ -50,7 +50,7 @@ try {
             GROUP BY p.id
             ORDER BY p.created_at DESC
             LIMIT 30";
-    $stmt = $pdo->prepare($sql);
+    $stmt = db()->prepare($sql);
     $stmt->execute([':status' => 'published']);
     $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (Throwable $e) {

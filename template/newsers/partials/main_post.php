@@ -42,7 +42,7 @@ $sql = "
   ORDER BY p.created_at DESC
   LIMIT 8
 ";
-$posts = $pdo->query($sql)->fetchAll();
+$posts = db()->query($sql)->fetchAll();
 
 $main   = $posts[0] ?? null;            // grande izquierda
 $top    = $posts[1] ?? null;            // "Top Story" dentro de la caja

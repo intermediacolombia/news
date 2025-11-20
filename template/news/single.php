@@ -10,7 +10,7 @@ if (!$categorySlug || !$postSlug) {
     exit;
 }
 
-$stmt = $pdo->prepare("
+$stmt = db()->prepare("
     SELECT p.*, pc.category_id, c.name AS category_name, c.slug AS category_slug
     FROM blog_posts p
     INNER JOIN blog_post_category pc ON pc.post_id = p.id
@@ -35,7 +35,7 @@ if (!$post) {
 $ipAddress = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
 
 // Verificar si ya existe un registro de esta IP para este post
-$stmtView = $pdo->prepare("
+$stmtView = db()->prepare("
     SELECT 1 
     FROM blog_post_views 
     WHERE post_id = ? AND ip_address = ?
@@ -45,7 +45,7 @@ $stmtView->execute([$post['id'], $ipAddress]);
 
 if (!$stmtView->fetch()) {
     // Registrar la vista en la tabla auxiliar
-    $stmtInsert = $pdo->prepare("
+    $stmtInsert = db()->prepare("
         INSERT INTO blog_post_views (post_id, ip_address) 
         VALUES (?, ?)
     ");
@@ -55,7 +55,7 @@ if (!$stmtView->fetch()) {
 /* ================================
    OBTENER TOTAL DE LECTURAS
    ================================ */
-$stmtCount = $pdo->prepare("
+$stmtCount = db()->prepare("
     SELECT COUNT(*) 
     FROM blog_post_views 
     WHERE post_id = ?
@@ -155,7 +155,7 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
 				</div>
                 <!-- Noticias relacionadas -->
                 <?php
-                $stmtRelated = $pdo->prepare("
+                $stmtRelated = db()->prepare("
                     SELECT p.id, p.title, p.slug, p.image, p.created_at, c.slug AS category_slug
                     FROM blog_posts p
                     INNER JOIN blog_post_category pc ON pc.post_id = p.id

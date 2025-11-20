@@ -1,7 +1,7 @@
 <?php
 // /inc/cart_functions.php
 
-function calcularCarrito(PDO $pdo): array {
+function calcularCarrito(): array {
     $cart     = $_SESSION['cart'] ?? [];
     $total    = 0.0;
     $discount = 0.0;
@@ -16,7 +16,7 @@ function calcularCarrito(PDO $pdo): array {
     $stocks = [];
     if ($ids) {
         $in  = implode(',', array_fill(0, count($ids), '?'));
-        $st  = $pdo->prepare("SELECT id, stock FROM products WHERE id IN ($in)");
+        $st  = db()->prepare("SELECT id, stock FROM products WHERE id IN ($in)");
         $st->execute($ids);
         foreach ($st as $row) {
             $stocks[(int)$row['id']] = (int)$row['stock'];
@@ -31,6 +31,7 @@ function calcularCarrito(PDO $pdo): array {
 
         $maxStock = $stocks[$id] ?? 0;
         $displayQty = max(1, min($qty, $maxStock > 0 ? $maxStock : 1));
+
         $item['displayQty'] = $displayQty;
         $item['subtotal']   = $price * $displayQty;
 
@@ -40,15 +41,18 @@ function calcularCarrito(PDO $pdo): array {
     // Cupón aplicado
     if (!empty($_SESSION['applied_coupon']) && $total > 0) {
         $cinfo = $_SESSION['applied_coupon'];
-        $st = $pdo->prepare("SELECT * FROM coupons WHERE id=? AND status='active' LIMIT 1");
+        $st = db()->prepare("SELECT * FROM coupons WHERE id=? AND status='active' LIMIT 1");
         $st->execute([(int)$cinfo['coupon_id']]);
+
         if ($c = $st->fetch()) {
             $today = date('Y-m-d');
             $valid = (empty($c['start_at']) || $today >= $c['start_at'])
                   && (empty($c['end_at'])   || $today <= $c['end_at']);
+
             if ($valid) {
-                $eligibleSubtotal = $total; // simplificado (ya tienes lógica avanzada en coupon_apply)
+                $eligibleSubtotal = $total; 
                 $couponCode = $c['code'];
+
                 $type   = strtolower($cinfo['type']);
                 $value  = (float)$cinfo['value'];
                 $cap    = isset($cinfo['max_discount']) ? (float)$cinfo['max_discount'] : null;
@@ -57,6 +61,7 @@ function calcularCarrito(PDO $pdo): array {
                 if ($eligibleSubtotal > 0 && ($minC <= 0 || $total >= $minC)) {
                     if ($type === 'percent') $discount = $eligibleSubtotal * ($value/100);
                     elseif ($type === 'fixed') $discount = min($value, $eligibleSubtotal);
+
                     if ($cap && $cap > 0) $discount = min($discount, $cap);
                 }
             }
@@ -71,4 +76,5 @@ function calcularCarrito(PDO $pdo): array {
         'coupon'     => $couponCode
     ];
 }
+
 

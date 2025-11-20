@@ -10,15 +10,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Credenciales de la base de datos
     include('../../inc/config.php');
 // Conexión a la base de datos mediante PDO
-    try {
-        $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $dbuser, $dbpass);
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    } catch(PDOException $e) {
-        $_SESSION['error'] = "Error de conexión: " . $e->getMessage();
-        header("Location: $url/admin/users");
-        exit();
-    }
-
     // Recuperar y sanitizar los datos del formulario
     $nombre   = trim($_POST['nombre'] ?? '');
     $apellido = trim($_POST['apellido'] ?? '');
@@ -30,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Verificar si existe un registro con ese correo o nombre de usuario
     $sqlCheck = "SELECT * FROM usuarios WHERE correo = :correo OR username = :username LIMIT 1";
-    $stmtCheck = $pdo->prepare($sqlCheck);
+    $stmtCheck = db()->prepare($sqlCheck);
     $stmtCheck->execute([
         ':correo'   => $correo,
         ':username' => $username
@@ -56,7 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                               estado = :estado, 
                               borrado = 0 
                           WHERE id = :id";
-            $stmtUpdate = $pdo->prepare($sqlUpdate);
+            $stmtUpdate = db()->prepare($sqlUpdate);
             try {
                 $stmtUpdate->execute([
                     ':nombre'   => $nombre,
@@ -80,7 +71,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
         $sqlInsert = "INSERT INTO usuarios (nombre, apellido, correo, username, password, rol_id, estado) 
                       VALUES (:nombre, :apellido, :correo, :username, :password, :rol_id, :estado)";
-        $stmtInsert = $pdo->prepare($sqlInsert);
+        $stmtInsert = db()->prepare($sqlInsert);
         try {
             $stmtInsert->execute([
                 ':nombre'   => $nombre,

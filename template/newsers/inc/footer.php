@@ -69,7 +69,7 @@
         <div class="footer-item">
           <h4 class="text-white mb-4 fw-semibold">Últimas Noticias</h4>
           <?php
-          $stmt = $pdo->query("
+          $stmt = db()->query("
             SELECT p.title, p.slug AS post_slug, p.image, p.created_at,
                    c.slug AS category_slug, c.name AS category_name
             FROM blog_posts p
@@ -108,7 +108,7 @@
         <div class="footer-item">
           <h4 class="text-white mb-4 fw-semibold">Categorías</h4>
           <?php
-          $cats = $pdo->query("
+          $cats = db()->query("
               SELECT c.name, c.slug, COUNT(p.id) AS total
               FROM blog_categories c
               INNER JOIN blog_post_category pc ON pc.category_id = c.id

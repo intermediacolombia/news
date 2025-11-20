@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
-        $stmt = $pdo->prepare("UPDATE blog_categories SET name=?, slug=?, description=?, status=? WHERE id=?");
+        $stmt = db()->prepare("UPDATE blog_categories SET name=?, slug=?, description=?, status=? WHERE id=?");
         $stmt->execute([$name, $slug, $description, $status, $id]);
 
         flash_set('success', '¡Éxito!', 'Categoría actualizada correctamente.');

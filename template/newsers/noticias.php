@@ -9,7 +9,7 @@ $offset  = ($pageNum - 1) * $perPage;
 
 if ($categorySlug) {
     // Categoría
-    $stmtCat = $pdo->prepare("SELECT id, name, slug 
+    $stmtCat = db()->prepare("SELECT id, name, slug 
                               FROM blog_categories 
                               WHERE slug=? AND status='active' AND deleted=0 
                               LIMIT 1");
@@ -23,7 +23,7 @@ if ($categorySlug) {
     }
 
     // Total posts
-    $stmtCount = $pdo->prepare("
+    $stmtCount = db()->prepare("
         SELECT COUNT(*) 
         FROM blog_posts p
         INNER JOIN blog_post_category pc ON pc.post_id = p.id
@@ -33,7 +33,7 @@ if ($categorySlug) {
     $totalPosts = $stmtCount->fetchColumn();
 
     // Posts con paginación
-    $stmt = $pdo->prepare("
+    $stmt = db()->prepare("
         SELECT p.*, c.name AS category_name, c.slug AS category_slug
         FROM blog_posts p
         INNER JOIN blog_post_category pc ON pc.post_id = p.id
@@ -46,13 +46,13 @@ if ($categorySlug) {
     $posts = $stmt->fetchAll();
 } else {
     // Todas las noticias
-    $stmtCount = $pdo->query("
+    $stmtCount = db()->query("
         SELECT COUNT(*) FROM blog_posts
         WHERE status='published' AND deleted=0
     ");
     $totalPosts = $stmtCount->fetchColumn();
 
-    $stmt = $pdo->query("
+    $stmt = db()->query("
         SELECT p.*, c.name AS category_name, c.slug AS category_slug
         FROM blog_posts p
         INNER JOIN blog_post_category pc ON pc.post_id = p.id
@@ -152,7 +152,7 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                 <!-- ADS Banner -->
                 <div class="mb-3 pb-3">
                         <?php
-    $stmt = $pdo->prepare("
+    $stmt = db()->prepare("
         SELECT * FROM ads 
         WHERE position = 2 AND status = 'active' 
         LIMIT 1

@@ -19,9 +19,9 @@ if (function_exists('mb_internal_encoding')) {
 }
 
 /* ========= Forzar UTF-8 en PDO ========= */
-$pdo->exec("SET NAMES utf8mb4");
-$pdo->exec("SET CHARACTER SET utf8mb4");
-$pdo->exec("SET SESSION collation_connection = utf8mb4_unicode_ci");
+db()->exec("SET NAMES utf8mb4");
+db()->exec("SET CHARACTER SET utf8mb4");
+db()->exec("SET SESSION collation_connection = utf8mb4_unicode_ci");
 
 /* ========= ID ========= */
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
@@ -30,7 +30,7 @@ if ($id <= 0) {
 }
 
 /* ========= Traer post ========= */
-$stmt = $pdo->prepare("SELECT * FROM blog_posts WHERE id=? AND deleted=0 LIMIT 1");
+$stmt = db()->prepare("SELECT * FROM blog_posts WHERE id=? AND deleted=0 LIMIT 1");
 $stmt->execute([$id]);
 $post = $stmt->fetch();
 if (!$post) {
@@ -38,7 +38,7 @@ if (!$post) {
 }
 
 /* ========= Categorías del post (normalizadas a int) ========= */
-$stc = $pdo->prepare("SELECT category_id FROM blog_post_category WHERE post_id=?");
+$stc = db()->prepare("SELECT category_id FROM blog_post_category WHERE post_id=?");
 $stc->execute([$id]);
 $postCats = array_map('intval', $stc->fetchAll(PDO::FETCH_COLUMN));
 

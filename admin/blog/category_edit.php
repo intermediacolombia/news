@@ -7,7 +7,7 @@ session_start();
 require_once __DIR__ . '/../../inc/config.php';
 
 $id = (int)($_GET['id'] ?? 0);
-$stmt = $pdo->prepare("SELECT * FROM blog_categories WHERE id=?");
+$stmt = db()->prepare("SELECT * FROM blog_categories WHERE id=?");
 $stmt->execute([$id]);
 $cat = $stmt->fetch();
 if (!$cat) { die("Categoría no encontrada"); }
