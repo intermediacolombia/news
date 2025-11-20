@@ -2,15 +2,6 @@
 require_once __DIR__ . '/../../inc/config.php';
 require_once __DIR__ . '/../inc/flash_helpers.php';
 
-try {
-  db() = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $dbuser, $dbpass, [
-    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-  ]);
-} catch(Throwable $e) {
-  die("DB error: ".$e->getMessage());
-}
-
 // Cargar categorías activas
 $cats = db()->query("SELECT id, name FROM blog_categories WHERE deleted=0 AND status='active' ORDER BY name")->fetchAll();
 
