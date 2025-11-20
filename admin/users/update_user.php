@@ -1,9 +1,12 @@
-<?php 
-include('../login/session.php');
-$permisopage = 'Ver y Editar Usuarios';
-include('../login/restriction.php');
+<?php
 session_start();
-include('../../inc/config.php');
+
+require_once '../../inc/config.php';
+require_once '../login/session.php';
+
+$permisopage = 'Ver y Editar Usuarios';
+require_once '../login/restriction.php';
+
 if (!isset($_POST['id'])) {
     $_SESSION['error'] = "ID de usuario no proporcionado.";
     header("Location: index.php");
