@@ -3,7 +3,7 @@ include('../login/session.php');
 $permisopage = 'Ver y Editar Usuarios';
 include('../login/restriction.php');
 session_start();
-
+include('../../inc/config.php');
 if (!isset($_POST['id'])) {
     $_SESSION['error'] = "ID de usuario no proporcionado.";
     header("Location: index.php");
@@ -27,7 +27,7 @@ if ($rol <= 0) {
 }
 
 // Datos de conexión
-include('../../inc/config.php');
+
 try {
     // Verificar que el rol exista
     $stmtCheckRole = db()->prepare("SELECT id FROM roles WHERE id = :id AND borrado = 0");
