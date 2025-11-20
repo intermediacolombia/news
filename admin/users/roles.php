@@ -1,10 +1,18 @@
-<?php include('../login/session.php'); ?>
-<?php 
-$permisopage = 'Gestionar Roles';
-include('../login/restriction.php'); ?>
 <?php
-include('../../inc/config.php');
+session_start();
+
+// Cargar config SIEMPRE con una ruta absoluta real
+require_once realpath(__DIR__ . '/../../inc/config.php');
+
+// Cargar sesión de usuario (ya NO debe cargar config.php nuevamente)
+require_once realpath(__DIR__ . '/../login/session.php');
+
+$permisopage = 'Gestionar Roles';
+
+// Cargar restricción de permisos
+require_once realpath(__DIR__ . '/../login/restriction.php');
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
