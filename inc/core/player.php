@@ -206,7 +206,7 @@
 })();
 </script-->
 
-<script>
+<!--script>
 (function () {
 
   // === Utilidades de comparación de assets ===
@@ -489,7 +489,7 @@
   });
 
 })();
-</script>
+</script-->
 
 
 <?php endif; ?>
