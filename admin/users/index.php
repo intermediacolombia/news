@@ -6,8 +6,6 @@ session_start();
 
 require_once __DIR__ . '/../../inc/config.php';
 
-// ===== Conexión única PDO =====
-try {
 // ===== Roles activos para selects =====
 try {
     $stmtRoles = db()->prepare("SELECT * FROM roles WHERE borrado = 0");
