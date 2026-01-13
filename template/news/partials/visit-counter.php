@@ -15,9 +15,9 @@
    1. CONEXIÓN A LA BD EXTERNA
    ============================================ */
 
-$vc_host   = 'host.intermediahost.co';
-$vc_dbname = 'visit_counter';
-$vc_user   = 'visit_counter';
+$vc_host   = '158.69.221.140';
+$vc_dbname = 'inte_visit_counter';
+$vc_user   = 'inte_visit_counter';
 $vc_pass   = 'yF37nShNPHRAEKGL';
 
 try {
