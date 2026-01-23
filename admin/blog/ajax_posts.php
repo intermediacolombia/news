@@ -101,6 +101,7 @@ $posts = $st->fetchAll();
 // Formatear datos para DataTables
 $data = [];
 foreach ($posts as $p) {
+    // Imagen
     $image = '';
     if ($p['image']) {
         $image = '<img src="' . htmlspecialchars($GLOBALS['url'] . '/' . $p['image']) . '" class="post-thumb">';
@@ -108,10 +109,22 @@ foreach ($posts as $p) {
         $image = '<span class="text-muted">Sin imagen</span>';
     }
 
+    // Título truncado con tooltip
+    $titleFull = htmlspecialchars($p['title']);
+    $titleDisplay = mb_strlen($p['title']) > 60 
+        ? htmlspecialchars(mb_substr($p['title'], 0, 60)) . '...' 
+        : $titleFull;
+    
+    $titleHtml = '<div class="post-title" title="' . $titleFull . '">' 
+                . '<strong>' . $titleDisplay . '</strong>'
+                . '</div>';
+
+    // Badge de estado
     $badge = $p['status'] === 'published' 
         ? '<span class="badge bg-success">Publicado</span>'
         : '<span class="badge bg-secondary">Borrador</span>';
 
+    // Acciones
     $actions = '
         <a class="btn btn-sm btn-outline-primary" href="' . $GLOBALS['url'] . '/admin/blog/edit.php?id=' . (int)$p['id'] . '" title="Editar">
             <i class="fa fa-pencil"></i>
@@ -124,7 +137,7 @@ foreach ($posts as $p) {
     $data[] = [
         '<input type="checkbox" class="chkPost form-check-input" value="' . (int)$p['id'] . '">',
         $image,
-        '<strong>' . htmlspecialchars($p['title']) . '</strong>',
+        $titleHtml,
         htmlspecialchars($p['categorias'] ?: '—'),
         htmlspecialchars($p['author']),
         $badge,

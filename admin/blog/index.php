@@ -40,6 +40,18 @@ require_once __DIR__ . '/../inc/flash_helpers.php';
     padding: 10px 12px;
     margin-bottom: 15px;
   }
+	
+	.post-title {
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: help;
+}
+
+.post-title:hover {
+    color: #0d6efd;
+}
 </style>
 </head>
 <body>
