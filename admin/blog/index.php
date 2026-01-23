@@ -6,44 +6,6 @@ include('../login/restriction.php');
 session_start();
 
 require_once __DIR__ . '/../inc/flash_helpers.php';
-
-// =============================
-// FILTRO POR PERMISO DE USUARIO
-// =============================
-$canViewOthers = isset($_SESSION['user_permissions']) && in_array('Ver Otras Entradas', $_SESSION['user_permissions']);
-
-// Usuario actual del sistema (identificador interno)
-$currentUser = $_SESSION['user']['username'] ?? $_SESSION['user']['correo'] ?? null;
-
-// Consulta principal
-if ($canViewOthers) {
-    //  Puede ver todas las entradas
-    $sql = "
-        SELECT p.*, GROUP_CONCAT(c.name SEPARATOR ', ') AS categorias
-        FROM blog_posts p
-        LEFT JOIN blog_post_category pc ON pc.post_id = p.id
-        LEFT JOIN blog_categories c ON c.id = pc.category_id AND c.deleted=0
-        WHERE p.deleted=0
-        GROUP BY p.id
-        ORDER BY p.created_at DESC
-    ";
-    $st = db()->query($sql);
-} else {
-    //  Solo puede ver las suyas (basadas en author_user)
-    $sql = "
-        SELECT p.*, GROUP_CONCAT(c.name SEPARATOR ', ') AS categorias
-        FROM blog_posts p
-        LEFT JOIN blog_post_category pc ON pc.post_id = p.id
-        LEFT JOIN blog_categories c ON c.id = pc.category_id AND c.deleted=0
-        WHERE p.deleted=0 AND p.author_user = :user
-        GROUP BY p.id
-        ORDER BY p.created_at DESC
-    ";
-    $st = db()->prepare($sql);
-    $st->execute([':user' => $currentUser]);
-}
-
-$posts = $st->fetchAll();
 ?>
 
 <!doctype html>
@@ -71,7 +33,6 @@ $posts = $st->fetchAll();
   }
   .btn-trash:hover { background:#fff3f3; }
 
-  /* Contenedor de acciones masivas */
   #massActions {
     background: #f8f9fa;
     border: 1px solid #dee2e6;
@@ -94,8 +55,7 @@ $posts = $st->fetchAll();
 <?php include('../inc/menu.php'); ?>
 
 <div class="container-fluid">
-
-    <?php if(isset($_SESSION['error'])): ?>
+  <?php if(isset($_SESSION['error'])): ?>
     <div class="alert alert-danger alert-dismissible fade show"><?= $_SESSION['error']; unset($_SESSION['error']); ?></div>
   <?php endif; ?>
   <?php if(isset($_SESSION['success'])): ?>
@@ -105,7 +65,6 @@ $posts = $st->fetchAll();
   <div class="card shadow-sm">
     <div class="card-body">
 
-      <!-- Acciones masivas: OCULTO por defecto -->
       <div id="massActions" class="justify-content-between align-items-center" style="display:none;">
         <div>
           <button id="btnDeleteSelected" class="btn btn-outline-danger btn-sm me-2">
@@ -136,38 +95,7 @@ $posts = $st->fetchAll();
             </tr>
           </thead>
           <tbody>
-            <?php foreach($posts as $p): ?>
-              <tr>
-                <td><input type="checkbox" class="chkPost form-check-input" value="<?= (int)$p['id'] ?>"></td>
-                <td>
-                  <?php if($p['image']): ?>
-                    <img src="<?= $url ?>/<?= htmlspecialchars($p['image']) ?>" class="post-thumb">
-                  <?php else: ?>
-                    <span class="text-muted">Sin imagen</span>
-                  <?php endif; ?>
-                </td>
-                <td style="max-width:250px;" class="text-truncate" title="<?= htmlspecialchars($p['title']) ?>">
-                  <strong><?= htmlspecialchars($p['title']) ?></strong>
-                </td>
-                <td><?= htmlspecialchars($p['categorias'] ?: '—') ?></td>
-                <td><?= htmlspecialchars($p['author']) ?></td>
-                <td>
-                  <span class="badge <?= $p['status']==='published' ? 'bg-success' : 'bg-secondary' ?>">
-                    <?= $p['status']==='published' ? 'Publicado' : 'Borrador' ?>
-                  </span>
-                </td>
-                <td><?= $p['created_at'] ?></td>
-                <td class="text-end no-click">
-                  <a class="btn btn-sm btn-outline-primary" href="<?= $url ?>/admin/blog/edit.php?id=<?= (int)$p['id'] ?>" title="Editar">
-                    <i class="fa fa-pencil"></i>
-                  </a>
-                  <form method="post" action="<?= $url ?>/admin/blog/delete.php" class="d-inline-block del-form" data-name="<?= htmlspecialchars($p['title']) ?>">
-                    <input type="hidden" name="id" value="<?= (int)$p['id'] ?>">
-                    <button type="submit" class="btn-trash" title="Eliminar"><i class="fa fa-trash"></i></button>
-                  </form>
-                </td>
-              </tr>
-            <?php endforeach; ?>
+            <!-- Los datos se cargan dinámicamente vía AJAX -->
           </tbody>
         </table>
       </div>
@@ -178,40 +106,55 @@ $posts = $st->fetchAll();
 <?php include('../inc/menu-footer.php'); ?>
 <?php include('../inc/flash_simple.php'); ?>
 
-<!-- IMPORTANTE: Cargar jQuery primero (sin esto DataTables no funciona) -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<!-- Luego Bootstrap -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<!-- Finalmente DataTables -->
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
 <script>
-// Esperar a que jQuery esté completamente cargado
 $(document).ready(function(){
   
-  // Inicializar DataTable
+  // Inicializar DataTable con server-side processing
   const table = $('#postsTable').DataTable({
-    language: { url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json" },
+    processing: true,
+    serverSide: true,
+    ajax: {
+      url: '<?= $url ?>/admin/blog/ajax_posts.php',
+      type: 'POST'
+    },
+    columns: [
+      { orderable: false, searchable: false },
+      { orderable: false },
+      { orderable: true },
+      { orderable: false },
+      { orderable: true },
+      { orderable: true },
+      { orderable: true },
+      { orderable: false, searchable: false }
+    ],
+    language: { 
+      url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json",
+      processing: "Cargando..."
+    },
     order: [[6,'desc']],
-    pageLength: 25
+    pageLength: 25,
+    columnDefs: [
+      { targets: -1, className: 'text-end no-click' }
+    ]
   });
 
   const $massActions = $('#massActions');
   const $countSelected = $('#countSelected');
 
-  // === Mostrar / ocultar barra de acciones masivas ===
   function toggleMassActions() {
     const selected = $('.chkPost:checked').length;
     
     if (selected > 0) {
-      // Muestra el contenedor de acciones masivas
       if (!$massActions.is(':visible')) {
         $massActions.css('display', 'flex').hide().slideDown(150);
       }
       $countSelected.text(`${selected} seleccionada${selected>1?'s':''}`);
     } else {
-      // Oculta el contenedor de acciones masivas
       if ($massActions.is(':visible')) {
         $massActions.slideUp(150);
       }
@@ -219,20 +162,20 @@ $(document).ready(function(){
     }
   }
 
-  // === Eventos de checkbox ===
-  $('#selectAll').on('change', function() {
+  // Eventos de checkbox (delegados para contenido dinámico)
+  $('#postsTable').on('change', '#selectAll', function() {
     $('.chkPost').prop('checked', this.checked);
     toggleMassActions();
   });
 
-  $('.chkPost').on('change', function() {
+  $('#postsTable').on('change', '.chkPost', function() {
     const all = $('.chkPost').length;
     const checked = $('.chkPost:checked').length;
     $('#selectAll').prop('checked', all === checked);
     toggleMassActions();
   });
 
-  // === Acciones masivas ===
+  // Acciones masivas
   function bulkAction(action, title, text, color) {
     const ids = $('.chkPost:checked').map(function(){ return this.value; }).get();
     if (ids.length === 0) return Swal.fire('Nada seleccionado','','info');
@@ -245,21 +188,21 @@ $(document).ready(function(){
       confirmButtonColor: color
     }).then(res => {
       if (res.isConfirmed) {
-        $.post('bulk_actions.php', {action, ids}, () => location.reload());
+        $.post('bulk_actions.php', {action, ids}, () => table.ajax.reload());
       }
     });
   }
 
-  // Botones
   $('#btnDeleteSelected').on('click', () => bulkAction('delete', '¿Eliminar seleccionados?', 'Se eliminarán las entradas seleccionadas.', '#d33'));
   $('#btnDraftSelected').on('click', () => bulkAction('draft', '¿Pasar a borrador?', 'Las entradas seleccionadas se marcarán como borrador.', '#6c757d'));
   $('#btnPublishSelected').on('click', () => bulkAction('publish', '¿Publicar seleccionados?', 'Las entradas seleccionadas se publicarán.', '#28a745'));
 
-  // === Confirmación individual ===
-  $(document).on('submit', '.del-form', function(e){
+  // Eliminación individual (delegado)
+  $('#postsTable').on('click', '.btn-delete', function(e){
     e.preventDefault();
-    const form = this;
-    const name = form.dataset.name || 'la entrada';
+    const id = $(this).data('id');
+    const name = $(this).data('name') || 'la entrada';
+    
     Swal.fire({
       icon:'warning',
       title:'¿Eliminar?',
@@ -268,13 +211,16 @@ $(document).ready(function(){
       confirmButtonText:'Sí, eliminar',
       cancelButtonText:'Cancelar',
       confirmButtonColor:'#d33'
-    }).then(res=>{ if(res.isConfirmed) form.submit(); });
+    }).then(res => {
+      if(res.isConfirmed) {
+        $.post('<?= $url ?>/admin/blog/delete.php', {id}, () => table.ajax.reload());
+      }
+    });
   });
 });
 </script>
 </body>
 </html>
-
 
 
 
