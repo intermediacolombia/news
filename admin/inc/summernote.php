@@ -1,26 +1,27 @@
-<script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-    <link href="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-bs4.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-bs4.min.js"></script>	
+<!-- /admin/inc/summernote.php -->
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs5.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs5.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/lang/summernote-es-ES.min.js"></script>
-	<style>
-/* Ocultar botón de ayuda de Summernote */
+
+<style>
 .note-editor .note-btn[data-event="help"] {
   display: none !important;
 }
 
-	</style>
+.note-editor.note-frame {
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+}
+</style>
 
 <script>
 $(document).ready(function() {
   $('.summernote').summernote({
-    height: 300,
+    height: 400,
     lang: 'es-ES',
     toolbar: [
       ['style', ['style']],
-      ['font', ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'clear']],
+      ['font', ['bold', 'italic', 'underline', 'strikethrough', 'clear']],
       ['fontname', ['fontname']],
       ['fontsize', ['fontsize']],
       ['color', ['color']],
@@ -29,21 +30,63 @@ $(document).ready(function() {
       ['insert', ['link', 'picture', 'video']],
       ['view', ['fullscreen', 'codeview']]
     ],
-    fontNames: [
-      'Arial', 'Arial Black', 'Comic Sans MS', 'Courier New',
-      'Segoe UI', 'Tahoma', 'Times New Roman', 'Verdana'
-    ],
-    fontSizes: [
-      '8', '9', '10', '11', '12', '14', '16', '18',
-      '20', '24', '28', '32', '36', '48', '64'
-    ]
-  });
-
-  // Parchear los botones de cerrar para Bootstrap 5
-  $(document).on('shown.bs.modal', function() {
-    $('.note-editor .modal .close')
-      .attr('data-bs-dismiss', 'modal')   // lo que usa Bootstrap 5
-      .removeAttr('data-dismiss');        // quitar lo viejo
+    callbacks: {
+      onImageUpload: function(files) {
+        for (let i = 0; i < files.length; i++) {
+          let file = files[i];
+          let editor = $(this); // FIX: Guardar referencia correcta
+          
+          // Si la imagen es pequeña (<500KB), usar Base64
+          if (file.size < 500 * 1024) {
+            let reader = new FileReader();
+            reader.onloadend = function() {
+              editor.summernote('insertImage', reader.result); // FIX: Usar editor guardado
+            };
+            reader.readAsDataURL(file);
+          } else {
+            // Si es grande, subir al servidor
+            uploadSummernoteImage(file, editor);
+          }
+        }
+      }
+    }
   });
 });
+
+function uploadSummernoteImage(file, editor) {
+  // Validar tamaño
+  if (file.size > 5 * 1024 * 1024) {
+    alert('La imagen supera los 5MB permitidos.');
+    return;
+  }
+
+  var data = new FormData();
+  data.append("file", file);
+  
+  // Mostrar indicador de carga
+  editor.summernote('disable');
+  
+  $.ajax({
+    url: '<?= $url ?>/admin/blog/upload_image.php',
+    cache: false,
+    contentType: false,
+    processData: false,
+    data: data,
+    type: 'POST',
+    success: function(response) {
+      if (response.url) {
+        editor.summernote('insertImage', response.url);
+      } else if (response.error) {
+        alert('Error: ' + response.error);
+      }
+    },
+    error: function(xhr, status, error) {
+      console.error('Error al subir imagen:', error);
+      alert('Error al subir la imagen. Por favor, intenta nuevamente.');
+    },
+    complete: function() {
+      editor.summernote('enable');
+    }
+  });
+}
 </script>
