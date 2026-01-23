@@ -59,7 +59,7 @@
           </div>
 			
 			
-<?php include __DIR__ . '/../partials/visit-counter.php'; ?>
+<?php //include __DIR__ . '/../partials/visit-counter.php'; ?>
 			
         </div>
       </div>
