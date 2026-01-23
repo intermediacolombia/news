@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../../inc/config.php';
 require_once __DIR__ . '/../login/session.php';
-$permisopage = 'Crear Blogs';
+$permisopage = 'Crear Entrada';
 include('../login/restriction.php');
 session_start();
 
