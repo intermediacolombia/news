@@ -38,15 +38,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if ($content === '') {
     $errors['content'] = "El contenido no puede estar vacío.";
   }
+  
+  // Generar slug si está vacío
   if ($slug === '') {
     $slug = strtolower(preg_replace('/[^a-z0-9]+/i', '-', $title));
+    $slug = trim($slug, '-'); // Eliminar guiones al inicio y final
   }
   
-  // Slug único
-  $st = db()->prepare("SELECT COUNT(*) FROM blog_posts WHERE slug=? AND deleted=0");
-  $st->execute([$slug]);
-  if ($st->fetchColumn() > 0) {
-    $errors['slug'] = "El slug ya existe, elige otro.";
+  // Validar y hacer slug único si ya existe
+  $originalSlug = $slug;
+  $counter = 1;
+  $slugExists = true;
+  
+  while ($slugExists) {
+    $st = db()->prepare("SELECT COUNT(*) FROM blog_posts WHERE slug = :slug AND deleted = 0");
+    $st->execute([':slug' => $slug]);
+    
+    if ($st->fetchColumn() > 0) {
+      // El slug existe, agregar contador
+      $slug = $originalSlug . '-' . $counter;
+      $counter++;
+    } else {
+      // Slug disponible
+      $slugExists = false;
+    }
+    
+    // Prevenir loop infinito
+    if ($counter > 100) {
+      $errors['slug'] = "No se pudo generar un slug único.";
+      break;
+    }
   }
   
   // Imagen destacada
@@ -82,34 +103,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
   
   // GUARDAR ENTRADA CON author_user
-  $sql = "INSERT INTO blog_posts 
-          (title, slug, content, image, author, author_user, status, seo_title, seo_description, seo_keywords, deleted)
-          VALUES (?,?,?,?,?,?,?,?,?,?,0)";
-  $st  = db()->prepare($sql);
-  $st->execute([
-    $title,
-    $slug,
-    $content,
-    $imagePath,
-    $author,
-    $authorUser,
-    $status,
-    $seoTitle,
-    $seoDescription,
-    $seoKeywords
-  ]);
-  $postId = db()->lastInsertId();
-  
-  // Guardar categorías
-  if (!empty($catsSel)) {
-    $stCat = db()->prepare("INSERT INTO blog_post_category (post_id, category_id) VALUES (?,?)");
-    foreach ($catsSel as $cid) {
-      $stCat->execute([$postId, (int)$cid]);
+  try {
+    $sql = "INSERT INTO blog_posts 
+            (title, slug, content, image, author, author_user, status, seo_title, seo_description, seo_keywords, deleted)
+            VALUES (?,?,?,?,?,?,?,?,?,?,0)";
+    $st  = db()->prepare($sql);
+    $st->execute([
+      $title,
+      $slug,
+      $content,
+      $imagePath,
+      $author,
+      $authorUser,
+      $status,
+      $seoTitle,
+      $seoDescription,
+      $seoKeywords
+    ]);
+    $postId = db()->lastInsertId();
+    
+    // Guardar categorías
+    if (!empty($catsSel)) {
+      $stCat = db()->prepare("INSERT INTO blog_post_category (post_id, category_id) VALUES (?,?)");
+      foreach ($catsSel as $cid) {
+        $stCat->execute([$postId, (int)$cid]);
+      }
     }
+    
+    flash_set("success", "Entrada creada", "La entrada fue creada correctamente.");
+    header("Location: index.php");
+    exit;
+    
+  } catch (PDOException $e) {
+    // Si aún así hay error de slug duplicado, informar al usuario
+    if ($e->getCode() == 23000 && strpos($e->getMessage(), 'slug') !== false) {
+      $_SESSION['errors'] = ['slug' => 'El slug ya existe. Por favor, elige otro.'];
+    } else {
+      $_SESSION['errors'] = ['general' => 'Error al crear la entrada: ' . $e->getMessage()];
+    }
+    $_SESSION['old'] = $old;
+    header("Location: create.php");
+    exit;
   }
-  
-  flash_set("success", "Entrada creada", "La entrada fue creada correctamente.");
-  header("Location: index.php");
-  exit;
 }
 
