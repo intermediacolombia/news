@@ -55,17 +55,6 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
 <!-- Single Product Start -->
 <div class="container-fluid py-5">
     <div class="container py-5">
-        <!-- Breadcrumb -->
-        <ol class="breadcrumb justify-content-start mb-4">
-            <li class="breadcrumb-item"><a href="<​?= URLBASE ?>">Inicio</a></li>
-            <li class="breadcrumb-item">
-                <a href="<?= URLBASE ?>/noticias/<?= htmlspecialchars($post['category_slug']) ?>/">
-                    <?= htmlspecialchars($post['category_name']) ?>
-                </a>
-            </li>
-            <li class="breadcrumb-item active text-dark"><?= htmlspecialchars($post['title']) ?></li>
-        </ol>
-
         <div class="row g-4">
             <!-- CONTENIDO PRINCIPAL -->
             <div class="col-lg-8">
@@ -92,28 +81,27 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                     <span><i class="fa fa-eye me-1 text-primary"></i> <?= number_format($totalViews) ?> vistas</span>
                 </div>
 
-                <!-- BARRA DE AUDIO MODERNA -->
-                <div class="audio-player-bar mb-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; padding: 16px 20px; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
-                    <div class="d-flex align-items-center justify-content-between gap-3">
-                        <div class="d-flex align-items-center gap-2" style="flex: 1;">
-                            <button id="playBtn" class="btn btn-light btn-sm rounded-circle" onclick="handlePlay()" style="width: 40px; height: 40px; padding: 0; display: flex; align-items: center; justify-content: center; border: none;">
-                                <i class="fas fa-play" id="playIcon"></i>
+                <!-- Botón Text-to-Speech (Tu diseño original con lógica mejorada) -->
+                <div class="text-to-speech-section bg-light rounded p-3 mb-4 border">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0 fw-bold">
+                            <i class="fas fa-volume-up me-2 text-primary"></i>
+                            Escuchar artículo
+                        </h6>
+                        <div class="btn-group" role="group">
+                            <button id="playBtn" class="btn btn-primary btn-sm" onclick="playArticle()">
+                                <i class="fas fa-play"></i> Reproducir
                             </button>
-                            <div style="flex: 1;">
-                                <div class="progress" style="height: 4px; background-color: rgba(255,255,255,0.3); border-radius: 2px;">
-                                    <div class="progress-bar" id="audioProgress" role="progressbar" style="width: 0%; background-color: #fff; border-radius: 2px;"></div>
-                                </div>
-                            </div>
+                            <button id="pauseBtn" class="btn btn-warning btn-sm d-none" onclick="pauseArticle()">
+                                <i class="fas fa-pause"></i> Pausar
+                            </button>
+                            <button id="stopBtn" class="btn btn-danger btn-sm d-none" onclick="stopArticle()">
+                                <i class="fas fa-stop"></i> Detener
+                            </button>
                         </div>
-                        <div class="text-white small" style="min-width: 50px; text-align: right;">
-                            <span id="timeDisplay">0:00</span>
-                        </div>
-                        <button id="stopBtn" class="btn btn-light btn-sm rounded-circle d-none" onclick="handleStop()" style="width: 40px; height: 40px; padding: 0; display: flex; align-items: center; justify-content: center; border: none;">
-                            <i class="fas fa-times"></i>
-                        </button>
                     </div>
-                    <div class="text-white small mt-2" style="font-size: 12px; opacity: 0.9;">
-                        <i class="fas fa-volume-up me-2"></i>Escucha el artículo
+                    <div class="progress mt-2 d-none" id="progressBarContainer" style="height: 8px; background-color: #e9ecef; border-radius: 4px;">
+                        <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
                     </div>
                 </div>
 
@@ -204,26 +192,11 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
         </div>
     </div>
 </div>
-<!-- Single Product End -->
 
 <style>
-.text-secondary.small i {
-  opacity: 0.7;
-}
-.text-secondary.small span {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.audio-player-bar button:hover {
-    transform: scale(1.1);
-    transition: all 0.2s ease;
-}
-
-.audio-player-bar button:active {
-    transform: scale(0.95);
-}
+.text-secondary.small i { opacity: 0.7; }
+.text-secondary.small span { display: flex; align-items: center; gap: 4px; }
+#progressBar { transition: width 0.3s ease; }
 </style>
 
 <script>
@@ -233,103 +206,96 @@ let isPaused = false;
 let currentPosition = 0;
 let fullText = '';
 
-// El texto viene de PHP
-const title = "<​?= addslashes($post['title']) ?>";
-const excerpt = "<​?= addslashes(strip_tags($post['excerpt'] ?? '')) ?>";
-
-window.addEventListener('load', function() {
-    const articleContent = document.querySelector('.post-content');
-    fullText = (title + '. ' + excerpt + '. ' + articleContent.innerText)
-        .replace(/\s+/g, ' ')
-        .trim();
+// Preparar el texto al cargar la página
+window.addEventListener('load', () => {
+    const title = "<​?= addslashes($post['title']) ?>";
+    const excerpt = "<​?= addslashes(strip_tags($post['excerpt'] ?? '')) ?>";
+    const content = document.querySelector('.post-content').innerText;
+    fullText = (title + '. ' + excerpt + '. ' + content).replace(/\s+/g, ' ').trim();
 });
 
-function handlePlay() {
-    if (synth.speaking && !isPaused) return;
+function playArticle() {
+    if (!('speechSynthesis' in window)) {
+        alert('Tu navegador no soporta esta función.');
+        return;
+    }
 
     if (isPaused) {
         isPaused = false;
         speak(currentPosition);
     } else {
-        currentPosition = 0;
         speak(0);
     }
 }
 
 function speak(startOffset) {
-    synth.cancel();
+    synth.cancel(); // Limpiar cualquier audio previo
 
     const textToSpeak = fullText.substring(startOffset);
     utterance = new SpeechSynthesisUtterance(textToSpeak);
     utterance.lang = 'es-ES';
-    utterance.rate = 1.0;
-
+    
+    // Configurar voz española si existe
     const voices = synth.getVoices();
-    const spanishVoice = voices.find(voice => voice.lang.startsWith('es'));
-    if (spanishVoice) {
-        utterance.voice = spanishVoice;
-    }
+    const spanishVoice = voices.find(v => v.lang.startsWith('es'));
+    if (spanishVoice) utterance.voice = spanishVoice;
 
     utterance.onstart = () => {
-        updateUI('playing');
+        updateButtons('playing');
+        document.getElementById('progressBarContainer').classList.remove('d-none');
     };
 
     utterance.onboundary = (event) => {
         currentPosition = startOffset + event.charIndex;
         const progress = (currentPosition / fullText.length) * 100;
-        document.getElementById('audioProgress').style.width = progress + '%';
+        document.getElementById('progressBar').style.width = progress + '%';
     };
 
     utterance.onend = () => {
-        if (!isPaused) {
-            handleStop();
-        }
+        if (!isPaused) stopArticle();
     };
 
     synth.speak(utterance);
 }
 
-function handlePause() {
+function pauseArticle() {
     if (synth.speaking) {
         isPaused = true;
-        synth.cancel();
-        updateUI('paused');
+        synth.cancel(); // Truco técnico: cancelamos para pausar de verdad
+        updateButtons('paused');
     }
 }
 
-function handleStop() {
+function stopArticle() {
     isPaused = false;
     currentPosition = 0;
     synth.cancel();
-    updateUI('stopped');
+    updateButtons('stopped');
+    document.getElementById('progressBarContainer').classList.add('d-none');
+    document.getElementById('progressBar').style.width = '0%';
 }
 
-function updateUI(state) {
+function updateButtons(state) {
     const playBtn = document.getElementById('playBtn');
+    const pauseBtn = document.getElementById('pauseBtn');
     const stopBtn = document.getElementById('stopBtn');
-    const playIcon = document.getElementById('playIcon');
 
     if (state === 'playing') {
-        playIcon.classList.remove('fa-play');
-        playIcon.classList.add('fa-pause');
-        playBtn.onclick = handlePause;
+        playBtn.classList.add('d-none');
+        pauseBtn.classList.remove('d-none');
         stopBtn.classList.remove('d-none');
+        pauseBtn.innerHTML = '<i class="fas fa-pause"></i> Pausar';
     } else if (state === 'paused') {
-        playIcon.classList.remove('fa-pause');
-        playIcon.classList.add('fa-play');
-        playBtn.onclick = handlePlay;
-    } else {
-        playIcon.classList.remove('fa-pause');
-        playIcon.classList.add('fa-play');
-        playBtn.onclick = handlePlay;
+        pauseBtn.innerHTML = '<i class="fas fa-play"></i> Reanudar';
+    } else if (state === 'stopped') {
+        playBtn.classList.remove('d-none');
+        pauseBtn.classList.add('d-none');
         stopBtn.classList.add('d-none');
-        document.getElementById('audioProgress').style.width = '0%';
     }
 }
 
-window.onbeforeunload = () => {
-    synth.cancel();
-};
+// Detener si se cierra la pestaña
+window.onbeforeunload = () => synth.cancel();
 </script>
 
 
