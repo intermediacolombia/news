@@ -144,55 +144,45 @@ let speechSynthesis = window.speechSynthesis;
 let utterance = null;
 let isPaused = false;
 let isStopping = false;
-let currentText = ''; // 👈 Guardar el texto actual
-let currentPosition = 0; // 👈 Guardar la posición actual
+let currentText = ''; // Guardar el texto actual
+let currentPosition = 0; // Guardar la posición actual
 
-function playArticle() {
-    // Verificar compatibilidad
+
+	function playArticle() {
+
     if (!('speechSynthesis' in window)) {
-        alert('Tu navegador no soporta Text-to-Speech. Intenta con Chrome, Firefox o Edge.');
+        alert('Tu navegador no soporta Text-to-Speech.');
         return;
     }
 
-    // Obtener el contenido del artículo
     const articleContent = document.querySelector('.post-content');
     const title = '<?= addslashes($post['title']) ?>';
-    
-    // Extraer solo el texto, sin HTML
-    let textToRead = title + '. ' + articleContent.innerText;
-    
-    // Limpiar texto
-    textToRead = textToRead.replace(/\s+/g, ' ').trim();
 
+    let textToRead = (title + '. ' + articleContent.innerText)
+        .replace(/\s+/g, ' ')
+        .trim();
+
+    // REANUDAR
     if (isPaused) {
-        // 👇 SOLUCIÓN: En lugar de resume(), recrear desde la posición actual
         isPaused = false;
-        
-        // Si resume() funciona en el navegador
-        if (!speechSynthesis.paused) {
-            // Recrear desde la posición guardada
-            speakFromPosition(currentText, currentPosition);
-        } else {
-            // Intentar resume normal
-            speechSynthesis.resume();
-            updateButtons('playing');
-        }
+        speakFromPosition(currentText, currentPosition);
         return;
     }
 
-    // Guardar texto completo
+    // ▶️ NUEVA REPRODUCCIÓN
     currentText = textToRead;
     currentPosition = 0;
 
-    // Detener cualquier reproducción previa
     isStopping = true;
     speechSynthesis.cancel();
-    
+
     setTimeout(() => {
         isStopping = false;
         speakFromPosition(textToRead, 0);
     }, 100);
 }
+
+	
 
 function speakFromPosition(text, startPos = 0) {
     // Obtener el texto desde la posición actual
