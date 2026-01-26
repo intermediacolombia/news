@@ -147,42 +147,46 @@ let isStopping = false;
 let currentText = ''; // Guardar el texto actual
 let currentPosition = 0; // Guardar la posición actual
 
-
-	function playArticle() {
+function playArticle() {
 
     if (!('speechSynthesis' in window)) {
-        alert('Tu navegador no soporta Text-to-Speech.');
+        alert('Tu navegador no soporta Text-to-Speech');
         return;
     }
 
-    const articleContent = document.querySelector('.post-content');
-    const title = '<?= addslashes($post['title']) ?>';
-
-    let textToRead = (title + '. ' + articleContent.innerText)
-        .replace(/\s+/g, ' ')
-        .trim();
-
-    // REANUDAR
+    // 🔁 REANUDAR
     if (isPaused) {
+        speech.resume();
         isPaused = false;
-        speakFromPosition(currentText, currentPosition);
+        updateButtons('playing');
         return;
     }
 
     // ▶️ NUEVA REPRODUCCIÓN
-    currentText = textToRead;
-    currentPosition = 0;
+    const articleContent = document.querySelector('.post-content');
+    const title = '<?= addslashes($post['title']) ?>';
 
-    isStopping = true;
-    speechSynthesis.cancel();
+    let text = (title + '. ' + articleContent.innerText)
+        .replace(/\s+/g, ' ')
+        .trim();
 
-    setTimeout(() => {
-        isStopping = false;
-        speakFromPosition(textToRead, 0);
-    }, 100);
+    speech.cancel(); // detener cualquier resto
+
+    utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'es-ES';
+    utterance.rate = 1;
+
+    utterance.onstart = () => {
+        updateButtons('playing');
+    };
+
+    utterance.onend = () => {
+        updateButtons('stopped');
+        isPaused = false;
+    };
+
+    speech.speak(utterance);
 }
-
-	
 
 function speakFromPosition(text, startPos = 0) {
     // Obtener el texto desde la posición actual
