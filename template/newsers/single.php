@@ -143,7 +143,9 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
 let speechSynthesis = window.speechSynthesis;
 let utterance = null;
 let isPaused = false;
-let isStopping = false; // 👈 Nueva bandera para controlar detención manual
+let isStopping = false;
+let currentText = ''; // 👈 Guardar el texto actual
+let currentPosition = 0; // 👈 Guardar la posición actual
 
 function playArticle() {
     // Verificar compatibilidad
@@ -163,89 +165,114 @@ function playArticle() {
     textToRead = textToRead.replace(/\s+/g, ' ').trim();
 
     if (isPaused) {
-        // Reanudar
-        speechSynthesis.resume();
+        // 👇 SOLUCIÓN: En lugar de resume(), recrear desde la posición actual
         isPaused = false;
-        updateButtons('playing');
+        
+        // Si resume() funciona en el navegador
+        if (!speechSynthesis.paused) {
+            // Recrear desde la posición guardada
+            speakFromPosition(currentText, currentPosition);
+        } else {
+            // Intentar resume normal
+            speechSynthesis.resume();
+            updateButtons('playing');
+        }
         return;
     }
 
+    // Guardar texto completo
+    currentText = textToRead;
+    currentPosition = 0;
+
     // Detener cualquier reproducción previa
-    isStopping = true; // 👈 Marcar que es detención intencional
+    isStopping = true;
     speechSynthesis.cancel();
     
-    // Pequeño delay para asegurar que se detuvo
     setTimeout(() => {
-        isStopping = false; // 👈 Resetear bandera
-        
-        // Crear nueva instancia
-        utterance = new SpeechSynthesisUtterance(textToRead);
-        
-        // Configuración en español
-        utterance.lang = 'es-ES';
-        utterance.rate = 1.0; // Velocidad (0.1 a 10)
-        utterance.pitch = 1.0; // Tono (0 a 2)
-        utterance.volume = 1.0; // Volumen (0 a 1)
-
-        // Intentar usar una voz en español
-        const voices = speechSynthesis.getVoices();
-        const spanishVoice = voices.find(voice => voice.lang.startsWith('es'));
-        if (spanishVoice) {
-            utterance.voice = spanishVoice;
-        }
-
-        // Eventos
-        utterance.onstart = function() {
-            updateButtons('playing');
-            document.getElementById('progressBar').classList.remove('d-none');
-        };
-
-        utterance.onend = function() {
-            if (!isStopping) { // 👈 Solo actualizar si no es detención manual
-                updateButtons('stopped');
-                document.getElementById('progressBar').classList.add('d-none');
-                document.querySelector('.progress-bar').style.width = '0%';
-            }
-        };
-
-        utterance.onerror = function(event) {
-            // 👈 Ignorar errores de cancelación manual
-            if (event.error === 'canceled' || event.error === 'interrupted' || isStopping) {
-                return;
-            }
-            console.error('Error en Text-to-Speech:', event);
-            alert('Ocurrió un error al reproducir el audio');
-            updateButtons('stopped');
-        };
-
-        utterance.onboundary = function(event) {
-            // Actualizar barra de progreso
-            const progress = (event.charIndex / textToRead.length) * 100;
-            document.querySelector('.progress-bar').style.width = progress + '%';
-        };
-
-        // Reproducir
-        speechSynthesis.speak(utterance);
+        isStopping = false;
+        speakFromPosition(textToRead, 0);
     }, 100);
 }
 
+function speakFromPosition(text, startPos = 0) {
+    // Obtener el texto desde la posición actual
+    const textToSpeak = text.substring(startPos);
+    
+    // Crear nueva instancia
+    utterance = new SpeechSynthesisUtterance(textToSpeak);
+    
+    // Configuración en español
+    utterance.lang = 'es-ES';
+    utterance.rate = 1.0;
+    utterance.pitch = 1.0;
+    utterance.volume = 1.0;
+
+    // Intentar usar una voz en español
+    const voices = speechSynthesis.getVoices();
+    const spanishVoice = voices.find(voice => voice.lang.startsWith('es'));
+    if (spanishVoice) {
+        utterance.voice = spanishVoice;
+    }
+
+    // Eventos
+    utterance.onstart = function() {
+        updateButtons('playing');
+        document.getElementById('progressBar').classList.remove('d-none');
+    };
+
+    utterance.onend = function() {
+        if (!isStopping && !isPaused) {
+            updateButtons('stopped');
+            document.getElementById('progressBar').classList.add('d-none');
+            document.querySelector('.progress-bar').style.width = '0%';
+            currentPosition = 0;
+        }
+    };
+
+    utterance.onerror = function(event) {
+        if (event.error === 'canceled' || event.error === 'interrupted' || isStopping) {
+            return;
+        }
+        console.error('Error en Text-to-Speech:', event);
+        alert('Ocurrió un error al reproducir el audio');
+        updateButtons('stopped');
+    };
+
+    utterance.onboundary = function(event) {
+        // 👇 Guardar posición actual en el texto COMPLETO
+        currentPosition = startPos + event.charIndex;
+        
+        // Actualizar barra de progreso basada en el texto completo
+        const progress = (currentPosition / currentText.length) * 100;
+        document.querySelector('.progress-bar').style.width = progress + '%';
+    };
+
+    // Reproducir
+    speechSynthesis.speak(utterance);
+}
+
 function pauseArticle() {
-    if (speechSynthesis.speaking && !speechSynthesis.paused) {
-        speechSynthesis.pause();
+    if (speechSynthesis.speaking) {
         isPaused = true;
+        isStopping = true; // 👈 Marcar para evitar errores
+        speechSynthesis.cancel(); // 👈 Cancelar en lugar de pausar
         updateButtons('paused');
+        
+        setTimeout(() => {
+            isStopping = false;
+        }, 200);
     }
 }
 
 function stopArticle() {
-    isStopping = true; // 👈 Marcar como detención intencional
+    isStopping = true;
     speechSynthesis.cancel();
     isPaused = false;
+    currentPosition = 0; // 👈 Resetear posición
     updateButtons('stopped');
     document.getElementById('progressBar').classList.add('d-none');
     document.querySelector('.progress-bar').style.width = '0%';
     
-    // Resetear bandera después de un momento
     setTimeout(() => {
         isStopping = false;
     }, 200);
@@ -272,9 +299,7 @@ function updateButtons(state) {
 
 // Cargar voces (necesario en algunos navegadores)
 if (speechSynthesis.onvoiceschanged !== undefined) {
-    speechSynthesis.onvoiceschanged = function() {
-        // Las voces están listas
-    };
+    speechSynthesis.onvoiceschanged = function() {};
 }
 
 // Detener reproducción si el usuario abandona la página
