@@ -58,19 +58,21 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
         <div class="row g-4">
             <!-- CONTENIDO PRINCIPAL -->
             <div class="col-lg-8">
+                <!-- Título -->
                 <div class="mb-4">
                     <h1 class="h2 display-6 fw-bold text-dark"><?= htmlspecialchars($post['title']) ?></h1>
                 </div>
 
                 <?php if (!empty($post['image'])): ?>
                 <div class="position-relative rounded overflow-hidden mb-3">
-                    <img src="<​?= URLBASE . '/' . htmlspecialchars($post['image']) ?>" class="img-zoomin img-fluid rounded w-100" alt="<​?= htmlspecialchars($post['title']) ?>">
+                    <img src="<?= URLBASE . '/' . htmlspecialchars($post['image']) ?>" class="img-zoomin img-fluid rounded w-100" alt="<?= htmlspecialchars($post['title']) ?>">
                     <div class="position-absolute text-white px-4 py-2 bg-primary rounded" style="top: 20px; right: 20px;">
                         <?= htmlspecialchars($post['category_name']) ?>
                     </div>
                 </div>
                 <?php endif; ?>
 
+                <!-- Metadata -->
                 <div class="d-flex justify-content-between align-items-center text-secondary small mb-3 border-bottom pb-2 flex-wrap">
                     <div class="d-flex align-items-center flex-wrap gap-3">
                         <span><i class="fa fa-calendar-alt me-1 text-primary"></i> <?= fecha_espanol(date("F d, Y", strtotime($post['created_at']))) ?></span>
@@ -81,30 +83,39 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                     <span><i class="fa fa-eye me-1 text-primary"></i> <?= number_format($totalViews) ?> vistas</span>
                 </div>
 
-                <!-- Botón Text-to-Speech (Tu diseño original con lógica mejorada) -->
-                <div class="text-to-speech-section bg-light rounded p-3 mb-4 border">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h6 class="mb-0 fw-bold">
-                            <i class="fas fa-volume-up me-2 text-primary"></i>
-                            Escuchar artículo
-                        </h6>
-                        <div class="btn-group" role="group">
-                            <button id="playBtn" class="btn btn-primary btn-sm" onclick="playArticle()">
-                                <i class="fas fa-play"></i> Reproducir
+                <!-- 🎵 REPRODUCTOR DE AUDIO MODERNO -->
+                <div class="audio-player-modern mb-4">
+                    <div class="audio-player-inner">
+                        <div class="d-flex align-items-center gap-3">
+                            <!-- Botón Play/Pause -->
+                            <button id="playBtn" class="audio-btn-main" onclick="handlePlay()" title="Reproducir">
+                                <i class="fas fa-play" id="playIcon"></i>
                             </button>
-                            <button id="pauseBtn" class="btn btn-warning btn-sm d-none" onclick="pauseArticle()">
-                                <i class="fas fa-pause"></i> Pausar
-                            </button>
-                            <button id="stopBtn" class="btn btn-danger btn-sm d-none" onclick="stopArticle()">
-                                <i class="fas fa-stop"></i> Detener
+                            
+                            <!-- Info y Progreso -->
+                            <div class="audio-info">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="audio-label">
+                                        <i class="fas fa-headphones me-2"></i>Escuchar artículo
+                                    </span>
+                                    <span class="audio-time" id="timeDisplay">0:00</span>
+                                </div>
+                                
+                                <!-- Barra de progreso -->
+                                <div class="audio-progress-container">
+                                    <div class="audio-progress-bar" id="audioProgress"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Botón Stop -->
+                            <button id="stopBtn" class="audio-btn-stop d-none" onclick="handleStop()" title="Detener">
+                                <i class="fas fa-stop"></i>
                             </button>
                         </div>
                     </div>
-                    <div class="progress mt-2 d-none" id="progressBarContainer" style="height: 8px; background-color: #e9ecef; border-radius: 4px;">
-                        <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
-                    </div>
                 </div>
 
+                <!-- Contenido del artículo -->
                 <div class="my-4 post-content">
                     <?= $post['content'] ?>
                 </div>
@@ -145,7 +156,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                 <!-- Comentarios -->
                 <div class="bg-light rounded p-4 mb-4">
                     <h4 class="mb-3">Comentarios</h4>
-                    <div class="fb-comments" data-href="<​?= 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] ?>" data-width="100%" data-numposts="10"></div>
+                    <div class="fb-comments" data-href="<?= 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] ?>" data-width="100%" data-numposts="10"></div>
                 </div>
 
                 <!-- Noticias relacionadas -->
@@ -171,7 +182,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                             <?php foreach ($relatedPosts as $rel): ?>
                                 <div class="col-lg-6">
                                     <div class="d-flex align-items-center p-3 bg-white rounded">
-                                        <img src="<​?= $rel['image'] ? URLBASE . '/' . htmlspecialchars($rel['image']) : URLBASE . '/template/newsers/img/news-1.jpg' ?>" class="img-fluid rounded" style="width:90px; height:90px; object-fit:cover;" alt="">
+                                        <img src="<?= $rel['image'] ? URLBASE . '/' . htmlspecialchars($rel['image']) : URLBASE . '/template/newsers/img/news-1.jpg' ?>" class="img-fluid rounded" style="width:90px; height:90px; object-fit:cover;" alt="">
                                         <div class="ms-3">
                                             <a href="<?= URLBASE ?>/<?= htmlspecialchars($rel['category_slug']) ?>/<?= htmlspecialchars($rel['slug']) ?>/" class="h6 mb-2 text-dark link-hover">
                                                 <?= htmlspecialchars($rel['title']) ?>
@@ -192,11 +203,156 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
         </div>
     </div>
 </div>
+<!-- Single Product End -->
 
 <style>
-.text-secondary.small i { opacity: 0.7; }
-.text-secondary.small span { display: flex; align-items: center; gap: 4px; }
-#progressBar { transition: width 0.3s ease; }
+/* Estilos del reproductor moderno */
+.audio-player-modern {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.25);
+    transition: all 0.3s ease;
+}
+
+.audio-player-modern:hover {
+    box-shadow: 0 12px 48px rgba(102, 126, 234, 0.35);
+    transform: translateY(-2px);
+}
+
+.audio-player-inner {
+    position: relative;
+}
+
+.audio-btn-main {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: white;
+    border: none;
+    color: #667eea;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    flex-shrink: 0;
+}
+
+.audio-btn-main:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.audio-btn-main:active {
+    transform: scale(0.95);
+}
+
+.audio-btn-stop {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid white;
+    color: white;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.audio-btn-stop:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.audio-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.audio-label {
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+}
+
+.audio-time {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 13px;
+    font-weight: 500;
+    font-family: 'Courier New', monospace;
+}
+
+.audio-progress-container {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+}
+
+.audio-progress-bar {
+    height: 100%;
+    background: white;
+    border-radius: 10px;
+    width: 0%;
+    transition: width 0.3s ease;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+/* Animación del icono cuando está reproduciendo */
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.audio-btn-main.playing {
+    animation: pulse 2s infinite;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+    .audio-player-modern {
+        padding: 16px;
+    }
+    
+    .audio-btn-main {
+        width: 48px;
+        height: 48px;
+        font-size: 18px;
+    }
+    
+    .audio-label {
+        font-size: 13px;
+    }
+    
+    .audio-time {
+        font-size: 12px;
+    }
+}
+
+/* Otros estilos existentes */
+.text-secondary.small i {
+    opacity: 0.7;
+}
+
+.text-secondary.small span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
 </style>
 
 <script>
@@ -205,97 +361,144 @@ let utterance = null;
 let isPaused = false;
 let currentPosition = 0;
 let fullText = '';
+let startTime = 0;
+let totalDuration = 0;
 
-// Preparar el texto al cargar la página
-window.addEventListener('load', () => {
-    const title = "<​?= addslashes($post['title']) ?>";
-    const excerpt = "<​?= addslashes(strip_tags($post['excerpt'] ?? '')) ?>";
-    const content = document.querySelector('.post-content').innerText;
-    fullText = (title + '. ' + excerpt + '. ' + content).replace(/\s+/g, ' ').trim();
+// Preparar el texto
+window.addEventListener('load', function() {
+    const articleContent = document.querySelector('.post-content');
+    const title = "<?= addslashes($post['title']) ?>";
+    const excerpt = "<?= addslashes(strip_tags($post['excerpt'] ?? '')) ?>";
+    
+    fullText = (title + '. ' + excerpt + '. ' + articleContent.innerText)
+        .replace(/\s+/g, ' ')
+        .trim();
+    
+    // Estimar duración (aproximadamente 150 palabras por minuto)
+    const wordCount = fullText.split(' ').length;
+    totalDuration = Math.ceil((wordCount / 150) * 60);
 });
 
-function playArticle() {
+function handlePlay() {
     if (!('speechSynthesis' in window)) {
-        alert('Tu navegador no soporta esta función.');
+        alert('Tu navegador no soporta Text-to-Speech. Intenta con Chrome, Firefox o Edge.');
         return;
     }
+
+    if (synth.speaking && !isPaused) return;
 
     if (isPaused) {
         isPaused = false;
         speak(currentPosition);
     } else {
+        currentPosition = 0;
+        startTime = Date.now();
         speak(0);
     }
 }
 
 function speak(startOffset) {
-    synth.cancel(); // Limpiar cualquier audio previo
+    synth.cancel();
 
     const textToSpeak = fullText.substring(startOffset);
     utterance = new SpeechSynthesisUtterance(textToSpeak);
     utterance.lang = 'es-ES';
-    
-    // Configurar voz española si existe
+    utterance.rate = 1.0;
+    utterance.pitch = 1.0;
+    utterance.volume = 1.0;
+
+    // Buscar voz en español
     const voices = synth.getVoices();
-    const spanishVoice = voices.find(v => v.lang.startsWith('es'));
-    if (spanishVoice) utterance.voice = spanishVoice;
+    const spanishVoice = voices.find(voice => voice.lang.startsWith('es'));
+    if (spanishVoice) {
+        utterance.voice = spanishVoice;
+    }
 
     utterance.onstart = () => {
-        updateButtons('playing');
-        document.getElementById('progressBarContainer').classList.remove('d-none');
+        updateUI('playing');
+        updateTime();
     };
 
     utterance.onboundary = (event) => {
         currentPosition = startOffset + event.charIndex;
         const progress = (currentPosition / fullText.length) * 100;
-        document.getElementById('progressBar').style.width = progress + '%';
+        document.getElementById('audioProgress').style.width = progress + '%';
     };
 
     utterance.onend = () => {
-        if (!isPaused) stopArticle();
+        if (!isPaused) {
+            handleStop();
+        }
+    };
+
+    utterance.onerror = (event) => {
+        if (event.error !== 'canceled' && event.error !== 'interrupted') {
+            console.error('Error en Text-to-Speech:', event);
+        }
     };
 
     synth.speak(utterance);
 }
 
-function pauseArticle() {
+function handlePause() {
     if (synth.speaking) {
         isPaused = true;
-        synth.cancel(); // Truco técnico: cancelamos para pausar de verdad
-        updateButtons('paused');
+        synth.cancel();
+        updateUI('paused');
     }
 }
 
-function stopArticle() {
+function handleStop() {
     isPaused = false;
     currentPosition = 0;
     synth.cancel();
-    updateButtons('stopped');
-    document.getElementById('progressBarContainer').classList.add('d-none');
-    document.getElementById('progressBar').style.width = '0%';
+    updateUI('stopped');
 }
 
-function updateButtons(state) {
+function updateUI(state) {
     const playBtn = document.getElementById('playBtn');
-    const pauseBtn = document.getElementById('pauseBtn');
     const stopBtn = document.getElementById('stopBtn');
+    const playIcon = document.getElementById('playIcon');
 
     if (state === 'playing') {
-        playBtn.classList.add('d-none');
-        pauseBtn.classList.remove('d-none');
+        playIcon.className = 'fas fa-pause';
+        playBtn.onclick = handlePause;
+        playBtn.classList.add('playing');
         stopBtn.classList.remove('d-none');
-        pauseBtn.innerHTML = '<i class="fas fa-pause"></i> Pausar';
     } else if (state === 'paused') {
-        pauseBtn.innerHTML = '<i class="fas fa-play"></i> Reanudar';
-    } else if (state === 'stopped') {
-        playBtn.classList.remove('d-none');
-        pauseBtn.classList.add('d-none');
+        playIcon.className = 'fas fa-play';
+        playBtn.onclick = handlePlay;
+        playBtn.classList.remove('playing');
+    } else {
+        playIcon.className = 'fas fa-play';
+        playBtn.onclick = handlePlay;
+        playBtn.classList.remove('playing');
         stopBtn.classList.add('d-none');
+        document.getElementById('audioProgress').style.width = '0%';
+        document.getElementById('timeDisplay').textContent = '0:00';
     }
 }
 
-// Detener si se cierra la pestaña
-window.onbeforeunload = () => synth.cancel();
+function updateTime() {
+    if (synth.speaking && !isPaused) {
+        const elapsed = Math.floor((Date.now() - startTime) / 1000);
+        const minutes = Math.floor(elapsed / 60);
+        const seconds = elapsed % 60;
+        document.getElementById('timeDisplay').textContent = 
+            `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        setTimeout(updateTime, 1000);
+    }
+}
+
+// Cargar voces
+if (synth.onvoiceschanged !== undefined) {
+    synth.onvoiceschanged = () => {};
+}
+
+// Detener al salir
+window.addEventListener('beforeunload', () => {
+    synth.cancel();
+});
 </script>
 
 
