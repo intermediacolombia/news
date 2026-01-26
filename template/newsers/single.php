@@ -219,6 +219,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
 </div>
 <!-- Single Product End -->
 
+<?php if (!empty(TEXT_TO_SPEECH) && TEXT_TO_SPEECH == '1'): ?>
 <style>
     
 	/* Estilos del reproductor moderno */
@@ -379,7 +380,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
 }
 
 #speedControl option {
-    background: #667eea;
+    background: var(--primary);
     color: white;
 }
 
@@ -393,7 +394,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
 </style>
 
 
-<?php if (!empty(TEXT_TO_SPEECH) && TEXT_TO_SPEECH == '1'): ?>
+
 <script>
 const synth = window.speechSynthesis;
 let utterance = null;
