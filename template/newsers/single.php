@@ -55,16 +55,16 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
 <!-- Single Product Start -->
 <div class="container-fluid py-5">
     <div class="container py-5">
-        <!-- Breadcrumb --
+        <!-- Breadcrumb -->
         <ol class="breadcrumb justify-content-start mb-4">
-            <li class="breadcrumb-item"><a href="<?= URLBASE ?>">Inicio</a></li>
+            <li class="breadcrumb-item"><a href="<​?= URLBASE ?>">Inicio</a></li>
             <li class="breadcrumb-item">
                 <a href="<?= URLBASE ?>/noticias/<?= htmlspecialchars($post['category_slug']) ?>/">
                     <?= htmlspecialchars($post['category_name']) ?>
                 </a>
             </li>
             <li class="breadcrumb-item active text-dark"><?= htmlspecialchars($post['title']) ?></li>
-        </ol>-->
+        </ol>
 
         <div class="row g-4">
             <!-- CONTENIDO PRINCIPAL -->
@@ -75,7 +75,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
 
                 <?php if (!empty($post['image'])): ?>
                 <div class="position-relative rounded overflow-hidden mb-3">
-                    <img src="<?= URLBASE . '/' . htmlspecialchars($post['image']) ?>" class="img-zoomin img-fluid rounded w-100" alt="<?= htmlspecialchars($post['title']) ?>">
+                    <img src="<​?= URLBASE . '/' . htmlspecialchars($post['image']) ?>" class="img-zoomin img-fluid rounded w-100" alt="<​?= htmlspecialchars($post['title']) ?>">
                     <div class="position-absolute text-white px-4 py-2 bg-primary rounded" style="top: 20px; right: 20px;">
                         <?= htmlspecialchars($post['category_name']) ?>
                     </div>
@@ -83,15 +83,39 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                 <?php endif; ?>
 
                 <div class="d-flex justify-content-between align-items-center text-secondary small mb-3 border-bottom pb-2 flex-wrap">
-    <div class="d-flex align-items-center flex-wrap gap-3">
-        <span><i class="fa fa-calendar-alt me-1 text-primary"></i> <?= fecha_espanol(date("F d, Y", strtotime($post['created_at']))) ?></span>
-        <?php if (!empty($post['author'])): ?>
-            <span><i class="fa fa-user-edit me-1 text-primary"></i> <?= htmlspecialchars($post['author']) ?></span>
-        <?php endif; ?>
-    </div>
-    <span><i class="fa fa-eye me-1 text-primary"></i> <?= number_format($totalViews) ?> vistas</span>
-</div>
+                    <div class="d-flex align-items-center flex-wrap gap-3">
+                        <span><i class="fa fa-calendar-alt me-1 text-primary"></i> <?= fecha_espanol(date("F d, Y", strtotime($post['created_at']))) ?></span>
+                        <?php if (!empty($post['author'])): ?>
+                            <span><i class="fa fa-user-edit me-1 text-primary"></i> <?= htmlspecialchars($post['author']) ?></span>
+                        <?php endif; ?>
+                    </div>
+                    <span><i class="fa fa-eye me-1 text-primary"></i> <?= number_format($totalViews) ?> vistas</span>
+                </div>
 
+                <!-- BARRA DE AUDIO MODERNA -->
+                <div class="audio-player-bar mb-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; padding: 16px 20px; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
+                    <div class="d-flex align-items-center justify-content-between gap-3">
+                        <div class="d-flex align-items-center gap-2" style="flex: 1;">
+                            <button id="playBtn" class="btn btn-light btn-sm rounded-circle" onclick="handlePlay()" style="width: 40px; height: 40px; padding: 0; display: flex; align-items: center; justify-content: center; border: none;">
+                                <i class="fas fa-play" id="playIcon"></i>
+                            </button>
+                            <div style="flex: 1;">
+                                <div class="progress" style="height: 4px; background-color: rgba(255,255,255,0.3); border-radius: 2px;">
+                                    <div class="progress-bar" id="audioProgress" role="progressbar" style="width: 0%; background-color: #fff; border-radius: 2px;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-white small" style="min-width: 50px; text-align: right;">
+                            <span id="timeDisplay">0:00</span>
+                        </div>
+                        <button id="stopBtn" class="btn btn-light btn-sm rounded-circle d-none" onclick="handleStop()" style="width: 40px; height: 40px; padding: 0; display: flex; align-items: center; justify-content: center; border: none;">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="text-white small mt-2" style="font-size: 12px; opacity: 0.9;">
+                        <i class="fas fa-volume-up me-2"></i>Escucha el artículo
+                    </div>
+                </div>
 
                 <div class="my-4 post-content">
                     <?= $post['content'] ?>
@@ -113,161 +137,9 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                     </div>
                     <small class="text-muted"><?= htmlspecialchars($post['category_name']) ?></small>
                 </div>
-		
-				<!-- Botón Text-to-Speech -->
-<div class="text-to-speech-section bg-light rounded p-3 mb-4">
-    <div class="d-flex justify-content-between align-items-center">
-        <h6 class="mb-0 fw-bold">
-            <i class="fas fa-volume-up me-2 text-primary"></i>
-            Escuchar artículo
-        </h6>
-        <div class="btn-group" role="group">
-            <button id="playBtn" class="btn btn-primary btn-sm" onclick="playArticle()">
-                <i class="fas fa-play"></i> Reproducir
-            </button>
-            <button id="pauseBtn" class="btn btn-warning btn-sm d-none" onclick="pauseArticle()">
-                <i class="fas fa-pause"></i> Pausar
-            </button>
-            <button id="stopBtn" class="btn btn-danger btn-sm d-none" onclick="stopArticle()">
-                <i class="fas fa-stop"></i> Detener
-            </button>
-        </div>
-    </div>
-    <div class="progress mt-2 d-none" id="progressBar" style="height: 5px;">
-        <div class="progress-bar" role="progressbar" style="width: 0%"></div>
-    </div>
-</div>
 
-<script>
-let speechSynthesis = window.speechSynthesis;
-let utterance = null;
-let isPaused = false;
-
-function playArticle() {
-    // Verificar compatibilidad
-    if (!('speechSynthesis' in window)) {
-        alert('Tu navegador no soporta Text-to-Speech. Intenta con Chrome, Firefox o Edge.');
-        return;
-    }
-
-    // Obtener el contenido del artículo
-    const articleContent = document.querySelector('.post-content');
-    const title = '<?= addslashes($post['title']) ?>';
-    
-    // Extraer solo el texto, sin HTML
-    let textToRead = title + '. ' + articleContent.innerText;
-    
-    // Limpiar texto
-    textToRead = textToRead.replace(/\s+/g, ' ').trim();
-
-    if (isPaused) {
-        // Reanudar
-        speechSynthesis.resume();
-        isPaused = false;
-        updateButtons('playing');
-        return;
-    }
-
-    // Detener cualquier reproducción previa
-    speechSynthesis.cancel();
-
-    // Crear nueva instancia
-    utterance = new SpeechSynthesisUtterance(textToRead);
-    
-    // Configuración en español
-    utterance.lang = 'es-ES';
-    utterance.rate = 1.0; // Velocidad (0.1 a 10)
-    utterance.pitch = 1.0; // Tono (0 a 2)
-    utterance.volume = 1.0; // Volumen (0 a 1)
-
-    // Intentar usar una voz en español
-    const voices = speechSynthesis.getVoices();
-    const spanishVoice = voices.find(voice => voice.lang.startsWith('es'));
-    if (spanishVoice) {
-        utterance.voice = spanishVoice;
-    }
-
-    // Eventos
-    utterance.onstart = function() {
-        updateButtons('playing');
-        document.getElementById('progressBar').classList.remove('d-none');
-    };
-
-    utterance.onend = function() {
-        updateButtons('stopped');
-        document.getElementById('progressBar').classList.add('d-none');
-        document.querySelector('.progress-bar').style.width = '0%';
-    };
-
-    utterance.onerror = function(event) {
-        console.error('Error en Text-to-Speech:', event);
-        alert('Ocurrió un error al reproducir el audio');
-        updateButtons('stopped');
-    };
-
-    utterance.onboundary = function(event) {
-        // Actualizar barra de progreso
-        const progress = (event.charIndex / textToRead.length) * 100;
-        document.querySelector('.progress-bar').style.width = progress + '%';
-    };
-
-    // Reproducir
-    speechSynthesis.speak(utterance);
-}
-
-function pauseArticle() {
-    if (speechSynthesis.speaking && !speechSynthesis.paused) {
-        speechSynthesis.pause();
-        isPaused = true;
-        updateButtons('paused');
-    }
-}
-
-function stopArticle() {
-    speechSynthesis.cancel();
-    isPaused = false;
-    updateButtons('stopped');
-    document.getElementById('progressBar').classList.add('d-none');
-    document.querySelector('.progress-bar').style.width = '0%';
-}
-
-function updateButtons(state) {
-    const playBtn = document.getElementById('playBtn');
-    const pauseBtn = document.getElementById('pauseBtn');
-    const stopBtn = document.getElementById('stopBtn');
-
-    if (state === 'playing') {
-        playBtn.classList.add('d-none');
-        pauseBtn.classList.remove('d-none');
-        stopBtn.classList.remove('d-none');
-        pauseBtn.innerHTML = '<i class="fas fa-pause"></i> Pausar';
-    } else if (state === 'paused') {
-        pauseBtn.innerHTML = '<i class="fas fa-play"></i> Reanudar';
-    } else if (state === 'stopped') {
-        playBtn.classList.remove('d-none');
-        pauseBtn.classList.add('d-none');
-        stopBtn.classList.add('d-none');
-    }
-}
-
-// Cargar voces (necesario en algunos navegadores)
-if (speechSynthesis.onvoiceschanged !== undefined) {
-    speechSynthesis.onvoiceschanged = function() {
-        // Las voces están listas
-    };
-}
-
-// Detener reproducción si el usuario abandona la página
-window.addEventListener('beforeunload', function() {
-    if (speechSynthesis.speaking) {
-        speechSynthesis.cancel();
-    }
-});
-</script>
-				
-      <!-- TAGS -->
+                <!-- TAGS -->
                 <?php
-                // Si tienes campo "tags" separado por comas
                 $tags = [];
                 if (!empty($post['tags'])) {
                     $tags = array_filter(array_map('trim', explode(',', $post['tags'])));
@@ -285,7 +157,7 @@ window.addEventListener('beforeunload', function() {
                 <!-- Comentarios -->
                 <div class="bg-light rounded p-4 mb-4">
                     <h4 class="mb-3">Comentarios</h4>
-                    <div class="fb-comments" data-href="<?= 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] ?>" data-width="100%" data-numposts="10"></div>
+                    <div class="fb-comments" data-href="<​?= 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] ?>" data-width="100%" data-numposts="10"></div>
                 </div>
 
                 <!-- Noticias relacionadas -->
@@ -311,7 +183,7 @@ window.addEventListener('beforeunload', function() {
                             <?php foreach ($relatedPosts as $rel): ?>
                                 <div class="col-lg-6">
                                     <div class="d-flex align-items-center p-3 bg-white rounded">
-                                        <img src="<?= $rel['image'] ? URLBASE . '/' . htmlspecialchars($rel['image']) : URLBASE . '/template/newsers/img/news-1.jpg' ?>" class="img-fluid rounded" style="width:90px; height:90px; object-fit:cover;" alt="">
+                                        <img src="<​?= $rel['image'] ? URLBASE . '/' . htmlspecialchars($rel['image']) : URLBASE . '/template/newsers/img/news-1.jpg' ?>" class="img-fluid rounded" style="width:90px; height:90px; object-fit:cover;" alt="">
                                         <div class="ms-3">
                                             <a href="<?= URLBASE ?>/<?= htmlspecialchars($rel['category_slug']) ?>/<?= htmlspecialchars($rel['slug']) ?>/" class="h6 mb-2 text-dark link-hover">
                                                 <?= htmlspecialchars($rel['title']) ?>
@@ -326,14 +198,14 @@ window.addEventListener('beforeunload', function() {
                 <?php endif; ?>
             </div>
 
-			  
             <div class="col-lg-4">
                 <?php include __DIR__ . '/partials/sidebar.php'; ?>            
-        </div>
+            </div>
         </div>
     </div>
 </div>
 <!-- Single Product End -->
+
 <style>
 .text-secondary.small i {
   opacity: 0.7;
@@ -343,7 +215,122 @@ window.addEventListener('beforeunload', function() {
   align-items: center;
   gap: 4px;
 }
+
+.audio-player-bar button:hover {
+    transform: scale(1.1);
+    transition: all 0.2s ease;
+}
+
+.audio-player-bar button:active {
+    transform: scale(0.95);
+}
 </style>
+
+<script>
+const synth = window.speechSynthesis;
+let utterance = null;
+let isPaused = false;
+let currentPosition = 0;
+let fullText = '';
+
+// El texto viene de PHP
+const title = "<​?= addslashes($post['title']) ?>";
+const excerpt = "<​?= addslashes(strip_tags($post['excerpt'] ?? '')) ?>";
+
+window.addEventListener('load', function() {
+    const articleContent = document.querySelector('.post-content');
+    fullText = (title + '. ' + excerpt + '. ' + articleContent.innerText)
+        .replace(/\s+/g, ' ')
+        .trim();
+});
+
+function handlePlay() {
+    if (synth.speaking && !isPaused) return;
+
+    if (isPaused) {
+        isPaused = false;
+        speak(currentPosition);
+    } else {
+        currentPosition = 0;
+        speak(0);
+    }
+}
+
+function speak(startOffset) {
+    synth.cancel();
+
+    const textToSpeak = fullText.substring(startOffset);
+    utterance = new SpeechSynthesisUtterance(textToSpeak);
+    utterance.lang = 'es-ES';
+    utterance.rate = 1.0;
+
+    const voices = synth.getVoices();
+    const spanishVoice = voices.find(voice => voice.lang.startsWith('es'));
+    if (spanishVoice) {
+        utterance.voice = spanishVoice;
+    }
+
+    utterance.onstart = () => {
+        updateUI('playing');
+    };
+
+    utterance.onboundary = (event) => {
+        currentPosition = startOffset + event.charIndex;
+        const progress = (currentPosition / fullText.length) * 100;
+        document.getElementById('audioProgress').style.width = progress + '%';
+    };
+
+    utterance.onend = () => {
+        if (!isPaused) {
+            handleStop();
+        }
+    };
+
+    synth.speak(utterance);
+}
+
+function handlePause() {
+    if (synth.speaking) {
+        isPaused = true;
+        synth.cancel();
+        updateUI('paused');
+    }
+}
+
+function handleStop() {
+    isPaused = false;
+    currentPosition = 0;
+    synth.cancel();
+    updateUI('stopped');
+}
+
+function updateUI(state) {
+    const playBtn = document.getElementById('playBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const playIcon = document.getElementById('playIcon');
+
+    if (state === 'playing') {
+        playIcon.classList.remove('fa-play');
+        playIcon.classList.add('fa-pause');
+        playBtn.onclick = handlePause;
+        stopBtn.classList.remove('d-none');
+    } else if (state === 'paused') {
+        playIcon.classList.remove('fa-pause');
+        playIcon.classList.add('fa-play');
+        playBtn.onclick = handlePlay;
+    } else {
+        playIcon.classList.remove('fa-pause');
+        playIcon.classList.add('fa-play');
+        playBtn.onclick = handlePlay;
+        stopBtn.classList.add('d-none');
+        document.getElementById('audioProgress').style.width = '0%';
+    }
+}
+
+window.onbeforeunload = () => {
+    synth.cancel();
+};
+</script>
 
 
 
