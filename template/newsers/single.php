@@ -114,7 +114,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                     <small class="text-muted"><?= htmlspecialchars($post['category_name']) ?></small>
                 </div>
 
-				
+				<audio src="https://translate.google.com/translate_tts?ie=UTF-8&tl=es-ES&client=tw-ob&q=<?= htmlspecialchars($post['excerpt']) ?>"></audio>
 				<!-- Botón Text-to-Speech -->
 <div class="text-to-speech-section bg-light rounded p-3 mb-4">
     <div class="d-flex justify-content-between align-items-center">
