@@ -100,7 +100,19 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                     <span class="audio-label">
                         <i class="fas fa-headphones me-2"></i>Escuchar artículo
                     </span>
-                    <span class="audio-time" id="timeDisplay">0:00</span>
+                    <div class="d-flex align-items-center gap-2">
+                        <!-- Control de Velocidad -->
+                        <select id="speedControl" class="form-select form-select-sm" style="width: auto; font-size: 12px; padding: 2px 8px; background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3);" onchange="changeSpeed(this.value)">
+                            <option value="0.5">0.5x</option>
+                            <option value="0.75">0.75x</option>
+                            <option value="1" selected>1x</option>
+                            <option value="1.25">1.25x</option>
+                            <option value="1.5">1.5x</option>
+                            <option value="1.75">1.75x</option>
+                            <option value="2">2x</option>
+                        </select>
+                        <span class="audio-time" id="timeDisplay">0:00</span>
+                    </div>
                 </div>
                 
                 <!-- Barra de progreso -->
@@ -117,7 +129,6 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
     </div>
 </div>
 <?php endif; ?>
-
                 <!-- Contenido del artículo -->
                 <div class="my-4 post-content">
                     <?= $post['content'] ?>
@@ -358,7 +369,30 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
         align-items: center;
         gap: 4px;
     }
+#speedControl {
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+#speedControl:hover {
+    background: rgba(255,255,255,0.3) !important;
+}
+
+#speedControl option {
+    background: #667eea;
+    color: white;
+}
+
+/* Responsive para móvil */
+@media (max-width: 576px) {
+    #speedControl {
+        font-size: 11px;
+        padding: 1px 6px;
+    }
+}
 </style>
+
+
 <?php if (!empty(TEXT_TO_SPEECH) && TEXT_TO_SPEECH == '1'): ?>
 <script>
 const synth = window.speechSynthesis;
@@ -368,6 +402,7 @@ let currentPosition = 0;
 let fullText = '';
 let startTime = 0;
 let totalDuration = 0;
+let currentRate = 1.0; // 👈 Variable para la velocidad
 
 // Preparar el texto
 window.addEventListener('load', function() {
@@ -379,10 +414,23 @@ window.addEventListener('load', function() {
         .replace(/\s+/g, ' ')
         .trim();
     
-    // Estimar duración (aproximadamente 150 palabras por minuto)
     const wordCount = fullText.split(' ').length;
     totalDuration = Math.ceil((wordCount / 150) * 60);
 });
+
+// 👇 NUEVA FUNCIÓN: Cambiar velocidad
+function changeSpeed(speed) {
+    currentRate = parseFloat(speed);
+    
+    // Si está reproduciendo, reiniciar con nueva velocidad
+    if (synth.speaking && !isPaused) {
+        const wasPlaying = true;
+        synth.cancel();
+        if (wasPlaying) {
+            setTimeout(() => speak(currentPosition), 100);
+        }
+    }
+}
 
 function handlePlay() {
     if (!('speechSynthesis' in window)) {
@@ -408,11 +456,10 @@ function speak(startOffset) {
     const textToSpeak = fullText.substring(startOffset);
     utterance = new SpeechSynthesisUtterance(textToSpeak);
     utterance.lang = 'es-ES';
-    utterance.rate = 1.0;
+    utterance.rate = currentRate; // 👈 Usar velocidad actual
     utterance.pitch = 1.0;
     utterance.volume = 1.0;
 
-    // Buscar voz en español
     const voices = synth.getVoices();
     const spanishVoice = voices.find(voice => voice.lang.startsWith('es'));
     if (spanishVoice) {
@@ -495,12 +542,10 @@ function updateTime() {
     }
 }
 
-// Cargar voces
 if (synth.onvoiceschanged !== undefined) {
     synth.onvoiceschanged = () => {};
 }
 
-// Detener al salir
 window.addEventListener('beforeunload', () => {
     synth.cancel();
 });
