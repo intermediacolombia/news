@@ -116,16 +116,14 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
 
 				
 				<!-- Botón Text-to-Speech -->
-<!-- Botón Text-to-Speech -->
 <div class="text-to-speech-section bg-light rounded p-3 mb-4">
     <div class="d-flex justify-content-between align-items-center">
         <h6 class="mb-0 fw-bold">
-            <i class="fas fa-volume-up me-2 text-primary"></i>
-            Escuchar artículo
+            <i class="fas fa-volume-up me-2 text-primary"></i> Escuchar artículo
         </h6>
-        <div class="btn-group" role="group">
-            <button id="playBtn" class="btn btn-primary btn-sm" onclick="togglePlay()" disabled>
-                <i class="fas fa-spinner fa-spin"></i> Cargando...
+        <div class="btn-group">
+            <button id="playBtn" class="btn btn-primary btn-sm" onclick="toggleAudio()" disabled>
+                <i class="fas fa-spinner fa-spin"></i> Cargando audio...
             </button>
             <button id="stopBtn" class="btn btn-danger btn-sm d-none" onclick="stopAudio()">
                 <i class="fas fa-stop"></i> Detener
@@ -138,111 +136,64 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
 </div>
 
 <script>
-let audio = null;
-let isAudioReady = false;
+let audio = new Audio();
+let isReady = false;
 
-// Generar el audio al cargar la página
-window.addEventListener('DOMContentLoaded', function() {
-    generateAudio();
-});
-
-function generateAudio() {
+window.addEventListener('load', function() {
     const articleContent = document.querySelector('.post-content');
     const title = '<?= addslashes($post['title']) ?>';
-    
-    const text = (title + '. ' + articleContent.innerText)
-        .replace(/\s+/g, ' ')
-        .trim();
-    
-    // Limitar a 200 caracteres por chunk (Google TTS tiene límites)
-    const maxLength = 200;
-    const chunks = [];
-    
-    for (let i = 0; i < text.length; i += maxLength) {
-        chunks.push(text.substring(i, i + maxLength));
-    }
-    
-    // Usar el primer chunk o implementar concatenación de múltiples audios
-    const textEncoded = encodeURIComponent(chunks[0]);
-    const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=es&client=tw-ob&q=${textEncoded}`;
-    
-    audio = new Audio(audioUrl);
-    
-    // Cuando el audio esté listo
-    audio.addEventListener('canplaythrough', function() {
-        isAudioReady = true;
-        const playBtn = document.getElementById('playBtn');
-        playBtn.disabled = false;
-        playBtn.innerHTML = '<i class="fas fa-play"></i> Reproducir';
-    });
-    
-    // Actualizar progreso
-    audio.addEventListener('timeupdate', function() {
-        if (audio.duration) {
-            const progress = (audio.currentTime / audio.duration) * 100;
-            document.querySelector('.progress-bar').style.width = progress + '%';
-        }
-    });
-    
-    // Cuando termine
-    audio.addEventListener('ended', function() {
-        stopAudio();
-    });
-    
-    // Error al cargar
-    audio.addEventListener('error', function() {
-        const playBtn = document.getElementById('playBtn');
-        playBtn.disabled = false;
-        playBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error';
-        alert('No se pudo cargar el audio');
-    });
-}
+    const fullText = (title + '. ' + articleContent.innerText).substring(0, 800); // Google limita caracteres
 
-function togglePlay() {
-    if (!isAudioReady || !audio) return;
+    // Llamamos a nuestro propio servidor PHP
+    audio.src = 'tts.php?text=' + encodeURIComponent(fullText);
     
+    audio.oncanplaythrough = function() {
+        isReady = true;
+        const btn = document.getElementById('playBtn');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-play"></i> Reproducir';
+    };
+
+    audio.onerror = function() {
+        document.getElementById('playBtn').innerHTML = '<i class="fas fa-times"></i> Error de carga';
+        console.error("Error cargando el audio desde tts.php");
+    };
+
+    audio.ontimeupdate = function() {
+        const progress = (audio.currentTime / audio.duration) * 100;
+        document.querySelector('.progress-bar').style.width = progress + '%';
+    };
+
+    audio.onended = function() {
+        stopAudio();
+    };
+});
+
+function toggleAudio() {
+    if (!isReady) return;
+    
+    const btn = document.getElementById('playBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const progress = document.getElementById('progressBar');
+
     if (audio.paused) {
         audio.play();
-        updateUI(true);
+        btn.innerHTML = '<i class="fas fa-pause"></i> Pausar';
+        stopBtn.classList.remove('d-none');
+        progress.classList.remove('d-none');
     } else {
         audio.pause();
-        updateUI(false);
+        btn.innerHTML = '<i class="fas fa-play"></i> Reanudar';
     }
 }
 
 function stopAudio() {
-    if (audio) {
-        audio.pause();
-        audio.currentTime = 0;
-    }
-    updateUI(false);
+    audio.pause();
+    audio.currentTime = 0;
+    document.getElementById('playBtn').innerHTML = '<i class="fas fa-play"></i> Reproducir';
+    document.getElementById('stopBtn').classList.add('d-none');
     document.getElementById('progressBar').classList.add('d-none');
-    document.querySelector('.progress-bar').style.width = '0%';
 }
-
-function updateUI(isPlaying) {
-    const playBtn = document.getElementById('playBtn');
-    const stopBtn = document.getElementById('stopBtn');
-    const progressBar = document.getElementById('progressBar');
-    
-    if (isPlaying) {
-        playBtn.innerHTML = '<i class="fas fa-pause"></i> Pausar';
-        stopBtn.classList.remove('d-none');
-        progressBar.classList.remove('d-none');
-    } else {
-        playBtn.innerHTML = '<i class="fas fa-play"></i> Reproducir';
-        if (audio && audio.currentTime === 0) {
-            stopBtn.classList.add('d-none');
-        }
-    }
-}
-
-// Limpiar al salir
-window.addEventListener('beforeunload', function() {
-    if (audio) {
-        audio.pause();
-    }
-});
 </script>
 				
                 <!-- TAGS -->
