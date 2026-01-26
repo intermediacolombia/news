@@ -114,17 +114,17 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                     <small class="text-muted"><?= htmlspecialchars($post['category_name']) ?></small>
                 </div>
 
-				<!-- Botón Text-to-Speech -->
+			<!-- Botón Text-to-Speech -->
 <div class="text-to-speech-section bg-light rounded p-3 mb-4">
     <div class="d-flex justify-content-between align-items-center">
         <h6 class="mb-0 fw-bold">
-            <i class="fas fa-volume-up me-2 text-primary"></i> Escuchar resumen
+            <i class="fas fa-volume-up me-2 text-primary"></i> Escuchar artículo
         </h6>
         <div class="btn-group">
-            <button id="playBtn" class="btn btn-primary btn-sm" onclick="toggleAudio()" disabled>
-                <i class="fas fa-spinner fa-spin"></i> Cargando...
+            <button id="playBtn" class="btn btn-primary btn-sm" onclick="handlePlay()">
+                <i class="fas fa-play"></i> Reproducir
             </button>
-            <button id="stopBtn" class="btn btn-danger btn-sm d-none" onclick="stopAudio()">
+            <button id="stopBtn" class="btn btn-danger btn-sm d-none" onclick="handleStop()">
                 <i class="fas fa-stop"></i> Detener
             </button>
         </div>
@@ -135,64 +135,100 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
 </div>
 
 <script>
-// Usamos el excerpt de PHP directamente
-const textToSpeak = "<​?= addslashes(strip_tags($post['excerpt'] ?: $post['title'])) ?>";
-const audio = new Audio();
-let isReady = false;
+const synth = window.speechSynthesis;
+let utterance = null;
+let isPaused = false;
+let currentPosition = 0;
 
-window.addEventListener('load', function() {
-    // Llamamos a nuestro puente PHP pasando el texto
-    audio.src = 'tts.php?text=' + encodeURIComponent(textToSpeak);
-    
-    audio.oncanplaythrough = function() {
-        isReady = true;
-        const btn = document.getElementById('playBtn');
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-play"></i> Reproducir';
-    };
+// El texto viene de PHP
+const fullText = "<​?= addslashes(strip_tags($post['excerpt'] . '. ' . $post['title'])) ?>";
 
-    audio.onerror = function() {
-        document.getElementById('playBtn').innerHTML = '<i class="fas fa-times"></i> Error';
-        console.error("No se pudo cargar el audio desde tts.php");
-    };
+function handlePlay() {
+    if (synth.speaking && !isPaused) return;
 
-    audio.ontimeupdate = function() {
-        if (audio.duration) {
-            const progress = (audio.currentTime / audio.duration) * 100;
-            document.querySelector('.progress-bar').style.width = progress + '%';
-        }
-    };
-
-    audio.onended = function() {
-        stopAudio();
-    };
-});
-
-function toggleAudio() {
-    if (!isReady) return;
-    
-    const btn = document.getElementById('playBtn');
-    const stopBtn = document.getElementById('stopBtn');
-    const progress = document.getElementById('progressBar');
-
-    if (audio.paused) {
-        audio.play().catch(e => console.error("Error al reproducir:", e));
-        btn.innerHTML = '<i class="fas fa-pause"></i> Pausar';
-        stopBtn.classList.remove('d-none');
-        progress.classList.remove('d-none');
+    if (isPaused) {
+        // Si estaba pausado, reanudamos desde donde quedó
+        isPaused = false;
+        speak(currentPosition);
     } else {
-        audio.pause();
-        btn.innerHTML = '<i class="fas fa-play"></i> Reanudar';
+        // Nueva reproducción desde el inicio
+        currentPosition = 0;
+        speak(0);
     }
 }
 
-function stopAudio() {
-    audio.pause();
-    audio.currentTime = 0;
-    document.getElementById('playBtn').innerHTML = '<i class="fas fa-play"></i> Reproducir';
-    document.getElementById('stopBtn').classList.add('d-none');
-    document.getElementById('progressBar').classList.add('d-none');
+function speak(startOffset) {
+    synth.cancel(); // Limpiar cualquier proceso colgado
+
+    // Cortamos el texto para que empiece desde la última posición guardada
+    const textToSpeak = fullText.substring(startOffset);
+    utterance = new SpeechSynthesisUtterance(textToSpeak);
+    utterance.lang = 'es-ES';
+    utterance.rate = 1.0;
+
+    utterance.onstart = () => {
+        updateUI('playing');
+    };
+
+    utterance.onboundary = (event) => {
+        // Guardamos la posición actual (offset inicial + posición en el fragmento)
+        currentPosition = startOffset + event.charIndex;
+        
+        // Actualizar barra de progreso
+        const progress = (currentPosition / fullText.length) * 100;
+        document.querySelector('.progress-bar').style.width = progress + '%';
+    };
+
+    utterance.onend = () => {
+        if (!isPaused) {
+            handleStop();
+        }
+    };
+
+    synth.speak(utterance);
 }
+
+function handlePause() {
+    if (synth.speaking) {
+        isPaused = true;
+        synth.cancel(); // El truco: cancelamos en lugar de pause() para evitar bloqueos
+        updateUI('paused');
+    }
+}
+
+function handleStop() {
+    isPaused = false;
+    currentPosition = 0;
+    synth.cancel();
+    updateUI('stopped');
+}
+
+function updateUI(state) {
+    const playBtn = document.getElementById('playBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const progressBar = document.getElementById('progressBar');
+
+    if (state === 'playing') {
+        playBtn.innerHTML = '<i class="fas fa-pause"></i> Pausar';
+        playBtn.onclick = handlePause; // Cambiamos la función del botón
+        stopBtn.classList.remove('d-none');
+        progressBar.classList.remove('d-none');
+    } else if (state === 'paused') {
+        playBtn.innerHTML = '<i class="fas fa-play"></i> Reanudar';
+        playBtn.onclick = handlePlay;
+    } else {
+        playBtn.innerHTML = '<i class="fas fa-play"></i> Reproducir';
+        playBtn.onclick = handlePlay;
+        stopBtn.classList.add('d-none');
+        progressBar.classList.add('d-none');
+        document.querySelector('.progress-bar').style.width = '0%';
+    }
+}
+
+// Limpiar si se cierra la pestaña
+window.onbeforeunload = () => {
+    synth.cancel();
+};
 </script>
 				
                 <!-- TAGS -->
