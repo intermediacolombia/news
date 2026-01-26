@@ -148,17 +148,15 @@ let currentText = ''; // Guardar el texto actual
 let currentPosition = 0; // Guardar la posición actual
 
 function playArticle() {
-
     if (!('speechSynthesis' in window)) {
         alert('Tu navegador no soporta Text-to-Speech');
         return;
     }
 
-    // 🔁 REANUDAR
-    if (isPaused) {
-        speech.resume();
+    // REANUDAR desde la posición guardada
+    if (isPaused && currentText) {
         isPaused = false;
-        updateButtons('playing');
+        speakFromPosition(currentText, currentPosition);
         return;
     }
 
@@ -166,26 +164,14 @@ function playArticle() {
     const articleContent = document.querySelector('.post-content');
     const title = '<?= addslashes($post['title']) ?>';
 
-    let text = (title + '. ' + articleContent.innerText)
+    currentText = (title + '. ' + articleContent.innerText)
         .replace(/\s+/g, ' ')
         .trim();
 
-    speech.cancel(); // detener cualquier resto
-
-    utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'es-ES';
-    utterance.rate = 1;
-
-    utterance.onstart = () => {
-        updateButtons('playing');
-    };
-
-    utterance.onend = () => {
-        updateButtons('stopped');
-        isPaused = false;
-    };
-
-    speech.speak(utterance);
+    currentPosition = 0; // Empezar desde el inicio
+    speechSynthesis.cancel(); // detener cualquier resto
+    
+    speakFromPosition(currentText, 0);
 }
 
 function speakFromPosition(text, startPos = 0) {
@@ -220,6 +206,7 @@ function speakFromPosition(text, startPos = 0) {
             document.getElementById('progressBar').classList.add('d-none');
             document.querySelector('.progress-bar').style.width = '0%';
             currentPosition = 0;
+            currentText = '';
         }
     };
 
@@ -233,7 +220,7 @@ function speakFromPosition(text, startPos = 0) {
     };
 
     utterance.onboundary = function(event) {
-        // 👇 Guardar posición actual en el texto COMPLETO
+        // Guardar posición actual en el texto COMPLETO
         currentPosition = startPos + event.charIndex;
         
         // Actualizar barra de progreso basada en el texto completo
@@ -248,8 +235,8 @@ function speakFromPosition(text, startPos = 0) {
 function pauseArticle() {
     if (speechSynthesis.speaking) {
         isPaused = true;
-        isStopping = true; // 👈 Marcar para evitar errores
-        speechSynthesis.cancel(); // 👈 Cancelar en lugar de pausar
+        isStopping = true; // Marcar para evitar errores
+        speechSynthesis.cancel(); // Cancelar en lugar de pausar
         updateButtons('paused');
         
         setTimeout(() => {
@@ -262,7 +249,8 @@ function stopArticle() {
     isStopping = true;
     speechSynthesis.cancel();
     isPaused = false;
-    currentPosition = 0; // 👈 Resetear posición
+    currentPosition = 0; // Resetear posición
+    currentText = ''; // Limpiar texto guardado
     updateButtons('stopped');
     document.getElementById('progressBar').classList.add('d-none');
     document.querySelector('.progress-bar').style.width = '0%';
