@@ -143,6 +143,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
 let speechSynthesis = window.speechSynthesis;
 let utterance = null;
 let isPaused = false;
+let isStopping = false; // 👈 Nueva bandera para controlar detención manual
 
 function playArticle() {
     // Verificar compatibilidad
@@ -170,50 +171,62 @@ function playArticle() {
     }
 
     // Detener cualquier reproducción previa
+    isStopping = true; // 👈 Marcar que es detención intencional
     speechSynthesis.cancel();
-
-    // Crear nueva instancia
-    utterance = new SpeechSynthesisUtterance(textToRead);
     
-    // Configuración en español
-    utterance.lang = 'es-ES';
-    utterance.rate = 1.0; // Velocidad (0.1 a 10)
-    utterance.pitch = 1.0; // Tono (0 a 2)
-    utterance.volume = 1.0; // Volumen (0 a 1)
+    // Pequeño delay para asegurar que se detuvo
+    setTimeout(() => {
+        isStopping = false; // 👈 Resetear bandera
+        
+        // Crear nueva instancia
+        utterance = new SpeechSynthesisUtterance(textToRead);
+        
+        // Configuración en español
+        utterance.lang = 'es-ES';
+        utterance.rate = 1.0; // Velocidad (0.1 a 10)
+        utterance.pitch = 1.0; // Tono (0 a 2)
+        utterance.volume = 1.0; // Volumen (0 a 1)
 
-    // Intentar usar una voz en español
-    const voices = speechSynthesis.getVoices();
-    const spanishVoice = voices.find(voice => voice.lang.startsWith('es'));
-    if (spanishVoice) {
-        utterance.voice = spanishVoice;
-    }
+        // Intentar usar una voz en español
+        const voices = speechSynthesis.getVoices();
+        const spanishVoice = voices.find(voice => voice.lang.startsWith('es'));
+        if (spanishVoice) {
+            utterance.voice = spanishVoice;
+        }
 
-    // Eventos
-    utterance.onstart = function() {
-        updateButtons('playing');
-        document.getElementById('progressBar').classList.remove('d-none');
-    };
+        // Eventos
+        utterance.onstart = function() {
+            updateButtons('playing');
+            document.getElementById('progressBar').classList.remove('d-none');
+        };
 
-    utterance.onend = function() {
-        updateButtons('stopped');
-        document.getElementById('progressBar').classList.add('d-none');
-        document.querySelector('.progress-bar').style.width = '0%';
-    };
+        utterance.onend = function() {
+            if (!isStopping) { // 👈 Solo actualizar si no es detención manual
+                updateButtons('stopped');
+                document.getElementById('progressBar').classList.add('d-none');
+                document.querySelector('.progress-bar').style.width = '0%';
+            }
+        };
 
-    utterance.onerror = function(event) {
-        console.error('Error en Text-to-Speech:', event);
-        alert('Ocurrió un error al reproducir el audio');
-        updateButtons('stopped');
-    };
+        utterance.onerror = function(event) {
+            // 👈 Ignorar errores de cancelación manual
+            if (event.error === 'canceled' || event.error === 'interrupted' || isStopping) {
+                return;
+            }
+            console.error('Error en Text-to-Speech:', event);
+            alert('Ocurrió un error al reproducir el audio');
+            updateButtons('stopped');
+        };
 
-    utterance.onboundary = function(event) {
-        // Actualizar barra de progreso
-        const progress = (event.charIndex / textToRead.length) * 100;
-        document.querySelector('.progress-bar').style.width = progress + '%';
-    };
+        utterance.onboundary = function(event) {
+            // Actualizar barra de progreso
+            const progress = (event.charIndex / textToRead.length) * 100;
+            document.querySelector('.progress-bar').style.width = progress + '%';
+        };
 
-    // Reproducir
-    speechSynthesis.speak(utterance);
+        // Reproducir
+        speechSynthesis.speak(utterance);
+    }, 100);
 }
 
 function pauseArticle() {
@@ -225,11 +238,17 @@ function pauseArticle() {
 }
 
 function stopArticle() {
+    isStopping = true; // 👈 Marcar como detención intencional
     speechSynthesis.cancel();
     isPaused = false;
     updateButtons('stopped');
     document.getElementById('progressBar').classList.add('d-none');
     document.querySelector('.progress-bar').style.width = '0%';
+    
+    // Resetear bandera después de un momento
+    setTimeout(() => {
+        isStopping = false;
+    }, 200);
 }
 
 function updateButtons(state) {
@@ -261,6 +280,7 @@ if (speechSynthesis.onvoiceschanged !== undefined) {
 // Detener reproducción si el usuario abandona la página
 window.addEventListener('beforeunload', function() {
     if (speechSynthesis.speaking) {
+        isStopping = true;
         speechSynthesis.cancel();
     }
 });
