@@ -113,18 +113,22 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                     </div>
                     <small class="text-muted"><?= htmlspecialchars($post['category_name']) ?></small>
                 </div>
-
-			<!-- Botón Text-to-Speech -->
+		
+				<!-- Botón Text-to-Speech -->
 <div class="text-to-speech-section bg-light rounded p-3 mb-4">
     <div class="d-flex justify-content-between align-items-center">
         <h6 class="mb-0 fw-bold">
-            <i class="fas fa-volume-up me-2 text-primary"></i> Escuchar artículo
+            <i class="fas fa-volume-up me-2 text-primary"></i>
+            Escuchar artículo
         </h6>
-        <div class="btn-group">
-            <button id="playBtn" class="btn btn-primary btn-sm" onclick="handlePlay()">
+        <div class="btn-group" role="group">
+            <button id="playBtn" class="btn btn-primary btn-sm" onclick="playArticle()">
                 <i class="fas fa-play"></i> Reproducir
             </button>
-            <button id="stopBtn" class="btn btn-danger btn-sm d-none" onclick="handleStop()">
+            <button id="pauseBtn" class="btn btn-warning btn-sm d-none" onclick="pauseArticle()">
+                <i class="fas fa-pause"></i> Pausar
+            </button>
+            <button id="stopBtn" class="btn btn-danger btn-sm d-none" onclick="stopArticle()">
                 <i class="fas fa-stop"></i> Detener
             </button>
         </div>
@@ -135,103 +139,133 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
 </div>
 
 <script>
-const synth = window.speechSynthesis;
+let speechSynthesis = window.speechSynthesis;
 let utterance = null;
 let isPaused = false;
-let currentPosition = 0;
 
-// El texto viene de PHP
-const fullText = "<​?= addslashes(strip_tags($post['excerpt'] . '. ' . $post['title'])) ?>";
+function playArticle() {
+    // Verificar compatibilidad
+    if (!('speechSynthesis' in window)) {
+        alert('Tu navegador no soporta Text-to-Speech. Intenta con Chrome, Firefox o Edge.');
+        return;
+    }
 
-function handlePlay() {
-    if (synth.speaking && !isPaused) return;
+    // Obtener el contenido del artículo
+    const articleContent = document.querySelector('.post-content');
+    const title = '<?= addslashes($post['title']) ?>';
+    
+    // Extraer solo el texto, sin HTML
+    let textToRead = title + '. ' + articleContent.innerText;
+    
+    // Limpiar texto
+    textToRead = textToRead.replace(/\s+/g, ' ').trim();
 
     if (isPaused) {
-        // Si estaba pausado, reanudamos desde donde quedó
+        // Reanudar
+        speechSynthesis.resume();
         isPaused = false;
-        speak(currentPosition);
-    } else {
-        // Nueva reproducción desde el inicio
-        currentPosition = 0;
-        speak(0);
+        updateButtons('playing');
+        return;
     }
-}
 
-function speak(startOffset) {
-    synth.cancel(); // Limpiar cualquier proceso colgado
+    // Detener cualquier reproducción previa
+    speechSynthesis.cancel();
 
-    // Cortamos el texto para que empiece desde la última posición guardada
-    const textToSpeak = fullText.substring(startOffset);
-    utterance = new SpeechSynthesisUtterance(textToSpeak);
+    // Crear nueva instancia
+    utterance = new SpeechSynthesisUtterance(textToRead);
+    
+    // Configuración en español
     utterance.lang = 'es-ES';
-    utterance.rate = 1.0;
+    utterance.rate = 1.0; // Velocidad (0.1 a 10)
+    utterance.pitch = 1.0; // Tono (0 a 2)
+    utterance.volume = 1.0; // Volumen (0 a 1)
 
-    utterance.onstart = () => {
-        updateUI('playing');
+    // Intentar usar una voz en español
+    const voices = speechSynthesis.getVoices();
+    const spanishVoice = voices.find(voice => voice.lang.startsWith('es'));
+    if (spanishVoice) {
+        utterance.voice = spanishVoice;
+    }
+
+    // Eventos
+    utterance.onstart = function() {
+        updateButtons('playing');
+        document.getElementById('progressBar').classList.remove('d-none');
     };
 
-    utterance.onboundary = (event) => {
-        // Guardamos la posición actual (offset inicial + posición en el fragmento)
-        currentPosition = startOffset + event.charIndex;
-        
+    utterance.onend = function() {
+        updateButtons('stopped');
+        document.getElementById('progressBar').classList.add('d-none');
+        document.querySelector('.progress-bar').style.width = '0%';
+    };
+
+    utterance.onerror = function(event) {
+        console.error('Error en Text-to-Speech:', event);
+        alert('Ocurrió un error al reproducir el audio');
+        updateButtons('stopped');
+    };
+
+    utterance.onboundary = function(event) {
         // Actualizar barra de progreso
-        const progress = (currentPosition / fullText.length) * 100;
+        const progress = (event.charIndex / textToRead.length) * 100;
         document.querySelector('.progress-bar').style.width = progress + '%';
     };
 
-    utterance.onend = () => {
-        if (!isPaused) {
-            handleStop();
-        }
-    };
-
-    synth.speak(utterance);
+    // Reproducir
+    speechSynthesis.speak(utterance);
 }
 
-function handlePause() {
-    if (synth.speaking) {
+function pauseArticle() {
+    if (speechSynthesis.speaking && !speechSynthesis.paused) {
+        speechSynthesis.pause();
         isPaused = true;
-        synth.cancel(); // El truco: cancelamos en lugar de pause() para evitar bloqueos
-        updateUI('paused');
+        updateButtons('paused');
     }
 }
 
-function handleStop() {
+function stopArticle() {
+    speechSynthesis.cancel();
     isPaused = false;
-    currentPosition = 0;
-    synth.cancel();
-    updateUI('stopped');
+    updateButtons('stopped');
+    document.getElementById('progressBar').classList.add('d-none');
+    document.querySelector('.progress-bar').style.width = '0%';
 }
 
-function updateUI(state) {
+function updateButtons(state) {
     const playBtn = document.getElementById('playBtn');
+    const pauseBtn = document.getElementById('pauseBtn');
     const stopBtn = document.getElementById('stopBtn');
-    const progressBar = document.getElementById('progressBar');
 
     if (state === 'playing') {
-        playBtn.innerHTML = '<i class="fas fa-pause"></i> Pausar';
-        playBtn.onclick = handlePause; // Cambiamos la función del botón
+        playBtn.classList.add('d-none');
+        pauseBtn.classList.remove('d-none');
         stopBtn.classList.remove('d-none');
-        progressBar.classList.remove('d-none');
+        pauseBtn.innerHTML = '<i class="fas fa-pause"></i> Pausar';
     } else if (state === 'paused') {
-        playBtn.innerHTML = '<i class="fas fa-play"></i> Reanudar';
-        playBtn.onclick = handlePlay;
-    } else {
-        playBtn.innerHTML = '<i class="fas fa-play"></i> Reproducir';
-        playBtn.onclick = handlePlay;
+        pauseBtn.innerHTML = '<i class="fas fa-play"></i> Reanudar';
+    } else if (state === 'stopped') {
+        playBtn.classList.remove('d-none');
+        pauseBtn.classList.add('d-none');
         stopBtn.classList.add('d-none');
-        progressBar.classList.add('d-none');
-        document.querySelector('.progress-bar').style.width = '0%';
     }
 }
 
-// Limpiar si se cierra la pestaña
-window.onbeforeunload = () => {
-    synth.cancel();
-};
+// Cargar voces (necesario en algunos navegadores)
+if (speechSynthesis.onvoiceschanged !== undefined) {
+    speechSynthesis.onvoiceschanged = function() {
+        // Las voces están listas
+    };
+}
+
+// Detener reproducción si el usuario abandona la página
+window.addEventListener('beforeunload', function() {
+    if (speechSynthesis.speaking) {
+        speechSynthesis.cancel();
+    }
+});
 </script>
 				
-                <!-- TAGS -->
+      <!-- TAGS -->
                 <?php
                 // Si tienes campo "tags" separado por comas
                 $tags = [];
