@@ -124,10 +124,10 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
             Escuchar artículo
         </h6>
         <div class="btn-group" role="group">
-            <button id="playBtn" class="btn btn-primary btn-sm" onclick="playArticle()">
-                <i class="fas fa-play"></i> Reproducir
+            <button id="playBtn" class="btn btn-primary btn-sm" onclick="togglePlay()" disabled>
+                <i class="fas fa-spinner fa-spin"></i> Cargando...
             </button>
-            <button id="stopBtn" class="btn btn-danger btn-sm d-none" onclick="stopArticle()">
+            <button id="stopBtn" class="btn btn-danger btn-sm d-none" onclick="stopAudio()">
                 <i class="fas fa-stop"></i> Detener
             </button>
         </div>
@@ -138,85 +138,109 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
 </div>
 
 <script>
-let synth = window.speechSynthesis;
-let utterance = null;
+let audio = null;
+let isAudioReady = false;
 
-function playArticle() {
-    if (!('speechSynthesis' in window)) {
-        alert('Tu navegador no soporta Text-to-Speech');
-        return;
-    }
+// Generar el audio al cargar la página
+window.addEventListener('DOMContentLoaded', function() {
+    generateAudio();
+});
 
-    // Si ya está reproduciendo, no hacer nada
-    if (synth.speaking) {
-        return;
-    }
-
-    // Obtener el contenido del artículo
+function generateAudio() {
     const articleContent = document.querySelector('.post-content');
     const title = '<?= addslashes($post['title']) ?>';
-
+    
     const text = (title + '. ' + articleContent.innerText)
         .replace(/\s+/g, ' ')
         .trim();
-
-    // Crear la locución
-    utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'es-ES';
-    utterance.rate = 1.0;
-    utterance.pitch = 1.0;
-    utterance.volume = 1.0;
-
-    // Intentar usar una voz en español
-    const voices = synth.getVoices();
-    const spanishVoice = voices.find(voice => voice.lang.startsWith('es'));
-    if (spanishVoice) {
-        utterance.voice = spanishVoice;
+    
+    // Limitar a 200 caracteres por chunk (Google TTS tiene límites)
+    const maxLength = 200;
+    const chunks = [];
+    
+    for (let i = 0; i < text.length; i += maxLength) {
+        chunks.push(text.substring(i, i + maxLength));
     }
-
-    // Evento al iniciar
-    utterance.onstart = function() {
-        document.getElementById('playBtn').classList.add('d-none');
-        document.getElementById('stopBtn').classList.remove('d-none');
-        document.getElementById('progressBar').classList.remove('d-none');
-    };
-
-    // Evento al terminar
-    utterance.onend = function() {
-        stopArticle();
-    };
-
-    // Actualizar barra de progreso
-    utterance.onboundary = function(event) {
-        const progress = (event.charIndex / text.length) * 100;
-        document.querySelector('.progress-bar').style.width = progress + '%';
-    };
-
-    // Reproducir
-    synth.speak(utterance);
+    
+    // Usar el primer chunk o implementar concatenación de múltiples audios
+    const textEncoded = encodeURIComponent(chunks[0]);
+    const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=es&client=tw-ob&q=${textEncoded}`;
+    
+    audio = new Audio(audioUrl);
+    
+    // Cuando el audio esté listo
+    audio.addEventListener('canplaythrough', function() {
+        isAudioReady = true;
+        const playBtn = document.getElementById('playBtn');
+        playBtn.disabled = false;
+        playBtn.innerHTML = '<i class="fas fa-play"></i> Reproducir';
+    });
+    
+    // Actualizar progreso
+    audio.addEventListener('timeupdate', function() {
+        if (audio.duration) {
+            const progress = (audio.currentTime / audio.duration) * 100;
+            document.querySelector('.progress-bar').style.width = progress + '%';
+        }
+    });
+    
+    // Cuando termine
+    audio.addEventListener('ended', function() {
+        stopAudio();
+    });
+    
+    // Error al cargar
+    audio.addEventListener('error', function() {
+        const playBtn = document.getElementById('playBtn');
+        playBtn.disabled = false;
+        playBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error';
+        alert('No se pudo cargar el audio');
+    });
 }
 
-function stopArticle() {
-    synth.cancel();
+function togglePlay() {
+    if (!isAudioReady || !audio) return;
     
-    // Resetear UI
-    document.getElementById('playBtn').classList.remove('d-none');
-    document.getElementById('stopBtn').classList.add('d-none');
+    if (audio.paused) {
+        audio.play();
+        updateUI(true);
+    } else {
+        audio.pause();
+        updateUI(false);
+    }
+}
+
+function stopAudio() {
+    if (audio) {
+        audio.pause();
+        audio.currentTime = 0;
+    }
+    updateUI(false);
     document.getElementById('progressBar').classList.add('d-none');
     document.querySelector('.progress-bar').style.width = '0%';
 }
 
-// Cargar voces (necesario en algunos navegadores)
-if (synth.onvoiceschanged !== undefined) {
-    synth.onvoiceschanged = function() {
-        synth.getVoices();
-    };
+function updateUI(isPlaying) {
+    const playBtn = document.getElementById('playBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const progressBar = document.getElementById('progressBar');
+    
+    if (isPlaying) {
+        playBtn.innerHTML = '<i class="fas fa-pause"></i> Pausar';
+        stopBtn.classList.remove('d-none');
+        progressBar.classList.remove('d-none');
+    } else {
+        playBtn.innerHTML = '<i class="fas fa-play"></i> Reproducir';
+        if (audio && audio.currentTime === 0) {
+            stopBtn.classList.add('d-none');
+        }
+    }
 }
 
-// Detener reproducción si el usuario abandona la página
+// Limpiar al salir
 window.addEventListener('beforeunload', function() {
-    if (synth.speaking) {
-        synth.cancel();
+    if (audio) {
+        audio.pause();
     }
 });
 </script>
