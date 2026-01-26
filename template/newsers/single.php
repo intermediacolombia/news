@@ -84,36 +84,39 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                 </div>
 
                 <!-- 🎵 REPRODUCTOR DE AUDIO MODERNO -->
-                <div class="audio-player-modern mb-4">
-                    <div class="audio-player-inner">
-                        <div class="d-flex align-items-center gap-3">
-                            <!-- Botón Play/Pause -->
-                            <button id="playBtn" class="audio-btn-main" onclick="handlePlay()" title="Reproducir">
-                                <i class="fas fa-play" id="playIcon"></i>
-                            </button>
-                            
-                            <!-- Info y Progreso -->
-                            <div class="audio-info">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="audio-label">
-                                        <i class="fas fa-headphones me-2"></i>Escuchar artículo
-                                    </span>
-                                    <span class="audio-time" id="timeDisplay">0:00</span>
-                                </div>
-                                
-                                <!-- Barra de progreso -->
-                                <div class="audio-progress-container">
-                                    <div class="audio-progress-bar" id="audioProgress"></div>
-                                </div>
-                            </div>
-                            
-                            <!-- Botón Stop -->
-                            <button id="stopBtn" class="audio-btn-stop d-none" onclick="handleStop()" title="Detener">
-                                <i class="fas fa-stop"></i>
-                            </button>
-                        </div>
-                    </div>
+                <?php if (!empty(TEXT_TO_SPEECH) && TEXT_TO_SPEECH == '1'): ?>
+<!-- 🎵 REPRODUCTOR DE AUDIO MODERNO -->
+<div class="audio-player-modern mb-4">
+    <div class="audio-player-inner">
+        <div class="d-flex align-items-center gap-3">
+            <!-- Botón Play/Pause -->
+            <button id="playBtn" class="audio-btn-main" onclick="handlePlay()" title="Reproducir">
+                <i class="fas fa-play" id="playIcon"></i>
+            </button>
+            
+            <!-- Info y Progreso -->
+            <div class="audio-info">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="audio-label">
+                        <i class="fas fa-headphones me-2"></i>Escuchar artículo
+                    </span>
+                    <span class="audio-time" id="timeDisplay">0:00</span>
                 </div>
+                
+                <!-- Barra de progreso -->
+                <div class="audio-progress-container">
+                    <div class="audio-progress-bar" id="audioProgress"></div>
+                </div>
+            </div>
+            
+            <!-- Botón Stop -->
+            <button id="stopBtn" class="audio-btn-stop d-none" onclick="handleStop()" title="Detener">
+                <i class="fas fa-stop"></i>
+            </button>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
 
                 <!-- Contenido del artículo -->
                 <div class="my-4 post-content">
@@ -356,7 +359,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
         gap: 4px;
     }
 </style>
-
+<?php if (!empty(TEXT_TO_SPEECH) && TEXT_TO_SPEECH == '1'): ?>
 <script>
 const synth = window.speechSynthesis;
 let utterance = null;
@@ -502,9 +505,6 @@ window.addEventListener('beforeunload', () => {
     synth.cancel();
 });
 </script>
-
-
-
-
+<?php endif; ?>
 
         

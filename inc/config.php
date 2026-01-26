@@ -119,6 +119,7 @@ define('WS_DELIVERED_ORDER', $sys['ws_delivered_message'] ?? '');
 
 /* =========Apariencia ========= */
 define('THEME', $sys['site_theme'] ?? '');
+define('TEXT_TO_SPEECH', $sys['enable_text_to_speech'] ?? '');
 
 
 /* =========Fin Apariencia ========= */
@@ -157,6 +158,7 @@ if (!defined('MP_RETURN_URL')) {
 }
 if (!defined('MP_SUCCESS_URL')) define('MP_SUCCESS_URL', URLBASE . '/mp_success');
 if (!defined('MP_FAILURE_URL')) define('MP_FAILURE_URL', URLBASE . '/mp_failure');
+
 if (!defined('MP_PENDING_URL')) define('MP_PENDING_URL', URLBASE . '/mp_pending');
 
 

@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		'business_phone',
 		'info_footer',
 		'business_map',
-		
+		'enable_text_to_speech',
 		//SEO
 		'seo_home_title',
 		'seo_home_description',
@@ -203,6 +203,7 @@ $defaults = [
     'site_logo'               => '',
     'site_favicon'            => '',
 	'banner_inferior' 		  => '',
+	'enable_text_to_speech'   => '0',
 
     'site_email'              => '',
     'business_address'        => '',
@@ -427,6 +428,20 @@ document.addEventListener('DOMContentLoaded', function(){
               <textarea name="info_footer" class="form-control"><?= htmlspecialchars($configs['info_footer'], ENT_QUOTES, 'UTF-8') ?></textarea>
 
             </div>
+			  
+			  
+			<div class="mb-3">
+  <div class="form-check form-switch">
+    <input class="form-check-input" type="checkbox" id="enable_text_to_speech" 
+           name="enable_text_to_speech" value="1"
+           <?= !empty($configs['enable_text_to_speech']) ? 'checked' : '' ?>>
+    <label class="form-check-label" for="enable_text_to_speech">
+      <i class="fas fa-volume-up me-2"></i>Habilitar Text-to-Speech (Leer Notas)
+    </label>
+  </div>
+  <small class="text-muted">Permite a los usuarios escuchar el contenido de las noticias con voz sintetizada.</small>
+</div>
+			  
 			  
           </div>
         </div>
