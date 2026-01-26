@@ -114,6 +114,158 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                     <small class="text-muted"><?= htmlspecialchars($post['category_name']) ?></small>
                 </div>
 
+				
+				<!-- Botón Text-to-Speech -->
+<div class="text-to-speech-section bg-light rounded p-3 mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <h6 class="mb-0 fw-bold">
+            <i class="fas fa-volume-up me-2 text-primary"></i>
+            Escuchar artículo
+        </h6>
+        <div class="btn-group" role="group">
+            <button id="playBtn" class="btn btn-primary btn-sm" onclick="playArticle()">
+                <i class="fas fa-play"></i> Reproducir
+            </button>
+            <button id="pauseBtn" class="btn btn-warning btn-sm d-none" onclick="pauseArticle()">
+                <i class="fas fa-pause"></i> Pausar
+            </button>
+            <button id="stopBtn" class="btn btn-danger btn-sm d-none" onclick="stopArticle()">
+                <i class="fas fa-stop"></i> Detener
+            </button>
+        </div>
+    </div>
+    <div class="progress mt-2 d-none" id="progressBar" style="height: 5px;">
+        <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+    </div>
+</div>
+
+<script>
+let speechSynthesis = window.speechSynthesis;
+let utterance = null;
+let isPaused = false;
+
+function playArticle() {
+    // Verificar compatibilidad
+    if (!('speechSynthesis' in window)) {
+        alert('Tu navegador no soporta Text-to-Speech. Intenta con Chrome, Firefox o Edge.');
+        return;
+    }
+
+    // Obtener el contenido del artículo
+    const articleContent = document.querySelector('.post-content');
+    const title = '<?= addslashes($post['title']) ?>';
+    
+    // Extraer solo el texto, sin HTML
+    let textToRead = title + '. ' + articleContent.innerText;
+    
+    // Limpiar texto
+    textToRead = textToRead.replace(/\s+/g, ' ').trim();
+
+    if (isPaused) {
+        // Reanudar
+        speechSynthesis.resume();
+        isPaused = false;
+        updateButtons('playing');
+        return;
+    }
+
+    // Detener cualquier reproducción previa
+    speechSynthesis.cancel();
+
+    // Crear nueva instancia
+    utterance = new SpeechSynthesisUtterance(textToRead);
+    
+    // Configuración en español
+    utterance.lang = 'es-ES';
+    utterance.rate = 1.0; // Velocidad (0.1 a 10)
+    utterance.pitch = 1.0; // Tono (0 a 2)
+    utterance.volume = 1.0; // Volumen (0 a 1)
+
+    // Intentar usar una voz en español
+    const voices = speechSynthesis.getVoices();
+    const spanishVoice = voices.find(voice => voice.lang.startsWith('es'));
+    if (spanishVoice) {
+        utterance.voice = spanishVoice;
+    }
+
+    // Eventos
+    utterance.onstart = function() {
+        updateButtons('playing');
+        document.getElementById('progressBar').classList.remove('d-none');
+    };
+
+    utterance.onend = function() {
+        updateButtons('stopped');
+        document.getElementById('progressBar').classList.add('d-none');
+        document.querySelector('.progress-bar').style.width = '0%';
+    };
+
+    utterance.onerror = function(event) {
+        console.error('Error en Text-to-Speech:', event);
+        alert('Ocurrió un error al reproducir el audio');
+        updateButtons('stopped');
+    };
+
+    utterance.onboundary = function(event) {
+        // Actualizar barra de progreso
+        const progress = (event.charIndex / textToRead.length) * 100;
+        document.querySelector('.progress-bar').style.width = progress + '%';
+    };
+
+    // Reproducir
+    speechSynthesis.speak(utterance);
+}
+
+function pauseArticle() {
+    if (speechSynthesis.speaking && !speechSynthesis.paused) {
+        speechSynthesis.pause();
+        isPaused = true;
+        updateButtons('paused');
+    }
+}
+
+function stopArticle() {
+    speechSynthesis.cancel();
+    isPaused = false;
+    updateButtons('stopped');
+    document.getElementById('progressBar').classList.add('d-none');
+    document.querySelector('.progress-bar').style.width = '0%';
+}
+
+function updateButtons(state) {
+    const playBtn = document.getElementById('playBtn');
+    const pauseBtn = document.getElementById('pauseBtn');
+    const stopBtn = document.getElementById('stopBtn');
+
+    if (state === 'playing') {
+        playBtn.classList.add('d-none');
+        pauseBtn.classList.remove('d-none');
+        stopBtn.classList.remove('d-none');
+        pauseBtn.innerHTML = '<i class="fas fa-pause"></i> Pausar';
+    } else if (state === 'paused') {
+        pauseBtn.innerHTML = '<i class="fas fa-play"></i> Reanudar';
+    } else if (state === 'stopped') {
+        playBtn.classList.remove('d-none');
+        pauseBtn.classList.add('d-none');
+        stopBtn.classList.add('d-none');
+    }
+}
+
+// Cargar voces (necesario en algunos navegadores)
+if (speechSynthesis.onvoiceschanged !== undefined) {
+    speechSynthesis.onvoiceschanged = function() {
+        // Las voces están listas
+    };
+}
+
+// Detener reproducción si el usuario abandona la página
+window.addEventListener('beforeunload', function() {
+    if (speechSynthesis.speaking) {
+        speechSynthesis.cancel();
+    }
+});
+</script>
+				
                 <!-- TAGS -->
                 <?php
                 // Si tienes campo "tags" separado por comas
