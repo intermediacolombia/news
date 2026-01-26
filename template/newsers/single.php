@@ -116,6 +116,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
 
 				
 				<!-- Botón Text-to-Speech -->
+<!-- Botón Text-to-Speech -->
 <div class="text-to-speech-section bg-light rounded p-3 mb-4">
     <div class="d-flex justify-content-between align-items-center">
         <h6 class="mb-0 fw-bold">
@@ -125,9 +126,6 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
         <div class="btn-group" role="group">
             <button id="playBtn" class="btn btn-primary btn-sm" onclick="playArticle()">
                 <i class="fas fa-play"></i> Reproducir
-            </button>
-            <button id="pauseBtn" class="btn btn-warning btn-sm d-none" onclick="pauseArticle()">
-                <i class="fas fa-pause"></i> Pausar
             </button>
             <button id="stopBtn" class="btn btn-danger btn-sm d-none" onclick="stopArticle()">
                 <i class="fas fa-stop"></i> Detener
@@ -140,12 +138,8 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
 </div>
 
 <script>
-let speechSynthesis = window.speechSynthesis;
+let synth = window.speechSynthesis;
 let utterance = null;
-let isPaused = false;
-let isStopping = false;
-let currentText = ''; // Guardar el texto actual
-let currentPosition = 0; // Guardar la posición actual
 
 function playArticle() {
     if (!('speechSynthesis' in window)) {
@@ -153,142 +147,76 @@ function playArticle() {
         return;
     }
 
-    // REANUDAR desde la posición guardada
-    if (isPaused && currentText) {
-        isPaused = false;
-        speakFromPosition(currentText, currentPosition);
+    // Si ya está reproduciendo, no hacer nada
+    if (synth.speaking) {
         return;
     }
 
-    // ▶️ NUEVA REPRODUCCIÓN
+    // Obtener el contenido del artículo
     const articleContent = document.querySelector('.post-content');
     const title = '<?= addslashes($post['title']) ?>';
 
-    currentText = (title + '. ' + articleContent.innerText)
+    const text = (title + '. ' + articleContent.innerText)
         .replace(/\s+/g, ' ')
         .trim();
 
-    currentPosition = 0; // Empezar desde el inicio
-    speechSynthesis.cancel(); // detener cualquier resto
-    
-    speakFromPosition(currentText, 0);
-}
-
-function speakFromPosition(text, startPos = 0) {
-    // Obtener el texto desde la posición actual
-    const textToSpeak = text.substring(startPos);
-    
-    // Crear nueva instancia
-    utterance = new SpeechSynthesisUtterance(textToSpeak);
-    
-    // Configuración en español
+    // Crear la locución
+    utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'es-ES';
     utterance.rate = 1.0;
     utterance.pitch = 1.0;
     utterance.volume = 1.0;
 
     // Intentar usar una voz en español
-    const voices = speechSynthesis.getVoices();
+    const voices = synth.getVoices();
     const spanishVoice = voices.find(voice => voice.lang.startsWith('es'));
     if (spanishVoice) {
         utterance.voice = spanishVoice;
     }
 
-    // Eventos
+    // Evento al iniciar
     utterance.onstart = function() {
-        updateButtons('playing');
+        document.getElementById('playBtn').classList.add('d-none');
+        document.getElementById('stopBtn').classList.remove('d-none');
         document.getElementById('progressBar').classList.remove('d-none');
     };
 
+    // Evento al terminar
     utterance.onend = function() {
-        if (!isStopping && !isPaused) {
-            updateButtons('stopped');
-            document.getElementById('progressBar').classList.add('d-none');
-            document.querySelector('.progress-bar').style.width = '0%';
-            currentPosition = 0;
-            currentText = '';
-        }
+        stopArticle();
     };
 
-    utterance.onerror = function(event) {
-        if (event.error === 'canceled' || event.error === 'interrupted' || isStopping) {
-            return;
-        }
-        console.error('Error en Text-to-Speech:', event);
-        alert('Ocurrió un error al reproducir el audio');
-        updateButtons('stopped');
-    };
-
+    // Actualizar barra de progreso
     utterance.onboundary = function(event) {
-        // Guardar posición actual en el texto COMPLETO
-        currentPosition = startPos + event.charIndex;
-        
-        // Actualizar barra de progreso basada en el texto completo
-        const progress = (currentPosition / currentText.length) * 100;
+        const progress = (event.charIndex / text.length) * 100;
         document.querySelector('.progress-bar').style.width = progress + '%';
     };
 
     // Reproducir
-    speechSynthesis.speak(utterance);
-}
-
-function pauseArticle() {
-    if (speechSynthesis.speaking) {
-        isPaused = true;
-        isStopping = true; // Marcar para evitar errores
-        speechSynthesis.cancel(); // Cancelar en lugar de pausar
-        updateButtons('paused');
-        
-        setTimeout(() => {
-            isStopping = false;
-        }, 200);
-    }
+    synth.speak(utterance);
 }
 
 function stopArticle() {
-    isStopping = true;
-    speechSynthesis.cancel();
-    isPaused = false;
-    currentPosition = 0; // Resetear posición
-    currentText = ''; // Limpiar texto guardado
-    updateButtons('stopped');
+    synth.cancel();
+    
+    // Resetear UI
+    document.getElementById('playBtn').classList.remove('d-none');
+    document.getElementById('stopBtn').classList.add('d-none');
     document.getElementById('progressBar').classList.add('d-none');
     document.querySelector('.progress-bar').style.width = '0%';
-    
-    setTimeout(() => {
-        isStopping = false;
-    }, 200);
-}
-
-function updateButtons(state) {
-    const playBtn = document.getElementById('playBtn');
-    const pauseBtn = document.getElementById('pauseBtn');
-    const stopBtn = document.getElementById('stopBtn');
-
-    if (state === 'playing') {
-        playBtn.classList.add('d-none');
-        pauseBtn.classList.remove('d-none');
-        stopBtn.classList.remove('d-none');
-        pauseBtn.innerHTML = '<i class="fas fa-pause"></i> Pausar';
-    } else if (state === 'paused') {
-        pauseBtn.innerHTML = '<i class="fas fa-play"></i> Reanudar';
-    } else if (state === 'stopped') {
-        playBtn.classList.remove('d-none');
-        pauseBtn.classList.add('d-none');
-        stopBtn.classList.add('d-none');
-    }
 }
 
 // Cargar voces (necesario en algunos navegadores)
-if (speechSynthesis.onvoiceschanged !== undefined) {
-    speechSynthesis.onvoiceschanged = function() {};
+if (synth.onvoiceschanged !== undefined) {
+    synth.onvoiceschanged = function() {
+        synth.getVoices();
+    };
 }
 
 // Detener reproducción si el usuario abandona la página
 window.addEventListener('beforeunload', function() {
-    if (speechSynthesis.speaking) {
-        isStopping = true;
-        speechSynthesis.cancel();
+    if (synth.speaking) {
+        synth.cancel();
     }
 });
 </script>
