@@ -114,16 +114,15 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                     <small class="text-muted"><?= htmlspecialchars($post['category_name']) ?></small>
                 </div>
 
-				<audio src="https://translate.google.com/translate_tts?ie=UTF-8&tl=es-ES&client=tw-ob&q=<?= htmlspecialchars($post['excerpt']) ?>"></audio>
 				<!-- Botón Text-to-Speech -->
 <div class="text-to-speech-section bg-light rounded p-3 mb-4">
     <div class="d-flex justify-content-between align-items-center">
         <h6 class="mb-0 fw-bold">
-            <i class="fas fa-volume-up me-2 text-primary"></i> Escuchar artículo
+            <i class="fas fa-volume-up me-2 text-primary"></i> Escuchar resumen
         </h6>
         <div class="btn-group">
             <button id="playBtn" class="btn btn-primary btn-sm" onclick="toggleAudio()" disabled>
-                <i class="fas fa-spinner fa-spin"></i> Cargando audio...
+                <i class="fas fa-spinner fa-spin"></i> Cargando...
             </button>
             <button id="stopBtn" class="btn btn-danger btn-sm d-none" onclick="stopAudio()">
                 <i class="fas fa-stop"></i> Detener
@@ -136,16 +135,14 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
 </div>
 
 <script>
-let audio = new Audio();
+// Usamos el excerpt de PHP directamente
+const textToSpeak = "<​?= addslashes(strip_tags($post['excerpt'] ?: $post['title'])) ?>";
+const audio = new Audio();
 let isReady = false;
 
 window.addEventListener('load', function() {
-    const articleContent = document.querySelector('.post-content');
-    const title = '<?= addslashes($post['title']) ?>';
-    const fullText = (title + '. ' + articleContent.innerText).substring(0, 800); // Google limita caracteres
-
-    // Llamamos a nuestro propio servidor PHP
-    audio.src = 'tts.php?text=' + encodeURIComponent(fullText);
+    // Llamamos a nuestro puente PHP pasando el texto
+    audio.src = 'tts.php?text=' + encodeURIComponent(textToSpeak);
     
     audio.oncanplaythrough = function() {
         isReady = true;
@@ -155,13 +152,15 @@ window.addEventListener('load', function() {
     };
 
     audio.onerror = function() {
-        document.getElementById('playBtn').innerHTML = '<i class="fas fa-times"></i> Error de carga';
-        console.error("Error cargando el audio desde tts.php");
+        document.getElementById('playBtn').innerHTML = '<i class="fas fa-times"></i> Error';
+        console.error("No se pudo cargar el audio desde tts.php");
     };
 
     audio.ontimeupdate = function() {
-        const progress = (audio.currentTime / audio.duration) * 100;
-        document.querySelector('.progress-bar').style.width = progress + '%';
+        if (audio.duration) {
+            const progress = (audio.currentTime / audio.duration) * 100;
+            document.querySelector('.progress-bar').style.width = progress + '%';
+        }
     };
 
     audio.onended = function() {
@@ -177,7 +176,7 @@ function toggleAudio() {
     const progress = document.getElementById('progressBar');
 
     if (audio.paused) {
-        audio.play();
+        audio.play().catch(e => console.error("Error al reproducir:", e));
         btn.innerHTML = '<i class="fas fa-pause"></i> Pausar';
         stopBtn.classList.remove('d-none');
         progress.classList.remove('d-none');
