@@ -380,7 +380,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
 }
 
 #speedControl option {
-    background: var(--primary);
+    background: #333;;
     color: white;
 }
 
