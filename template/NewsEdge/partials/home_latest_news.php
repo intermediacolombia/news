@@ -78,8 +78,8 @@ $sidebarNews = db()->query($sqlSidebar)->fetchAll();
                             foreach ($sliderNews as $slide): 
                                 $imageUrl = img_url($slide['image']);
                             ?>
-                                <img src="<​?= $imageUrl ?>" 
-                                     alt="<​?= htmlspecialchars($slide['title']) ?>" 
+                                <img src="<?= $imageUrl ?>" 
+                                     alt="<?= htmlspecialchars($slide['title']) ?>" 
                                      title="#slider-direction-<?= $slideIndex ?>" />
                             <?php 
                                 $slideIndex++;
