@@ -1,6 +1,5 @@
 <?php
 require_once __DIR__ . '/../../inc/config.php';
-require_once __DIR__ . '/../../inc/db.php';
 require_once __DIR__ . '/../login/session.php';
 $permisopage = 'Editar Institucional';
 require_once __DIR__ . '/../login/restriction.php';
@@ -33,73 +32,72 @@ $placeholders = implode(',', array_fill(0, count($ids), '?'));
 $success = false;
 $message = '';
 
-switch($action) {
-    case 'delete':
-        // Obtener imágenes antes de eliminar
-        $sqlImages = "SELECT image FROM institutional_pages WHERE id IN ($placeholders)";
-        $stmtImages = $conn->prepare($sqlImages);
-        $stmtImages->bind_param(str_repeat('i', count($ids)), ...$ids);
-        $stmtImages->execute();
-        $resultImages = $stmtImages->get_result();
-        $images = [];
-        while($row = $resultImages->fetch_assoc()) {
-            if(!empty($row['image'])) {
-                $images[] = $row['image'];
-            }
-        }
-        
-        // Eliminar páginas
-        $sql = "DELETE FROM institutional_pages WHERE id IN ($placeholders)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param(str_repeat('i', count($ids)), ...$ids);
-        
-        if($stmt->execute()) {
-            // Eliminar imágenes físicas
-            foreach($images as $image) {
-                $imagePath = __DIR__ . '/../../' . $image;
-                if(file_exists($imagePath)) {
-                    @unlink($imagePath);
+try {
+    switch($action) {
+        case 'delete':
+            // Obtener imágenes antes de eliminar
+            $sqlImages = "SELECT image FROM institutional_pages WHERE id IN ($placeholders)";
+            $stmtImages = db()->prepare($sqlImages);
+            $stmtImages->execute($ids);
+            $images = [];
+            while($row = $stmtImages->fetch()) {
+                if(!empty($row['image'])) {
+                    $images[] = $row['image'];
                 }
             }
             
-            $success = true;
-            $message = count($ids) . ' página(s) eliminada(s) correctamente';
-            $_SESSION['success'] = $message;
-        } else {
-            $message = 'Error al eliminar las páginas';
-        }
-        break;
-        
-    case 'draft':
-        $sql = "UPDATE institutional_pages SET status = 'draft', updated_at = NOW() WHERE id IN ($placeholders)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param(str_repeat('i', count($ids)), ...$ids);
-        
-        if($stmt->execute()) {
-            $success = true;
-            $message = count($ids) . ' página(s) marcada(s) como borrador';
-            $_SESSION['success'] = $message;
-        } else {
-            $message = 'Error al actualizar las páginas';
-        }
-        break;
-        
-    case 'publish':
-        $sql = "UPDATE institutional_pages SET status = 'published', updated_at = NOW() WHERE id IN ($placeholders)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param(str_repeat('i', count($ids)), ...$ids);
-        
-        if($stmt->execute()) {
-            $success = true;
-            $message = count($ids) . ' página(s) publicada(s) correctamente';
-            $_SESSION['success'] = $message;
-        } else {
-            $message = 'Error al publicar las páginas';
-        }
-        break;
-        
-    default:
-        $message = 'Acción no válida';
+            // Eliminar páginas
+            $sql = "DELETE FROM institutional_pages WHERE id IN ($placeholders)";
+            $stmt = db()->prepare($sql);
+            
+            if($stmt->execute($ids)) {
+                // Eliminar imágenes físicas
+                foreach($images as $image) {
+                    $imagePath = __DIR__ . '/../../' . $image;
+                    if(file_exists($imagePath)) {
+                        @unlink($imagePath);
+                    }
+                }
+                
+                $success = true;
+                $message = count($ids) . ' página(s) eliminada(s) correctamente';
+                $_SESSION['success'] = $message;
+            } else {
+                $message = 'Error al eliminar las páginas';
+            }
+            break;
+            
+        case 'draft':
+            $sql = "UPDATE institutional_pages SET status = 'draft', updated_at = NOW() WHERE id IN ($placeholders)";
+            $stmt = db()->prepare($sql);
+            
+            if($stmt->execute($ids)) {
+                $success = true;
+                $message = count($ids) . ' página(s) marcada(s) como borrador';
+                $_SESSION['success'] = $message;
+            } else {
+                $message = 'Error al actualizar las páginas';
+            }
+            break;
+            
+        case 'publish':
+            $sql = "UPDATE institutional_pages SET status = 'published', updated_at = NOW() WHERE id IN ($placeholders)";
+            $stmt = db()->prepare($sql);
+            
+            if($stmt->execute($ids)) {
+                $success = true;
+                $message = count($ids) . ' página(s) publicada(s) correctamente';
+                $_SESSION['success'] = $message;
+            } else {
+                $message = 'Error al publicar las páginas';
+            }
+            break;
+            
+        default:
+            $message = 'Acción no válida';
+    }
+} catch (PDOException $e) {
+    $message = 'Error en la base de datos: ' . $e->getMessage();
 }
 
 echo json_encode([

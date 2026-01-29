@@ -1,66 +1,56 @@
 <?php
 require_once __DIR__ . '/../../inc/config.php';
-require_once __DIR__ . '/../../inc/db.php';
+require_once __DIR__ . '/../login/session.php';
 
 /**
  * Obtener todas las páginas institucionales
  */
 function getAllPages() {
-    global $conn;
     $sql = "SELECT ip.*, u.nombre as author_name 
             FROM institutional_pages ip
             LEFT JOIN usuarios u ON ip.created_by = u.id
             ORDER BY ip.display_order ASC, ip.created_at DESC";
-    $result = $conn->query($sql);
-    return $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+    return db()->query($sql)->fetchAll();
 }
 
 /**
  * Obtener una página por ID
  */
 function getPageById($id) {
-    global $conn;
     $id = (int)$id;
     $sql = "SELECT ip.*, u.nombre as author_name 
             FROM institutional_pages ip
             LEFT JOIN usuarios u ON ip.created_by = u.id
             WHERE ip.id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param('i', $id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    return $result->fetch_assoc();
+    $stmt = db()->prepare($sql);
+    $stmt->execute([$id]);
+    return $stmt->fetch();
 }
 
 /**
  * Obtener una página por slug
  */
 function getPageBySlug($slug) {
-    global $conn;
     $sql = "SELECT ip.*, u.nombre as author_name 
             FROM institutional_pages ip
             LEFT JOIN usuarios u ON ip.created_by = u.id
             WHERE ip.slug = ? AND ip.status = 'published'";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param('s', $slug);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    return $result->fetch_assoc();
+    $stmt = db()->prepare($sql);
+    $stmt->execute([$slug]);
+    return $stmt->fetch();
 }
 
 /**
  * Crear nueva página institucional
  */
 function createPage($data) {
-    global $conn;
-    
     $sql = "INSERT INTO institutional_pages 
             (title, slug, content, page_type, status, image, display_order, 
              seo_title, seo_description, seo_keywords, created_by, created_at, updated_at) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
     
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param('ssssssisssi',
+    $stmt = db()->prepare($sql);
+    $result = $stmt->execute([
         $data['title'],
         $data['slug'],
         $data['content'],
@@ -72,19 +62,15 @@ function createPage($data) {
         $data['seo_description'],
         $data['seo_keywords'],
         $data['created_by']
-    );
+    ]);
     
-    if($stmt->execute()) {
-        return $conn->insert_id;
-    }
-    return false;
+    return $result ? db()->lastInsertId() : false;
 }
 
 /**
  * Actualizar página institucional
  */
 function updatePage($id, $data) {
-    global $conn;
     $id = (int)$id;
     
     $sql = "UPDATE institutional_pages SET 
@@ -99,7 +85,6 @@ function updatePage($id, $data) {
             seo_keywords = ?,
             updated_at = NOW()";
     
-    $types = 'sssssssss';
     $params = [
         $data['title'],
         $data['slug'],
@@ -115,35 +100,29 @@ function updatePage($id, $data) {
     // Si hay imagen nueva
     if(isset($data['image']) && $data['image']) {
         $sql .= ", image = ?";
-        $types .= 's';
         $params[] = $data['image'];
     }
     
     $sql .= " WHERE id = ?";
-    $types .= 'i';
     $params[] = $id;
     
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param($types, ...$params);
-    
-    return $stmt->execute();
+    $stmt = db()->prepare($sql);
+    return $stmt->execute($params);
 }
 
 /**
  * Eliminar página institucional
  */
 function deletePage($id) {
-    global $conn;
     $id = (int)$id;
     
     // Obtener imagen para eliminarla
     $page = getPageById($id);
     
     $sql = "DELETE FROM institutional_pages WHERE id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param('i', $id);
+    $stmt = db()->prepare($sql);
     
-    if($stmt->execute()) {
+    if($stmt->execute([$id])) {
         // Eliminar imagen física si existe
         if($page && !empty($page['image'])) {
             $imagePath = __DIR__ . '/../../' . $page['image'];
@@ -160,21 +139,17 @@ function deletePage($id) {
  * Verificar si un slug ya existe (excluyendo un ID específico)
  */
 function slugExists($slug, $excludeId = null) {
-    global $conn;
-    $sql = "SELECT id FROM institutional_pages WHERE slug = ?";
-    
     if($excludeId) {
-        $sql .= " AND id != ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param('si', $slug, $excludeId);
+        $sql = "SELECT COUNT(*) FROM institutional_pages WHERE slug = ? AND id != ?";
+        $stmt = db()->prepare($sql);
+        $stmt->execute([$slug, $excludeId]);
     } else {
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param('s', $slug);
+        $sql = "SELECT COUNT(*) FROM institutional_pages WHERE slug = ?";
+        $stmt = db()->prepare($sql);
+        $stmt->execute([$slug]);
     }
     
-    $stmt->execute();
-    $result = $stmt->get_result();
-    return $result->num_rows > 0;
+    return $stmt->fetchColumn() > 0;
 }
 
 /**
@@ -188,6 +163,11 @@ function generateUniqueSlug($title, $excludeId = null) {
     while(slugExists($slug, $excludeId)) {
         $slug = $originalSlug . '-' . $counter;
         $counter++;
+        
+        // Prevenir loop infinito
+        if($counter > 100) {
+            break;
+        }
     }
     
     return $slug;
@@ -197,10 +177,9 @@ function generateUniqueSlug($title, $excludeId = null) {
  * Convertir string a slug
  */
 function slugify($text) {
-    $text = iconv('UTF-8', 'ASCII//TRANSLIT', $text);
-    $text = preg_replace('/[^a-z0-9]+/i', '-', strtolower($text));
-    $text = trim($text, '-');
-    return substr($text, 0, 180);
+    $slug = strtolower(preg_replace('/[^a-z0-9]+/i', '-', $text));
+    $slug = trim($slug, '-');
+    return substr($slug, 0, 180);
 }
 
 /**
@@ -278,7 +257,8 @@ function handleImageUpload($file) {
         return ['success' => false, 'error' => 'Error al subir el archivo'];
     }
     
-    if(!in_array($file['type'], $allowedTypes)) {
+    $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+    if(!in_array('image/' . $ext, $allowedTypes) && !in_array($ext, ['jpg','jpeg','png','webp'])) {
         return ['success' => false, 'error' => 'Tipo de archivo no permitido. Solo JPG, PNG, WebP'];
     }
     
@@ -286,19 +266,18 @@ function handleImageUpload($file) {
         return ['success' => false, 'error' => 'El archivo supera el tamaño máximo de 5MB'];
     }
     
-    // Crear directorio si no existe
-    $uploadDir = __DIR__ . '/../../uploads/institutional/';
+    // Crear directorio si no existe (igual que en blog)
+    $uploadDir = realpath(__DIR__ . '/../../public/images') . '/institutional/';
     if(!is_dir($uploadDir)) {
         mkdir($uploadDir, 0755, true);
     }
     
     // Generar nombre único
-    $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
-    $filename = 'inst_' . time() . '_' . uniqid() . '.' . $extension;
-    $filepath = $uploadDir . $filename;
+    $fileName = time() . '_' . preg_replace('/[^a-z0-9\.-]/i', '_', $file['name']);
+    $destino = $uploadDir . $fileName;
     
-    if(move_uploaded_file($file['tmp_name'], $filepath)) {
-        return ['success' => true, 'path' => '/uploads/institutional/' . $filename];
+    if(move_uploaded_file($file['tmp_name'], $destino)) {
+        return ['success' => true, 'path' => 'public/images/institutional/' . $fileName];
     }
     
     return ['success' => false, 'error' => 'Error al guardar el archivo'];
@@ -327,12 +306,21 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['id'])) {
     if(empty($errors)) {
         $data['created_by'] = $_SESSION['user_id'] ?? 1;
         
-        if(createPage($data)) {
-            $_SESSION['success'] = 'Página creada exitosamente';
-            header('Location: index.php');
-            exit;
-        } else {
-            $errors['__global'] = 'Error al crear la página';
+        try {
+            if(createPage($data)) {
+                $_SESSION['success'] = 'Página creada exitosamente';
+                header('Location: index.php');
+                exit;
+            } else {
+                $errors['__global'] = 'Error al crear la página';
+            }
+        } catch (PDOException $e) {
+            // Si hay error de slug duplicado
+            if($e->getCode() == 23000 && strpos($e->getMessage(), 'slug') !== false) {
+                $errors['slug'] = 'El slug ya existe. Por favor, elige otro.';
+            } else {
+                $errors['__global'] = 'Error al crear la página: ' . $e->getMessage();
+            }
         }
     }
     
@@ -380,16 +368,24 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
                 @unlink($oldImagePath);
             }
         }
-        $data['image'] = null;
+        $data['image'] = '';
     }
     
     if(empty($errors)) {
-        if(updatePage($id, $data)) {
-            $_SESSION['success'] = 'Página actualizada exitosamente';
-            header('Location: index.php');
-            exit;
-        } else {
-            $errors['__global'] = 'Error al actualizar la página';
+        try {
+            if(updatePage($id, $data)) {
+                $_SESSION['success'] = 'Página actualizada exitosamente';
+                header('Location: index.php');
+                exit;
+            } else {
+                $errors['__global'] = 'Error al actualizar la página';
+            }
+        } catch (PDOException $e) {
+            if($e->getCode() == 23000 && strpos($e->getMessage(), 'slug') !== false) {
+                $errors['slug'] = 'El slug ya existe. Por favor, elige otro.';
+            } else {
+                $errors['__global'] = 'Error al actualizar la página: ' . $e->getMessage();
+            }
         }
     }
     

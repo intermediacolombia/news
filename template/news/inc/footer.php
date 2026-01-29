@@ -34,7 +34,7 @@
 					<?php endif; ?>
 					
                 </div>
-				<?php include __DIR__ . '/../partials/visit-counter.php'; ?>
+				<?php //include __DIR__ . '/../partials/visit-counter.php'; ?>
             </div>
             <?php include __DIR__ . '/../partials/footer-categories.php'; ?>
             <?php include __DIR__ . '/../partials/tags.php'; ?>
