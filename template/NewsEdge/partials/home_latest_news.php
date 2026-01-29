@@ -51,8 +51,8 @@ $sidebarNews = db()->query($sqlSidebar)->fetchAll();
                             foreach ($sliderNews as $slide): 
                                 $imageUrl = !empty($slide['image']) ? img_url($slide['image']) : URLBASE . '/template/newsedge/img/banner/slide1.jpg';
                             ?>
-                                <img src="<​?= $imageUrl ?>" 
-                                     alt="<​?= htmlspecialchars($slide['title']) ?>" 
+                                <img src="<?= $imageUrl ?>" 
+                                     alt="<?= htmlspecialchars($slide['title']) ?>" 
                                      title="#slider-direction-<?= $slideIndex ?>" />
                             <?php 
                                 $slideIndex++;
