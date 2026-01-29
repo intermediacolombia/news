@@ -48,6 +48,20 @@
         </div>
     <?php endif; ?>
 
+    <!-- MARCA (INSTITUCIONAL) -->
+    <?php if (
+        isset($_SESSION["user_permissions"]) && (
+            in_array('Ver Institucional', $_SESSION["user_permissions"]) ||
+            in_array('Crear Institucional', $_SESSION["user_permissions"]) ||
+            in_array('Editar Institucional', $_SESSION["user_permissions"]) ||
+            in_array('Eliminar Institucional', $_SESSION["user_permissions"])
+        )
+    ): ?>
+        <a href="<?php echo URLBASE; ?>/admin/institutional/" onclick="closeSubmenus()">
+            <i class="fa-solid fa-building"></i> Marca
+        </a>
+    <?php endif; ?>
+
     <!-- PUBLICIDAD -->
     <?php if (isset($_SESSION["user_permissions"]) && in_array('Manejar Publicidad', $_SESSION["user_permissions"])): ?>
         <a href="<?php echo URLBASE; ?>/admin/ads/" onclick="closeSubmenus()">
