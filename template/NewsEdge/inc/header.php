@@ -67,37 +67,37 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 
     <!-- Normalize CSS -->
-    <link rel="stylesheet" href="<?php echo URLBASE; ?>/template/newsedge/css/normalize.css">
+    <link rel="stylesheet" href="<?php echo URLBASE; ?>/template/NewsEdge/css/normalize.css">
     <!-- Main CSS -->
-    <link rel="stylesheet" href="<?php echo URLBASE; ?>/template/newsedge/css/main.css">
+    <link rel="stylesheet" href="<?php echo URLBASE; ?>/template/NewsEdge/css/main.css">
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="<?php echo URLBASE; ?>/template/newsedge/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?php echo URLBASE; ?>/template/NewsEdge/css/bootstrap.min.css">
     <!-- Animate CSS -->
-    <link rel="stylesheet" href="<?php echo URLBASE; ?>/template/newsedge/css/animate.min.css">
+    <link rel="stylesheet" href="<?php echo URLBASE; ?>/template/NewsEdge/css/animate.min.css">
     <!-- Font-awesome CSS-->
-    <link rel="stylesheet" href="<?php echo URLBASE; ?>/template/newsedge/css/font-awesome.min.css">
+    <link rel="stylesheet" href="<?php echo URLBASE; ?>/template/NewsEdge/css/font-awesome.min.css">
     <!-- Owl Carousel CSS -->
-    <link rel="stylesheet" href="<?php echo URLBASE; ?>/template/newsedge/vendor/OwlCarousel/owl.carousel.min.css">
-    <link rel="stylesheet" href="<?php echo URLBASE; ?>/template/newsedge/vendor/OwlCarousel/owl.theme.default.min.css">
+    <link rel="stylesheet" href="<?php echo URLBASE; ?>/template/NewsEdge/vendor/OwlCarousel/owl.carousel.min.css">
+    <link rel="stylesheet" href="<?php echo URLBASE; ?>/template/NewsEdge/vendor/OwlCarousel/owl.theme.default.min.css">
     <!-- Main Menu CSS -->
-    <link rel="stylesheet" href="<?php echo URLBASE; ?>/template/newsedge/css/meanmenu.min.css">
+    <link rel="stylesheet" href="<?php echo URLBASE; ?>/template/NewsEdge/css/meanmenu.min.css">
     <!-- Nivo Slider CSS-->
-    <link rel="stylesheet" href="<?php echo URLBASE; ?>/template/newsedge/vendor/slider/css/nivo-slider.css" type="text/css" />
-    <link rel="stylesheet" href="<?php echo URLBASE; ?>/template/newsedge/vendor/slider/css/preview.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="<?php echo URLBASE; ?>/template/NewsEdge/vendor/slider/css/nivo-slider.css" type="text/css" />
+    <link rel="stylesheet" href="<?php echo URLBASE; ?>/template/NewsEdge/vendor/slider/css/preview.css" type="text/css" media="screen" />
     <!-- Magnific CSS -->
-    <link rel="stylesheet" type="text/css" href="<?php echo URLBASE; ?>/template/newsedge/css/magnific-popup.css">
+    <link rel="stylesheet" type="text/css" href="<?php echo URLBASE; ?>/template/NewsEdge/css/magnific-popup.css">
     <!-- Switch Style CSS -->
-    <link rel="stylesheet" href="<?php echo URLBASE; ?>/template/newsedge/css/hover-min.css">
+    <link rel="stylesheet" href="<?php echo URLBASE; ?>/template/NewsEdge/css/hover-min.css">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="<?php echo URLBASE; ?>/template/newsedge/style.css?<?php echo time(); ?>">
+    <link rel="stylesheet" href="<?php echo URLBASE; ?>/template/NewsEdge/style.css?<?php echo time(); ?>">
     <!-- For IE -->
-    <link rel="stylesheet" type="text/css" href="<?php echo URLBASE; ?>/template/newsedge/css/ie-only.css" />
+    <link rel="stylesheet" type="text/css" href="<?php echo URLBASE; ?>/template/NewsEdge/css/ie-only.css" />
     
     <!-- Font Awesome Kit -->
     <script src="https://kit.fontawesome.com/332d1c4e86.js" crossorigin="anonymous"></script>
     
     <!-- Modernizr Js -->
-    <script src="<?php echo URLBASE; ?>/template/newsedge/js/modernizr-2.8.3.min.js"></script>
+    <script src="<?php echo URLBASE; ?>/template/NewsEdge/js/modernizr-2.8.3.min.js"></script>
 
     <!-- Facebook SDK -->
     <div id="fb-root"></div>

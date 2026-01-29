@@ -214,35 +214,35 @@
 <!-- Wrapper End -->
 
 <!-- jQuery -->
-<script src="<?= URLBASE ?>/template/newsedge/js/jquery-2.2.4.min.js" type="text/javascript"></script>
+<script src="<?= URLBASE ?>/template/NewsEdge/js/jquery-2.2.4.min.js" type="text/javascript"></script>
 <!-- Plugins js -->
-<script src="<?= URLBASE ?>/template/newsedge/js/plugins.js" type="text/javascript"></script>
+<script src="<?= URLBASE ?>/template/NewsEdge/js/plugins.js" type="text/javascript"></script>
 <!-- Popper js -->
-<script src="<?= URLBASE ?>/template/newsedge/js/popper.js" type="text/javascript"></script>
+<script src="<?= URLBASE ?>/template/NewsEdge/js/popper.js" type="text/javascript"></script>
 <!-- Bootstrap js -->
-<script src="<?= URLBASE ?>/template/newsedge/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="<?= URLBASE ?>/template/NewsEdge/js/bootstrap.min.js" type="text/javascript"></script>
 <!-- WOW JS -->
-<script src="<?= URLBASE ?>/template/newsedge/js/wow.min.js"></script>
+<script src="<?= URLBASE ?>/template/NewsEdge/js/wow.min.js"></script>
 <!-- Owl Carousel JS -->
-<script src="<?= URLBASE ?>/template/newsedge/vendor/OwlCarousel/owl.carousel.min.js" type="text/javascript"></script>
+<script src="<?= URLBASE ?>/template/NewsEdge/vendor/OwlCarousel/owl.carousel.min.js" type="text/javascript"></script>
 <!-- Meanmenu Js -->
-<script src="<?= URLBASE ?>/template/newsedge/js/jquery.meanmenu.min.js" type="text/javascript"></script>
+<script src="<?= URLBASE ?>/template/NewsEdge/js/jquery.meanmenu.min.js" type="text/javascript"></script>
 <!-- Scroll Up js -->
-<script src="<?= URLBASE ?>/template/newsedge/js/jquery.scrollUp.min.js" type="text/javascript"></script>
+<script src="<?= URLBASE ?>/template/NewsEdge/js/jquery.scrollUp.min.js" type="text/javascript"></script>
 <!-- Counter Up js -->
-<script src="<?= URLBASE ?>/template/newsedge/js/jquery.counterup.min.js"></script>
-<script src="<?= URLBASE ?>/template/newsedge/js/waypoints.min.js"></script>
+<script src="<?= URLBASE ?>/template/NewsEdge/js/jquery.counterup.min.js"></script>
+<script src="<?= URLBASE ?>/template/NewsEdge/js/waypoints.min.js"></script>
 <!-- Nivo slider js -->
-<script src="<?= URLBASE ?>/template/newsedge/vendor/slider/js/jquery.nivo.slider.js" type="text/javascript"></script>
-<script src="<?= URLBASE ?>/template/newsedge/vendor/slider/home.js" type="text/javascript"></script>
+<script src="<?= URLBASE ?>/template/NewsEdge/vendor/slider/js/jquery.nivo.slider.js" type="text/javascript"></script>
+<script src="<?= URLBASE ?>/template/NewsEdge/vendor/slider/home.js" type="text/javascript"></script>
 <!-- Isotope js -->
-<script src="<?= URLBASE ?>/template/newsedge/js/isotope.pkgd.min.js" type="text/javascript"></script>
+<script src="<?= URLBASE ?>/template/NewsEdge/js/isotope.pkgd.min.js" type="text/javascript"></script>
 <!-- Magnific Popup -->
-<script src="<?= URLBASE ?>/template/newsedge/js/jquery.magnific-popup.min.js"></script>
+<script src="<?= URLBASE ?>/template/NewsEdge/js/jquery.magnific-popup.min.js"></script>
 <!-- Ticker Js -->
-<script src="<?= URLBASE ?>/template/newsedge/js/ticker.js" type="text/javascript"></script>
+<script src="<?= URLBASE ?>/template/NewsEdge/js/ticker.js" type="text/javascript"></script>
 <!-- Custom Js -->
-<script src="<?= URLBASE ?>/template/newsedge/js/main.js?<?= time() ?>" type="text/javascript"></script>
+<script src="<?= URLBASE ?>/template/NewsEdge/js/main.js?<?= time() ?>" type="text/javascript"></script>
 
 <!-- Custom Footer Code -->
 <?= $sys['code_footer'] ?? '' ?>
