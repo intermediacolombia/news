@@ -15,7 +15,6 @@ function oldv($key, $default=''){
   global $old;
   return htmlspecialchars($old[$key] ?? $default, ENT_QUOTES, 'UTF-8');
 }
-
 $oldStatus = $old['status'] ?? 'draft';
 $oldType   = $old['page_type'] ?? 'general';
 ?>
