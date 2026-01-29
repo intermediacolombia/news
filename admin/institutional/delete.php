@@ -1,6 +1,5 @@
 <?php
 require_once __DIR__ . '/../../inc/config.php';
-require_once __DIR__ . '/../../inc/db.php';
 require_once __DIR__ . '/../login/session.php';
 $permisopage = 'Eliminar Institucional';
 require_once __DIR__ . '/../login/restriction.php';
@@ -21,11 +20,9 @@ if(!$id) {
 
 // Obtener datos de la página para eliminar imagen
 $sql = "SELECT image FROM institutional_pages WHERE id = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param('i', $id);
-$stmt->execute();
-$result = $stmt->get_result();
-$page = $result->fetch_assoc();
+$stmt = db()->prepare($sql);
+$stmt->execute([$id]);
+$page = $stmt->fetch();
 
 if(!$page) {
     echo json_encode(['success' => false, 'message' => 'Página no encontrada']);
@@ -34,10 +31,9 @@ if(!$page) {
 
 // Eliminar página
 $deleteSql = "DELETE FROM institutional_pages WHERE id = ?";
-$deleteStmt = $conn->prepare($deleteSql);
-$deleteStmt->bind_param('i', $id);
+$deleteStmt = db()->prepare($deleteSql);
 
-if($deleteStmt->execute()) {
+if($deleteStmt->execute([$id])) {
     // Eliminar imagen física si existe
     if(!empty($page['image'])) {
         $imagePath = __DIR__ . '/../../' . $page['image'];
