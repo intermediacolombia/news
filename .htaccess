@@ -1,29 +1,30 @@
 ## Evita conflictos
 Options -MultiViews
-
 RewriteEngine On
 RewriteBase /
+
+# ========================================
+# REGLAS ESPECÍFICAS PRIMERO (antes de index.php)
+# ========================================
+
+# URLs limpias para institucional (DEBE IR ANTES de la regla general)
+RewriteRule ^institucional/?$ institucional.php [L,QSA]
+RewriteRule ^institucional/([a-zA-Z0-9-]+)/?$ institucional.php?page=$1 [L,QSA]
+
+# ========================================
+# REGLAS GENERALES DESPUÉS
+# ========================================
 
 # Dejar pasar archivos y carpetas reales (css, js, imágenes, php, etc.)
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
 
-# Redirigir todo a index.php
+# Redirigir todo lo demás a index.php (ESTA REGLA VA AL FINAL)
 RewriteRule . /index.php [L]
 
-# URLs limpias
-RewriteRule ^institutional/?$ institutional.php [L,QSA]
-RewriteRule ^institutional/([a-zA-Z0-9-]+)/?$ institutional.php?page=$1 [L,QSA]
-```
-
-**URLs resultantes:**
-```
-/institucional
-/institucional/quienes-somos
-
 # php -- BEGIN cPanel-generated handler, do not edit
-# Set the “ea-php80” package as the default “PHP” programming language.
+# Set the "ea-php80" package as the default "PHP" programming language.
 <IfModule mime_module>
   AddHandler application/x-httpd-ea-php80___lsphp .php .php8 .phtml
 </IfModule>
