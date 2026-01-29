@@ -1,11 +1,38 @@
 <?php
-/* ===== Helper para truncar texto ===== */
-function truncate_text(string $text, int $maxLength = 80): string {
-    $text = htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
-    if (mb_strlen($text) <= $maxLength) {
-        return $text;
+/* ===== Helper para generar URL de imágenes ===== */
+if (!function_exists('img_url')) {
+    function img_url(?string $path): string {
+        $path = trim((string)$path);
+
+        // Fallback si viene vacío
+        if ($path === '') {
+            return URLBASE . '/template/NewsEdge/img/banner/slide1.jpg';
+        }
+
+        // Si ya es URL absoluta (http/https) la devolvemos tal cual
+        if (preg_match('~^https?://~i', $path)) {
+            return $path;
+        }
+
+        // Si ya viene empezando con / lo pegamos a URLBASE
+        if (strpos($path, '/') === 0) {
+            return URLBASE . $path;
+        }
+
+        // Caso típico: ruta relativa guardada en DB (ej: uploads/..., img/..., etc.)
+        return URLBASE . '/' . $path;
     }
-    return mb_substr($text, 0, $maxLength) . '...';
+}
+
+/* ===== Helper para truncar texto ===== */
+if (!function_exists('truncate_text')) {
+    function truncate_text(string $text, int $maxLength = 80): string {
+        $text = htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
+        if (mb_strlen($text) <= $maxLength) {
+            return $text;
+        }
+        return mb_substr($text, 0, $maxLength) . '...';
+    }
 }
 
 /* ===== Consulta: Noticias destacadas para el slider (últimas 3) ===== */
@@ -49,10 +76,10 @@ $sidebarNews = db()->query($sqlSidebar)->fetchAll();
                             <?php 
                             $slideIndex = 1;
                             foreach ($sliderNews as $slide): 
-                                $imageUrl = !empty($slide['image']) ? img_url($slide['image']) : URLBASE . '/template/newsedge/img/banner/slide1.jpg';
+                                $imageUrl = img_url($slide['image']);
                             ?>
-                                <img src="<?= $imageUrl ?>" 
-                                     alt="<?= htmlspecialchars($slide['title']) ?>" 
+                                <img src="<​?= $imageUrl ?>" 
+                                     alt="<​?= htmlspecialchars($slide['title']) ?>" 
                                      title="#slider-direction-<?= $slideIndex ?>" />
                             <?php 
                                 $slideIndex++;
@@ -117,13 +144,13 @@ $sidebarNews = db()->query($sqlSidebar)->fetchAll();
                 <div class="item-box-light-md-less30 ie-full-width">
                     <div class="row">
                         <?php foreach ($sidebarNews as $sideNews): 
-                            $sideImageUrl = !empty($sideNews['image']) ? img_url($sideNews['image']) : URLBASE . '/template/newsedge/img/news/news309.jpg';
+                            $sideImageUrl = img_url($sideNews['image']);
                         ?>
                         <div class="media mb-30 col-xl-12 col-lg-6 col-md-6 col-sm-12">
                             <a class="img-opacity-hover" 
                                href="<?= URLBASE ?>/noticias/post/<?= htmlspecialchars($sideNews['slug']) ?>">
-                                <img src="<​?= $sideImageUrl ?>" 
-                                     alt="<​?= htmlspecialchars($sideNews['title']) ?>" 
+                                <img src="<?= $sideImageUrl ?>" 
+                                     alt="<?= htmlspecialchars($sideNews['title']) ?>" 
                                      class="img-fluid"
                                      style="max-height: 120px; object-fit: cover; width: 100%;">
                             </a>
