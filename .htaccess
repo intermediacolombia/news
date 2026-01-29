@@ -4,10 +4,10 @@ RewriteEngine On
 RewriteBase /
 
 # ========================================
-# REGLAS ESPECÍFICAS PRIMERO (antes de index.php)
+# REGLAS ESPECÍFICAS PRIMERO
 # ========================================
 
-# URLs limpias para institucional (DEBE IR ANTES de la regla general)
+# URLs limpias para institucional (con 'c')
 RewriteRule ^institucional/?$ institucional.php [L,QSA]
 RewriteRule ^institucional/([a-zA-Z0-9-]+)/?$ institucional.php?page=$1 [L,QSA]
 
@@ -15,16 +15,15 @@ RewriteRule ^institucional/([a-zA-Z0-9-]+)/?$ institucional.php?page=$1 [L,QSA]
 # REGLAS GENERALES DESPUÉS
 # ========================================
 
-# Dejar pasar archivos y carpetas reales (css, js, imágenes, php, etc.)
+# Dejar pasar archivos y carpetas reales
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
 
-# Redirigir todo lo demás a index.php (ESTA REGLA VA AL FINAL)
+# Redirigir todo lo demás a index.php
 RewriteRule . /index.php [L]
 
 # php -- BEGIN cPanel-generated handler, do not edit
-# Set the "ea-php80" package as the default "PHP" programming language.
 <IfModule mime_module>
   AddHandler application/x-httpd-ea-php80___lsphp .php .php8 .phtml
 </IfModule>
