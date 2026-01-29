@@ -91,13 +91,24 @@ try {
             LEFT JOIN usuarios u ON ip.created_by = u.id
             WHERE {$where}
             ORDER BY ip.{$orderColumn} {$orderDir}
-            LIMIT ? OFFSET ?";
-    
-    $params[] = $length;
-    $params[] = $start;
+            LIMIT :limit OFFSET :offset";
     
     $stmt = db()->prepare($sql);
-    $stmt->execute($params);
+    
+    // Bind de parámetros de búsqueda (si existen)
+    $paramIndex = 1;
+    if(!empty($searchValue)) {
+        $searchParam = "%{$searchValue}%";
+        $stmt->bindValue($paramIndex++, $searchParam, PDO::PARAM_STR);
+        $stmt->bindValue($paramIndex++, $searchParam, PDO::PARAM_STR);
+        $stmt->bindValue($paramIndex++, $searchParam, PDO::PARAM_STR);
+    }
+    
+    // Bind de LIMIT y OFFSET como integers
+    $stmt->bindValue(':limit', $length, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', $start, PDO::PARAM_INT);
+    
+    $stmt->execute();
     $results = $stmt->fetchAll();
     
     $data = [];
