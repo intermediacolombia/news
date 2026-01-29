@@ -1,6 +1,3 @@
-
-
-
 <div class="container-fluid sticky-top px-0">
 
 <?php include __DIR__ . '/../partials/header-bar.php'; ?><!-- Topbar Start -->
@@ -50,7 +47,36 @@
                             </div>
                         </div>
 
-                        <a href="<?= URLBASE ?>/about-us" class="nav-item nav-link">Nosotros</a>
+                        <?php
+                        // Páginas institucionales dinámicas
+                        $stInst = db()->query("
+                            SELECT title, slug, page_type
+                            FROM institutional_pages
+                            WHERE status = 'published'
+                            ORDER BY display_order ASC, title ASC
+                        ");
+                        $institucionalPages = $stInst->fetchAll(PDO::FETCH_ASSOC);
+                        ?>
+
+                        <div class="nav-item dropdown">
+                            <a href="<?= URLBASE ?>/institucional" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                                Nosotros
+                            </a>
+                            <div class="dropdown-menu m-0 bg-secondary rounded-0">
+                                <?php if(!empty($institucionalPages)): ?>
+                                    <?php foreach ($institucionalPages as $instPage): ?>
+                                        <a href="<?= URLBASE ?>/institucional/<?= htmlspecialchars($instPage['slug']) ?>" class="dropdown-item text-white">
+                                            <?= htmlspecialchars($instPage['title']) ?>
+                                        </a>
+                                    <?php endforeach; ?>
+                                    <div class="dropdown-divider bg-light"></div>
+                                <?php endif; ?>
+                                <a href="<?= URLBASE ?>/institucional" class="dropdown-item text-white">
+                                    <i class="fa fa-list me-2"></i>Ver todas
+                                </a>
+                            </div>
+                        </div>
+
                         <a href="<?= URLBASE ?>/contact" class="nav-item nav-link">Contacto</a>
                     </div>
 
@@ -91,4 +117,3 @@
     </div>
 </div>
 <!-- Modal Search End -->
-
