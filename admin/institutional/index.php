@@ -128,6 +128,27 @@ require_once __DIR__ . '/../inc/flash_helpers.php';
 <script>
 $(document).ready(function(){
   
+  // Función para mostrar alertas de Bootstrap dinámicamente
+  function showAlert(message, type = 'success') {
+    // Tipos: success, danger, warning, info
+    const alertHtml = `
+      <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    `;
+    
+    // Insertar al inicio del container-fluid
+    $('.container-fluid').prepend(alertHtml);
+    
+    // Auto-cerrar después de 5 segundos
+    setTimeout(function() {
+      $('.alert').fadeOut('slow', function() {
+        $(this).remove();
+      });
+    }, 5000);
+  }
+  
   // Inicializar DataTable con server-side processing
   const table = $('#institutionalTable').DataTable({
     processing: true,
@@ -222,14 +243,11 @@ $(document).ready(function(){
             $('.chkPage').prop('checked', false);
             toggleMassActions();
             
-            // Mostrar mensaje de éxito
-            Swal.fire({
-              icon: 'success',
-              title: '¡Listo!',
-              text: response.message || 'Acción completada correctamente',
-              timer: 2000,
-              showConfirmButton: false
-            });
+            // Cerrar SweetAlert
+            Swal.close();
+            
+            // Mostrar alerta de Bootstrap
+            showAlert(response.message || 'Acción completada correctamente', 'success');
           })
           .fail(function(xhr) {
             let errorMsg = 'Error al procesar la acción';
@@ -282,14 +300,11 @@ $(document).ready(function(){
             // Recargar tabla
             table.ajax.reload();
             
-            // Mostrar mensaje de éxito
-            Swal.fire({
-              icon: 'success',
-              title: '¡Eliminado!',
-              text: response.message || 'Página eliminada correctamente',
-              timer: 2000,
-              showConfirmButton: false
-            });
+            // Cerrar SweetAlert
+            Swal.close();
+            
+            // Mostrar alerta de Bootstrap
+            showAlert(response.message || 'Página eliminada correctamente', 'success');
           })
           .fail(function(xhr) {
             let errorMsg = 'Error al eliminar la página';
