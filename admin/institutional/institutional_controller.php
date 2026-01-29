@@ -277,7 +277,7 @@ function handleImageUpload($file) {
     $destino = $uploadDir . $fileName;
     
     if(move_uploaded_file($file['tmp_name'], $destino)) {
-        return ['success' => true, 'path' => 'public/images/institutional/' . $fileName];
+        return ['success' => true, 'path' => '/public/images/institutional/' . $fileName];
     }
     
     return ['success' => false, 'error' => 'Error al guardar el archivo'];
