@@ -28,9 +28,9 @@ $latestNews = db()->query($sqlLatest)->fetchAll();
                 <div class="media media-none--md mb-30">
                     <!-- Imagen -->
                     <div class="position-relative width-40">
-                        <a href="<​?= $postUrl ?>" class="img-opacity-hover">
-                            <img src="<​?= img_url($news['image']) ?>" 
-                                 alt="<​?= htmlspecialchars($news['title']) ?>" 
+                        <a href="<?= $postUrl ?>" class="img-opacity-hover">
+                            <img src="<?= img_url($news['image']) ?>" 
+                                 alt="<?= htmlspecialchars($news['title']) ?>" 
                                  class="img-fluid"
                                  style="height: 150px; object-fit: cover;">
                         </a>
@@ -47,7 +47,7 @@ $latestNews = db()->query($sqlLatest)->fetchAll();
                             <ul>
                                 <li>
                                     <span>por</span>
-                                    <a href="<​?= $postUrl ?>">
+                                    <a href="<?= $postUrl ?>">
                                         <?= htmlspecialchars($news['author'] ?? 'Admin') ?>
                                     </a>
                                 </li>
@@ -60,7 +60,7 @@ $latestNews = db()->query($sqlLatest)->fetchAll();
                             </ul>
                         </div>
                         <h3 class="title-semibold-dark size-lg mb-15">
-                            <a href="<​?= $postUrl ?>">
+                            <a href="<?= $postUrl ?>">
                                 <?= truncate_text($news['title'], 80) ?>
                             </a>
                         </h3>
