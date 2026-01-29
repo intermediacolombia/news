@@ -56,20 +56,20 @@ $isotopePosts = db()->query($sqlIsotope)->fetchAll();
                     ?>
                         <div class="col-lg-4 col-md-6 col-sm-6 col-12 <?= $itemClass ?>">
                             <div class="img-overlay-70 img-scale-animate mb-10">
-                                <img src="<​?= img_url($post['image']) ?>" alt="<​?= htmlspecialchars($post['title']) ?>" class="img-fluid width-100" style="height: 250px; object-fit: cover;">
+                                <img src="<?= img_url($post['image']) ?>" alt="<?= htmlspecialchars($post['title']) ?>" class="img-fluid width-100" style="height: 250px; object-fit: cover;">
                                 
                                 <div class="topic-box-top-sm">
                                     <div class="topic-box-sm color-cod-gray mb-20">
                                         <?= htmlspecialchars($post['category_name'] ?? 'Noticia') ?>
-                                    </div>
-                                </div>
+                                  </div>
+                              </div>
 
                                 <div class="mask-content-xs">
                                     <div class="post-date-light d-none d-md-block">
                                         <ul>
                                             <li>
                                                 <span>por</span>
-                                                <a href="<​?= $postUrl ?>"><?= htmlspecialchars($post['author'] ?? 'Admin') ?></a>
+                                                <a href="<?= $postUrl ?>"><?= htmlspecialchars($post['author'] ?? 'Admin') ?></a>
                                             </li>
                                             <li>
                                                 <span>
@@ -80,12 +80,12 @@ $isotopePosts = db()->query($sqlIsotope)->fetchAll();
                                         </ul>
                                     </div>
                                     <h3 class="title-medium-light size-lg">
-                                        <a href="<​?= $postUrl ?>">
+                                        <a href="<?= $postUrl ?>">
                                             <?= truncate_text($post['title'], 70) ?>
                                         </a>
                                     </h3>
                                 </div>
-                            </div>
+                          </div>
                         </div>
                     <?php endforeach; ?>
                 </div>
