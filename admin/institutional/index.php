@@ -199,10 +199,51 @@ $(document).ready(function(){
       title, text,
       showCancelButton: true,
       confirmButtonText: 'Sí, continuar',
+      cancelButtonText: 'Cancelar',
       confirmButtonColor: color
     }).then(res => {
       if (res.isConfirmed) {
-        $.post('bulk_actions.php', {action, ids}, () => table.ajax.reload());
+        // Mostrar loading
+        Swal.fire({
+          title: 'Procesando...',
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+        
+        $.post('bulk_actions.php', {action, ids})
+          .done(function(response) {
+            // Recargar tabla
+            table.ajax.reload();
+            
+            // Desmarcar checkboxes
+            $('#selectAll').prop('checked', false);
+            $('.chkPage').prop('checked', false);
+            toggleMassActions();
+            
+            // Mostrar mensaje de éxito
+            Swal.fire({
+              icon: 'success',
+              title: '¡Listo!',
+              text: response.message || 'Acción completada correctamente',
+              timer: 2000,
+              showConfirmButton: false
+            });
+          })
+          .fail(function(xhr) {
+            let errorMsg = 'Error al procesar la acción';
+            try {
+              const response = JSON.parse(xhr.responseText);
+              errorMsg = response.message || errorMsg;
+            } catch(e) {}
+            
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: errorMsg
+            });
+          });
       }
     });
   }
@@ -227,7 +268,42 @@ $(document).ready(function(){
       confirmButtonColor:'#d33'
     }).then(res => {
       if(res.isConfirmed) {
-        $.post('<?= $url ?>/admin/institutional/delete.php', {id}, () => table.ajax.reload());
+        // Mostrar loading
+        Swal.fire({
+          title: 'Eliminando...',
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+        
+        $.post('<?= $url ?>/admin/institutional/delete.php', {id})
+          .done(function(response) {
+            // Recargar tabla
+            table.ajax.reload();
+            
+            // Mostrar mensaje de éxito
+            Swal.fire({
+              icon: 'success',
+              title: '¡Eliminado!',
+              text: response.message || 'Página eliminada correctamente',
+              timer: 2000,
+              showConfirmButton: false
+            });
+          })
+          .fail(function(xhr) {
+            let errorMsg = 'Error al eliminar la página';
+            try {
+              const response = JSON.parse(xhr.responseText);
+              errorMsg = response.message || errorMsg;
+            } catch(e) {}
+            
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: errorMsg
+            });
+          });
       }
     });
   });
