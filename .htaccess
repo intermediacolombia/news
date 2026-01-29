@@ -13,8 +13,8 @@ RewriteRule ^ - [L]
 RewriteRule . /index.php [L]
 
 # URLs limpias
-RewriteRule ^institucional/?$ institutional.php [L,QSA]
-RewriteRule ^institucional/([a-zA-Z0-9-]+)/?$ institutional.php?page=$1 [L,QSA]
+RewriteRule ^institutional/?$ institutional.php [L,QSA]
+RewriteRule ^institutional/([a-zA-Z0-9-]+)/?$ institutional.php?page=$1 [L,QSA]
 ```
 
 **URLs resultantes:**
