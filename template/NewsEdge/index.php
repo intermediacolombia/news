@@ -32,6 +32,8 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
 // =======================
 
 ?>
+
+<?php include __DIR__ . '/partials/slidebar.php'; ?>
  
             <!-- News Feed Area End Here -->
             <!-- Slider Area Start Here -->
