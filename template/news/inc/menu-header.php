@@ -91,10 +91,38 @@ $cats = $st->fetchAll(PDO::FETCH_ASSOC);
   </div>
 </div>
 
+					<?php
+                    // Páginas institucionales dinámicas
+                    $stInst = db()->query("
+                        SELECT title, slug, page_type
+                        FROM institutional_pages
+                        WHERE status = 'published'
+                        ORDER BY display_order ASC, title ASC
+                    ");
+                    $institucionalPages = $stInst->fetchAll(PDO::FETCH_ASSOC);
+                    ?>
+
+                    <div class="nav-item dropdown">
+                        <a href="<?= URLBASE ?>/institucional" class="nav-link dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown">
+                            NOSOTROS
+                        </a>
+                        <div class="dropdown-menu rounded-0 m-0">
+                            <?php if(!empty($institucionalPages)): ?>
+                                <?php foreach ($institucionalPages as $instPage): ?>
+                                    <a href="<?= URLBASE ?>/institucional/<?= htmlspecialchars($instPage['slug']) ?>" class="dropdown-item">
+                                        <?= htmlspecialchars($instPage['title']) ?>
+                                    </a>
+                                <?php endforeach; ?>
+                                <div class="dropdown-divider"></div>
+                            <?php endif; ?>
+                            <a href="<?= URLBASE ?>/institucional" class="dropdown-item">
+                                <i class="fa fa-list mr-2"></i>Ver todas
+                            </a>
+                        </div>
+                    </div>
 					
 					
 					
-                    <a href="<?= URLBASE ?>/about-us" class="nav-item nav-link">NOSOTROS</a>
                     <a href="<?= URLBASE ?>/contact" class="nav-item nav-link">CONTACTO</a>
                 </div>
 				
@@ -117,4 +145,3 @@ $cats = $st->fetchAll(PDO::FETCH_ASSOC);
         </nav>
     </div>
     <!-- Navbar End -->
-
