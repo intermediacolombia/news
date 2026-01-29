@@ -1,129 +1,10 @@
 <?php
 /**
- * Página dinámica para contenido institucional
- * Ubicación: /institucional.php o /marca.php
- * 
- * Uso:
- * - institucional.php           → Muestra listado de todas las páginas
- * - institucional.php?page=slug → Muestra página específica
+ * Template: Listado de páginas institucionales
+ * Ubicación: /template/TU_TEMA/institucional-list.php
  */
 
-require_once __DIR__ . '/inc/config.php';
-
-// Obtener el slug de la URL
-$slug = filter_input(INPUT_GET, 'page', FILTER_SANITIZE_STRING);
-
-// ========================================
-// CASO 1: Página individual
-// ========================================
-if(!empty($slug)) {
-    
-    // Cargar página específica
-    $sql = "SELECT * FROM institutional_pages WHERE slug = ? AND status = 'published'";
-    $stmt = db()->prepare($sql);
-    $stmt->execute([$slug]);
-    $page = $stmt->fetch();
-    
-    if(!$page) {
-        // Página no encontrada
-        header("HTTP/1.0 404 Not Found");
-        include __DIR__ . '/404.php';
-        exit;
-    }
-    
-    // =======================
-    // Variables SEO dinámicas
-    // =======================
-    $page_title       = ($page['seo_title'] ?: $page['title']) . " | " . NOMBRE_SITIO;
-    $page_description = $page['seo_description'] ?: substr(strip_tags($page['content']), 0, 160);
-    $page_keywords    = $page['seo_keywords'] ?: NOMBRE_SITIO . ", " . $page['title'];
-    $page_author      = NOMBRE_SITIO;
-    
-    // Imagen SEO
-    $page_image = rtrim(URLBASE, '/') . FAVICON;
-    if (!empty($page['image'])) {
-        $imagePath = $page['image'];
-        $imagePath = ($imagePath[0] === '/') ? $imagePath : '/' . $imagePath;
-        $page_image = rtrim(URLBASE, '/') . $imagePath;
-    }
-    
-    // Canonical
-    $currentPath    = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-    $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
-    
-    // Breadcrumb
-    $page_breadcrumb = [
-        ['url' => URLBASE, 'title' => 'Inicio'],
-        ['url' => URLBASE . '/institucional.php', 'title' => 'Institucional'],
-        ['url' => '', 'title' => $page['title']]
-    ];
-    
-    // Incluir header
-    include __DIR__ . '/partials/header.php';
-    ?>
-    
-    <div class="container-fluid py-5">
-        <div class="container py-5">
-            <div class="container-fluid py-3">
-                <div class="container-bk">
-                    <div class="row">
-                        <div class="col-lg-8">
-                            <div class="bg-light" style="padding: 50px;">
-                                
-                                <!-- Botón volver -->
-                                <div class="mb-3">
-                                    <a href="<?= URLBASE ?>/institucional.php" class="btn btn-sm btn-outline-secondary">
-                                        <i class="fa fa-arrow-left"></i> Volver al listado
-                                    </a>
-                                </div>
-                                
-                                <!-- Título de la página -->
-                                <h1 class="mb-4"><?= htmlspecialchars($page['title']) ?></h1>
-                                
-                                <!-- Imagen destacada -->
-                                <?php if(!empty($page['image'])): ?>
-                                    <div class="mb-4">
-                                        <img src="<?= htmlspecialchars(URLBASE . $page['image']) ?>" 
-                                             alt="<?= htmlspecialchars($page['title']) ?>"
-                                             class="img-fluid rounded"
-                                             style="width: 100%; max-height: 400px; object-fit: cover;">
-                                    </div>
-                                <?php endif; ?>
-                                
-                                <!-- Contenido -->
-                                <div class="content">
-                                    <?= $page['content'] ?>
-                                </div>
-                                
-                                <!-- Fecha de actualización -->
-                                <div class="mt-5 pt-3 border-top text-muted small">
-                                    <i class="fa fa-calendar"></i> 
-                                    Última actualización: <?= date('d/m/Y', strtotime($page['updated_at'])) ?>
-                                </div>
-                                
-                            </div>
-                        </div>
-                        
-                        <!-- Sidebar -->
-                        <div class="col-lg-4">
-                            <?php include __DIR__ . '/partials/sidebar.php'; ?>            
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <?php
-    include __DIR__ . '/partials/footer.php';
-    exit;
-}
-
-// ========================================
-// CASO 2: Listado de páginas
-// ========================================
-
-// Cargar todas las páginas publicadas
+// Cargar todas las páginas institucionales publicadas
 $sql = "SELECT id, title, slug, page_type, image, seo_description, display_order 
         FROM institutional_pages 
         WHERE status = 'published' 
@@ -142,11 +23,7 @@ $page_image       = rtrim(URLBASE, '/') . FAVICON;
 
 $currentPath    = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
-
-$page_breadcrumb = [
-    ['url' => URLBASE, 'title' => 'Inicio'],
-    ['url' => '', 'title' => 'Información Institucional']
-];
+// =======================
 
 // Nombres de tipos
 $typeNames = [
@@ -172,8 +49,6 @@ $typeIcons = [
     'values' => 'fa-star',
     'policies' => 'fa-file-contract'
 ];
-
-include __DIR__ . '/partials/header.php';
 ?>
 
 <div class="container-fluid py-5">
@@ -228,7 +103,7 @@ include __DIR__ . '/partials/header.php';
                                                     <?= htmlspecialchars(substr($excerpt, 0, 120)) ?>...
                                                 </p>
                                                 
-                                                <a href="<?= URLBASE ?>/institucional.php?page=<?= urlencode($page['slug']) ?>" 
+                                                <a href="<?= URLBASE ?>/institucional/<?= urlencode($page['slug']) ?>" 
                                                    class="btn btn-primary">
                                                     Leer más <i class="fa fa-arrow-right"></i>
                                                 </a>
@@ -253,7 +128,3 @@ include __DIR__ . '/partials/header.php';
         </div>
     </div>
 </div>
-
-<?php
-include __DIR__ . '/partials/footer.php';
-?>
