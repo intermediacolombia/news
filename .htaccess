@@ -2,14 +2,17 @@
 Options -MultiViews
 RewriteEngine On
 RewriteBase /
+
 # Dejar pasar archivos y carpetas reales (css, js, imágenes, php, etc.)
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
-# Redirigir todo a index.php
+
+# Redirigir todo a index.php (que ahora maneja /institucional/)
 RewriteRule . /index.php [L]
+
 # php -- BEGIN cPanel-generated handler, do not edit
-# Set the “ea-php80” package as the default “PHP” programming language.
+# Set the "ea-php80" package as the default "PHP" programming language.
 <IfModule mime_module>
   AddHandler application/x-httpd-ea-php80___lsphp .php .php8 .phtml
 </IfModule>
