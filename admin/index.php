@@ -93,7 +93,7 @@ require_once __DIR__ . '/login/session.php';
   <?php require_once __DIR__ . '/inc/menu.php'; ?>
 	
 	<?php
-session_start();
+
 if (isset($_SESSION['error'])): ?>
   <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0 mt-3 mx-auto" role="alert" style="max-width:600px;">
     <i class="bi bi-exclamation-triangle-fill me-2"></i>

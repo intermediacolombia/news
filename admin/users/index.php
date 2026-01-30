@@ -2,7 +2,6 @@
 include('../login/session.php'); 
 $permisopage = 'Ver y Editar Usuarios';
 include('../login/restriction.php');
-session_start();
 
 require_once __DIR__ . '/../../inc/config.php';
 
@@ -55,6 +54,70 @@ try {
     .no-click {
       cursor: default !important;
     }
+    
+    /* Estilos para imagen de perfil */
+    .profile-img-table {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #ddd;
+    }
+    
+    .profile-img-preview {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #007bff;
+      margin: 10px auto;
+      display: block;
+    }
+    
+    .default-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    
+    .file-upload-wrapper {
+      position: relative;
+      overflow: hidden;
+      display: inline-block;
+      width: 100%;
+    }
+    
+    .file-upload-wrapper input[type=file] {
+      position: absolute;
+      left: -9999px;
+    }
+    
+    .file-upload-label {
+      display: block;
+      padding: 8px 15px;
+      background-color: #007bff;
+      color: white;
+      text-align: center;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    
+    .file-upload-label:hover {
+      background-color: #0056b3;
+    }
+    
+    .remove-image-btn {
+      margin-top: 10px;
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -92,11 +155,13 @@ try {
   <table id="formularios" class="table table-striped table-bordered">
     <thead>
       <tr>
+        <th>Foto</th>
         <th>Nombre de Usuario</th>
         <th>Nombre</th>
         <th>Apellido</th>
         <th>Correo</th>
         <th>Rol</th>
+        <th>Columnista</th>
         <th>Estado</th>
         <th>Acción</th>
       </tr>
@@ -111,12 +176,31 @@ try {
               data-apellido="<?= htmlspecialchars($row['apellido']) ?>"
               data-correo="<?= htmlspecialchars($row['correo']) ?>"
               data-rol="<?= htmlspecialchars($row['rol_id']) ?>"
-              data-estado="<?= htmlspecialchars($row['estado']) ?>">
+              data-estado="<?= htmlspecialchars($row['estado']) ?>"
+              data-columnista="<?= htmlspecialchars($row['es_columnista'] ?? 0) ?>"
+              data-foto="<?= htmlspecialchars($row['foto_perfil'] ?? '') ?>">
+            <td class="text-center">
+              <?php if (!empty($row['foto_perfil']) && file_exists('../../' . $row['foto_perfil'])): ?>
+                <img src="<?= $url . '/' . htmlspecialchars($row['foto_perfil']) ?>" 
+                     alt="Foto" class="profile-img-table">
+              <?php else: 
+                $iniciales = strtoupper(substr($row['nombre'], 0, 1) . substr($row['apellido'], 0, 1));
+              ?>
+                <div class="default-avatar"><?= $iniciales ?></div>
+              <?php endif; ?>
+            </td>
             <td><?= htmlspecialchars($row['username']) ?></td>
             <td><?= htmlspecialchars($row['nombre']) ?></td>
             <td><?= htmlspecialchars($row['apellido']) ?></td>
             <td><?= htmlspecialchars($row['correo']) ?></td>
             <td><?= htmlspecialchars($row['rol'] ?? 'Sin Rol') ?></td>
+            <td class="text-center">
+              <?php if ((int)($row['es_columnista'] ?? 0) === 1): ?>
+                <span class="badge bg-info">Sí</span>
+              <?php else: ?>
+                <span class="badge bg-secondary">No</span>
+              <?php endif; ?>
+            </td>
             <td>
               <?php if ((int)$row['estado'] === 0): ?>
                 <span class="badge bg-success">Activo</span>
@@ -132,7 +216,7 @@ try {
           </tr>
         <?php endforeach; ?>
       <?php else: ?>
-        <tr><td colspan="7" class="text-center">No hay usuarios.</td></tr>
+        <tr><td colspan="9" class="text-center">No hay usuarios.</td></tr>
       <?php endif; ?>
     </tbody>
   </table>
@@ -140,31 +224,53 @@ try {
 
 <!-- Modal Nuevo Usuario (BS5) -->
 <div class="modal fade" id="newUserModal" tabindex="-1" aria-labelledby="newUserModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
-      <form method="post" action="new.php" class="needs-validation" novalidate>
+      <form method="post" action="new.php" enctype="multipart/form-data" class="needs-validation" novalidate>
         <div class="modal-header">
           <h5 class="modal-title" id="newUserModalLabel">Nuevo Usuario</h5>
           <!-- BS5 close -->
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
         </div>
         <div class="modal-body">
-          <!-- Campos de registro -->
-          <div class="mb-3">
-            <label for="newNombre" class="form-label">Nombre</label>
-            <input type="text" class="form-control" id="newNombre" name="nombre" required>
-            <div class="invalid-feedback">Ingrese su nombre.</div>
+          <!-- Foto de perfil -->
+          <div class="mb-3 text-center">
+            <label class="form-label d-block">Foto de Perfil</label>
+            <img id="newProfilePreview" src="" alt="Vista previa" class="profile-img-preview" style="display: none;">
+            <div id="newDefaultAvatar" class="default-avatar" style="width: 120px; height: 120px; font-size: 48px; margin: 10px auto;">
+              <i class="fas fa-user"></i>
+            </div>
+            <div class="file-upload-wrapper mt-3">
+              <input type="file" id="newFotoPerfil" name="foto_perfil" accept="image/*">
+              <label for="newFotoPerfil" class="file-upload-label">
+                <i class="fas fa-upload"></i> Seleccionar imagen
+              </label>
+            </div>
+            <button type="button" class="btn btn-sm btn-danger remove-image-btn" id="newRemoveImage">
+              <i class="fas fa-times"></i> Quitar imagen
+            </button>
+            <small class="form-text text-muted d-block mt-2">Formatos permitidos: JPG, PNG, GIF (máx. 2MB)</small>
           </div>
-          <div class="mb-3">
-            <label for="newApellido" class="form-label">Apellido</label>
-            <input type="text" class="form-control" id="newApellido" name="apellido" required>
-            <div class="invalid-feedback">Ingrese su apellido.</div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="newNombre" class="form-label">Nombre</label>
+              <input type="text" class="form-control" id="newNombre" name="nombre" required>
+              <div class="invalid-feedback">Ingrese su nombre.</div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="newApellido" class="form-label">Apellido</label>
+              <input type="text" class="form-control" id="newApellido" name="apellido" required>
+              <div class="invalid-feedback">Ingrese su apellido.</div>
+            </div>
           </div>
+
           <div class="mb-3">
             <label for="newCorreo" class="form-label">Correo</label>
             <input type="email" class="form-control" id="newCorreo" name="correo" required>
             <div class="invalid-feedback">Ingrese un correo válido.</div>
           </div>
+          
           <div class="mb-3">
             <label for="newUsername" class="form-label">Nombre de Usuario</label>
             <input type="text" class="form-control" id="newUsername" name="username" required oninput="this.value = this.value.toLowerCase()">
@@ -195,7 +301,7 @@ try {
           </div>
 
           <div class="row">
-            <div class="col-md-6 mb-3">
+            <div class="col-md-4 mb-3">
               <label for="newRol" class="form-label">Rol</label>
               <select class="form-select" id="newRol" name="rol" required>
                 <option value="">Seleccione un rol</option>
@@ -207,7 +313,7 @@ try {
               </select>
               <div class="invalid-feedback">Seleccione un rol.</div>
             </div>
-            <div class="col-md-6 mb-3">
+            <div class="col-md-4 mb-3">
               <label for="newEstado" class="form-label">Estado</label>
               <select class="form-select" id="newEstado" name="estado" required>
                 <option value="">Seleccione un estado</option>
@@ -215,6 +321,15 @@ try {
                 <option value="1">Inactivo</option>
               </select>
               <div class="invalid-feedback">Seleccione un estado.</div>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label d-block">¿Es Columnista?</label>
+              <div class="form-check form-switch mt-2">
+                <input class="form-check-input" type="checkbox" id="newEsColumnista" name="es_columnista" value="1">
+                <label class="form-check-label" for="newEsColumnista">
+                  Sí, es columnista
+                </label>
+              </div>
             </div>
           </div>
         </div>
@@ -232,9 +347,9 @@ try {
 
 <!-- Modal Editar Usuario (BS5) -->
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
- <div class="modal-dialog">
+ <div class="modal-dialog modal-lg">
    <div class="modal-content">
-     <form method="post" action="update_user.php" class="needs-validation" novalidate id="editForm">
+     <form method="post" action="update_user.php" enctype="multipart/form-data" class="needs-validation" novalidate id="editForm">
        <div class="modal-header">
          <h5 class="modal-title" id="editModalLabel">Editar Usuario</h5>
          <!-- BS5 close -->
@@ -243,66 +358,102 @@ try {
        <div class="modal-body">
          <!-- Campo oculto para el ID -->
          <input type="hidden" id="editId" name="id">
+         <input type="hidden" id="editFotoActual" name="foto_actual">
+
+         <!-- Foto de perfil -->
+         <div class="mb-3 text-center">
+           <label class="form-label d-block">Foto de Perfil</label>
+           <img id="editProfilePreview" src="" alt="Vista previa" class="profile-img-preview">
+           <div class="file-upload-wrapper mt-3">
+             <input type="file" id="editFotoPerfil" name="foto_perfil" accept="image/*">
+             <label for="editFotoPerfil" class="file-upload-label">
+               <i class="fas fa-upload"></i> Cambiar imagen
+             </label>
+           </div>
+           <button type="button" class="btn btn-sm btn-danger remove-image-btn" id="editRemoveImage">
+             <i class="fas fa-times"></i> Quitar imagen
+           </button>
+           <input type="hidden" id="editRemoveFoto" name="remove_foto" value="0">
+           <small class="form-text text-muted d-block mt-2">Formatos permitidos: JPG, PNG, GIF (máx. 2MB)</small>
+         </div>
 
          <div class="mb-3">
            <label for="editUsername" class="form-label">Nombre de Usuario</label>
            <input type="text" class="form-control" id="editUsername" name="username" readonly>
            <small class="text-muted">El nombre de usuario no se puede modificar.</small>
          </div>
-         <div class="mb-3">
-           <label for="editNombre" class="form-label">Nombre</label>
-           <input type="text" class="form-control" id="editNombre" name="nombre" required>
-           <div class="invalid-feedback">Ingrese el nombre.</div>
+
+         <div class="row">
+           <div class="col-md-6 mb-3">
+             <label for="editNombre" class="form-label">Nombre</label>
+             <input type="text" class="form-control" id="editNombre" name="nombre" required>
+             <div class="invalid-feedback">Ingrese el nombre.</div>
+           </div>
+           <div class="col-md-6 mb-3">
+             <label for="editApellido" class="form-label">Apellido</label>
+             <input type="text" class="form-control" id="editApellido" name="apellido" required>
+             <div class="invalid-feedback">Ingrese el apellido.</div>
+           </div>
          </div>
-         <div class="mb-3">
-           <label for="editApellido" class="form-label">Apellido</label>
-           <input type="text" class="form-control" id="editApellido" name="apellido" required>
-           <div class="invalid-feedback">Ingrese el apellido.</div>
-         </div>
+
          <div class="mb-3">
            <label for="editCorreo" class="form-label">Correo</label>
            <input type="email" class="form-control" id="editCorreo" name="correo" required>
            <div class="invalid-feedback">Ingrese un correo válido.</div>
          </div>
-         <div class="mb-3">
-           <label for="editRol" class="form-label">Rol</label>
-           <select class="form-select" id="editRol" name="rol" required>
-             <option value="">Seleccione un rol</option>
-             <?php foreach ($roles as $role): ?>
-               <option value="<?= htmlspecialchars($role['id']) ?>"><?= htmlspecialchars($role['name']) ?></option>
-             <?php endforeach; ?>
-           </select>
-           <div class="invalid-feedback">Seleccione un rol.</div>
-         </div>
-         <div class="mb-3">
-           <label for="editEstado" class="form-label">Estado</label>
-           <select class="form-select" id="editEstado" name="estado" required>
-             <option value="">Seleccione un estado</option>
-             <option value="0">Activo</option>
-             <option value="1">Inactivo</option>
-           </select>
-           <div class="invalid-feedback">Seleccione un estado.</div>
+
+         <div class="row">
+           <div class="col-md-4 mb-3">
+             <label for="editRol" class="form-label">Rol</label>
+             <select class="form-select" id="editRol" name="rol" required>
+               <option value="">Seleccione un rol</option>
+               <?php foreach ($roles as $role): ?>
+                 <option value="<?= htmlspecialchars($role['id']) ?>"><?= htmlspecialchars($role['name']) ?></option>
+               <?php endforeach; ?>
+             </select>
+             <div class="invalid-feedback">Seleccione un rol.</div>
+           </div>
+           <div class="col-md-4 mb-3">
+             <label for="editEstado" class="form-label">Estado</label>
+             <select class="form-select" id="editEstado" name="estado" required>
+               <option value="">Seleccione un estado</option>
+               <option value="0">Activo</option>
+               <option value="1">Inactivo</option>
+             </select>
+             <div class="invalid-feedback">Seleccione un estado.</div>
+           </div>
+           <div class="col-md-4 mb-3">
+             <label class="form-label d-block">¿Es Columnista?</label>
+             <div class="form-check form-switch mt-2">
+               <input class="form-check-input" type="checkbox" id="editEsColumnista" name="es_columnista" value="1">
+               <label class="form-check-label" for="editEsColumnista">
+                 Sí, es columnista
+               </label>
+             </div>
+           </div>
          </div>
 
          <!-- Campos de cambio de contraseña -->
-         <div class="mb-3">
-           <label for="editPassword" class="form-label">Nueva Contraseña (dejar en blanco para no cambiar)</label>
-           <div class="input-group">
-             <input type="password" class="form-control" id="editPassword" name="password">
-             <button class="btn btn-outline-secondary toggle-password" type="button" data-target="#editPassword">
-               <i class="fas fa-eye"></i>
-             </button>
+         <div class="row">
+           <div class="col-md-6 mb-3">
+             <label for="editPassword" class="form-label">Nueva Contraseña (dejar en blanco para no cambiar)</label>
+             <div class="input-group">
+               <input type="password" class="form-control" id="editPassword" name="password">
+               <button class="btn btn-outline-secondary toggle-password" type="button" data-target="#editPassword">
+                 <i class="fas fa-eye"></i>
+               </button>
+             </div>
            </div>
-         </div>
-         <div class="mb-3">
-           <label for="editConfirmPassword" class="form-label">Confirmar Nueva Contraseña</label>
-           <div class="input-group">
-             <input type="password" class="form-control" id="editConfirmPassword" name="confirm_password">
-             <button class="btn btn-outline-secondary toggle-password" type="button" data-target="#editConfirmPassword">
-               <i class="fas fa-eye"></i>
-             </button>
+           <div class="col-md-6 mb-3">
+             <label for="editConfirmPassword" class="form-label">Confirmar Nueva Contraseña</label>
+             <div class="input-group">
+               <input type="password" class="form-control" id="editConfirmPassword" name="confirm_password">
+               <button class="btn btn-outline-secondary toggle-password" type="button" data-target="#editConfirmPassword">
+                 <i class="fas fa-eye"></i>
+               </button>
+             </div>
+             <small id="editPasswordHelp" class="text-danger" style="display: none;">Las contraseñas no coinciden.</small>
            </div>
-           <small id="editPasswordHelp" class="text-danger" style="display: none;">Las contraseñas no coinciden.</small>
          </div>
        </div>
        <div class="modal-footer">
@@ -321,21 +472,79 @@ $(document).ready(function() {
   // ===== DataTables (es-ES) =====
   var table = $('#formularios').DataTable({
     language: { url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json" },
-    order: [[0, "asc"]],
+    order: [[1, "asc"]], // Cambiado a columna 1 porque ahora hay foto
     pageLength: 50
+  });
+  
+  // ===== Preview de imagen NUEVO USUARIO =====
+  $('#newFotoPerfil').on('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+      // Validar tamaño (2MB)
+      if (file.size > 2 * 1024 * 1024) {
+        Swal.fire('Error', 'La imagen no debe superar 2MB', 'error');
+        $(this).val('');
+        return;
+      }
+      
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        $('#newProfilePreview').attr('src', event.target.result).show();
+        $('#newDefaultAvatar').hide();
+        $('#newRemoveImage').show();
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  $('#newRemoveImage').on('click', function() {
+    $('#newFotoPerfil').val('');
+    $('#newProfilePreview').attr('src', '').hide();
+    $('#newDefaultAvatar').show();
+    $(this).hide();
+  });
+
+  // ===== Preview de imagen EDITAR USUARIO =====
+  $('#editFotoPerfil').on('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+      // Validar tamaño (2MB)
+      if (file.size > 2 * 1024 * 1024) {
+        Swal.fire('Error', 'La imagen no debe superar 2MB', 'error');
+        $(this).val('');
+        return;
+      }
+      
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        $('#editProfilePreview').attr('src', event.target.result);
+        $('#editRemoveImage').show();
+        $('#editRemoveFoto').val('0');
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  $('#editRemoveImage').on('click', function() {
+    $('#editFotoPerfil').val('');
+    $('#editProfilePreview').attr('src', '<?= $url ?>/assets/images/default-avatar.png');
+    $('#editRemoveFoto').val('1');
+    $(this).hide();
   });
   
   // ===== Click en fila para abrir modal de edición (excepto botón borrar) =====
   $('#formularios tbody').on('click', 'tr.user-row', function(e) {
     if ($(e.target).closest('.delete-btn').length > 0) return;
 
-    const id       = $(this).data('id');
-    const username = $(this).data('username');
-    const nombre   = $(this).data('nombre');
-    const apellido = $(this).data('apellido');
-    const correo   = $(this).data('correo');
-    const rol      = $(this).data('rol');
-    const estado   = $(this).data('estado');
+    const id        = $(this).data('id');
+    const username  = $(this).data('username');
+    const nombre    = $(this).data('nombre');
+    const apellido  = $(this).data('apellido');
+    const correo    = $(this).data('correo');
+    const rol       = $(this).data('rol');
+    const estado    = $(this).data('estado');
+    const columnista = $(this).data('columnista');
+    const foto      = $(this).data('foto');
 
     // Rellenar el modal de edición
     $('#editId').val(id);
@@ -345,11 +554,24 @@ $(document).ready(function() {
     $('#editCorreo').val(correo);
     $('#editRol').val(rol);
     $('#editEstado').val(estado);
+    $('#editEsColumnista').prop('checked', columnista == 1);
+    $('#editFotoActual').val(foto);
+    $('#editRemoveFoto').val('0');
+
+    // Mostrar foto de perfil
+    if (foto) {
+      $('#editProfilePreview').attr('src', '<?= $url ?>/' + foto);
+      $('#editRemoveImage').show();
+    } else {
+      $('#editProfilePreview').attr('src', '<?= $url ?>/assets/images/default-avatar.png');
+      $('#editRemoveImage').hide();
+    }
 
     // Limpiar campos de contraseña y ocultar mensaje de error
     $('#editPassword').val('');
     $('#editConfirmPassword').val('');
     $('#editPasswordHelp').hide();
+    $('#editFotoPerfil').val('');
 
     // BS5: abrir modal con API
     const modalEl = document.getElementById('editModal');

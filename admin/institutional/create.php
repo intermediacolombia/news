@@ -2,8 +2,6 @@
 require_once __DIR__ . '/../login/session.php';
 $permisopage = 'Crear Institucional';
 require_once __DIR__ . '/../login/restriction.php';
-session_start();
-
 require_once __DIR__ . '/institutional_controller.php';
 
 // Recoger y limpiar errores/old de sesión

@@ -2,8 +2,6 @@
 require_once __DIR__ . '/../login/session.php';
 $permisopage = 'Editar Institucional';
 require_once __DIR__ . '/../login/restriction.php';
-session_start();
-
 require_once __DIR__ . '/institutional_controller.php';
 
 // Obtener ID de la página a editar

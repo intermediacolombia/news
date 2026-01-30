@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../../inc/config.php';
 require_once __DIR__ . '/../login/session.php';
-session_start();
+
 
 header('Content-Type: application/json');
 
