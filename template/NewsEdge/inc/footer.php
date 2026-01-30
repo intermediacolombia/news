@@ -3,60 +3,92 @@
     <div class="footer-area-top">
         <div class="container">
             <div class="row">
-                <!-- Most Viewed Posts / Posts Más Vistos -->
+                <!-- Columna 1: Contáctanos -->
                 <div class="col-lg-4 col-md-6 col-sm-12">
                     <div class="footer-box">
-                        <h2 class="title-bold-light title-bar-left text-uppercase">Posts Más Vistos</h2>
-                        <ul class="most-view-post">
+                        <h2 class="title-bold-light title-bar-left text-uppercase">Contáctanos</h2>
+                        <div class="footer-contact">
+                            <?php if (!empty($sys['info_footer'])): ?>
+                                <p class="mb-3"><?= htmlspecialchars($sys['info_footer']) ?></p>
+                            <?php endif; ?>
+                            
+                            <?php if (!empty($sys['business_address'])): ?>
+                                <p class="mb-2">
+                                    <i class="fa fa-map-marker" aria-hidden="true"></i>
+                                    <span style="margin-left: 10px;"><?= htmlspecialchars($sys['business_address']) ?></span>
+                                </p>
+                            <?php endif; ?>
+                            
+                            <?php if (!empty($sys['site_email'])): ?>
+                                <p class="mb-2">
+                                    <i class="fa fa-envelope" aria-hidden="true"></i>
+                                    <span style="margin-left: 10px;">
+                                        <a href="mailto:<?= htmlspecialchars($sys['site_email']) ?>" style="color: inherit;">
+                                            <?= htmlspecialchars($sys['site_email']) ?>
+                                        </a>
+                                    </span>
+                                </p>
+                            <?php endif; ?>
+                            
+                            <?php if (!empty($sys['business_phone'])): ?>
+                                <p class="mb-2">
+                                    <i class="fa fa-phone" aria-hidden="true"></i>
+                                    <span style="margin-left: 10px;">
+                                        <a href="tel:<?= htmlspecialchars($sys['business_phone']) ?>" style="color: inherit;">
+                                            <?= htmlspecialchars($sys['business_phone']) ?>
+                                        </a>
+                                    </span>
+                                </p>
+                            <?php endif; ?>
+                            
+                            <?php if (!empty($sys['whatsapp'])): ?>
+                                <p class="mb-2">
+                                    <i class="fa fa-whatsapp" aria-hidden="true"></i>
+                                    <span style="margin-left: 10px;">
+                                        <a href="https://wa.me/<?= preg_replace('/[^0-9]/', '', $sys['whatsapp']) ?>" 
+                                           target="_blank" 
+                                           style="color: inherit;">
+                                            WhatsApp
+                                        </a>
+                                    </span>
+                                </p>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Columna 2: Últimas Noticias (solo títulos, máx 5) -->
+                <div class="col-xl-4 col-lg-3 col-md-6 col-sm-12">
+                    <div class="footer-box">
+                        <h2 class="title-bold-light title-bar-left text-uppercase">Últimas Noticias</h2>
+                        <ul class="popular-categories">
                             <?php
-                            $mostViewed = db()->query("
-                                SELECT p.title, p.slug, p.image, p.created_at
+                            $latestNews = db()->query("
+                                SELECT p.title, p.slug
                                 FROM blog_posts p
-                                LEFT JOIN blog_post_views v ON v.post_id = p.id
                                 WHERE p.status='published' AND p.deleted=0
-                                GROUP BY p.id
-                                ORDER BY COUNT(v.id) DESC, p.created_at DESC
-                                LIMIT 3
+                                ORDER BY p.created_at DESC
+                                LIMIT 5
                             ")->fetchAll(PDO::FETCH_ASSOC);
                             
-                            foreach ($mostViewed as $post):
-                                $img = !empty($post['image'])
-                                    ? URLBASE . '/' . htmlspecialchars($post['image'])
-                                    : URLBASE . '/template/NewsEdge/img/footer/post1.jpg';
-                                $postUrl = URLBASE . "/noticias/post/" . htmlspecialchars($post['slug']);
+                            foreach ($latestNews as $news):
+                                $postUrl = URLBASE . "/noticias/post/" . htmlspecialchars($news['slug']);
                             ?>
-                            <li>
-                                <div class="media">
-                                    <a href="<?= $postUrl ?>">
-                                        <img src="<?= $img ?>" alt="<?= htmlspecialchars($post['title']) ?>" class="img-fluid">
+                                <li>
+                                    <a href="<?= $postUrl ?>" style="display: block; padding: 8px 0;">
+                                        <i class="fa fa-angle-right" style="margin-right: 8px;"></i>
+                                        <?= htmlspecialchars(truncate_text($news['title'], 50)) ?>
                                     </a>
-                                    <div class="media-body">
-                                        <h3 class="title-medium-light size-md mb-10">
-                                            <a href="<?= $postUrl ?>">
-                                                <?= htmlspecialchars(truncate_text($post['title'], 60)) ?>
-                                            </a>
-                                        </h3>
-                                        <div class="post-date-light">
-                                            <ul>
-                                                <li>
-                                                    <span>
-                                                        <i class="fa fa-calendar" aria-hidden="true"></i>
-                                                    </span><?= date('F d, Y', strtotime($post['created_at'])) ?>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
+                                </li>
                             <?php endforeach; ?>
                         </ul>
                     </div>
                 </div>
 
-                <!-- Popular Categories / Categorías Populares -->
-                <div class="col-xl-4 col-lg-3 col-md-6 col-sm-12">
+                <!-- Columna 3: Categorías -->
+                <div class="col-xl-4 col-lg-5 col-md-12 col-sm-12">
                     <div class="footer-box">
-                        <h2 class="title-bold-light title-bar-left text-uppercase">Categorías Populares</h2>
+                        <h2 class="title-bold-light title-bar-left text-uppercase">Categorías</h2>
                         <ul class="popular-categories">
                             <?php
                             $cats = db()->query("
@@ -69,7 +101,7 @@
                                 GROUP BY c.id, c.name, c.slug
                                 HAVING total > 0
                                 ORDER BY total DESC
-                                LIMIT 8
+                                LIMIT 10
                             ")->fetchAll(PDO::FETCH_ASSOC);
                             
                             foreach ($cats as $cat): ?>
@@ -79,38 +111,6 @@
                                         <span><?= $cat['total'] ?></span>
                                     </a>
                                 </li>
-                            <?php endforeach; ?>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Post Gallery / Galería de Posts -->
-                <div class="col-xl-4 col-lg-5 col-md-12 col-sm-12">
-                    <div class="footer-box">
-                        <h2 class="title-bold-light title-bar-left text-uppercase">Galería de Posts</h2>
-                        <ul class="post-gallery shine-hover">
-                            <?php
-                            $gallery = db()->query("
-                                SELECT p.slug, p.image
-                                FROM blog_posts p
-                                WHERE p.status='published' AND p.deleted=0 AND p.image IS NOT NULL
-                                ORDER BY p.created_at DESC
-                                LIMIT 9
-                            ")->fetchAll(PDO::FETCH_ASSOC);
-                            
-                            foreach ($gallery as $item):
-                                $imgUrl = !empty($item['image'])
-                                    ? URLBASE . '/' . htmlspecialchars($item['image'])
-                                    : URLBASE . '/template/NewsEdge/img/footer/post4.jpg';
-                                $itemUrl = URLBASE . "/noticias/post/" . htmlspecialchars($item['slug']);
-                            ?>
-                            <li>
-                                <a href="<?= $itemUrl ?>">
-                                    <figure>
-                                        <img src="<?= $imgUrl ?>" alt="post" class="img-fluid">
-                                    </figure>
-                                </a>
-                            </li>
                             <?php endforeach; ?>
                         </ul>
                     </div>
