@@ -50,7 +50,7 @@
                         <!-- Logo Area -->
                         <div class="col-lg-2 col-md-2 d-none d-lg-block">
                             <div class="logo-area">
-                                <a href="<​?php echo URLBASE; ?>" class="img-fluid">
+                                <a href="<?php echo URLBASE; ?>" class="img-fluid">
                                     <img src="<?php echo URLBASE . SITE_LOGO; ?>?<?php echo time(); ?>" alt="Logo" class="img-fluid">
                                 </a>
                             </div>

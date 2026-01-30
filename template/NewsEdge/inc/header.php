@@ -138,6 +138,12 @@
         --font-family-sans-serif: "Roboto", sans-serif;
         --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     }
+		
+		#preloader {
+    background: url(<?php echo URLBASE . SITE_LOGO; ?>?<?php echo time(); ?>) center center no-repeat var(--primary) !important;
+		}
+		
+		
     </style>
 </head>
 
