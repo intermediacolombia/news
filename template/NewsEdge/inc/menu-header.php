@@ -61,7 +61,7 @@
                             <div class="ne-main-menu">
                                 <nav id="dropdown">
                                     <ul>
-                                        <li class="active"><a href="<​?= URLBASE ?>">INICIO</a></li>
+                                        <li class="active"><a href="<?= URLBASE ?>">INICIO</a></li>
                                         <li><a href="<?= URLBASE ?>/noticias">NOTICIAS</a></li>
                                         
                                         <!-- Categorías Dinámicas -->
