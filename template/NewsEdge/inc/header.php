@@ -144,6 +144,91 @@
 		}
 		
 		
+		/* ========================================
+   FIX: SLIDER TAMAÑO FIJO
+   Mantiene el slider con altura constante
+   ======================================== */
+
+/* Contenedor principal del slider */
+.main-slider1 {
+    height: 500px; /* Altura fija del slider */
+    overflow: hidden;
+    position: relative;
+}
+
+/* Contenedor del Nivo Slider */
+.main-slider1 .bend.niceties.preview-1 {
+    height: 500px !important;
+    overflow: hidden;
+}
+
+/* Imágenes del slider */
+.main-slider1 #ensign-nivoslider-3,
+.main-slider1 #ensign-nivoslider-3 img {
+    width: 100%;
+    height: 500px !important;
+    object-fit: cover; /* Recorta la imagen para que encaje sin deformarse */
+    object-position: center; /* Centra la imagen */
+}
+
+/* Contenedor de las direcciones del slider */
+.main-slider1 .slider-direction {
+    height: 500px;
+}
+
+/* ========================================
+   RESPONSIVE: Ajusta altura en móviles
+   ======================================== */
+
+/* Tablets */
+@media only screen and (max-width: 991px) {
+    .main-slider1,
+    .main-slider1 .bend.niceties.preview-1,
+    .main-slider1 #ensign-nivoslider-3,
+    .main-slider1 #ensign-nivoslider-3 img,
+    .main-slider1 .slider-direction {
+        height: 400px !important;
+    }
+}
+
+/* Móviles grandes */
+@media only screen and (max-width: 767px) {
+    .main-slider1,
+    .main-slider1 .bend.niceties.preview-1,
+    .main-slider1 #ensign-nivoslider-3,
+    .main-slider1 #ensign-nivoslider-3 img,
+    .main-slider1 .slider-direction {
+        height: 350px !important;
+    }
+}
+
+/* Móviles pequeños */
+@media only screen and (max-width: 575px) {
+    .main-slider1,
+    .main-slider1 .bend.niceties.preview-1,
+    .main-slider1 #ensign-nivoslider-3,
+    .main-slider1 #ensign-nivoslider-3 img,
+    .main-slider1 .slider-direction {
+        height: 280px !important;
+    }
+}
+
+
+/* ========================================
+   ALTERNATIVA: Si object-fit no funciona
+   (para navegadores antiguos)
+   ======================================== */
+
+/* Descomenta esta sección si object-fit no funciona */
+/*
+.main-slider1 #ensign-nivoslider-3 img {
+    width: 100%;
+    height: 500px !important;
+    min-height: 500px;
+    max-height: 500px;
+}
+*/
+		
     </style>
 </head>
 
