@@ -20,7 +20,7 @@ $sqlIsotope = "
     WHERE p.status = 'published' AND p.deleted = 0
     GROUP BY p.id
     ORDER BY p.created_at DESC
-    LIMIT 9
+    LIMIT 12
 ";
 $isotopePosts = db()->query($sqlIsotope)->fetchAll();
 ?>
