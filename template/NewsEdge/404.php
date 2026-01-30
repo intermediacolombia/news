@@ -17,7 +17,7 @@
             </section>
             <!-- News Info List Area End Here -->
             <!-- Breadcrumb Area Start Here -->
-            <section class="breadcrumbs-area" style="background-image: url('img/banner/breadcrumbs-banner.jpg');">
+            <!--section class="breadcrumbs-area" style="background-image: url('img/banner/breadcrumbs-banner.jpg');">
                 <div class="container">
                     <div class="breadcrumbs-content">
                         <h1>404 Error Page</h1>
@@ -28,7 +28,7 @@
                         </ul>
                     </div>
                 </div>
-            </section>
+            </section-->
             <!-- Breadcrumb Area End Here -->
             <!-- 404 Error Page Area Start Here -->
             <section class="bg-primary pt-100 pb-100">
