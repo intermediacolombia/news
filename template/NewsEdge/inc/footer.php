@@ -1,327 +1,431 @@
-<!-- Footer Area Start Here -->
 <footer>
-    <div class="footer-area-top">
-        <div class="container">
-            <div class="row">
-                <!-- Columna 1: Contáctanos -->
-                <div class="col-lg-4 col-md-6 col-sm-12">
-                    <div class="footer-box">
-                        <h2 class="title-bold-light title-bar-left text-uppercase">Contáctanos</h2>
-                        <div class="footer-contact" style="color: #fff;">
-                            <?php if (!empty($sys['info_footer'])): ?>
-                                <p class="mb-3"><?= htmlspecialchars($sys['info_footer']) ?></p>
-                            <?php endif; ?>
-                            
-                            <?php if (!empty($sys['business_address'])): ?>
-                                <p class="mb-2">
-                                    <i class="fa fa-map-marker" aria-hidden="true"></i>
-                                    <span style="margin-left: 10px;"><?= htmlspecialchars($sys['business_address']) ?></span>
-                                </p>
-                            <?php endif; ?>
-                            
-                            <?php if (!empty($sys['site_email'])): ?>
-                                <p class="mb-2">
-                                    <i class="fa fa-envelope" aria-hidden="true"></i>
-                                    <span style="margin-left: 10px;">
-                                        <a href="mailto:<?= htmlspecialchars($sys['site_email']) ?>" style="color: inherit;">
-                                            <?= htmlspecialchars($sys['site_email']) ?>
-                                        </a>
-                                    </span>
-                                </p>
-                            <?php endif; ?>
-                            
-                            <?php if (!empty($sys['business_phone'])): ?>
-                                <p class="mb-2">
-                                    <i class="fa fa-phone" aria-hidden="true"></i>
-                                    <span style="margin-left: 10px;">
-                                        <a href="tel:<?= htmlspecialchars($sys['business_phone']) ?>" style="color: inherit;">
-                                            <?= htmlspecialchars($sys['business_phone']) ?>
-                                        </a>
-                                    </span>
-                                </p>
-                            <?php endif; ?>
-                            
-                            <?php if (!empty($sys['whatsapp'])): ?>
-                                <p class="mb-2">
-                                    <i class="fa fa-whatsapp" aria-hidden="true"></i>
-                                    <span style="margin-left: 10px;">
-                                        <a href="https://wa.me/<?= preg_replace('/[^0-9]/', '', $sys['whatsapp']) ?>" 
-                                           target="_blank" 
-                                           style="color: inherit;">
-                                            WhatsApp
-                                        </a>
-                                    </span>
-                                </p>
-                            <?php endif; ?>
+                <div class="footer-area-top">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <div class="footer-box">
+                                    <h2 class="title-bold-light title-bar-left text-uppercase">Most Viewed Posts</h2>
+                                    <ul class="most-view-post">
+                                        <li>
+                                            <div class="media">
+                                                <a href="post-style-1.html">
+                                                    <img src="img/footer/post1.jpg" alt="post" class="img-fluid">
+                                                </a>
+                                                <div class="media-body">
+                                                    <h3 class="title-medium-light size-md mb-10">
+                                                        <a href="#">Basketball Stars Face Off itim ate Playoff Beard Battle</a>
+                                                    </h3>
+                                                    <div class="post-date-light">
+                                                        <ul>
+                                                            <li>
+                                                                <span>
+                                                                    <i class="fa fa-calendar" aria-hidden="true"></i>
+                                                                </span>November 11, 2017</li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="media">
+                                                <a href="post-style-2.html">
+                                                    <img src="img/footer/post2.jpg" alt="post" class="img-fluid">
+                                                </a>
+                                                <div class="media-body">
+                                                    <h3 class="title-medium-light size-md mb-10">
+                                                        <a href="#">Basketball Stars Face Off in ate Playoff Beard Battle</a>
+                                                    </h3>
+                                                    <div class="post-date-light">
+                                                        <ul>
+                                                            <li>
+                                                                <span>
+                                                                    <i class="fa fa-calendar" aria-hidden="true"></i>
+                                                                </span>August 22, 2017</li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="media">
+                                                <a href="post-style-3.html">
+                                                    <img src="img/footer/post3.jpg" alt="post" class="img-fluid">
+                                                </a>
+                                                <div class="media-body">
+                                                    <h3 class="title-medium-light size-md mb-10">
+                                                        <a href="#">Basketball Stars Face tim ate Playoff Battle</a>
+                                                    </h3>
+                                                    <div class="post-date-light">
+                                                        <ul>
+                                                            <li>
+                                                                <span>
+                                                                    <i class="fa fa-calendar" aria-hidden="true"></i>
+                                                                </span>March 31, 2017</li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-xl-4 col-lg-3 col-md-6 col-sm-12">
+                                <div class="footer-box">
+                                    <h2 class="title-bold-light title-bar-left text-uppercase">Popular Categories</h2>
+                                    <ul class="popular-categories">
+                                        <li>
+                                            <a href="#">Gadgets
+                                                <span>15</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">Architecture
+                                                <span>10</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">New look 2017
+                                                <span>14</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">Reviews
+                                                <span>13</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">Mobile and Phones
+                                                <span>19</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">Recipes
+                                                <span>26</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">Decorating
+                                                <span>21</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">IStreet fashion
+                                                <span>09</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-xl-4 col-lg-5 col-md-12 col-sm-12">
+                                <div class="footer-box">
+                                    <h2 class="title-bold-light title-bar-left text-uppercase">Post Gallery</h2>
+                                    <ul class="post-gallery shine-hover ">
+                                        <li>
+                                            <a href="gallery-style1.html">
+                                                <figure>
+                                                    <img src="img/footer/post4.jpg" alt="post" class="img-fluid">
+                                                </figure>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="gallery-style2.html">
+                                                <figure>
+                                                    <img src="img/footer/post5.jpg" alt="post" class="img-fluid">
+                                                </figure>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="gallery-style1.html">
+                                                <figure>
+                                                    <img src="img/footer/post6.jpg" alt="post" class="img-fluid">
+                                                </figure>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="gallery-style2.html">
+                                                <figure>
+                                                    <img src="img/footer/post7.jpg" alt="post" class="img-fluid">
+                                                </figure>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="gallery-style1.html">
+                                                <figure>
+                                                    <img src="img/footer/post8.jpg" alt="post" class="img-fluid">
+                                                </figure>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="gallery-style2.html">
+                                                <figure>
+                                                    <img src="img/footer/post9.jpg" alt="post" class="img-fluid">
+                                                </figure>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="gallery-style1.html">
+                                                <figure>
+                                                    <img src="img/footer/post10.jpg" alt="post" class="img-fluid">
+                                                </figure>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="gallery-style2.html">
+                                                <figure>
+                                                    <img src="img/footer/post11.jpg" alt="post" class="img-fluid">
+                                                </figure>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="gallery-style1.html">
+                                                <figure>
+                                                    <img src="img/footer/post12.jpg" alt="post" class="img-fluid">
+                                                </figure>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Columna 2: Últimas Noticias (solo títulos, máx 5) -->
-                <div class="col-xl-4 col-lg-3 col-md-6 col-sm-12">
-                    <div class="footer-box">
-                        <h2 class="title-bold-light title-bar-left text-uppercase">Últimas Noticias</h2>
-                        <ul class="popular-categories">
-                            <?php
-                            $latestNews = db()->query("
-                                SELECT p.title, p.slug
-                                FROM blog_posts p
-                                WHERE p.status='published' AND p.deleted=0
-                                ORDER BY p.created_at DESC
-                                LIMIT 5
-                            ")->fetchAll(PDO::FETCH_ASSOC);
-                            
-                            foreach ($latestNews as $news):
-                                $postUrl = URLBASE . "/noticias/post/" . htmlspecialchars($news['slug']);
-                            ?>
-                                <li>
-                                    <a href="<?= $postUrl ?>" style="display: block; padding: 8px 0;">
-                                        <i class="fa fa-angle-right" style="margin-right: 8px;"></i>
-                                        <?= htmlspecialchars(truncate_text($news['title'], 50)) ?>
-                                    </a>
-                                </li>
-                            <?php endforeach; ?>
-                        </ul>
+                <div class="footer-area-bottom">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <a href="index-2.html" class="footer-logo img-fluid">
+                                    <img src="img/logo.png" alt="logo" class="img-fluid">
+                                </a>
+                                <ul class="footer-social">
+                                    <li>
+                                        <a href="#" title="facebook">
+                                            <i class="fa fa-facebook" aria-hidden="true"></i>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" title="twitter">
+                                            <i class="fa fa-twitter" aria-hidden="true"></i>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" title="google-plus">
+                                            <i class="fa fa-google-plus" aria-hidden="true"></i>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" title="linkedin">
+                                            <i class="fa fa-linkedin" aria-hidden="true"></i>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" title="pinterest">
+                                            <i class="fa fa-pinterest" aria-hidden="true"></i>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" title="rss">
+                                            <i class="fa fa-rss" aria-hidden="true"></i>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" title="vimeo">
+                                            <i class="fa fa-vimeo" aria-hidden="true"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                                <p>© 2017 NewsEdge Designed by RadiusTheme. All Rights Reserved</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
-                <!-- Columna 3: Categorías -->
-                <div class="col-xl-4 col-lg-5 col-md-12 col-sm-12">
-                    <div class="footer-box">
-                        <h2 class="title-bold-light title-bar-left text-uppercase">Categorías</h2>
-                        <ul class="popular-categories">
-                            <?php
-                            $cats = db()->query("
-                                SELECT c.name, c.slug, COUNT(p.id) AS total
-                                FROM blog_categories c
-                                INNER JOIN blog_post_category pc ON pc.category_id = c.id
-                                INNER JOIN blog_posts p ON p.id = pc.post_id
-                                WHERE c.status='active' AND c.deleted=0
-                                  AND p.status='published' AND p.deleted=0
-                                GROUP BY c.id, c.name, c.slug
-                                HAVING total > 0
-                                ORDER BY total DESC
-                                LIMIT 10
-                            ")->fetchAll(PDO::FETCH_ASSOC);
-                            
-                            foreach ($cats as $cat): ?>
-                                <li>
-                                    <a href="<?= URLBASE ?>/noticias/<?= htmlspecialchars($cat['slug']) ?>/">
-                                        <?= htmlspecialchars(ucwords($cat['name'])) ?>
-                                        <span><?= $cat['total'] ?></span>
-                                    </a>
-                                </li>
-                            <?php endforeach; ?>
-                        </ul>
+            </footer>
+            <!-- Footer Area End Here -->
+            <!-- Modal Start-->
+            <div class="modal fade" id="myModal" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <div class="title-login-form">Login</div>
+                        </div>
+                        <div class="modal-body">
+                            <div class="login-form">
+                                <form>
+                                    <label>Username or email address *</label>
+                                    <input type="text" placeholder="Name or E-mail" />
+                                    <label>Password *</label>
+                                    <input type="password" placeholder="Password" />
+                                    <div class="checkbox checkbox-primary">
+                                        <input id="checkbox" type="checkbox" checked>
+                                        <label for="checkbox">Remember Me</label>
+                                    </div>
+                                    <button type="submit" value="Login">Login</button>
+                                    <button class="form-cancel" type="submit" value="">Cancel</button>
+                                    <label class="lost-password">
+                                        <a href="#">Lost your password?</a>
+                                    </label>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <div class="footer-area-bottom">
-        <div class="container">
-            <div class="row">
-                <div class="col-12 text-center">
-                    <!-- Logo -->
-                    <a href="<?= URLBASE ?>" class="footer-logo img-fluid">
-                        <img src="<?= URLBASE . SITE_LOGO ?>?v=<?= time() ?>" 
-                             alt="<?= htmlspecialchars($sys['site_name']) ?>" 
-                             class="img-fluid" 
-                             style="max-width: 200px;">
+            <!-- Modal End-->
+            <!-- Offcanvas Menu Start -->
+            <div id="offcanvas-body-wrapper" class="offcanvas-body-wrapper">
+                <div id="offcanvas-nav-close" class="offcanvas-nav-close offcanvas-menu-btn">
+                    <a href="#" class="menu-times re-point">
+                        <span></span>
+                        <span></span>
                     </a>
-
-                    <!-- Redes Sociales -->
-                    <ul class="footer-social">
-                        <?php
-                        $redes = [
-                            'facebook' => 'fa-facebook',
-                            'twitter' => 'fa-twitter',
-                            'instagram' => 'fa-instagram',
-                            'youtube' => 'fa-youtube',
-                            'tiktok' => 'fa-music',
-                            'whatsapp' => 'fa-whatsapp',
-                            'linkedin' => 'fa-linkedin'
-                        ];
-                        
-                        foreach ($redes as $nombre => $icono):
-                            if (!empty($sys[$nombre])): ?>
-                                <li>
-                                    <a href="<?= htmlspecialchars($sys[$nombre]) ?>" 
-                                       title="<?= ucfirst($nombre) ?>"
-                                       target="_blank">
-                                        <i class="fa <?= $icono ?>" aria-hidden="true"></i>
-                                    </a>
-                                </li>
-                        <?php endif; endforeach; ?>
+                </div>
+                <div class="offcanvas-main-body">
+                    <ul id="accordion" class="offcanvas-nav panel-group">
+                        <li class="panel panel-default">
+                            <div class="panel-heading">
+                                <a aria-expanded="false" class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                                    <i class="fa fa-home" aria-hidden="true"></i>Home Pages</a>
+                            </div>
+                            <div aria-expanded="false" id="collapseOne" role="tabpanel" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                    <ul class="offcanvas-sub-nav">
+                                        <li>
+                                            <a href="index-2.html">Home 1</a>
+                                        </li>
+                                        <li>
+                                            <a href="index2.html">Home 2</a>
+                                        </li>
+                                        <li>
+                                            <a href="index3.html">Home 3</a>
+                                        </li>
+                                        <li>
+                                            <a href="index4.html">Home 4</a>
+                                        </li>
+                                        <li>
+                                            <a href="index5.html">Home 5</a>
+                                        </li>
+                                        <li>
+                                            <a href="index6.html">Home 6</a>
+                                        </li>
+                                        <li>
+                                            <a href="index7.html">Home 7</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <a href="author-post.html">
+                                <i class="fa fa-user" aria-hidden="true"></i>Author Post Page</a>
+                        </li>
+                        <li class="panel panel-default">
+                            <div class="panel-heading">
+                                <a aria-expanded="false" class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                                    <i class="fa fa-file-text" aria-hidden="true"></i>Post Pages</a>
+                            </div>
+                            <div aria-expanded="false" id="collapseTwo" role="tabpanel" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                    <ul class="offcanvas-sub-nav">
+                                        <li>
+                                            <a href="post-style-1.html">Post Style 1</a>
+                                        </li>
+                                        <li>
+                                            <a href="post-style-2.html">Post Style 2</a>
+                                        </li>
+                                        <li>
+                                            <a href="post-style-3.html">Post Style 3</a>
+                                        </li>
+                                        <li>
+                                            <a href="post-style-4.html">Post Style 4</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="panel panel-default">
+                            <div class="panel-heading">
+                                <a aria-expanded="false" class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                                    <i class="fa fa-info-circle" aria-hidden="true"></i>News Details Pages</a>
+                            </div>
+                            <div aria-expanded="false" id="collapseThree" role="tabpanel" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                    <ul class="offcanvas-sub-nav">
+                                        <li>
+                                            <a href="single-news-1.html">News Details 1</a>
+                                        </li>
+                                        <li>
+                                            <a href="single-news-2.html">News Details 2</a>
+                                        </li>
+                                        <li>
+                                            <a href="single-news-3.html">News Details 3</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <a href="archive.html">
+                                <i class="fa fa-archive" aria-hidden="true"></i>Archive Page</a>
+                        </li>
+                        <li class="panel panel-default">
+                            <div class="panel-heading">
+                                <a aria-expanded="false" class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseFour">
+                                    <i class="fa fa-picture-o" aria-hidden="true"></i>Gallery Pages</a>
+                            </div>
+                            <div aria-expanded="false" id="collapseFour" role="tabpanel" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                    <ul class="offcanvas-sub-nav">
+                                        <li>
+                                            <a href="gallery-style-1.html">Gallery Style 1</a>
+                                        </li>
+                                        <li>
+                                            <a href="gallery-style-2.html">Gallery Style 2</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <a href="404.html">
+                                <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>404 Error Page</a>
+                        </li>
+                        <li>
+                            <a href="contact.html">
+                                <i class="fa fa-phone" aria-hidden="true"></i>Contact Page</a>
+                        </li>
                     </ul>
-
-                    <!-- Copyright -->
-                    <p>
-                        © <?= date('Y') ?> 
-                        <strong><?= htmlspecialchars($sys['site_name']) ?></strong>. 
-                        Todos los derechos reservados.
-                    </p>
-                    <p style="margin-top: 5px; font-size: 13px;">
-                        Hosting & Diseño por 
-                        <a href="https://www.intermediahost.co" target="_blank" style="color: inherit; font-weight: bold;">
-                            Intermedia Host
-                        </a>
-                    </p>
                 </div>
             </div>
+            <!-- Offcanvas Menu End -->
         </div>
-    </div>
-</footer>
-<!-- Footer Area End Here -->
+        <!-- Wrapper End -->
+        <!-- jquery-->
+        <script src="js/jquery-2.2.4.min.js" type="text/javascript"></script>
+        <!-- Plugins js -->
+        <script src="js/plugins.js" type="text/javascript"></script>
+        <!-- Popper js -->
+        <script src="js/popper.js" type="text/javascript"></script>
+        <!-- Bootstrap js -->
+        <script src="js/bootstrap.min.js" type="text/javascript"></script>
+        <!-- WOW JS -->
+        <script src="js/wow.min.js"></script>
+        <!-- Owl Cauosel JS -->
+        <script src="vendor/OwlCarousel/owl.carousel.min.js" type="text/javascript"></script>
+        <!-- Meanmenu Js -->
+        <script src="js/jquery.meanmenu.min.js" type="text/javascript"></script>
+        <!-- Srollup js -->
+        <script src="js/jquery.scrollUp.min.js" type="text/javascript"></script>
+        <!-- jquery.counterup js -->
+        <script src="js/jquery.counterup.min.js"></script>
+        <script src="js/waypoints.min.js"></script>
+        <!-- Isotope js -->
+        <script src="js/isotope.pkgd.min.js" type="text/javascript"></script>
+        <!-- Magnific Popup -->
+        <script src="js/jquery.magnific-popup.min.js"></script>
+        <!-- Ticker Js -->
+        <script src="js/ticker.js" type="text/javascript"></script>
+        <!-- Custom Js -->
+        <script src="js/main.js" type="text/javascript"></script>
+    </body>
 
-<!-- Modal Start (Login Form) -->
-<div class="modal fade" id="myModal" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <div class="title-login-form">Iniciar Sesión</div>
-            </div>
-            <div class="modal-body">
-                <div class="login-form">
-                    <form>
-                        <label>Usuario o correo electrónico *</label>
-                        <input type="text" placeholder="Nombre o E-mail" />
-                        <label>Contraseña *</label>
-                        <input type="password" placeholder="Contraseña" />
-                        <div class="checkbox checkbox-primary">
-                            <input id="checkbox" type="checkbox" checked>
-                            <label for="checkbox">Recordarme</label>
-                        </div>
-                        <button type="submit" value="Login">Iniciar Sesión</button>
-                        <button class="form-cancel" type="button" data-dismiss="modal">Cancelar</button>
-                        <label class="lost-password">
-                            <a href="#">¿Olvidaste tu contraseña?</a>
-                        </label>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Modal End -->
-
-<!-- Offcanvas Menu Start -->
-<div id="offcanvas-body-wrapper" class="offcanvas-body-wrapper">
-    <div id="offcanvas-nav-close" class="offcanvas-nav-close offcanvas-menu-btn">
-        <a href="#" class="menu-times re-point">
-            <span></span>
-            <span></span>
-        </a>
-    </div>
-    <div class="offcanvas-main-body">
-        <ul id="accordion" class="offcanvas-nav panel-group">
-            <!-- Home -->
-            <li>
-                <a href="<?= URLBASE ?>">
-                    <i class="fa fa-home" aria-hidden="true"></i>Inicio
-                </a>
-            </li>
-
-            <!-- Categorías Dinámicas -->
-            <?php
-            $menuCats = db()->query("
-                SELECT c.name, c.slug
-                FROM blog_categories c
-                WHERE c.status='active' AND c.deleted=0
-                ORDER BY c.name ASC
-                LIMIT 10
-            ")->fetchAll(PDO::FETCH_ASSOC);
-            
-            if (!empty($menuCats)): ?>
-            <li class="panel panel-default">
-                <div class="panel-heading">
-                    <a aria-expanded="false" class="accordion-toggle collapsed" 
-                       data-toggle="collapse" data-parent="#accordion" href="#collapseCategories">
-                        <i class="fa fa-folder" aria-hidden="true"></i>Categorías
-                    </a>
-                </div>
-                <div aria-expanded="false" id="collapseCategories" role="tabpanel" class="panel-collapse collapse">
-                    <div class="panel-body">
-                        <ul class="offcanvas-sub-nav">
-                            <?php foreach ($menuCats as $cat): ?>
-                                <li>
-                                    <a href="<?= URLBASE ?>/noticias/<?= htmlspecialchars($cat['slug']) ?>/">
-                                        <?= htmlspecialchars(ucwords($cat['name'])) ?>
-                                    </a>
-                                </li>
-                            <?php endforeach; ?>
-                        </ul>
-                    </div>
-                </div>
-            </li>
-            <?php endif; ?>
-
-            <!-- Contacto -->
-            <li>
-                <a href="<?= URLBASE ?>/contact">
-                    <i class="fa fa-phone" aria-hidden="true"></i>Contacto
-                </a>
-            </li>
-
-            <!-- Políticas -->
-            <li>
-                <a href="<?= URLBASE ?>/privacy-policy">
-                    <i class="fa fa-shield" aria-hidden="true"></i>Política de Privacidad
-                </a>
-            </li>
-            <li>
-                <a href="<?= URLBASE ?>/terms-and-conditions">
-                    <i class="fa fa-file-text" aria-hidden="true"></i>Términos y Condiciones
-                </a>
-            </li>
-        </ul>
-    </div>
-</div>
-<!-- Offcanvas Menu End -->
-
-</div>
-<!-- Wrapper End -->
-
-<!-- jquery -->
-<script src="<?= URLBASE ?>/template/NewsEdge/js/jquery-2.2.4.min.js" type="text/javascript"></script>
-<!-- Plugins js -->
-<script src="<?= URLBASE ?>/template/NewsEdge/js/plugins.js" type="text/javascript"></script>
-<!-- Popper js -->
-<script src="<?= URLBASE ?>/template/NewsEdge/js/popper.js" type="text/javascript"></script>
-<!-- Bootstrap js -->
-<script src="<?= URLBASE ?>/template/NewsEdge/js/bootstrap.min.js" type="text/javascript"></script>
-<!-- WOW JS -->
-<script src="<?= URLBASE ?>/template/NewsEdge/js/wow.min.js"></script>
-<!-- Owl Cauosel JS -->
-<script src="<?= URLBASE ?>/template/NewsEdge/vendor/OwlCarousel/owl.carousel.min.js" type="text/javascript"></script>
-<!-- Meanmenu Js -->
-<script src="<?= URLBASE ?>/template/NewsEdge/js/jquery.meanmenu.min.js" type="text/javascript"></script>
-<!-- Srollup js -->
-<script src="<?= URLBASE ?>/template/NewsEdge/js/jquery.scrollUp.min.js" type="text/javascript"></script>
-<!-- jquery.counterup js -->
-<script src="<?= URLBASE ?>/template/NewsEdge/js/jquery.counterup.min.js"></script>
-<script src="<?= URLBASE ?>/template/NewsEdge/js/waypoints.min.js"></script>
-<!-- Isotope js -->
-<script src="<?= URLBASE ?>/template/NewsEdge/js/isotope.pkgd.min.js" type="text/javascript"></script>
-<!-- Magnific Popup -->
-<script src="<?= URLBASE ?>/template/NewsEdge/js/jquery.magnific-popup.min.js"></script>
-<!-- Ticker Js -->
-<script src="<?= URLBASE ?>/template/NewsEdge/js/ticker.js" type="text/javascript"></script>
-<!-- Custom Js -->
-<script src="<?= URLBASE ?>/template/NewsEdge/js/main.js" type="text/javascript"></script>
-
-<!-- Código personalizado del footer -->
-<?= $sys['code_footer'] ?? '' ?>
-
-<!-- Reproductor de radio -->
-<?php 
-$playerPath = __DIR__ . '/../../../inc/core/player.php';
-if (file_exists($playerPath)) {
-    include $playerPath;
-}
-?>
-
-</body>
 </html>
