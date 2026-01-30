@@ -17,49 +17,49 @@
     <?php endif; ?>
 
     <?php if (!empty($page_description)): ?>
-    <meta name="description" content="<​?= htmlspecialchars($page_description) ?>">
+    <meta name="description" content="<?= htmlspecialchars($page_description) ?>">
     <?php endif; ?>
 
     <?php if (!empty($page_keywords)): ?>
-    <meta name="keywords" content="<​?= htmlspecialchars($page_keywords) ?>">
+    <meta name="keywords" content="<?= htmlspecialchars($page_keywords) ?>">
     <?php endif; ?>
 
     <?php if (!empty($page_author)): ?>
-    <meta name="author" content="<​?= htmlspecialchars($page_author) ?>">
+    <meta name="author" content="<?= htmlspecialchars($page_author) ?>">
     <?php endif; ?>
 
     <?php if (!empty($page_canonical)): ?>
-    <link rel="canonical" href="<​?= htmlspecialchars($page_canonical) ?>">
+    <link rel="canonical" href="<?= htmlspecialchars($page_canonical) ?>">
     <?php endif; ?>
 
     <!-- Open Graph -->
     <?php if (!empty($page_title)): ?>
-    <meta property="og:title" content="<​?= htmlspecialchars($page_title) ?>">
+    <meta property="og:title" content="<?= htmlspecialchars($page_title) ?>">
     <?php endif; ?>
 
     <?php if (!empty($page_description)): ?>
-    <meta property="og:description" content="<​?= htmlspecialchars($page_description) ?>">
+    <meta property="og:description" content="<?= htmlspecialchars($page_description) ?>">
     <?php endif; ?>
 
     <?php if (!empty($page_image)): ?>
-    <meta property="og:image" content="<​?= htmlspecialchars($page_image) ?>">
+    <meta property="og:image" content="<?= htmlspecialchars($page_image) ?>">
     <?php endif; ?>
 
     <?php if (!empty($page_canonical)): ?>
-    <meta property="og:url" content="<​?= htmlspecialchars($page_canonical) ?>">
+    <meta property="og:url" content="<?= htmlspecialchars($page_canonical) ?>">
     <?php endif; ?>
     <meta property="og:type" content="website">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <?php if (!empty($page_title)): ?>
-    <meta name="twitter:title" content="<​?= htmlspecialchars($page_title) ?>">
+    <meta name="twitter:title" content="<?= htmlspecialchars($page_title) ?>">
     <?php endif; ?>
     <?php if (!empty($page_description)): ?>
-    <meta name="twitter:description" content="<​?= htmlspecialchars($page_description) ?>">
+    <meta name="twitter:description" content="<?= htmlspecialchars($page_description) ?>">
     <?php endif; ?>
     <?php if (!empty($page_image)): ?>
-    <meta name="twitter:image" content="<​?= htmlspecialchars($page_image) ?>">
+    <meta name="twitter:image" content="<?= htmlspecialchars($page_image) ?>">
     <?php endif; ?>
 
     <!-- Google Web Fonts -->
