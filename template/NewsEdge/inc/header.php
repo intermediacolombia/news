@@ -151,14 +151,14 @@
 
 /* Contenedor principal del slider */
 .main-slider1 {
-    height: 600px; /* Altura fija del slider */
+    height: 610px; /* Altura fija del slider */
     overflow: hidden;
     position: relative;
 }
 
 /* Contenedor del Nivo Slider */
 .main-slider1 .bend.niceties.preview-1 {
-    height: 600px !important;
+    height: 610px !important;
     overflow: hidden;
 }
 		
@@ -171,14 +171,14 @@
 .main-slider1 #ensign-nivoslider-3,
 .main-slider1 #ensign-nivoslider-3 img {
     width: 100%;
-    height: 600px !important;
+    height: 610px !important;
     object-fit: cover; /* Recorta la imagen para que encaje sin deformarse */
     object-position: center; /* Centra la imagen */
 }
 
 /* Contenedor de las direcciones del slider */
 .main-slider1 .slider-direction {
-    height: 600px;
+    height: 610px;
 }
 
 /* ========================================
