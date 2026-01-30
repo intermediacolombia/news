@@ -159,11 +159,11 @@
         $ad = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($ad && !empty($ad['image_url'])): ?>
             <?php if (!empty($ad['target_url'])): ?>
-                <a href="<​?= htmlspecialchars($ad['target_url']) ?>" target="_blank" rel="noopener">
-                    <img class="img-fluid" src="<​?= URLBASE . htmlspecialchars($ad['image_url']) ?>" alt="Publicidad">
+                <a href="<?= htmlspecialchars($ad['target_url']) ?>" target="_blank" rel="noopener">
+                    <img class="img-fluid" src="<?= URLBASE . htmlspecialchars($ad['image_url']) ?>" alt="Publicidad">
                 </a>
             <?php else: ?>
-                <img class="img-fluid" src="<​?= URLBASE . htmlspecialchars($ad['image_url']) ?>" alt="Publicidad">
+                <img class="img-fluid" src="<?= URLBASE . htmlspecialchars($ad['image_url']) ?>" alt="Publicidad">
             <?php endif; ?>
         <?php endif; ?>
     </div>
