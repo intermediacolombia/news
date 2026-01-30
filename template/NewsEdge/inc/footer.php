@@ -5,7 +5,7 @@
             <div class="row">
                 <!-- Logo y Redes Sociales -->
                 <div class="col-lg-3 col-md-6 mb-5 text-center text-lg-left">
-                    <a href="<​?= URLBASE ?>" class="footer-logo img-fluid d-block mb-3">
+                    <a href="<?= URLBASE ?>" class="footer-logo img-fluid d-block mb-3">
                         <img src="<?= URLBASE . SITE_LOGO ?>?<?= time() ?>" alt="Logo" class="img-fluid" style="max-width: 150px;">
                     </a>
                     <p class="text-muted"><?= htmlspecialchars($sys['info_footer'] ?? '') ?></p>
@@ -13,7 +13,7 @@
                     <ul class="footer-social">
                         <?php if (!empty($sys['facebook'])): ?>
                         <li>
-                            <a href="<​?= htmlspecialchars($sys['facebook']) ?>" target="_blank" title="facebook">
+                            <a href="<?= htmlspecialchars($sys['facebook']) ?>" target="_blank" title="facebook">
                                 <i class="fa fa-facebook" aria-hidden="true"></i>
                             </a>
                         </li>
@@ -21,7 +21,7 @@
                         
                         <?php if (!empty($sys['twitter'])): ?>
                         <li>
-                            <a href="<​?= htmlspecialchars($sys['twitter']) ?>" target="_blank" title="twitter">
+                            <a href="<?= htmlspecialchars($sys['twitter']) ?>" target="_blank" title="twitter">
                                 <i class="fa fa-twitter" aria-hidden="true"></i>
                             </a>
                         </li>
@@ -29,7 +29,7 @@
                         
                         <?php if (!empty($sys['instagram'])): ?>
                         <li>
-                            <a href="<​?= htmlspecialchars($sys['instagram']) ?>" target="_blank" title="instagram">
+                            <a href="<?= htmlspecialchars($sys['instagram']) ?>" target="_blank" title="instagram">
                                 <i class="fa fa-instagram" aria-hidden="true"></i>
                             </a>
                         </li>
@@ -37,7 +37,7 @@
                         
                         <?php if (!empty($sys['youtube'])): ?>
                         <li>
-                            <a href="<​?= htmlspecialchars($sys['youtube']) ?>" target="_blank" title="youtube">
+                            <a href="<?= htmlspecialchars($sys['youtube']) ?>" target="_blank" title="youtube">
                                 <i class="fa fa-youtube" aria-hidden="true"></i>
                             </a>
                         </li>
@@ -45,7 +45,7 @@
                         
                         <?php if (!empty($sys['tiktok'])): ?>
                         <li>
-                            <a href="<​?= htmlspecialchars($sys['tiktok']) ?>" target="_blank" title="tiktok">
+                            <a href="<?= htmlspecialchars($sys['tiktok']) ?>" target="_blank" title="tiktok">
                                 <i class="fa fa-tiktok" aria-hidden="true"></i>
                             </a>
                         </li>
@@ -53,7 +53,7 @@
                         
                         <?php if (!empty($sys['whatsapp'])): ?>
                         <li>
-                            <a href="<​?= htmlspecialchars($sys['whatsapp']) ?>" target="_blank" title="whatsapp">
+                            <a href="<?= htmlspecialchars($sys['whatsapp']) ?>" target="_blank" title="whatsapp">
                                 <i class="fa fa-whatsapp" aria-hidden="true"></i>
                             </a>
                         </li>
@@ -71,7 +71,7 @@
                 <div class="col-lg-3 col-md-6 mb-5">
                     <h4 class="font-weight-bold mb-4">Links Rápidos</h4>
                     <div class="d-flex flex-column justify-content-start">
-                        <a class="text-secondary mb-2" href="<​?= URLBASE ?>">
+                        <a class="text-secondary mb-2" href="<?= URLBASE ?>">
                             <i class="fa fa-angle-right mr-2"></i>Inicio
                         </a>
                         <a class="text-secondary mb-2" href="<?= URLBASE ?>/noticias">
@@ -98,7 +98,7 @@
                 <div class="col-12 text-center">
                     <p class="text-muted">
                         © <?= date('Y') ?> 
-                        <a href="<​?= URLBASE ?>" class="font-weight-bold"><?= NOMBRE_SITIO ?></a>. 
+                        <a href="<?= URLBASE ?>" class="font-weight-bold"><?= NOMBRE_SITIO ?></a>. 
                         Todos los derechos reservados.
                     </p>
                     <p class="text-muted small">
@@ -123,7 +123,7 @@
     <div class="offcanvas-main-body">
         <ul id="accordion" class="offcanvas-nav panel-group">
             <li>
-                <a href="<​?= URLBASE ?>">
+                <a href="<?= URLBASE ?>">
                     <i class="fa fa-home" aria-hidden="true"></i>Inicio
                 </a>
             </li>
