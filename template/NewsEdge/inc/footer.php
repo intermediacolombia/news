@@ -294,6 +294,9 @@
 <script src="<?= URLBASE ?>/template/NewsEdge/js/bootstrap.min.js" type="text/javascript"></script>
 <!-- WOW JS -->
 <script src="<?= URLBASE ?>/template/NewsEdge/js/wow.min.js"></script>
+<!-- Nivo Slider JS -->
+<script src="<?= URLBASE ?>/template/NewsEdge/vendor/slider/js/jquery.nivo.slider.js" type="text/javascript"></script>
+<script src="<?= URLBASE ?>/template/NewsEdge/vendor/slider/home.js" type="text/javascript"></script>
 <!-- Owl Cauosel JS -->
 <script src="<?= URLBASE ?>/template/NewsEdge/vendor/OwlCarousel/owl.carousel.min.js" type="text/javascript"></script>
 <!-- Meanmenu Js -->
@@ -311,6 +314,31 @@
 <script src="<?= URLBASE ?>/template/NewsEdge/js/ticker.js" type="text/javascript"></script>
 <!-- Custom Js -->
 <script src="<?= URLBASE ?>/template/NewsEdge/js/main.js" type="text/javascript"></script>
+
+<!-- Inicialización del Nivo Slider -->
+<script type="text/javascript">
+$(document).ready(function() {
+    // Inicializar Nivo Slider si existe
+    if ($('#ensign-nivoslider-3').length) {
+        $('#ensign-nivoslider-3').nivoSlider({
+            effect: 'random',
+            slices: 15,
+            boxCols: 8,
+            boxRows: 4,
+            animSpeed: 500,
+            pauseTime: 5000,
+            startSlide: 0,
+            directionNav: true,
+            controlNav: true,
+            controlNavThumbs: false,
+            pauseOnHover: true,
+            manualAdvance: false,
+            prevText: '<i class="fa fa-angle-left nivo-prev-icon"></i>',
+            nextText: '<i class="fa fa-angle-right nivo-next-icon"></i>'
+        });
+    }
+});
+</script>
 
 <!-- Código personalizado del footer -->
 <?= $sys['code_footer'] ?? '' ?>
