@@ -1,7 +1,7 @@
 <?php
-
-require_once __DIR__ . '/inc/config.php';
 /* ===== Consulta: Obtener Columnistas con su artículo más reciente ===== */
+/* IMPORTANTE: Esta versión usa p.author en lugar de p.author_user */
+
 $sqlColumnistas = "
     SELECT u.id, 
            u.nombre, 
@@ -9,28 +9,28 @@ $sqlColumnistas = "
            u.foto_perfil,
            (SELECT p.title 
             FROM blog_posts p 
-            WHERE p.author_user = u.username 
+            WHERE p.author = CONCAT(u.nombre, ' ', u.apellido)
               AND p.status = 'published' 
               AND p.deleted = 0 
             ORDER BY p.created_at DESC 
             LIMIT 1) as title,
            (SELECT p.slug 
             FROM blog_posts p 
-            WHERE p.author_user = u.username 
+            WHERE p.author = CONCAT(u.nombre, ' ', u.apellido)
               AND p.status = 'published' 
               AND p.deleted = 0 
             ORDER BY p.created_at DESC 
             LIMIT 1) as slug,
            (SELECT p.image 
             FROM blog_posts p 
-            WHERE p.author_user = u.username 
+            WHERE p.author = CONCAT(u.nombre, ' ', u.apellido)
               AND p.status = 'published' 
               AND p.deleted = 0 
             ORDER BY p.created_at DESC 
             LIMIT 1) as image,
            (SELECT p.created_at 
             FROM blog_posts p 
-            WHERE p.author_user = u.username 
+            WHERE p.author = CONCAT(u.nombre, ' ', u.apellido)
               AND p.status = 'published' 
               AND p.deleted = 0 
             ORDER BY p.created_at DESC 
