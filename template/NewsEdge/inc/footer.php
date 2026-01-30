@@ -7,7 +7,7 @@
                 <div class="col-lg-4 col-md-6 col-sm-12">
                     <div class="footer-box">
                         <h2 class="title-bold-light title-bar-left text-uppercase">Contáctanos</h2>
-                        <div class="footer-contact">
+                        <div class="footer-contact" style="color: #fff;">
                             <?php if (!empty($sys['info_footer'])): ?>
                                 <p class="mb-3"><?= htmlspecialchars($sys['info_footer']) ?></p>
                             <?php endif; ?>
