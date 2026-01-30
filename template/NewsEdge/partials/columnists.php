@@ -1,46 +1,16 @@
 <?php
-/* ===== Consulta: Obtener Columnistas con su artículo más reciente ===== */
-/* IMPORTANTE: Esta versión usa p.author en lugar de p.author_user */
-
+/* ===== Consulta: Obtener Columnistas Activos (solo ellos, no sus posts) ===== */
 $sqlColumnistas = "
     SELECT u.id, 
            u.nombre, 
            u.apellido, 
-           u.foto_perfil,
-           (SELECT p.title 
-            FROM blog_posts p 
-            WHERE p.author = CONCAT(u.nombre, ' ', u.apellido)
-              AND p.status = 'published' 
-              AND p.deleted = 0 
-            ORDER BY p.created_at DESC 
-            LIMIT 1) as title,
-           (SELECT p.slug 
-            FROM blog_posts p 
-            WHERE p.author = CONCAT(u.nombre, ' ', u.apellido)
-              AND p.status = 'published' 
-              AND p.deleted = 0 
-            ORDER BY p.created_at DESC 
-            LIMIT 1) as slug,
-           (SELECT p.image 
-            FROM blog_posts p 
-            WHERE p.author = CONCAT(u.nombre, ' ', u.apellido)
-              AND p.status = 'published' 
-              AND p.deleted = 0 
-            ORDER BY p.created_at DESC 
-            LIMIT 1) as image,
-           (SELECT p.created_at 
-            FROM blog_posts p 
-            WHERE p.author = CONCAT(u.nombre, ' ', u.apellido)
-              AND p.status = 'published' 
-              AND p.deleted = 0 
-            ORDER BY p.created_at DESC 
-            LIMIT 1) as created_at
+           u.username,
+           u.foto_perfil
     FROM usuarios u
     WHERE u.es_columnista = 1 
       AND u.estado = 0
       AND u.borrado = 0
-    HAVING title IS NOT NULL
-    ORDER BY created_at DESC
+    ORDER BY u.nombre ASC
     LIMIT 6
 ";
 
@@ -75,35 +45,47 @@ if (!empty($columnistas)):
              data-r-Large-dots="false">
             
             <?php foreach ($columnistas as $col): 
-                $postUrl = URLBASE . "/noticias/post/" . htmlspecialchars($col['slug']);
                 $nombreCompleto = htmlspecialchars($col['nombre'] . ' ' . $col['apellido']);
                 
-                // Priorizar foto de perfil del usuario, sino usar imagen del post
-                $fotoPerfil = !empty($col['foto_perfil']) 
-                    ? img_url($col['foto_perfil']) 
-                    : img_url($col['image']);
+                // Si tiene foto de perfil, usarla; si no, usar una imagen por defecto
+                if (!empty($col['foto_perfil'])) {
+                    $fotoPerfil = img_url($col['foto_perfil']);
+                } else {
+                    // Avatar por defecto con iniciales
+                    $fotoPerfil = 'data:image/svg+xml;base64,' . base64_encode('
+                    <svg width="400" height="400" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="400" height="400" fill="#667eea"/>
+                        <text x="50%" y="50%" font-size="120" fill="white" text-anchor="middle" dy=".35em" font-family="Arial">
+                            ' . strtoupper(substr($col['nombre'], 0, 1) . substr($col['apellido'], 0, 1)) . '
+                        </text>
+                    </svg>');
+                }
+                
+                // URL podría ir a un perfil del columnista o a sus artículos
+                // Por ahora lo dejo como # pero puedes cambiarlo
+                $columnistaUrl = URLBASE . "/columnista/" . htmlspecialchars($col['username']);
             ?>
             <div class="img-overlay-70-c">
                 <div class="mask-content-sm">
                     <div class="topic-box-sm color-cod-gray mb-20">
-                        <?= $nombreCompleto ?>
+                        COLUMNISTA
                     </div>
                     <h3 class="title-medium-light">
-                        <a href="<?= $postUrl ?>">
-                            <?= truncate_text($col['title'], 70) ?>
+                        <a href="<?= $columnistaUrl ?>">
+                            <?= $nombreCompleto ?>
                         </a>
                     </h3>
                 </div>
                 
                 <!-- Icono de Lápiz para Columnista -->
                 <div class="text-center">
-                    <a class="play-btn" href="<?= $postUrl ?>">
+                    <a class="play-btn" href="<?= $columnistaUrl ?>">
                         <i class="fa fa-pencil-square-o text-white" 
                            style="font-size: 40px; background: rgba(0,0,0,0.5); padding: 15px; border-radius: 50%;"></i>
                     </a>
                 </div>
                 
-                <!-- Imagen de Perfil del Columnista (o imagen del post si no tiene foto) -->
+                <!-- Foto de Perfil del Columnista -->
                 <img src="<?= $fotoPerfil ?>" 
                      alt="<?= $nombreCompleto ?>" 
                      class="img-fluid width-100"
