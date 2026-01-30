@@ -349,7 +349,7 @@ try {
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
  <div class="modal-dialog modal-lg">
    <div class="modal-content">
-     <form method="post" action="update_user.php" enctype="multipart/form-data" class="needs-validation" novalidate id="editForm">
+     <form method="post" action="edit.php" enctype="multipart/form-data" class="needs-validation" novalidate id="editForm">
        <div class="modal-header">
          <h5 class="modal-title" id="editModalLabel">Editar Usuario</h5>
          <!-- BS5 close -->
@@ -546,6 +546,12 @@ $(document).ready(function() {
     const columnista = $(this).data('columnista');
     const foto      = $(this).data('foto');
 
+    // DEBUG: Ver los valores en consola
+    console.log('=== DATOS DEL USUARIO ===');
+    console.log('ID:', id);
+    console.log('Columnista:', columnista, typeof columnista);
+    console.log('Foto:', foto);
+
     // Rellenar el modal de edición
     $('#editId').val(id);
     $('#editUsername').val(username);
@@ -554,9 +560,18 @@ $(document).ready(function() {
     $('#editCorreo').val(correo);
     $('#editRol').val(rol);
     $('#editEstado').val(estado);
-    $('#editEsColumnista').prop('checked', columnista == 1);
     $('#editFotoActual').val(foto);
     $('#editRemoveFoto').val('0');
+    
+    // IMPORTANTE: Establecer el checkbox correctamente
+    if (columnista == 1 || columnista === '1') {
+      $('#editEsColumnista').prop('checked', true);
+    } else {
+      $('#editEsColumnista').prop('checked', false);
+    }
+    
+    // DEBUG: Verificar checkbox
+    console.log('Checkbox checked:', $('#editEsColumnista').prop('checked'));
 
     // Mostrar foto de perfil
     if (foto) {
@@ -577,6 +592,17 @@ $(document).ready(function() {
     const modalEl = document.getElementById('editModal');
     const editBsModal = bootstrap.Modal.getOrCreateInstance(modalEl);
     editBsModal.show();
+  });
+  
+  // ===== DEBUG: Ver datos antes de enviar =====
+  $('#editForm').on('submit', function(e) {
+    console.log('=== ENVIANDO FORMULARIO ===');
+    console.log('ID:', $('#editId').val());
+    console.log('Es Columnista checked:', $('#editEsColumnista').prop('checked'));
+    console.log('Es Columnista value:', $('#editEsColumnista').val());
+    console.log('Foto actual:', $('#editFotoActual').val());
+    
+    // NO prevenir el envío, solo debug
   });
 
   // ===== Alternar visibilidad de contraseñas =====
