@@ -5,7 +5,7 @@
     </p>
 <![endif]-->
 
-<div id="preloader"></div>
+<!--div id="preloader"></div-->
 
 <div id="wrapper">
     <!-- Header Area Start Here -->
