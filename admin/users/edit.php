@@ -9,6 +9,10 @@ require_once '../login/restriction.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
+    // DEBUG: Registrar datos recibidos
+    error_log("POST Data: " . print_r($_POST, true));
+    error_log("FILES Data: " . print_r($_FILES, true));
+    
     // Recuperar datos del formulario
     $id          = intval($_POST['id'] ?? 0);
     $nombre      = trim($_POST['nombre'] ?? '');
@@ -20,6 +24,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $es_columnista = isset($_POST['es_columnista']) ? 1 : 0;
     $foto_actual = $_POST['foto_actual'] ?? '';
     $remove_foto = intval($_POST['remove_foto'] ?? 0);
+    
+    // DEBUG
+    error_log("ID: $id, Nombre: $nombre, Columnista: $es_columnista, Foto actual: $foto_actual");
 
     if ($id <= 0) {
         $_SESSION['error'] = "ID de usuario inválido.";
@@ -39,7 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit();
         }
 
-        // Manejo de imagen de perfil (MISMO SISTEMA QUE EL BLOG)
+        // Manejo de imagen de perfil
         $foto_perfil = $foto_actual;
         $uploadDir = '../../public/images/users/';
         
@@ -71,7 +78,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         unlink('../../' . $foto_actual);
                     }
                     
-                    // Generar nombre único para el archivo (MISMO FORMATO QUE EL BLOG)
+                    // Generar nombre único para el archivo
                     $timestamp = time();
                     $newFileName = $timestamp . '_' . preg_replace('/[^a-zA-Z0-9_.-]/', '_', $file['name']);
                     $uploadPath = $uploadDir . $newFileName;
@@ -140,9 +147,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         $stmtUpdate = db()->prepare($sqlUpdate);
-        $stmtUpdate->execute($params);
+        $result = $stmtUpdate->execute($params);
 
-        $_SESSION['success'] = "Usuario actualizado correctamente.";
+        if ($result) {
+            $_SESSION['success'] = "Usuario actualizado correctamente.";
+        } else {
+            $_SESSION['error'] = "No se pudo actualizar el usuario.";
+        }
+        
         header("Location: $url/admin/users");
         exit();
 
