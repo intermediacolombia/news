@@ -2,7 +2,7 @@
             <!-- News Info List Area Start Here -->
             <section class="bg-body">
 
-                <div class="container">
+                <!--div class="container">
                     <ul class="news-info-list text-center--sm">
                         <li>
                             <i class="fa fa-map-marker" aria-hidden="true"></i>Australia</li>
@@ -14,7 +14,7 @@
                             <i class="fa fa-cloud" aria-hidden="true"></i>29&#8451; Sydney, Australia</li>
                     </ul>
                 </div>
-            </section>
+            </section-->
             <!-- News Info List Area End Here -->
             <!-- Breadcrumb Area Start Here -->
             <!--section class="breadcrumbs-area" style="background-image: url('img/banner/breadcrumbs-banner.jpg');">
