@@ -9,24 +9,17 @@ require_once '../login/restriction.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
-    // DEBUG: Registrar datos recibidos
-    error_log("POST Data: " . print_r($_POST, true));
-    error_log("FILES Data: " . print_r($_FILES, true));
-    
-    // Recuperar datos del formulario
+    // Recuperar datos del formulario (IGUAL QUE new.php)
     $id          = intval($_POST['id'] ?? 0);
     $nombre      = trim($_POST['nombre'] ?? '');
     $apellido    = trim($_POST['apellido'] ?? '');
     $correo      = trim($_POST['correo'] ?? '');
-    $rol         = trim($_POST['rol'] ?? '');
-    $estado      = trim($_POST['estado'] ?? '');
+    $rol         = trim($_POST['rol'] ?? '');  // Mantener como string igual que new.php
+    $estado      = trim($_POST['estado'] ?? ''); // Mantener como string igual que new.php
     $password    = $_POST['password'] ?? '';
-    $es_columnista = isset($_POST['es_columnista']) ? 1 : 0;
+    $es_columnista = isset($_POST['es_columnista']) ? 1 : 0; // IGUAL que new.php
     $foto_actual = $_POST['foto_actual'] ?? '';
     $remove_foto = intval($_POST['remove_foto'] ?? 0);
-    
-    // DEBUG
-    error_log("ID: $id, Nombre: $nombre, Columnista: $es_columnista, Foto actual: $foto_actual");
 
     if ($id <= 0) {
         $_SESSION['error'] = "ID de usuario inválido.";
@@ -46,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit();
         }
 
-        // Manejo de imagen de perfil
+        // Manejo de imagen de perfil (IGUAL QUE new.php)
         $foto_perfil = $foto_actual;
         $uploadDir = '../../public/images/users/';
         
@@ -58,12 +51,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Si se marcó para eliminar la foto
         if ($remove_foto === 1) {
             if (!empty($foto_actual) && file_exists('../../' . $foto_actual)) {
-                unlink('../../' . $foto_actual);
+                @unlink('../../' . $foto_actual);
             }
             $foto_perfil = null;
         }
 
-        // Si se subió una nueva imagen
+        // Si se subió una nueva imagen (IGUAL QUE new.php)
         if (isset($_FILES['foto_perfil']) && $_FILES['foto_perfil']['error'] === UPLOAD_ERR_OK) {
             $file = $_FILES['foto_perfil'];
             $fileExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
@@ -75,10 +68,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 if ($file['size'] <= 2 * 1024 * 1024) {
                     // Eliminar foto anterior si existe
                     if (!empty($foto_actual) && file_exists('../../' . $foto_actual)) {
-                        unlink('../../' . $foto_actual);
+                        @unlink('../../' . $foto_actual);
                     }
                     
-                    // Generar nombre único para el archivo
+                    // Generar nombre único para el archivo (IGUAL QUE new.php)
                     $timestamp = time();
                     $newFileName = $timestamp . '_' . preg_replace('/[^a-zA-Z0-9_.-]/', '_', $file['name']);
                     $uploadPath = $uploadDir . $newFileName;
@@ -100,7 +93,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Preparar la consulta de actualización
         if (!empty($password)) {
-            // Si se proporciona una nueva contraseña, actualizar también la contraseña
+            // Si se proporciona una nueva contraseña
             $passwordHash = password_hash($password, PASSWORD_DEFAULT);
             $sqlUpdate = "UPDATE usuarios 
                           SET nombre = :nombre, 
@@ -112,7 +105,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                               es_columnista = :es_columnista,
                               foto_perfil = :foto_perfil
                           WHERE id = :id";
-            $params = [
+            
+            $stmtUpdate = db()->prepare($sqlUpdate);
+            $stmtUpdate->execute([
                 ':nombre'        => $nombre,
                 ':apellido'      => $apellido,
                 ':correo'        => $correo,
@@ -122,9 +117,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 ':es_columnista' => $es_columnista,
                 ':foto_perfil'   => $foto_perfil,
                 ':id'            => $id
-            ];
+            ]);
         } else {
-            // Si no se proporciona contraseña, no actualizar ese campo
+            // Si no se proporciona contraseña (EXACTAMENTE IGUAL QUE new.php)
             $sqlUpdate = "UPDATE usuarios 
                           SET nombre = :nombre, 
                               apellido = :apellido, 
@@ -134,7 +129,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                               es_columnista = :es_columnista,
                               foto_perfil = :foto_perfil
                           WHERE id = :id";
-            $params = [
+            
+            $stmtUpdate = db()->prepare($sqlUpdate);
+            $stmtUpdate->execute([
                 ':nombre'        => $nombre,
                 ':apellido'      => $apellido,
                 ':correo'        => $correo,
@@ -143,18 +140,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 ':es_columnista' => $es_columnista,
                 ':foto_perfil'   => $foto_perfil,
                 ':id'            => $id
-            ];
+            ]);
         }
 
-        $stmtUpdate = db()->prepare($sqlUpdate);
-        $result = $stmtUpdate->execute($params);
-
-        if ($result) {
-            $_SESSION['success'] = "Usuario actualizado correctamente.";
-        } else {
-            $_SESSION['error'] = "No se pudo actualizar el usuario.";
-        }
-        
+        $_SESSION['success'] = "Usuario actualizado correctamente.";
         header("Location: $url/admin/users");
         exit();
 
