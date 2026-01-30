@@ -47,7 +47,10 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                     <div class="row">
                         
                       <?php include __DIR__ . '/partials/lastest.php'; ?>
+						
+						<div class="ne-sidebar sidebar-break-lg col-xl-4 col-lg-12">
                       <?php include __DIR__ . '/partials/sidebar.php'; ?>
+						</div>	
                     </div>
                 </div>
             </section>

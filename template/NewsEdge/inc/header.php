@@ -151,29 +151,34 @@
 
 /* Contenedor principal del slider */
 .main-slider1 {
-    height: 500px; /* Altura fija del slider */
+    height: 532px; /* Altura fija del slider */
     overflow: hidden;
     position: relative;
 }
 
 /* Contenedor del Nivo Slider */
 .main-slider1 .bend.niceties.preview-1 {
-    height: 500px !important;
+    height: 532px !important;
     overflow: hidden;
+}
+		
+		.img-fluid-home{
+    max-width: 140px;
+    height: auto;
 }
 
 /* Imágenes del slider */
 .main-slider1 #ensign-nivoslider-3,
 .main-slider1 #ensign-nivoslider-3 img {
     width: 100%;
-    height: 500px !important;
+    height: 532px !important;
     object-fit: cover; /* Recorta la imagen para que encaje sin deformarse */
     object-position: center; /* Centra la imagen */
 }
 
 /* Contenedor de las direcciones del slider */
 .main-slider1 .slider-direction {
-    height: 500px;
+    height: 532px;
 }
 
 /* ========================================
@@ -228,7 +233,32 @@
     max-height: 500px;
 }
 */
+	
 		
+	@media (min-width: 1200px) {
+    .container, .container-lg, .container-md, .container-sm, .container-xl {
+        max-width: 1300px;
+    }
+}
+	.topic-border {
+    position: relative;
+    padding-right: 140px; /* ⬅️ espacio reservado para "Ver más" */
+}
+
+.more-info-link {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-left: 20px; /* separación visual */
+    white-space: nowrap;
+}
+
+/* separación interna entre categorías y borde derecho */
+.isotope-classes-tab {
+    padding-right: 20px;
+}
+
     </style>
 </head>
 

@@ -41,7 +41,7 @@ $isotopePosts = db()->query($sqlIsotope)->fetchAll();
                         <?php endforeach; ?>
                     </div>
                     <div class="more-info-link">
-                        <a href="<?= URLBASE ?>/noticias">Ver más
+                        <a href="<?= URLBASE ?>/noticias/">Ver más
                             <i class="fa fa-angle-right" aria-hidden="true"></i>
                         </a>
                     </div>
@@ -52,7 +52,7 @@ $isotopePosts = db()->query($sqlIsotope)->fetchAll();
                     <?php foreach ($isotopePosts as $post): 
                         // La clase CSS debe coincidir con el data-filter de arriba
                         $itemClass = !empty($post['category_slug']) ? htmlspecialchars($post['category_slug']) : 'sin-categoria';
-                        $postUrl = URLBASE . "/noticias/post/" . htmlspecialchars($post['slug']);
+                        $postUrl = URLBASE . "/" . htmlspecialchars($post['category_slug']) . "/" . htmlspecialchars($post['slug']) . "/";
                     ?>
                         <div class="col-lg-4 col-md-6 col-sm-6 col-12 <?= $itemClass ?>">
                             <div class="img-overlay-70 img-scale-animate mb-10">

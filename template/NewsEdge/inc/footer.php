@@ -1,3 +1,21 @@
+<?php
+/**
+ * FOOTER DINÁMICO - NEWSEDGE
+ * Helpers necesarios para evitar errores
+ */
+
+// Helper para truncar texto
+if (!function_exists('truncate_text')) {
+    function truncate_text(string $text, int $limit = 100): string {
+        $text = strip_tags($text);
+        return (mb_strlen($text) > $limit) ? mb_substr($text, 0, $limit) . '...' : $text;
+    }
+}
+
+// Variables globales
+global $sys;
+?>
+
 <!-- Footer Area Start Here -->
 <footer>
     <div class="footer-area-top">
@@ -7,23 +25,23 @@
                 <div class="col-lg-4 col-md-6 col-sm-12">
                     <div class="footer-box">
                         <h2 class="title-bold-light title-bar-left text-uppercase">Contáctanos</h2>
-                        <div class="footer-contact" style="color: #fff;">
+                        <div class="footer-contact">
                             <?php if (!empty($sys['info_footer'])): ?>
-                                <p class="mb-3"><?= htmlspecialchars($sys['info_footer']) ?></p>
+                                <p class="footer-text mb-3"><?= htmlspecialchars($sys['info_footer']) ?></p>
                             <?php endif; ?>
                             
                             <?php if (!empty($sys['business_address'])): ?>
-                                <p class="mb-2">
+                                <p class="footer-contact-item mb-2">
                                     <i class="fa fa-map-marker" aria-hidden="true"></i>
-                                    <span style="margin-left: 10px;"><?= htmlspecialchars($sys['business_address']) ?></span>
+                                    <span><?= htmlspecialchars($sys['business_address']) ?></span>
                                 </p>
                             <?php endif; ?>
                             
                             <?php if (!empty($sys['site_email'])): ?>
-                                <p class="mb-2">
+                                <p class="footer-contact-item mb-2">
                                     <i class="fa fa-envelope" aria-hidden="true"></i>
-                                    <span style="margin-left: 10px;">
-                                        <a href="mailto:<?= htmlspecialchars($sys['site_email']) ?>" style="color: inherit;">
+                                    <span>
+                                        <a href="mailto:<?= htmlspecialchars($sys['site_email']) ?>" class="footer-link">
                                             <?= htmlspecialchars($sys['site_email']) ?>
                                         </a>
                                     </span>
@@ -31,10 +49,10 @@
                             <?php endif; ?>
                             
                             <?php if (!empty($sys['business_phone'])): ?>
-                                <p class="mb-2">
+                                <p class="footer-contact-item mb-2">
                                     <i class="fa fa-phone" aria-hidden="true"></i>
-                                    <span style="margin-left: 10px;">
-                                        <a href="tel:<?= htmlspecialchars($sys['business_phone']) ?>" style="color: inherit;">
+                                    <span>
+                                        <a href="tel:<?= htmlspecialchars($sys['business_phone']) ?>" class="footer-link">
                                             <?= htmlspecialchars($sys['business_phone']) ?>
                                         </a>
                                     </span>
@@ -42,12 +60,12 @@
                             <?php endif; ?>
                             
                             <?php if (!empty($sys['whatsapp'])): ?>
-                                <p class="mb-2">
+                                <p class="footer-contact-item mb-2">
                                     <i class="fa fa-whatsapp" aria-hidden="true"></i>
-                                    <span style="margin-left: 10px;">
+                                    <span>
                                         <a href="https://wa.me/<?= preg_replace('/[^0-9]/', '', $sys['whatsapp']) ?>" 
                                            target="_blank" 
-                                           style="color: inherit;">
+                                           class="footer-link">
                                             WhatsApp
                                         </a>
                                     </span>
@@ -57,26 +75,28 @@
                     </div>
                 </div>
 
-                <!-- Columna 2: Últimas Noticias (solo títulos, máx 5) -->
+                <!-- Columna 2: Últimas Noticias -->
                 <div class="col-xl-4 col-lg-3 col-md-6 col-sm-12">
                     <div class="footer-box">
                         <h2 class="title-bold-light title-bar-left text-uppercase">Últimas Noticias</h2>
                         <ul class="popular-categories">
                             <?php
                             $latestNews = db()->query("
-                                SELECT p.title, p.slug
+                                SELECT p.title, p.slug, c.slug as category_slug
                                 FROM blog_posts p
+                                LEFT JOIN blog_post_category pc ON pc.post_id = p.id
+                                LEFT JOIN blog_categories c ON c.id = pc.category_id
                                 WHERE p.status='published' AND p.deleted=0
                                 ORDER BY p.created_at DESC
                                 LIMIT 5
                             ")->fetchAll(PDO::FETCH_ASSOC);
                             
                             foreach ($latestNews as $news):
-                                $postUrl = URLBASE . "/noticias/post/" . htmlspecialchars($news['slug']);
+                                $postUrl = URLBASE . "/" . htmlspecialchars($news['category_slug']) . "/" . htmlspecialchars($news['slug']) . "/";
                             ?>
                                 <li>
-                                    <a href="<?= $postUrl ?>" style="display: block; padding: 8px 0;">
-                                        <i class="fa fa-angle-right" style="margin-right: 8px;"></i>
+                                    <a href="<?= $postUrl ?>" class="footer-news-link">
+                                        <i class="fa fa-angle-right footer-icon"></i>
                                         <?= htmlspecialchars(truncate_text($news['title'], 50)) ?>
                                     </a>
                                 </li>
@@ -106,7 +126,7 @@
                             
                             foreach ($cats as $cat): ?>
                                 <li>
-                                    <a href="<?= URLBASE ?>/noticias/<?= htmlspecialchars($cat['slug']) ?>/">
+                                    <a href="<?= URLBASE ?>/<?= htmlspecialchars($cat['slug']) ?>/">
                                         <?= htmlspecialchars(ucwords($cat['name'])) ?>
                                         <span><?= $cat['total'] ?></span>
                                     </a>
@@ -124,11 +144,10 @@
             <div class="row">
                 <div class="col-12 text-center">
                     <!-- Logo -->
-                    <a href="<?= URLBASE ?>" class="footer-logo img-fluid">
+                    <a href="<?= URLBASE ?>" class="footer-logo">
                         <img src="<?= URLBASE . SITE_LOGO ?>?v=<?= time() ?>" 
                              alt="<?= htmlspecialchars($sys['site_name']) ?>" 
-                             class="img-fluid" 
-                             style="max-width: 200px;">
+                             class="img-fluid footer-logo-img">
                     </a>
 
                     <!-- Redes Sociales -->
@@ -157,14 +176,14 @@
                     </ul>
 
                     <!-- Copyright -->
-                    <p>
+                    <p class="footer-copyright">
                         © <?= date('Y') ?> 
                         <strong><?= htmlspecialchars($sys['site_name']) ?></strong>. 
                         Todos los derechos reservados.
                     </p>
-                    <p style="margin-top: 5px; font-size: 13px;">
+                    <p class="footer-credits">
                         Hosting & Diseño por 
-                        <a href="https://www.intermediahost.co" target="_blank" style="color: inherit; font-weight: bold;">
+                        <a href="https://www.intermediahost.co" target="_blank" class="footer-credits-link">
                             Intermedia Host
                         </a>
                     </p>
@@ -174,6 +193,73 @@
     </div>
 </footer>
 <!-- Footer Area End Here -->
+
+<style>
+    /* Footer Contact */
+    .footer-contact {
+        color: #fff;
+    }
+    
+    .footer-text {
+        line-height: 1.6;
+    }
+    
+    .footer-contact-item {
+        display: flex;
+        align-items: start;
+    }
+    
+    .footer-contact-item i {
+        margin-right: 10px;
+        margin-top: 3px;
+        flex-shrink: 0;
+    }
+    
+    .footer-link {
+        color: inherit;
+        transition: color 0.3s ease;
+    }
+    
+    .footer-link:hover {
+        color: var(--primary);
+    }
+    
+    /* Footer News Links */
+    .footer-news-link {
+        display: block;
+        padding: 8px 0;
+        transition: color 0.3s ease;
+    }
+    
+    .footer-icon {
+        margin-right: 8px;
+    }
+    
+    /* Footer Logo */
+    .footer-logo-img {
+        max-width: 200px;
+    }
+    
+    /* Footer Copyright */
+    .footer-copyright {
+        margin-top: 15px;
+    }
+    
+    .footer-credits {
+        margin-top: 5px;
+        font-size: 13px;
+    }
+    
+    .footer-credits-link {
+        color: inherit;
+        font-weight: bold;
+        transition: color 0.3s ease;
+    }
+    
+    .footer-credits-link:hover {
+        color: var(--primary);
+    }
+</style>
 
 <!-- Modal Start (Login Form) -->
 <div class="modal fade" id="myModal" role="dialog">
@@ -247,7 +333,7 @@
                         <ul class="offcanvas-sub-nav">
                             <?php foreach ($menuCats as $cat): ?>
                                 <li>
-                                    <a href="<?= URLBASE ?>/noticias/<?= htmlspecialchars($cat['slug']) ?>/">
+                                    <a href="<?= URLBASE ?>/<?= htmlspecialchars($cat['slug']) ?>/">
                                         <?= htmlspecialchars(ucwords($cat['name'])) ?>
                                     </a>
                                 </li>
@@ -284,41 +370,27 @@
 </div>
 <!-- Wrapper End -->
 
-<!-- jquery -->
-<script src="<?= URLBASE ?>/template/NewsEdge/js/jquery-2.2.4.min.js" type="text/javascript"></script>
-<!-- Plugins js -->
-<script src="<?= URLBASE ?>/template/NewsEdge/js/plugins.js" type="text/javascript"></script>
-<!-- Popper js -->
-<script src="<?= URLBASE ?>/template/NewsEdge/js/popper.js" type="text/javascript"></script>
-<!-- Bootstrap js -->
-<script src="<?= URLBASE ?>/template/NewsEdge/js/bootstrap.min.js" type="text/javascript"></script>
-<!-- WOW JS -->
+<!-- Scripts -->
+<script src="<?= URLBASE ?>/template/NewsEdge/js/jquery-2.2.4.min.js"></script>
+<script src="<?= URLBASE ?>/template/NewsEdge/js/plugins.js"></script>
+<script src="<?= URLBASE ?>/template/NewsEdge/js/popper.js"></script>
+<script src="<?= URLBASE ?>/template/NewsEdge/js/bootstrap.min.js"></script>
 <script src="<?= URLBASE ?>/template/NewsEdge/js/wow.min.js"></script>
-<!-- Nivo Slider JS -->
-<script src="<?= URLBASE ?>/template/NewsEdge/vendor/slider/js/jquery.nivo.slider.js" type="text/javascript"></script>
-<script src="<?= URLBASE ?>/template/NewsEdge/vendor/slider/home.js" type="text/javascript"></script>
-<!-- Owl Cauosel JS -->
-<script src="<?= URLBASE ?>/template/NewsEdge/vendor/OwlCarousel/owl.carousel.min.js" type="text/javascript"></script>
-<!-- Meanmenu Js -->
-<script src="<?= URLBASE ?>/template/NewsEdge/js/jquery.meanmenu.min.js" type="text/javascript"></script>
-<!-- Srollup js -->
-<script src="<?= URLBASE ?>/template/NewsEdge/js/jquery.scrollUp.min.js" type="text/javascript"></script>
-<!-- jquery.counterup js -->
+<script src="<?= URLBASE ?>/template/NewsEdge/vendor/slider/js/jquery.nivo.slider.js"></script>
+<script src="<?= URLBASE ?>/template/NewsEdge/vendor/slider/home.js"></script>
+<script src="<?= URLBASE ?>/template/NewsEdge/vendor/OwlCarousel/owl.carousel.min.js"></script>
+<script src="<?= URLBASE ?>/template/NewsEdge/js/jquery.meanmenu.min.js"></script>
+<script src="<?= URLBASE ?>/template/NewsEdge/js/jquery.scrollUp.min.js"></script>
 <script src="<?= URLBASE ?>/template/NewsEdge/js/jquery.counterup.min.js"></script>
 <script src="<?= URLBASE ?>/template/NewsEdge/js/waypoints.min.js"></script>
-<!-- Isotope js -->
-<script src="<?= URLBASE ?>/template/NewsEdge/js/isotope.pkgd.min.js" type="text/javascript"></script>
-<!-- Magnific Popup -->
+<script src="<?= URLBASE ?>/template/NewsEdge/js/isotope.pkgd.min.js"></script>
 <script src="<?= URLBASE ?>/template/NewsEdge/js/jquery.magnific-popup.min.js"></script>
-<!-- Ticker Js -->
-<script src="<?= URLBASE ?>/template/NewsEdge/js/ticker.js" type="text/javascript"></script>
-<!-- Custom Js -->
-<script src="<?= URLBASE ?>/template/NewsEdge/js/main.js" type="text/javascript"></script>
+<script src="<?= URLBASE ?>/template/NewsEdge/js/ticker.js"></script>
+<script src="<?= URLBASE ?>/template/NewsEdge/js/main.js"></script>
 
 <!-- Inicialización del Nivo Slider -->
-<script type="text/javascript">
+<script>
 $(document).ready(function() {
-    // Inicializar Nivo Slider si existe
     if ($('#ensign-nivoslider-3').length) {
         $('#ensign-nivoslider-3').nivoSlider({
             effect: 'random',
@@ -340,6 +412,22 @@ $(document).ready(function() {
 });
 </script>
 
+<!-- Isotope Filter -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const filterLinks = document.querySelectorAll(".isotope-classes-tab a");
+    filterLinks.forEach(link => {
+        link.addEventListener("click", function (e) {
+            e.preventDefault();
+            filterLinks.forEach(l => l.classList.remove("current"));
+            this.classList.add("current");
+            const filterValue = this.getAttribute("data-filter");
+            $('.featuredContainer').isotope({ filter: filterValue });
+        });
+    });
+});
+</script>
+
 <!-- Código personalizado del footer -->
 <?= $sys['code_footer'] ?? '' ?>
 
@@ -350,6 +438,28 @@ if (file_exists($playerPath)) {
     include $playerPath;
 }
 ?>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const filterLinks = document.querySelectorAll(".isotope-classes-tab a");
+
+    filterLinks.forEach(link => {
+        link.addEventListener("click", function (e) {
+            e.preventDefault();
+
+            // quitar clase current
+            filterLinks.forEach(l => l.classList.remove("current"));
+
+            // marcar el activo
+            this.classList.add("current");
+
+            // aplicar filtro Isotope
+            const filterValue = this.getAttribute("data-filter");
+            $('.featuredContainer').isotope({ filter: filterValue });
+        });
+    });
+});
+</script>
 
 </body>
 </html>

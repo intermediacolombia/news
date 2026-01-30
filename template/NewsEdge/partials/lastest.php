@@ -9,7 +9,7 @@ $sqlLatest = "
     WHERE p.status = 'published' AND p.deleted = 0
     GROUP BY p.id
     ORDER BY p.created_at DESC
-    LIMIT 4
+    LIMIT 8
 ";
 $latestNews = db()->query($sqlLatest)->fetchAll();
 ?>
@@ -22,7 +22,7 @@ $latestNews = db()->query($sqlLatest)->fetchAll();
         <div class="row">
             <?php foreach ($latestNews as $news): 
                 $excerpt = truncate_text(strip_tags($news['content']), 150);
-                $postUrl = URLBASE . "/noticias/post/" . htmlspecialchars($news['slug']);
+                $postUrl = URLBASE . "/" . htmlspecialchars($news['category_slug']) . "/" . htmlspecialchars($news['slug']) . "/";
             ?>
             <div class="col-lg-12 col-md-6 col-sm-12">
                 <div class="media media-none--md mb-30">

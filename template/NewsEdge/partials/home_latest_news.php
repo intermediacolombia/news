@@ -107,7 +107,7 @@ $sidebarNews = db()->query($sqlSidebar)->fetchAll();
                                                 <?php if (!empty($slide['author'])): ?>
                                                 <li>
                                                     <span>por</span>
-                                                    <a href="<?= URLBASE ?>/noticias/post/<?= htmlspecialchars($slide['slug']) ?>">
+                                                    <a href="<?= URLBASE ?>/<?= htmlspecialchars($slide['category_slug']) ?>/<?= htmlspecialchars($slide['slug']) ?>/">
                                                         <?= htmlspecialchars($slide['author']) ?>
                                                     </a>
                                                 </li>
@@ -122,7 +122,7 @@ $sidebarNews = db()->query($sqlSidebar)->fetchAll();
                                         </div>
                                         
                                         <div class="slider-title">
-                                            <a href="<?= URLBASE ?>/noticias/post/<?= htmlspecialchars($slide['slug']) ?>" 
+                                            <a href="<?= URLBASE ?>/<?= htmlspecialchars($slide['category_slug']) ?>/<?= htmlspecialchars($slide['slug']) ?>/" 
                                                class="text-white">
                                                 <?= truncate_text($slide['title'], 100) ?>
                                             </a>
@@ -148,10 +148,10 @@ $sidebarNews = db()->query($sqlSidebar)->fetchAll();
                         ?>
                         <div class="media mb-30 col-xl-12 col-lg-6 col-md-6 col-sm-12">
                             <a class="img-opacity-hover" 
-                               href="<?= URLBASE ?>/noticias/post/<?= htmlspecialchars($sideNews['slug']) ?>">
+                               href="<?= URLBASE ?>/<?= htmlspecialchars($sideNews['category_slug']) ?>/<?= htmlspecialchars($sideNews['slug']) ?>/">
                                 <img src="<?= $sideImageUrl ?>" 
                                      alt="<?= htmlspecialchars($sideNews['title']) ?>" 
-                                     class="img-fluid"
+                                     class="img-fluid-home"
                                      style="max-height: 120px; object-fit: cover; width: 100%;">
                             </a>
                             <div class="media-body media-padding5">
@@ -166,7 +166,7 @@ $sidebarNews = db()->query($sqlSidebar)->fetchAll();
                                     </ul>
                                 </div>
                                 <h3 class="title-medium-dark size-md mb-none">
-                                    <a href="<?= URLBASE ?>/noticias/post/<?= htmlspecialchars($sideNews['slug']) ?>">
+                                    <a href="<?= URLBASE ?>/<?= htmlspecialchars($sideNews['category_slug']) ?>/<?= htmlspecialchars($sideNews['slug']) ?>/">
                                         <?= truncate_text($sideNews['title'], 60) ?>
                                     </a>
                                 </h3>

@@ -19,7 +19,7 @@
                                 <ul class="news-info-list text-center--md">
                                     <li>
                                         <i class="fa fa-map-marker" aria-hidden="true"></i>
-                                        <?php echo date('L') ? 'Ubicación' : 'Soporte'; ?>
+                                        <?= htmlspecialchars($sys['business_address']) ?>
                                     </li>
                                     <li>
                                         <i class="fa fa-calendar" aria-hidden="true"></i>
@@ -32,13 +32,38 @@
                                 </ul>
                             </div>
                             <div class="col-lg-4 d-none d-lg-block">
-                                <ul class="header-social">
-                                    <li><a href="#" title="facebook"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
-                                    <li><a href="#" title="twitter"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
-                                    <li><a href="#" title="linkedin"><i class="fa fa-linkedin" aria-hidden="true"></i></a></li>
-                                    <li><a href="#" title="rss"><i class="fa fa-rss" aria-hidden="true"></i></a></li>
-                                </ul>
-                            </div>
+    <ul class="header-social">
+        <?php
+        // Definimos el mapeo de redes sociales: 'clave_en_db' => 'icono_font_awesome'
+        $redesHeader = [
+            'facebook'  => 'fa-facebook',
+            'twitter'   => 'fa-twitter',
+            'instagram' => 'fa-instagram',
+            'youtube'   => 'fa-youtube',
+            'tiktok'    => 'fa-music', // FontAwesome 4.7 no tiene icono de TikTok, se suele usar fa-music
+            'linkedin'  => 'fa-linkedin'
+        ];
+        
+        foreach ($redesHeader as $red => $icono):
+            if (!empty($sys[$red])): // Si la red social no está vacía en la configuración
+        ?>
+            <li>
+                <a href="<?= htmlspecialchars($sys[$red]) ?>" 
+                   title="<?= ucfirst($red) ?>" 
+                   target="_blank">
+                    <i class="fa <?= $icono ?>" aria-hidden="true"></i>
+                </a>
+            </li>
+        <?php 
+            endif; 
+        endforeach; 
+        ?>
+        
+        <?php if (!empty($sys['rss'])): ?>
+            <li><a href="<?= htmlspecialchars($sys['rss']) ?>" title="rss"><i class="fa fa-rss" aria-hidden="true"></i></a></li>
+        <?php endif; ?>
+    </ul>
+</div>
                         </div>
                     </div>
                 </div>
@@ -169,34 +194,37 @@
     </div>
 
     <!-- News Feed Area (Ticker Dinámico) -->
-    <section class="container">
-        <div class="bg-body-color ml-15 pr-15 mb-10 mt-10">
-            <div class="row no-gutters d-flex align-items-center">
-                <div class="col-lg-2 col-md-3 col-sm-4 col-5">
-                    <div class="topic-box">ÚLTIMAS NOTICIAS</div>
-                </div>
-                <div class="col-lg-10 col-md-9 col-sm-8 col-7">
-                    <div class="feeding-text-light2">
-                        <ol id="sample" class="ticker">
-                            <?php
-                            $stTicker = db()->query("
-                                SELECT title, slug 
-                                FROM blog_posts 
-                                WHERE status = 'published' AND deleted = 0 
-                                ORDER BY created_at DESC 
-                                LIMIT 5
-                            ");
-                            $tickerNews = $stTicker->fetchAll(PDO::FETCH_ASSOC);
-                            foreach ($tickerNews as $news): ?>
-                                <li>
-                                    <a href="<?= URLBASE ?>/noticias/post/<?= htmlspecialchars($news['slug']) ?>">
-                                        <?= htmlspecialchars($news['title']) ?>
-                                    </a>
-                                </li>
-                            <?php endforeach; ?>
-                        </ol>
-                    </div>
+<section class="container">
+    <div class="bg-body-color ml-15 pr-15 mb-10 mt-10">
+        <div class="row no-gutters d-flex align-items-center">
+            <div class="col-lg-2 col-md-3 col-sm-4 col-5">
+                <div class="topic-box">ÚLTIMAS NOTICIAS</div>
+            </div>
+            <div class="col-lg-10 col-md-9 col-sm-8 col-7">
+                <div class="feeding-text-light2">
+                    <ol id="sample" class="ticker">
+                        <?php
+                        $stTicker = db()->query("
+                            SELECT p.title, p.slug, c.slug AS category_slug
+                            FROM blog_posts p
+                            LEFT JOIN blog_post_category pc ON pc.post_id = p.id
+                            LEFT JOIN blog_categories c ON c.id = pc.category_id
+                            WHERE p.status = 'published' AND p.deleted = 0 
+                            GROUP BY p.id
+                            ORDER BY p.created_at DESC 
+                            LIMIT 5
+                        ");
+                        $tickerNews = $stTicker->fetchAll(PDO::FETCH_ASSOC);
+                        foreach ($tickerNews as $news): ?>
+                            <li>
+                                <a href="<?= URLBASE ?>/<?= htmlspecialchars($news['category_slug']) ?>/<?= htmlspecialchars($news['slug']) ?>/">
+                                    <?= htmlspecialchars($news['title']) ?>
+                                </a>
+                            </li>
+                        <?php endforeach; ?>
+                    </ol>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
