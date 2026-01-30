@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 require_once '../../inc/config.php';
 require_once '../login/session.php';
 
@@ -37,9 +39,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit();
         }
 
-        // Manejo de imagen de perfil
+        // Manejo de imagen de perfil (MISMO SISTEMA QUE EL BLOG)
         $foto_perfil = $foto_actual;
-        $uploadDir = '../../uploads/profile_images/';
+        $uploadDir = '../../public/images/users/';
         
         // Crear directorio si no existe
         if (!file_exists($uploadDir)) {
@@ -58,7 +60,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (isset($_FILES['foto_perfil']) && $_FILES['foto_perfil']['error'] === UPLOAD_ERR_OK) {
             $file = $_FILES['foto_perfil'];
             $fileExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
             
             // Validar extensión
             if (in_array($fileExtension, $allowedExtensions)) {
@@ -69,12 +71,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         unlink('../../' . $foto_actual);
                     }
                     
-                    // Generar nombre único para el archivo
-                    $newFileName = 'profile_' . uniqid() . '.' . $fileExtension;
+                    // Generar nombre único para el archivo (MISMO FORMATO QUE EL BLOG)
+                    $timestamp = time();
+                    $newFileName = $timestamp . '_' . preg_replace('/[^a-zA-Z0-9_.-]/', '_', $file['name']);
                     $uploadPath = $uploadDir . $newFileName;
                     
                     if (move_uploaded_file($file['tmp_name'], $uploadPath)) {
-                        $foto_perfil = 'uploads/profile_images/' . $newFileName;
+                        $foto_perfil = 'public/images/users/' . $newFileName;
                     }
                 } else {
                     $_SESSION['error'] = "La imagen no debe superar 2MB.";
@@ -82,7 +85,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     exit();
                 }
             } else {
-                $_SESSION['error'] = "Formato de imagen no permitido. Use JPG, PNG o GIF.";
+                $_SESSION['error'] = "Formato de imagen no permitido. Use JPG, PNG, GIF o WebP.";
                 header("Location: $url/admin/users");
                 exit();
             }
