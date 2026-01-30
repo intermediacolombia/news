@@ -1,4 +1,6 @@
 <?php
+
+require_once __DIR__ . '/inc/config.php';
 /* ===== Consulta: Obtener Columnistas con su artículo más reciente ===== */
 $sqlColumnistas = "
     SELECT u.id, 
