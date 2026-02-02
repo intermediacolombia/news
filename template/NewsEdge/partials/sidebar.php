@@ -206,7 +206,7 @@ $tags = array_slice(array_keys($freq), 0, 9);
     <div class="row">
         <?php foreach ($categories as $cat): ?>
         <div class="col-12 mb-15">
-            <a href="<?= URLBASE ?>/<?= htmlspecialchars($cat['slug']) ?>/" class="sidebar-category-item">
+            <a href="<?= URLBASE ?>/noticias/<?= htmlspecialchars($cat['slug']) ?>/" class="sidebar-category-item">
                 <div class="sidebar-category-content">
                     <span class="sidebar-category-name size-md">
                         <?= htmlspecialchars($cat['name']) ?>
