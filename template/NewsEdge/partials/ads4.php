@@ -32,9 +32,9 @@ $cuadrados    = array_filter($ads, fn($a) => $a['type'] === 'square');
         <?php if ($horizontales): ?>
             <div class="ne-main-content mb-50">
                 <!-- Título de sección con estilo del tema -->
-                <div class="topic-border color-royal-blue mb-30">
-                    <div class="topic-box-lg color-royal-blue">Publicidad Destacada</div>
-                </div>
+                <div class="topic-border color-cinnabar mb-25">
+        <div class="topic-box-lg color-cinnabar">Publicidad</div>
+    </div>
                 
                 <div class="row">
                     <?php foreach ($horizontales as $ad): 
