@@ -28,11 +28,7 @@ $username = $_GET['columnist_slug'] ?? null;
 error_log("DEBUG Columnista - Username recibido: " . ($username ?? 'NULL'));
 error_log("DEBUG Columnista - GET completo: " . print_r($_GET, true));
 
-if (!$username) {
-    http_response_code(404);
-    header('Location: /error_404');
-    exit;
-}
+
 
 // 1. Obtener datos del columnista
 $sqlUser = "
