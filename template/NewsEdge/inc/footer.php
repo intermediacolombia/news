@@ -16,6 +16,39 @@ if (!function_exists('truncate_text')) {
 global $sys;
 ?>
 
+<!-- Search Modal -->
+<div class="modal fade ne-search-modal" id="searchModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered ne-search-modal-dialog" role="document">
+        <div class="modal-content ne-search-modal-content">
+            <div class="modal-body ne-search-modal-body">
+                <button type="button" class="close ne-search-close" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+
+                <h3 class="ne-search-title">Buscar</h3>
+                <p class="ne-search-subtitle">Escribe lo que necesitas y presiona “Buscar”.</p>
+
+                <form action="<?= URLBASE ?>/buscar/" method="get" class="ne-search-form" id="searchModalForm">
+                    <input type="text"
+                           name="q"
+                           id="searchModalInput"
+                           class="ne-search-input"
+                           placeholder="Buscar…"
+                           required>
+
+                    <!-- Campos extra (opcional) para compatibilidad, mismos valores -->
+                    <input type="hidden" name="s" id="searchHiddenS" value="">
+                    <input type="hidden" name="search" id="searchHiddenSearch" value="">
+
+                    <button type="submit" class="ne-search-btn">
+                        Buscar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Footer Area Start Here -->
 <footer>
     <div class="footer-area-top">
@@ -439,27 +472,6 @@ if (file_exists($playerPath)) {
 }
 ?>
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    const filterLinks = document.querySelectorAll(".isotope-classes-tab a");
-
-    filterLinks.forEach(link => {
-        link.addEventListener("click", function (e) {
-            e.preventDefault();
-
-            // quitar clase current
-            filterLinks.forEach(l => l.classList.remove("current"));
-
-            // marcar el activo
-            this.classList.add("current");
-
-            // aplicar filtro Isotope
-            const filterValue = this.getAttribute("data-filter");
-            $('.featuredContainer').isotope({ filter: filterValue });
-        });
-    });
-});
-</script>
 
 
 <script>
@@ -496,6 +508,20 @@ document.addEventListener("DOMContentLoaded", function () {
             e.stopPropagation();
         });
     });
+</script>
+
+<script>
+  $(function () {
+    $('#searchModal').on('shown.bs.modal', function () {
+      $('#searchModalInput').trigger('focus');
+    });
+
+    $('#searchModalForm').on('submit', function () {
+      var val = ($('#searchModalInput').val() || '').trim();
+      $('#searchHiddenS').val(val);
+      $('#searchHiddenSearch').val(val);
+    });
+  });
 </script>
 </body>
 </html>

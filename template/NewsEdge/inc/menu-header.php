@@ -150,17 +150,14 @@
     <div class="header-action-item on-mobile-fixed">
         <ul>
             <li>
-                <form action="<?= URLBASE ?>/buscar/" method="get" id="top-search-form" class="header-search-dark">
-                    <input type="text" 
-                           name="q" 
-                           class="search-input" 
-                           placeholder="Buscar..." 
-                           required>
-                    <button type="submit" class="search-button" title="Buscar">
-                        <i class="fa fa-search" aria-hidden="true"></i>
-                    </button>
-                </form>
-            </li>
+    <button type="button"
+            class="header-search-trigger"
+            data-toggle="modal"
+            data-target="#searchModal"
+            aria-label="Abrir buscador">
+        <i class="fa fa-search" aria-hidden="true"></i>
+    </button>
+</li>
             <li>
                 <div id="side-menu-trigger" class="offcanvas-menu-btn offcanvas-btn-repoint">
                     <a href="#" class="menu-bar">

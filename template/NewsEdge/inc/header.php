@@ -259,60 +259,80 @@
     padding-right: 20px;
 }
 
+/* Search modal - NewsEdge */
+.ne-search-modal .modal-dialog { max-width: 680px; }
+.ne-search-modal-content{
+  border: 0;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 30px 80px rgba(0,0,0,.35);
+}
+.ne-search-modal-body{
+  position: relative;
+  padding: 28px 26px 24px;
+  background: #fff;
+}
+.ne-search-close{
+  position: absolute;
+  right: 14px;
+  top: 10px;
+  font-size: 32px;
+  opacity: .6;
+}
+.ne-search-close:hover{ opacity: 1; }
 
-    /* Estilos del buscador del header */
-    #top-search-form {
-        position: relative;
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
-    
-    #top-search-form .search-input {
-        width: 0;
-        padding: 8px 12px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        font-size: 14px;
-        transition: all 0.3s ease;
-        opacity: 0;
-        visibility: hidden;
-    }
-    
-    #top-search-form.active .search-input {
-        width: 200px;
-        opacity: 1;
-        visibility: visible;
-    }
-    
-    #top-search-form .search-button {
-        background: transparent;
-        border: none;
-        color: #333;
-        font-size: 18px;
-        cursor: pointer;
-        padding: 8px 10px;
-        transition: all 0.3s ease;
-        flex-shrink: 0;
-    }
-    
-    #top-search-form .search-button:hover {
-        color: var(--primary, #c41e3a);
-    }
-    
-    /* Responsive */
-    @media (max-width: 991px) {
-        #top-search-form.active .search-input {
-            width: 150px;
-        }
-    }
-    
-    @media (max-width: 576px) {
-        #top-search-form.active .search-input {
-            width: 120px;
-            font-size: 13px;
-        }
-    }
+.ne-search-title{
+  margin: 0 0 6px;
+  font-weight: 800;
+  font-size: 24px;
+  color: #111;
+}
+.ne-search-subtitle{
+  margin: 0 0 18px;
+  color: #666;
+  font-size: 14px;
+}
+
+.ne-search-input{
+  width: 100%;
+  height: 54px;
+  border: 1px solid #e6e6e6;
+  border-radius: 10px;
+  padding: 0 16px;
+  font-size: 16px;
+  transition: .2s ease;
+}
+.ne-search-input:focus{
+  outline: none;
+  border-color: var(--primary, #c41e3a);
+  box-shadow: 0 0 0 4px rgba(196,30,58,.12);
+}
+
+.ne-search-btn{
+  margin-top: 12px;
+  width: 100%;
+  height: 48px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--primary, #c41e3a);
+  color: #fff;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  transition: .2s ease;
+}
+.ne-search-btn:hover{ filter: brightness(.95); }
+
+/* Trigger button in header */
+.header-search-trigger{
+  background: transparent;
+  border: 0;
+  padding: 8px 10px;
+  cursor: pointer;
+  font-size: 18px;
+  color: #111;
+}
+.header-search-trigger:hover{ color: var(--primary, #c41e3a); }
 </style>
 </head>
 
