@@ -39,21 +39,17 @@ if ($parts[0] === 'buscar') {
 // Columnistas: Plural (Lista) y Singular (Perfil)
 // IMPORTANTE: DEBE IR ANTES DEL PATRÓN DE 2 PARTES (single.php)
 // ===============================
-} elseif ($parts[0] === 'columnistas') { 
-    // LISTADO: /columnistas/
-    $_GET['page'] = 'columnistas';
-    $templateFile = __DIR__ . "/template/" . THEME . "/columnists-list.php";
-
 } elseif ($parts[0] === 'columnista') {
-    // PERFIL: /columnista/juan-perez/
     $_GET['page'] = 'columnista';
+    
+    // /institucional/slug/ → Página individual
     if (isset($parts[1]) && !empty($parts[1])) {
-        $_GET['columnist_name_slug'] = $parts[1];
+        $_GET['columnists_slug'] = $parts[1];
         $templateFile = __DIR__ . "/template/" . THEME . "/columnists.php";
-    } else {
-        // Si entran a /columnista/ sin nombre, mandamos a la lista plural
-        header("Location: " . URLBASE . "/columnistas/");
-        exit;
+    }
+    // /institucional/ → Listado
+    else {
+        $templateFile = __DIR__ . "/template/" . THEME . "/columnists-list.php";
     }
 
 // ===============================
