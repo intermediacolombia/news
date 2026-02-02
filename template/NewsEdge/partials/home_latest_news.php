@@ -67,7 +67,7 @@ $sidebarNews = db()->query($sqlSidebar)->fetchAll();
 <!-- Main Slider Section Start -->
 <section class="section-space-bottom">
     <div class="container">
-        <div class="row no-gutters">
+        <div class="row no-gutters slider-row-equal-height">
             <!-- Slider Principal -->
             <div class="col-xl-8 col-lg-12">
                 <div class="main-slider1 img-overlay-slider">
@@ -141,21 +141,20 @@ $sidebarNews = db()->query($sqlSidebar)->fetchAll();
 
             <!-- Noticias Laterales -->
             <div class="col-xl-4 col-lg-12">
-                <div class="item-box-light-md-less30 ie-full-width">
-                    <div class="row">
-                        <?php foreach ($sidebarNews as $sideNews): 
-                            $sideImageUrl = img_url($sideNews['image']);
-                        ?>
-                        <div class="media mb-30 col-xl-12 col-lg-6 col-md-6 col-sm-12">
-                            <a class="img-opacity-hover" 
+                <div class="sidebar-news-container">
+                    <?php foreach ($sidebarNews as $index => $sideNews): 
+                        $sideImageUrl = img_url($sideNews['image']);
+                    ?>
+                    <div class="sidebar-news-item <?= $index === count($sidebarNews) - 1 ? 'last-item' : '' ?>">
+                        <div class="media">
+                            <a class="img-opacity-hover sidebar-news-img" 
                                href="<?= URLBASE ?>/<?= htmlspecialchars($sideNews['category_slug']) ?>/<?= htmlspecialchars($sideNews['slug']) ?>/">
                                 <img src="<?= $sideImageUrl ?>" 
                                      alt="<?= htmlspecialchars($sideNews['title']) ?>" 
-                                     class="img-fluid-home"
-                                     style="max-height: 120px; object-fit: cover; width: 100%;">
+                                     class="img-fluid">
                             </a>
-                            <div class="media-body media-padding5">
-                                <div class="post-date-dark">
+                            <div class="media-body">
+                                <div class="post-date-dark mb-5">
                                     <ul>
                                         <li>
                                             <span>
@@ -172,11 +171,198 @@ $sidebarNews = db()->query($sqlSidebar)->fetchAll();
                                 </h3>
                             </div>
                         </div>
-                        <?php endforeach; ?>
                     </div>
+                    <?php endforeach; ?>
                 </div>
             </div>
         </div>
     </div>
 </section>
 <!-- Main Slider Section End -->
+
+<style>
+/* =============================================
+   SLIDER CON ALTURA UNIFORME
+   ============================================= */
+
+/* Hacer que ambas columnas tengan la misma altura */
+.slider-row-equal-height {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.slider-row-equal-height > [class*='col-'] {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Asegurar que el slider tenga altura fija */
+.main-slider1,
+.main-slider1 .bend,
+.main-slider1 #ensign-nivoslider-3,
+.main-slider1 #ensign-nivoslider-3 img,
+.main-slider1 .slider-direction {
+    height: 500px !important;
+}
+
+.main-slider1 #ensign-nivoslider-3 img {
+    object-fit: cover;
+    object-position: center;
+}
+
+/* Container de noticias laterales - MISMA ALTURA que el slider */
+.sidebar-news-container {
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    overflow: hidden;
+}
+
+/* Cada item de noticia lateral ocupa 25% del espacio (4 items = 100%) */
+.sidebar-news-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid #e8e8e8;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.sidebar-news-item.last-item {
+    border-bottom: none;
+}
+
+.sidebar-news-item:hover {
+    background: #f8f9fa;
+}
+
+/* Media object dentro de cada item */
+.sidebar-news-item .media {
+    display: flex;
+    gap: 15px;
+    height: 100%;
+    align-items: flex-start;
+}
+
+/* Imagen lateral - tamaño fijo */
+.sidebar-news-img {
+    flex-shrink: 0;
+    width: 100px;
+    height: 100px;
+    overflow: hidden;
+    border-radius: 4px;
+    display: block;
+}
+
+.sidebar-news-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.sidebar-news-item:hover .sidebar-news-img img {
+    transform: scale(1.05);
+}
+
+/* Body del media */
+.sidebar-news-item .media-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+/* Ajustar títulos para que no se desborden */
+.sidebar-news-item .title-medium-dark {
+    font-size: 15px;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.sidebar-news-item .post-date-dark ul {
+    margin-bottom: 8px;
+}
+
+.sidebar-news-item .post-date-dark li {
+    font-size: 12px;
+}
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+
+/* Tablets */
+@media (max-width: 1199px) {
+    .main-slider1,
+    .main-slider1 .bend,
+    .main-slider1 #ensign-nivoslider-3,
+    .main-slider1 #ensign-nivoslider-3 img,
+    .main-slider1 .slider-direction {
+        height: 450px !important;
+    }
+    
+    .sidebar-news-container {
+        height: auto;
+        margin-top: 30px;
+    }
+    
+    .sidebar-news-item {
+        min-height: 120px;
+    }
+    
+    .slider-row-equal-height > [class*='col-'] {
+        flex: none;
+    }
+}
+
+/* Móviles grandes */
+@media (max-width: 991px) {
+    .main-slider1,
+    .main-slider1 .bend,
+    .main-slider1 #ensign-nivoslider-3,
+    .main-slider1 #ensign-nivoslider-3 img,
+    .main-slider1 .slider-direction {
+        height: 400px !important;
+    }
+}
+
+/* Móviles */
+@media (max-width: 767px) {
+    .main-slider1,
+    .main-slider1 .bend,
+    .main-slider1 #ensign-nivoslider-3,
+    .main-slider1 #ensign-nivoslider-3 img,
+    .main-slider1 .slider-direction {
+        height: 350px !important;
+    }
+    
+    .sidebar-news-img {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .sidebar-news-item .title-medium-dark {
+        font-size: 14px;
+    }
+}
+
+/* Móviles pequeños */
+@media (max-width: 575px) {
+    .main-slider1,
+    .main-slider1 .bend,
+    .main-slider1 #ensign-nivoslider-3,
+    .main-slider1 #ensign-nivoslider-3 img,
+    .main-slider1 .slider-direction {
+        height: 280px !important;
+    }
+    
+    .sidebar-news-item {
+        padding: 15px;
+    }
+}
+</style>
