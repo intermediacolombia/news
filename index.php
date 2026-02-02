@@ -33,6 +33,23 @@ if ($parts[0] === 'buscar') {
     // /institucional/ → Listado
     else {
         $templateFile = __DIR__ . "/template/" . THEME . "/institucional-list.php";
+		
+		
+    // ===============================
+	// Columnistas: /columnists/ o /colunist/slug/
+	// ===============================
+	
+	}elseif ($parts[0] === 'columnista') {
+    $_GET['page'] = 'columnista';
+    
+    // /institucional/slug/ → Página individual
+    if (isset($parts[1]) && !empty($parts[1])) {
+        $_GET['institutional_slug'] = $parts[1];
+        $templateFile = __DIR__ . "/template/" . THEME . "/columnists.php";
+    }
+    // /institucional/ → Listado
+    else {
+        $templateFile = __DIR__ . "/template/" . THEME . "/columnists-list.php";
     }
 
 // ===============================
