@@ -3,6 +3,14 @@ if (!defined('DIRECT_ACCESS') && !isset($config)) {
     require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/config.php';
 }
 
+// Definir img_url si no existe
+if (!function_exists('img_url')) {
+    function img_url($path = '') {
+        // Ajusta esta ruta si tus imágenes están en otra carpeta
+        return rtrim(URLBASE, '/') . '/uploads/' . ltrim($path, '/');
+    }
+}
+
 /* ===== Consulta: Obtener Columnistas Activos ===== */
 $sqlColumnistas = "
     SELECT u.id, 
@@ -49,7 +57,6 @@ try {
             <?php foreach ($columnistas as $col): 
                 $nombreCompleto = htmlspecialchars($col['nombre'] . ' ' . $col['apellido']);
                 
-                // Foto de perfil o avatar por defecto
                 if (!empty($col['foto_perfil'])) {
                     $fotoPerfil = img_url($col['foto_perfil']);
                 } else {
@@ -64,7 +71,6 @@ try {
                     ");
                 }
                 
-                // URL usando USERNAME (¡clave para evitar 404!)
                 $columnistaUrl = URLBASE . "/columnista/" . htmlspecialchars($col['username']);
             ?>
             <div class="img-overlay-70-c">
@@ -79,7 +85,6 @@ try {
                     </h3>
                 </div>
                 
-                <!-- Icono de Lápiz para Columnista -->
                 <div class="text-center">
                     <a class="play-btn" href="<?= $columnistaUrl ?>">
                         <i class="fa fa-pencil-square-o text-white" 
@@ -87,7 +92,6 @@ try {
                     </a>
                 </div>
                 
-                <!-- Foto de Perfil del Columnista -->
                 <img src="<?= $fotoPerfil ?>" 
                      alt="<?= $nombreCompleto ?>" 
                      class="img-fluid width-100"
