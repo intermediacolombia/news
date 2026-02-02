@@ -30,7 +30,7 @@ error_log("DEBUG Columnista - GET completo: " . print_r($_GET, true));
 
 if (!$username) {
     http_response_code(404);
-    include __DIR__ . '/404.php';
+    header('Location: /error_404');
     exit;
 }
 
@@ -57,7 +57,7 @@ try {
 if (!$usuario) {
     error_log("DEBUG: Usuario no encontrado para username: " . $username);
     http_response_code(404);
-    include __DIR__ . '/404.php';
+    header('Location: /error_404');
     exit;
 }
 

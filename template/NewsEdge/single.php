@@ -24,7 +24,7 @@ $postSlug     = $_GET['post'] ?? null;
 
 if (!$categorySlug || !$postSlug) {
     http_response_code(404);
-    include __DIR__ . '/404.php';
+    header('Location: /error_404');
     exit;
 }
 
@@ -44,7 +44,7 @@ $post = $stmt->fetch();
 if (!$post) {
     http_response_code(404);
     //include __DIR__ . '/404.php';
-	header('Location: /404');
+	header('Location: /error_404');
     exit;
 }
 
