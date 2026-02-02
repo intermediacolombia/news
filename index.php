@@ -19,7 +19,7 @@ if ($parts[0] === 'buscar') {
     }
     $templateFile = __DIR__ . "/template/" . THEME . "/search.php";
 
-// ===============================
+/// ===============================
 // Institucional: /institucional/ o /institucional/slug/
 // ===============================
 } elseif ($parts[0] === 'institucional') {
@@ -36,21 +36,24 @@ if ($parts[0] === 'buscar') {
     }
 
 // ===============================
-// Columnistas: Plural (Lista) y Singular (Perfil)
-// IMPORTANTE: DEBE IR ANTES DEL PATRÓN DE 2 PARTES (single.php)
+// COLUMNISTA: Igual que institucional
+// /columnista/ → Lista
+// /columnista/nombre/ → Perfil individual
 // ===============================
 } elseif ($parts[0] === 'columnista') {
     $_GET['page'] = 'columnista';
     
-    // /institucional/slug/ → Página individual
+    // /columnista/juan-perez/ → Perfil individual
     if (isset($parts[1]) && !empty($parts[1])) {
-        $_GET['columnists_slug'] = $parts[1];
+        $_GET['columnist_slug'] = $parts[1];
         $templateFile = __DIR__ . "/template/" . THEME . "/columnists.php";
     }
-    // /institucional/ → Listado
+    // /columnista/ → Listado
     else {
         $templateFile = __DIR__ . "/template/" . THEME . "/columnists-list.php";
     }
+
+
 
 // ===============================
 // Noticias
