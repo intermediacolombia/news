@@ -528,6 +528,17 @@ global $sys;
 <script src="<?= URLBASE ?>/template/NewsEdge/js/isotope.pkgd.min.js"></script>
 <script src="<?= URLBASE ?>/template/NewsEdge/js/jquery.magnific-popup.min.js"></script>
 <script src="<?= URLBASE ?>/template/NewsEdge/js/ticker.js"></script>
+
+<script>
+    var SITE_CONFIG = {
+        urlBase: '<?= URLBASE ?>',
+        siteLogo: '<?= URLBASE . SITE_LOGO ?>?<?= time() ?>',
+        siteLogoAlt: '<?= htmlspecialchars(NOMBRE_SITIO) ?>'
+    };
+</script>
+
+<!-- Luego cargas main.js -->
+<script src="<?= URLBASE ?>/template/newsedge/js/main.js?<?= time() ?>"></script>
 <script src="<?= URLBASE ?>/template/NewsEdge/js/main.js"></script>
 
 <!-- Inicialización del Nivo Slider -->
