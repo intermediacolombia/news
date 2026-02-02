@@ -71,19 +71,19 @@ if (!empty($usuario['foto_perfil'])) {
 
 /* ================= 2. Obtener Columnas por author_user ================= */
 $sqlPosts = "
-    SELECT 
-        p.id, p.title, p.slug, p.content, p.image, p.created_at, p.seo_description,
-        c.name AS category_name, c.slug AS category_slug
+    SELECT p.id, p.title, p.slug, p.content, p.image, p.created_at, p.seo_description,
+           c.name AS category_name, c.slug AS category_slug
     FROM blog_posts p
     LEFT JOIN blog_post_category pc ON pc.post_id = p.id
     LEFT JOIN blog_categories c ON c.id = pc.category_id
     WHERE p.author_user = ?
-      AND (p.status = 'published' OR p.estado = 1 OR p.publicado = 1) 
-      AND (p.deleted = 0 OR p.deleted IS NULL)
+      AND p.status = 'published'
+      AND p.deleted = 0
     ORDER BY p.created_at DESC
 ";
+
 $stmt = db()->prepare($sqlPosts);
-$stmt->execute([$authorUser]);
+$stmt->execute([$usuario['username']]); // Usamos el username de la tabla usuarios
 $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
