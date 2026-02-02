@@ -48,7 +48,7 @@ if ($parts[0] === 'buscar') {
     } else {
         $templateFile = __DIR__ . "/template/" . THEME . "/columnists-list.php";
     }
-}
+
 
 // ===============================
 // Noticias
