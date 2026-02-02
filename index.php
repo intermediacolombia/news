@@ -40,7 +40,7 @@ if ($parts[0] === 'buscar') {
 // ===============================
 // Columnistas: Plural (Lista) y Singular (Perfil)
 // ===============================
-} elseif ($parts[0] === 'columnistas') { 
+} elseif ($parts[0] === 'columnistas/all') { 
     // LISTADO: /columnistas/
     $_GET['page'] = 'columnistas';
     $templateFile = __DIR__ . "/template/" . THEME . "/columnists-list.php";
