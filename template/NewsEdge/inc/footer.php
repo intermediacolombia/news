@@ -538,7 +538,7 @@ global $sys;
 </script>
 
 <!-- Luego cargas main.js -->
-<script src="<?= URLBASE ?>/template/newsedge/js/main.js?<?= time() ?>"></script>
+<script src="<?= URLBASE ?>/template/NewsEdge/js/main.js?<?= time() ?>"></script>
 
 
 <!-- Inicialización del Nivo Slider -->
