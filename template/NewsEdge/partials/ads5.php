@@ -1,5 +1,15 @@
 <?php
-require_once __DIR__ . '/../../../inc/config.php';
+if (!function_exists('img_url')) {
+    function img_url(?string $path): string {
+        if (empty($path)) {
+            return URLBASE . '/template/newsedge/img/placeholder.jpg';
+        }
+        if (filter_var($path, FILTER_VALIDATE_URL)) {
+            return $path;
+        }
+        return URLBASE . '/' . ltrim($path, '/');
+    }
+}
 
 $stmt = db()->query("
     SELECT * FROM ads_gallery 
@@ -10,100 +20,204 @@ $sliderAds = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <?php if ($sliderAds): ?>
-<section class="ads-slider-section my-5">
-  <div id="adsSlider" class="carousel slide shadow-lg rounded-4 overflow-hidden" data-bs-ride="carousel">
-    
-    <div class="carousel-inner">
-      <?php foreach ($sliderAds as $i => $ad): ?>
-        <div class="carousel-item <?= $i === 0 ? 'active' : '' ?>">
-          <?php if (!empty($ad['target_url'])): ?>
-            <a href="<?= htmlspecialchars($ad['target_url']) ?>" target="_blank" rel="nofollow">
-              <img src="<?= htmlspecialchars($ad['image_url']) ?>" 
-                   class="d-block w-100 ad-image" 
-                   alt="Anuncio destacado">
-            </a>
-          <?php else: ?>
-            <img src="<?= htmlspecialchars($ad['image_url']) ?>" 
-                 class="d-block w-100 ad-image" 
-                 alt="Anuncio destacado">
-          <?php endif; ?>
+<!-- Advertisement Slider Section Start -->
+<section class="bg-body section-space-less30">
+    <div class="container">
+        <div class="ne-main-content">
+            <!-- Título de sección -->
+            <div class="topic-border color-burning-orange mb-30">
+                <div class="topic-box-lg color-burning-orange">Publicidad Destacada</div>
+            </div>
+
+            <!-- Carrusel de Banners con Owl Carousel -->
+            <div class="ads-slider-wrapper">
+                <div class="owl-carousel owl-theme" id="adsOwlSlider">
+                    <?php foreach ($sliderAds as $ad): 
+                        $adImage = img_url($ad['image_url']);
+                    ?>
+                        <div class="item">
+                            <div class="ne-banner-slide">
+                                <?php if (!empty($ad['target_url'])): ?>
+                                    <a href="<?= htmlspecialchars($ad['target_url']) ?>" 
+                                       target="_blank" 
+                                       rel="nofollow noopener">
+                                        <img src="<?= $adImage ?>" 
+                                             alt="Anuncio destacado" 
+                                             class="img-fluid width-100 ad-image">
+                                    </a>
+                                <?php else: ?>
+                                    <img src="<?= $adImage ?>" 
+                                         alt="Anuncio destacado" 
+                                         class="img-fluid width-100 ad-image">
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
         </div>
-      <?php endforeach; ?>
     </div>
-
-    <!-- Indicadores -->
-    <div class="carousel-indicators mb-0">
-      <?php foreach ($sliderAds as $i => $ad): ?>
-        <button type="button" data-bs-target="#adsSlider" data-bs-slide-to="<?= $i ?>" 
-                class="<?= $i === 0 ? 'active' : '' ?>" 
-                aria-current="<?= $i === 0 ? 'true' : 'false' ?>"></button>
-      <?php endforeach; ?>
-    </div>
-
-    <!-- Controles -->
-    <button class="carousel-control-prev" type="button" data-bs-target="#adsSlider" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Anterior</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#adsSlider" data-bs-slide="next">
-      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Siguiente</span>
-    </button>
-  </div>
 </section>
+<!-- Advertisement Slider Section End -->
 
-<!-- ESTILOS PERSONALIZADOS -->
+<!-- Estilos personalizados -->
 <style>
-.ads-slider-section {
-  max-width: 900px;
-  margin: 0 auto;
-  border-radius: 1rem;
+.ads-slider-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.ne-banner-slide {
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+    transition: all 0.3s ease;
+}
+
+.ne-banner-slide:hover {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
 }
 
 .ad-image {
-  transition: transform .6s ease, filter .4s ease;
-  filter: brightness(95%);
+    height: 500px;
+    object-fit: cover;
+    transition: transform 0.6s ease, filter 0.4s ease;
+    filter: brightness(96%);
 }
 
-.ad-image:hover {
-  transform: scale(1.03);
-  filter: brightness(105%);
+.ne-banner-slide:hover .ad-image {
+    transform: scale(1.05);
+    filter: brightness(100%);
 }
 
-/* Indicadores modernos */
-.carousel-indicators [data-bs-target] {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, .6);
-  transition: background-color .3s ease;
-  margin: 5px;
+/* Controles personalizados de Owl Carousel */
+#adsOwlSlider .owl-nav {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    transform: translateY(-50%);
+    pointer-events: none;
 }
 
-.carousel-indicators .active {
-  background-color: #00c853; /* verde moderno */
+#adsOwlSlider .owl-nav button.owl-prev,
+#adsOwlSlider .owl-nav button.owl-next {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background: rgba(0,0,0,0.6) !important;
+    color: #fff !important;
+    border-radius: 50%;
+    font-size: 28px;
+    line-height: 50px;
+    text-align: center;
+    transition: all 0.3s ease;
+    opacity: 0;
+    pointer-events: all;
 }
 
-/* Botones de control más elegantes */
-.carousel-control-prev-icon,
-.carousel-control-next-icon {
-  background-color: rgba(0,0,0,0.4);
-  border-radius: 50%;
-  padding: 1rem;
-  background-size: 60%;
-  transition: background-color .3s ease;
+.ads-slider-wrapper:hover #adsOwlSlider .owl-nav button {
+    opacity: 1;
 }
 
-.carousel-control-prev-icon:hover,
-.carousel-control-next-icon:hover {
-  background-color: rgba(0,0,0,0.6);
+#adsOwlSlider .owl-nav button.owl-prev {
+    left: 20px;
 }
 
-/* Sombra exterior del carrusel */
-.carousel.slide {
-  border-radius: 1rem;
-  overflow: hidden;
+#adsOwlSlider .owl-nav button.owl-next {
+    right: 20px;
+}
+
+#adsOwlSlider .owl-nav button:hover {
+    background: rgba(0,0,0,0.85) !important;
+    transform: scale(1.1);
+}
+
+/* Indicadores (dots) personalizados */
+#adsOwlSlider .owl-dots {
+    text-align: center;
+    margin-top: 25px;
+}
+
+#adsOwlSlider .owl-dot {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    background: #ddd;
+    border-radius: 50%;
+    margin: 0 6px;
+    transition: all 0.3s ease;
+}
+
+#adsOwlSlider .owl-dot.active {
+    background: #ff6b35;
+    width: 35px;
+    border-radius: 6px;
+}
+
+#adsOwlSlider .owl-dot:hover {
+    background: #ff8c5a;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .ad-image {
+        height: 300px;
+    }
+    
+    #adsOwlSlider .owl-nav button.owl-prev,
+    #adsOwlSlider .owl-nav button.owl-next {
+        width: 40px;
+        height: 40px;
+        font-size: 22px;
+        line-height: 40px;
+        opacity: 1;
+    }
+    
+    #adsOwlSlider .owl-nav button.owl-prev {
+        left: 10px;
+    }
+    
+    #adsOwlSlider .owl-nav button.owl-next {
+        right: 10px;
+    }
 }
 </style>
+
+<!-- Script de inicialización de Owl Carousel -->
+<script>
+jQuery(document).ready(function($) {
+    $('#adsOwlSlider').owlCarousel({
+        items: 1,
+        loop: true,
+        autoplay: true,
+        autoplayTimeout: 5000,
+        autoplayHoverPause: true,
+        nav: true,
+        navText: ['<i class="fa fa-angle-left"></i>', '<i class="fa fa-angle-right"></i>'],
+        dots: true,
+        smartSpeed: 800,
+        animateOut: 'fadeOut',
+        animateIn: 'fadeIn',
+        responsive: {
+            0: {
+                items: 1,
+                nav: true,
+                dots: true
+            },
+            768: {
+                items: 1,
+                nav: true,
+                dots: true
+            },
+            1024: {
+                items: 1,
+                nav: true,
+                dots: true
+            }
+        }
+    });
+});
+</script>
 <?php endif; ?>
 
