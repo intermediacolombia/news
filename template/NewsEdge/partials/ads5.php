@@ -20,10 +20,7 @@ $sliderAds = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <section class="bg-body section-space-less30">
     <div class="container">
         <div class="ne-main-content">
-            
-            <div class="topic-border color-cinnabar mb-30">
-        <div class="topic-box-lg color-cinnabar">Publicidad</div>
-    </div>
+         
 
             <div class="ads-slider-wrapper">
                 <!-- Añadimos 'owl-loaded' manualmente si es necesario y forzamos el display -->
