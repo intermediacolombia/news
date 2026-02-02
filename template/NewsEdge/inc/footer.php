@@ -336,55 +336,163 @@ global $sys;
     </div>
     <div class="offcanvas-main-body">
         <ul id="accordion" class="offcanvas-nav panel-group">
-            <!-- Home -->
+            
+            <!-- INICIO -->
             <li>
                 <a href="<?= URLBASE ?>">
                     <i class="fa fa-home" aria-hidden="true"></i>Inicio
                 </a>
             </li>
 
-            <!-- Categorías Dinámicas -->
+            <!-- NOTICIAS -->
+            <li>
+                <a href="<?= URLBASE ?>/noticias">
+                    <i class="fa fa-newspaper-o" aria-hidden="true"></i>Noticias
+                </a>
+            </li>
+
+            <!-- CATEGORÍAS DINÁMICAS -->
             <?php
             $menuCats = db()->query("
-                SELECT c.name, c.slug
+                SELECT c.name, c.slug, COUNT(p.id) AS total
                 FROM blog_categories c
+                INNER JOIN blog_post_category pc ON pc.category_id = c.id
+                INNER JOIN blog_posts p ON p.id = pc.post_id
                 WHERE c.status='active' AND c.deleted=0
+                  AND p.status='published' AND p.deleted=0
+                GROUP BY c.id, c.name, c.slug
+                HAVING total > 0
                 ORDER BY c.name ASC
-                LIMIT 10
             ")->fetchAll(PDO::FETCH_ASSOC);
             
-            if (!empty($menuCats)): ?>
-            <li class="panel panel-default">
-                <div class="panel-heading">
-                    <a aria-expanded="false" class="accordion-toggle collapsed" 
-                       data-toggle="collapse" data-parent="#accordion" href="#collapseCategories">
-                        <i class="fa fa-folder" aria-hidden="true"></i>Categorías
-                    </a>
-                </div>
-                <div aria-expanded="false" id="collapseCategories" role="tabpanel" class="panel-collapse collapse">
-                    <div class="panel-body">
-                        <ul class="offcanvas-sub-nav">
-                            <?php foreach ($menuCats as $cat): ?>
-                                <li>
-                                    <a href="<?= URLBASE ?>/<?= htmlspecialchars($cat['slug']) ?>/">
-                                        <?= htmlspecialchars(ucwords($cat['name'])) ?>
-                                    </a>
-                                </li>
-                            <?php endforeach; ?>
-                        </ul>
+            if (!empty($menuCats)): 
+            ?>
+                <li class="panel panel-default">
+                    <div class="panel-heading">
+                        <a aria-expanded="false" 
+                           class="accordion-toggle collapsed" 
+                           data-toggle="collapse" 
+                           data-parent="#accordion" 
+                           href="#collapseCategories">
+                            <i class="fa fa-folder" aria-hidden="true"></i>Categorías
+                        </a>
                     </div>
-                </div>
-            </li>
+                    <div aria-expanded="false" 
+                         id="collapseCategories" 
+                         role="tabpanel" 
+                         class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <ul class="offcanvas-sub-nav">
+                                <?php foreach ($menuCats as $cat): ?>
+                                    <li>
+                                        <a href="<?= URLBASE ?>/noticias/<?= htmlspecialchars($cat['slug']) ?>/">
+                                            <?= htmlspecialchars($cat['name']) ?>
+                                        </a>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
             <?php endif; ?>
 
-            <!-- Contacto -->
+            <!-- COLUMNISTAS (solo si existen) -->
+            <?php
+            $menuColumnistas = db()->query("
+                SELECT nombre, apellido, username
+                FROM usuarios
+                WHERE es_columnista = 1
+                  AND estado = 0
+                  AND borrado = 0
+                ORDER BY nombre ASC, apellido ASC
+            ")->fetchAll(PDO::FETCH_ASSOC);
+            
+            if (!empty($menuColumnistas)): 
+            ?>
+                <li class="panel panel-default">
+                    <div class="panel-heading">
+                        <a aria-expanded="false" 
+                           class="accordion-toggle collapsed" 
+                           data-toggle="collapse" 
+                           data-parent="#accordion" 
+                           href="#collapseColumnistas">
+                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>Columnistas
+                        </a>
+                    </div>
+                    <div aria-expanded="false" 
+                         id="collapseColumnistas" 
+                         role="tabpanel" 
+                         class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <ul class="offcanvas-sub-nav">
+                                <?php foreach ($menuColumnistas as $col): 
+                                    $nombreCompleto = trim($col['nombre'] . ' ' . $col['apellido']);
+                                ?>
+                                    <li>
+                                        <a href="<?= URLBASE ?>/columnistas/<?= htmlspecialchars($col['username']) ?>/">
+                                            <?= htmlspecialchars($nombreCompleto) ?>
+                                        </a>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+            <?php endif; ?>
+
+            <!-- NOSOTROS / INSTITUCIONAL DINÁMICO -->
+            <?php
+            $menuInstitucional = db()->query("
+                SELECT title, slug 
+                FROM institutional_pages 
+                WHERE status = 'published' 
+                ORDER BY display_order ASC, title ASC
+            ")->fetchAll(PDO::FETCH_ASSOC);
+            
+            if (!empty($menuInstitucional)): 
+            ?>
+                <li class="panel panel-default">
+                    <div class="panel-heading">
+                        <a aria-expanded="false" 
+                           class="accordion-toggle collapsed" 
+                           data-toggle="collapse" 
+                           data-parent="#accordion" 
+                           href="#collapseInstitucional">
+                            <i class="fa fa-building-o" aria-hidden="true"></i>Nosotros
+                        </a>
+                    </div>
+                    <div aria-expanded="false" 
+                         id="collapseInstitucional" 
+                         role="tabpanel" 
+                         class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <ul class="offcanvas-sub-nav">
+                                <?php foreach ($menuInstitucional as $inst): ?>
+                                    <li>
+                                        <a href="<?= URLBASE ?>/institucional/<?= htmlspecialchars($inst['slug']) ?>">
+                                            <?= htmlspecialchars($inst['title']) ?>
+                                        </a>
+                                    </li>
+                                <?php endforeach; ?>
+                                <li>
+                                    <a href="<?= URLBASE ?>/institucional">
+                                        <i class="fa fa-list mr-2"></i>Ver todas
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+            <?php endif; ?>
+
+            <!-- CONTACTO -->
             <li>
                 <a href="<?= URLBASE ?>/contact">
                     <i class="fa fa-phone" aria-hidden="true"></i>Contacto
                 </a>
             </li>
 
-            <!-- Políticas -->
+            <!-- POLÍTICAS -->
             <li>
                 <a href="<?= URLBASE ?>/privacy-policy">
                     <i class="fa fa-shield" aria-hidden="true"></i>Política de Privacidad
@@ -395,6 +503,7 @@ global $sys;
                     <i class="fa fa-file-text" aria-hidden="true"></i>Términos y Condiciones
                 </a>
             </li>
+            
         </ul>
     </div>
 </div>
