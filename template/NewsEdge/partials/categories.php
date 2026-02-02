@@ -37,10 +37,11 @@ $themeColors = ['color-apple', 'color-pomegranate', 'color-java', 'color-mandy',
 
 <?php if (!empty($exploreCats)): ?>
 <section class="bg-body section-space-less10">
-	 <div class="topic-border color-cinnabar mb-30">
+	 
+    <div class="container">
+		<div class="topic-border color-cinnabar mb-30">
         <div class="topic-box-lg color-cinnabar">Explorar por Categorias</div>
     </div>
-    <div class="container">
         <div class="row tab-space5">
             <?php foreach ($exploreCats as $index => $cat): 
                 $postUrl = URLBASE . '/noticias/' . htmlspecialchars($cat['last_post_slug']) . '/';
