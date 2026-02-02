@@ -46,6 +46,36 @@
                                 <?php endforeach; ?>
                             </div>
                         </div>
+						
+						<?php
+// 1. Consultar columnistas activos
+$stCol = db()->query("
+    SELECT nombre, apellido, username 
+    FROM usuarios 
+    WHERE es_columnista = 1 
+      AND estado = 0 
+      AND borrado = 0 
+    ORDER BY nombre ASC
+");
+$columnistasMenu = $stCol->fetchAll(PDO::FETCH_ASSOC);
+?>
+
+<?php if (!empty($columnistasMenu)): ?>
+    <div class="nav-item dropdown">
+        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+            Columnistas
+        </a>
+        <div class="dropdown-menu m-0 bg-secondary rounded-0">
+            <?php foreach ($columnistasMenu as $col): 
+                $nombreCompleto = htmlspecialchars(ucwords(strtolower($col['nombre'] . ' ' . $col['apellido'])));
+            ?>
+                <a href="<?= URLBASE ?>/columnistas/<?= htmlspecialchars($col['username']) ?>/" class="dropdown-item text-white">
+                    <?= $nombreCompleto ?>
+                </a>
+            <?php endforeach; ?>
+        </div>
+    </div>
+<?php endif; ?>
 
                         <?php
                         // Páginas institucionales dinámicas
