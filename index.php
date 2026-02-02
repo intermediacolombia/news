@@ -20,6 +20,7 @@ if ($parts[0] === 'buscar') {
     $templateFile = __DIR__ . "/template/" . THEME . "/search.php";
 
 // ===============================
+// ===============================
 // Institucional: /institucional/ o /institucional/slug/
 // ===============================
 } elseif ($parts[0] === 'institucional') {
@@ -33,22 +34,19 @@ if ($parts[0] === 'buscar') {
     // /institucional/ → Listado
     else {
         $templateFile = __DIR__ . "/template/" . THEME . "/institucional-list.php";
-		
-		
-    // ===============================
-	// Columnistas: /columnists/ o /colunist/slug/
-	// ===============================
-	
-	}elseif ($parts[0] === 'columnista') {
+    }
+    // <-- ¡FALTABA ESTA LLAVE DE CIERRE!
+
+// ===============================
+// Columnistas: /columnista/ o /columnista/slug/
+// ===============================
+} elseif ($parts[0] === 'columnista') {
     $_GET['page'] = 'columnista';
     
-    // /institucional/slug/ → Página individual
     if (isset($parts[1]) && !empty($parts[1])) {
-        $_GET['institutional_slug'] = $parts[1];
+        $_GET['columnist_slug'] = $parts[1]; // también corregí el nombre de la variable
         $templateFile = __DIR__ . "/template/" . THEME . "/columnists.php";
-    }
-    // /institucional/ → Listado
-    else {
+    } else {
         $templateFile = __DIR__ . "/template/" . THEME . "/columnists-list.php";
     }
 
