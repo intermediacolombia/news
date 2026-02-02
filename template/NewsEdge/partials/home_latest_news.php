@@ -182,7 +182,7 @@ $sidebarNews = db()->query($sqlSidebar)->fetchAll();
 
 <style>
 /* =============================================
-   SLIDER CON ALTURA UNIFORME
+   SLIDER CON ALTURA UNIFORME - VERSIÓN CORREGIDA
    ============================================= */
 
 /* Hacer que ambas columnas tengan la misma altura */
@@ -216,17 +216,19 @@ $sidebarNews = db()->query($sqlSidebar)->fetchAll();
     display: flex;
     flex-direction: column;
     background: #fff;
-    overflow: hidden;
+    overflow: visible; /* ← CAMBIO: permitir que se vea todo */
 }
 
-/* Cada item de noticia lateral ocupa 25% del espacio (4 items = 100%) */
+/* Cada item de noticia lateral - altura calculada para 4 items */
 .sidebar-news-item {
-    flex: 1;
+    flex: 0 0 auto; /* ← CAMBIO: no usar flex: 1 */
+    height: calc((100% - 3px) / 4); /* ← 3px para los 3 bordes entre items */
     display: flex;
     flex-direction: column;
     border-bottom: 1px solid #e8e8e8;
-    padding: 20px;
+    padding: 15px 20px; /* ← CAMBIO: padding reducido */
     transition: all 0.3s ease;
+    overflow: hidden; /* ← Evita que el contenido se desborde */
 }
 
 .sidebar-news-item.last-item {
@@ -240,16 +242,16 @@ $sidebarNews = db()->query($sqlSidebar)->fetchAll();
 /* Media object dentro de cada item */
 .sidebar-news-item .media {
     display: flex;
-    gap: 15px;
+    gap: 12px; /* ← CAMBIO: gap reducido */
     height: 100%;
     align-items: flex-start;
 }
 
-/* Imagen lateral - tamaño fijo */
+/* Imagen lateral - tamaño ajustado */
 .sidebar-news-img {
     flex-shrink: 0;
-    width: 100px;
-    height: 100px;
+    width: 90px;  /* ← CAMBIO: 90px en lugar de 100px */
+    height: 90px; /* ← CAMBIO: 90px en lugar de 100px */
     overflow: hidden;
     border-radius: 4px;
     display: block;
@@ -272,31 +274,33 @@ $sidebarNews = db()->query($sqlSidebar)->fetchAll();
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+    min-width: 0; /* ← Permite que el texto se trunque correctamente */
 }
 
 /* Ajustar títulos para que no se desborden */
 .sidebar-news-item .title-medium-dark {
-    font-size: 15px;
-    line-height: 1.4;
+    font-size: 14px; /* ← CAMBIO: texto más pequeño */
+    line-height: 1.3;
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    margin-bottom: 0;
 }
 
 .sidebar-news-item .post-date-dark ul {
-    margin-bottom: 8px;
+    margin-bottom: 6px; /* ← CAMBIO: margen reducido */
 }
 
 .sidebar-news-item .post-date-dark li {
-    font-size: 12px;
+    font-size: 11px; /* ← CAMBIO: fuente más pequeña */
 }
 
 /* =============================================
    RESPONSIVE
    ============================================= */
 
-/* Tablets */
+/* Tablets grandes */
 @media (max-width: 1199px) {
     .main-slider1,
     .main-slider1 .bend,
@@ -312,7 +316,8 @@ $sidebarNews = db()->query($sqlSidebar)->fetchAll();
     }
     
     .sidebar-news-item {
-        min-height: 120px;
+        height: auto;
+        min-height: 110px;
     }
     
     .slider-row-equal-height > [class*='col-'] {
@@ -320,7 +325,7 @@ $sidebarNews = db()->query($sqlSidebar)->fetchAll();
     }
 }
 
-/* Móviles grandes */
+/* Tablets */
 @media (max-width: 991px) {
     .main-slider1,
     .main-slider1 .bend,
@@ -331,7 +336,7 @@ $sidebarNews = db()->query($sqlSidebar)->fetchAll();
     }
 }
 
-/* Móviles */
+/* Móviles grandes */
 @media (max-width: 767px) {
     .main-slider1,
     .main-slider1 .bend,
@@ -342,12 +347,16 @@ $sidebarNews = db()->query($sqlSidebar)->fetchAll();
     }
     
     .sidebar-news-img {
-        width: 80px;
-        height: 80px;
+        width: 75px;
+        height: 75px;
+    }
+    
+    .sidebar-news-item {
+        padding: 12px 15px;
     }
     
     .sidebar-news-item .title-medium-dark {
-        font-size: 14px;
+        font-size: 13px;
     }
 }
 
@@ -362,7 +371,7 @@ $sidebarNews = db()->query($sqlSidebar)->fetchAll();
     }
     
     .sidebar-news-item {
-        padding: 15px;
+        padding: 10px 12px;
     }
 }
 </style>
