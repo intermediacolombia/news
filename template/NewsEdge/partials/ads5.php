@@ -18,7 +18,7 @@ $sliderAds = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <section>
-    <div class="container">
+   
         <div class="ne-main-content">
          
 
@@ -43,7 +43,7 @@ $sliderAds = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
 
         </div>
-    </div>
+    
 </section>
 
 <style>
