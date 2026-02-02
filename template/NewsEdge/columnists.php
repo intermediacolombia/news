@@ -120,7 +120,7 @@ $page_canonical = URLBASE . '/columnistas/' . htmlspecialchars($username) . '/';
             <h1><?= htmlspecialchars($authorName) ?></h1>
             <ul>
                 <li>
-                    <a href="<​?= URLBASE ?>">Inicio</a>
+                    <a href="<?= URLBASE ?>">Inicio</a>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
                 </li>
                 <li>
@@ -142,8 +142,8 @@ $page_canonical = URLBASE . '/columnistas/' . htmlspecialchars($username) . '/';
         <div class="row mb-40">
             <div class="col-xl-3 col-lg-4 col-md-5 col-sm-12 text-center mb-30">
                 <div class="img-wrapper" style="max-width: 250px; height: 250px; overflow: hidden; margin: 0 auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-                    <img src="<​?= $fotoPerfil ?>" 
-                         alt="<​?= htmlspecialchars($authorName) ?>"
+                    <img src="<?= $fotoPerfil ?>" 
+                         alt="<?= htmlspecialchars($authorName) ?>"
                          class="img-fluid"
                          style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
@@ -173,15 +173,15 @@ $page_canonical = URLBASE . '/columnistas/' . htmlspecialchars($username) . '/';
                     <div class="col-xl-6 col-lg-6 col-md-12 mb-30">
                         <div class="news-item-box item-shadow-1 h-100">
                             <div class="img-wrapper" style="height: 250px; overflow: hidden;">
-                                <a href="<​?= $postUrl ?>">
-                                    <img src="<​?= img_url($post['image']) ?>" 
-                                         alt="<​?= htmlspecialchars($post['title']) ?>"
+                                <a href="<?= $postUrl ?>">
+                                    <img src="<?= img_url($post['image']) ?>" 
+                                         alt="<?= htmlspecialchars($post['title']) ?>"
                                          class="img-fluid"
                                          style="width: 100%; height: 100%; object-fit: cover;">
                                 </a>
                                 <?php if (!empty($post['category_name'])): ?>
                                     <div class="post-badge-wrapper">
-                                        <a href="<​?= $categoryUrl ?>" class="post-badge-1">
+                                        <a href="<?= $categoryUrl ?>" class="post-badge-1">
                                             <?= htmlspecialchars($post['category_name']) ?>
                                         </a>
                                     </div>
@@ -189,7 +189,7 @@ $page_canonical = URLBASE . '/columnistas/' . htmlspecialchars($username) . '/';
                             </div>
                             <div class="news-content-box p-4">
                                 <h3 class="title-medium-dark size-lg mb-10">
-                                    <a href="<​?= $postUrl ?>">
+                                    <a href="<?= $postUrl ?>">
                                         <?= htmlspecialchars($post['title']) ?>
                                     </a>
                                 </h3>
@@ -202,7 +202,7 @@ $page_canonical = URLBASE . '/columnistas/' . htmlspecialchars($username) . '/';
                                 <p class="description-body-dark">
                                     <?= truncate_text($post['seo_description'] ?: $post['content'], 150) ?>
                                 </p>
-                                <a href="<​?= $postUrl ?>" class="read-more-link">
+                                <a href="<?= $postUrl ?>" class="read-more-link">
                                     Leer más <i class="fa fa-long-arrow-right"></i>
                                 </a>
                             </div>
