@@ -80,7 +80,7 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <div class="row align-items-center">
                 <div class="col-lg-4 text-center mb-30">
                     <div class="columnist-profile-image">
-                        <img src="<​?= $fotoPerfil ?>" alt="<​?= htmlspecialchars($authorName) ?>">
+                        <img src="<?= $fotoPerfil ?>" alt="<?= htmlspecialchars($authorName) ?>">
                     </div>
                 </div>
                 <div class="col-lg-8">
@@ -106,8 +106,8 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <div class="col-lg-6 mb-30">
                     <div class="columnist-post-card">
                         <div class="columnist-post-image">
-                            <a href="<​?= $postUrl ?>">
-                                <img src="<​?= img_url($post['image']) ?>" alt="<​?= htmlspecialchars($post['title']) ?>">
+                            <a href="<?= $postUrl ?>">
+                                <img src="<?= img_url($post['image']) ?>" alt="<?= htmlspecialchars($post['title']) ?>">
                             </a>
                             <span class="columnist-post-category">
                                 <?= htmlspecialchars($post['category_name']) ?>
@@ -115,10 +115,10 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         </div>
                         <div class="columnist-post-content">
                             <h3>
-                                <a href="<​?= $postUrl ?>"><?= htmlspecialchars($post['title']) ?></a>
+                                <a href="<?= $postUrl ?>"><?= htmlspecialchars($post['title']) ?></a>
                             </h3>
                             <p><?= truncate_text($post['content']) ?></p>
-                            <a href="<​?= $postUrl ?>" class="read-more-link">
+                            <a href="<?= $postUrl ?>" class="read-more-link">
                                 Leer columna <i class="fa fa-long-arrow-right"></i>
                             </a>
                         </div>
