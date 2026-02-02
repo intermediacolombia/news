@@ -461,5 +461,41 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
+
+<script>
+    // Script para expandir/contraer el buscador
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchForm = document.getElementById('top-search-form');
+        const searchButton = searchForm.querySelector('.search-button');
+        const searchInput = searchForm.querySelector('.search-input');
+        
+        searchButton.addEventListener('click', function(e) {
+            // Si el formulario no está activo, expandir el input
+            if (!searchForm.classList.contains('active')) {
+                e.preventDefault();
+                searchForm.classList.add('active');
+                searchInput.focus();
+            }
+            // Si está activo y el input está vacío, contraer
+            else if (searchInput.value.trim() === '') {
+                e.preventDefault();
+                searchForm.classList.remove('active');
+            }
+            // Si está activo y tiene texto, permitir el submit
+        });
+        
+        // Cerrar el buscador si se hace clic fuera de él
+        document.addEventListener('click', function(e) {
+            if (!searchForm.contains(e.target)) {
+                searchForm.classList.remove('active');
+            }
+        });
+        
+        // Prevenir que el clic en el input cierre el formulario
+        searchInput.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+    });
+</script>
 </body>
 </html>

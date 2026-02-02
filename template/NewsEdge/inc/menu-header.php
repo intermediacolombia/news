@@ -147,29 +147,37 @@
 
                         <!-- Search and Mobile Actions -->
                         <div class="col-lg-2 col-md-2 col-sm-2 text-right position-static">
-                            <div class="header-action-item on-mobile-fixed">
-                                <ul>
-                                    <li>
-                                        <form action="<?= URLBASE ?>/buscar/" method="get" id="top-search-form" class="header-search-dark">
-                                            <input type="text" name="q" class="search-input" placeholder="Buscar...." required="" style="display: none;">
-                                            <button type="submit" class="search-button">
-                                                <i class="fa fa-search" aria-hidden="true"></i>
-                                            </button>
-                                        </form>
-                                    </li>
-                                    <li>
-                                        <div id="side-menu-trigger" class="offcanvas-menu-btn offcanvas-btn-repoint">
-                                            <a href="#" class="menu-bar">
-                                                <span></span><span></span><span></span>
-                                            </a>
-                                            <a href="#" class="menu-times close">
-                                                <span></span><span></span>
-                                            </a>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
+    <div class="header-action-item on-mobile-fixed">
+        <ul>
+            <li>
+                <form action="<?= URLBASE ?>/buscar/" method="get" id="top-search-form" class="header-search-dark">
+                    <input type="text" 
+                           name="q" 
+                           class="search-input" 
+                           placeholder="Buscar..." 
+                           required>
+                    <button type="submit" class="search-button" title="Buscar">
+                        <i class="fa fa-search" aria-hidden="true"></i>
+                    </button>
+                </form>
+            </li>
+            <li>
+                <div id="side-menu-trigger" class="offcanvas-menu-btn offcanvas-btn-repoint">
+                    <a href="#" class="menu-bar">
+                        <span></span><span></span><span></span>
+                    </a>
+                    <a href="#" class="menu-times close">
+                        <span></span><span></span>
+                    </a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+
+
                     </div>
                 </div>
             </div>
