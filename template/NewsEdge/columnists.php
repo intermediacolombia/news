@@ -26,10 +26,7 @@ if (!function_exists('img_url')) {
 /* ================= Capturar Slug ================= */
 $username = $_GET['columnist_name_slug'] ?? null;
 
-if (!$username) {
-    http_response_code(404);
-    return;
-}
+
 
 /* ================= 1. Datos del Columnista ================= */
 $sqlUser = "
