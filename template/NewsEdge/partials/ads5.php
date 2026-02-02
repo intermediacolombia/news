@@ -1,15 +1,5 @@
 <?php
-if (!function_exists('img_url')) {
-    function img_url(?string $path): string {
-        if (empty($path)) {
-            return URLBASE . '/template/newsedge/img/placeholder.jpg';
-        }
-        if (filter_var($path, FILTER_VALIDATE_URL)) {
-            return $path;
-        }
-        return URLBASE . '/' . ltrim($path, '/');
-    }
-}
+require_once __DIR__ . '/../../../inc/config.php';
 
 $stmt = db()->query("
     SELECT * FROM ads_gallery 
