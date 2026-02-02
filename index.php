@@ -20,7 +20,6 @@ if ($parts[0] === 'buscar') {
     $templateFile = __DIR__ . "/template/" . THEME . "/search.php";
 
 // ===============================
-// ===============================
 // Institucional: /institucional/ o /institucional/slug/
 // ===============================
 } elseif ($parts[0] === 'institucional') {
@@ -35,12 +34,12 @@ if ($parts[0] === 'buscar') {
     else {
         $templateFile = __DIR__ . "/template/" . THEME . "/institucional-list.php";
     }
-    // <-- ¡FALTABA ESTA LLAVE DE CIERRE!
 
 // ===============================
 // Columnistas: Plural (Lista) y Singular (Perfil)
+// IMPORTANTE: DEBE IR ANTES DEL PATRÓN DE 2 PARTES (single.php)
 // ===============================
-} elseif ($parts[0] === 'columnistas/all') { 
+} elseif ($parts[0] === 'columnistas') { 
     // LISTADO: /columnistas/
     $_GET['page'] = 'columnistas';
     $templateFile = __DIR__ . "/template/" . THEME . "/columnists-list.php";
@@ -57,7 +56,6 @@ if ($parts[0] === 'buscar') {
         exit;
     }
 
-
 // ===============================
 // Noticias
 // ===============================
@@ -70,6 +68,10 @@ if ($parts[0] === 'buscar') {
     } elseif (isset($parts[2]) && $parts[2] === 'page') {
         $_GET['slug']     = $parts[1];
         $_GET['page_num'] = (int)($parts[3] ?? 1);
+    // /noticias/post/slug-del-post/
+    } elseif (isset($parts[1]) && $parts[1] === 'post' && isset($parts[2])) {
+        $_GET['post'] = $parts[2];
+        $templateFile = __DIR__ . "/template/" . THEME . "/single.php";
     // /noticias/categoria/
     } elseif (isset($parts[1])) {
         $_GET['slug']     = $parts[1];
@@ -78,12 +80,17 @@ if ($parts[0] === 'buscar') {
     } else {
         $_GET['page_num'] = 1;
     }
-    $templateFile = __DIR__ . "/template/" . THEME . "/noticias.php";
+    
+    // Solo asignar template de noticias si no se asignó single.php
+    if (!$templateFile) {
+        $templateFile = __DIR__ . "/template/" . THEME . "/noticias.php";
+    }
 
 // ===============================
 // Single post: /categoria/post/
+// IMPORTANTE: DEBE IR DESPUÉS DE TODAS LAS RUTAS ESPECIALES
 // ===============================
-} elseif (count($parts) === 2) {
+} elseif (count($parts) === 2 && !empty($parts[0]) && !empty($parts[1])) {
     $_GET['category'] = $parts[0];
     $_GET['post']     = $parts[1];
     $templateFile     = __DIR__ . "/template/" . THEME . "/single.php";
@@ -130,7 +137,9 @@ if ($templateFile && file_exists($templateFile)) {
     }
 }
 
-//Para fechas en español
+// ===============================
+// Función: Fechas en español
+// ===============================
 function fecha_espanol(string $fecha): string {
     $ingles = [
         'Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday',
