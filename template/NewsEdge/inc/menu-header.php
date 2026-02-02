@@ -136,7 +136,7 @@ $columnistasMenu = $stCols->fetchAll(PDO::FETCH_ASSOC);
                 $nombreCompleto = trim($col['nombre'] . ' ' . $col['apellido']);
             ?>
                 <li>
-                    <a href="<?= URLBASE ?>/columnistas/<?= htmlspecialchars($col['username']) ?>/">
+                    <a href="<?= URLBASE ?>/columnista/<?= htmlspecialchars($col['username']) ?>/">
                         <?= htmlspecialchars($nombreCompleto) ?>
                     </a>
                 </li>
