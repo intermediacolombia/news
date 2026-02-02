@@ -155,7 +155,7 @@
                                         
                                         <?php if (!empty($columnistasMenu)): ?>
                                             <li>
-                                                <a href="#">COLUMNISTAS</a>
+                                                <a href="<?= URLBASE ?>/columnista">COLUMNISTAS</a>
                                                 <ul class="ne-dropdown-menu">
                                                     <?php foreach ($columnistasMenu as $col): 
                                                         $nombreCompleto = trim($col['nombre'] . ' ' . $col['apellido']);
