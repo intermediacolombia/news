@@ -17,7 +17,7 @@ $stmt = db()->query("
 $sliderAds = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
-<section class="bg-body section-space-less30">
+<section>
     <div class="container">
         <div class="ne-main-content">
          
