@@ -22,11 +22,11 @@ if (!function_exists('truncate_text')) {
 $categorySlug = $_GET['category'] ?? null;
 $postSlug     = $_GET['post'] ?? null;
 
-if (!$categorySlug || !$postSlug) {
+/*if (!$categorySlug || !$postSlug) {
     http_response_code(404);
     header('Location: /error_404');
     exit;
-}
+}*/
 
 // Buscar la noticia
 $stmt = db()->prepare("
