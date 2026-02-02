@@ -24,7 +24,7 @@ if (!function_exists('img_url')) {
 }
 
 /* ================= Capturar Slug ================= */
-$username = $_GET['columnist_name_slug'] ?? null;
+$username = $_GET['columnist_slug'] ?? null;
 
 if (!$username) {
     http_response_code(404);
