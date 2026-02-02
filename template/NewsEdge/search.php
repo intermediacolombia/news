@@ -61,7 +61,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
 
 ?>
 
-<!-- Inner Page Banner Area Start Here -->
+<!-- Inner Page Banner Area Start Here -
 <section class="inner-page-banner bg-common" style="background-image: url('<?= URLBASE ?>/template/NewsEdge/img/banner/inner-page-banner.jpg');">
     <div class="container">
         <div class="row">
