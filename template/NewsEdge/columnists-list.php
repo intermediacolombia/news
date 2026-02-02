@@ -6,8 +6,8 @@
 
 require_once __DIR__ . '/../../inc/config.php';
 
-// Cargar todos los columnistas activos
-$sql = "SELECT id, nombre, apellido, username, foto_perfil, bio 
+// Cargar todos los columnistas activos (SIN bio - no existe en la tabla)
+$sql = "SELECT id, nombre, apellido, username, foto_perfil 
         FROM usuarios 
         WHERE es_columnista = 1 
           AND estado = 0 
@@ -62,7 +62,6 @@ if (!function_exists('get_columnist_avatar')) {
 
 // Contar posts por columnista
 foreach ($columnistas as &$columnista) {
-    $authorName = trim($columnista['nombre'] . ' ' . $columnista['apellido']);
     $stmt = db()->prepare("
         SELECT COUNT(*) 
         FROM blog_posts 
@@ -113,7 +112,6 @@ unset($columnista);
                                 $nombreCompleto = trim($col['nombre'] . ' ' . $col['apellido']);
                                 $avatarUrl = get_columnist_avatar($col['nombre'], $col['apellido'], $col['foto_perfil']);
                                 $profileUrl = URLBASE . '/columnista/' . urlencode($col['username']) . '/';
-                                $bio = !empty($col['bio']) ? $col['bio'] : 'Columnista de ' . NOMBRE_SITIO;
                             ?>
                             
                             <div class="col-lg-3 col-md-4 col-sm-6 mb-30">
@@ -147,16 +145,10 @@ unset($columnista);
                                             </a>
                                         </h3>
                                         
-                                        <p class="columnist-role mb-15">
+                                        <p class="columnist-role mb-20">
                                             <i class="fa fa-user-circle" aria-hidden="true"></i>
                                             Columnista
                                         </p>
-                                        
-                                        <?php if(!empty($col['bio'])): ?>
-                                        <p class="description-body-dark columnist-bio mb-20">
-                                            <?= htmlspecialchars(substr($bio, 0, 80)) ?><?= strlen($bio) > 80 ? '...' : '' ?>
-                                        </p>
-                                        <?php endif; ?>
                                         
                                         <div class="columnist-actions">
                                             <a href="<?= $profileUrl ?>" class="btn-columnist">
@@ -170,6 +162,7 @@ unset($columnista);
                             
                             <?php endforeach; ?>
                         </div>
+
                         
                     <?php endif; ?>
                     
@@ -230,6 +223,8 @@ unset($columnista);
         display: flex;
         flex-direction: column;
         align-items: center;
+        justify-content: space-between;
+        min-height: 140px;
     }
     
     /* Nombre del columnista */
@@ -252,20 +247,12 @@ unset($columnista);
         text-transform: uppercase;
         letter-spacing: 1px;
         font-weight: 500;
+        margin-bottom: 0;
     }
     
     .columnist-role i {
         color: var(--primary);
         margin-right: 5px;
-    }
-    
-    /* Bio */
-    .columnist-bio {
-        font-size: 14px;
-        line-height: 1.6;
-        color: #666;
-        flex: 1;
-        min-height: 60px;
     }
     
     /* Botón de perfil */
@@ -356,10 +343,6 @@ unset($columnista);
         
         .columnist-card-body {
             padding: 20px !important;
-        }
-        
-        .columnist-bio {
-            min-height: 50px;
         }
     }
     
