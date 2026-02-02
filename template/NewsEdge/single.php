@@ -41,12 +41,12 @@ $stmt = db()->prepare("
 $stmt->execute([$postSlug, $categorySlug]);
 $post = $stmt->fetch();
 
-if (!$post) {
+/*if (!$post) {
     http_response_code(404);
     //include __DIR__ . '/404.php';
 	header('Location: /error_404');
     exit;
-}
+}*/
 
 /* ================================
    Registro de vistas
