@@ -174,40 +174,5 @@ $sliderAds = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 </style>
 
-<!-- Script de inicialización de Owl Carousel -->
-<script>
-jQuery(document).ready(function($) {
-    $('#adsOwlSlider').owlCarousel({
-        items: 1,
-        loop: true,
-        autoplay: true,
-        autoplayTimeout: 5000,
-        autoplayHoverPause: true,
-        nav: true,
-        navText: ['<i class="fa fa-angle-left"></i>', '<i class="fa fa-angle-right"></i>'],
-        dots: true,
-        smartSpeed: 800,
-        animateOut: 'fadeOut',
-        animateIn: 'fadeIn',
-        responsive: {
-            0: {
-                items: 1,
-                nav: true,
-                dots: true
-            },
-            768: {
-                items: 1,
-                nav: true,
-                dots: true
-            },
-            1024: {
-                items: 1,
-                nav: true,
-                dots: true
-            }
-        }
-    });
-});
-</script>
 <?php endif; ?>
 
