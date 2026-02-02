@@ -33,7 +33,7 @@ if (!$username) {
 
 /* ================= 1. Datos del Columnista ================= */
 $sqlUser = "
-    SELECT nombre, apellido, foto_perfil, username
+    SELECT id, nombre, apellido, foto_perfil, username
     FROM usuarios
     WHERE username = ?
       AND es_columnista = 1
@@ -52,8 +52,9 @@ if (!$usuario) {
 }
 
 $authorName = trim($usuario['nombre'] . ' ' . $usuario['apellido']);
+$authorUserId = $usuario['id']; // ID del usuario para la consulta de posts
 
-// Lógica de imagen de perfil (Igual a la que usas en el home)
+// Lógica de imagen de perfil
 if (!empty($usuario['foto_perfil'])) {
     $fotoPerfil = img_url($usuario['foto_perfil']);
 } else {
@@ -68,21 +69,21 @@ if (!empty($usuario['foto_perfil'])) {
     ");
 }
 
-/* ================= 2. Obtener Columnas ================= */
+/* ================= 2. Obtener Columnas por author_user ================= */
 $sqlPosts = "
     SELECT p.id, p.title, p.slug, p.content, p.image, p.created_at, p.seo_description,
            c.name AS category_name, c.slug AS category_slug
     FROM blog_posts p
     LEFT JOIN blog_post_category pc ON pc.post_id = p.id
     LEFT JOIN blog_categories c ON c.id = pc.category_id
-    WHERE p.author = ?
+    WHERE p.author_user = ?
       AND p.status = 'published'
       AND p.deleted = 0
     ORDER BY p.created_at DESC
 ";
 
 $stmt = db()->prepare($sqlPosts);
-$stmt->execute([$authorName]);
+$stmt->execute([$authorUserId]);
 $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
