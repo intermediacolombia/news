@@ -95,10 +95,10 @@
         !1
       );
     }),
-   e("nav#dropdown").meanmenu({
+    e("nav#dropdown").meanmenu({
   siteLogo:
     "<div class='mobile-menu-nav-back'><a href='" + SITE_CONFIG.urlBase + "' class='logo-mobile'><img src='" + SITE_CONFIG.siteLogo + "' alt='" + SITE_CONFIG.siteLogoAlt + "'/></a></div>",
-});
+}),
     new WOW().init(),
     e.scrollUp({
       scrollText: '<i class="fa fa-angle-double-up"></i>',
