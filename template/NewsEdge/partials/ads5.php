@@ -19,8 +19,8 @@ $sliderAds = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
 	
-	<div class="sidebar-box item-box-light-md">
-    <div class="topic-border color-cinnabar mb-30">
+	
+    <div class="topic-border color-cinnabar mb-25">
         <div class="topic-box-lg color-cinnabar">Publicidad</div>
     </div>
    

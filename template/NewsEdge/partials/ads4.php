@@ -66,9 +66,9 @@ $cuadrados    = array_filter($ads, fn($a) => $a['type'] === 'square');
         <?php if ($cuadrados): ?>
             <div class="ne-main-content">
                 <!-- Título de sección con estilo del tema -->
-                <div class="topic-border color-mandy mb-30">
-                    <div class="topic-box-lg color-mandy">Anuncios Promocionales</div>
-                </div>
+                <div class="topic-border color-cinnabar mb-25">
+        <div class="topic-box-lg color-cinnabar">Publicidad</div>
+    </div>
                 
                 <div class="row">
                     <?php foreach ($cuadrados as $ad): 
