@@ -40,7 +40,7 @@ $themeColors = ['color-apple', 'color-pomegranate', 'color-java', 'color-mandy',
 	 
     <div class="container">
 		<div class="topic-border color-cinnabar mb-30">
-        <div class="topic-box-lg color-cinnabar">Explorar por Categorias</div>
+        <div class="topic-box-lg color-cinnabar">Explorar por Categorías</div>
     </div>
         <div class="row tab-space5">
             <?php foreach ($exploreCats as $index => $cat): 
