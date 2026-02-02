@@ -14,7 +14,7 @@ if (!function_exists('truncate_text')) {
 if (!function_exists('img_url')) {
     function img_url(?string $path): string {
         if (empty($path)) {
-            return URLBASE . '/template/newsedge/img/avatar-default.jpg';
+            return URLBASE . '/template/NewsEdge/img/avatar-default.jpg';
         }
         if (filter_var($path, FILTER_VALIDATE_URL)) {
             return $path;
@@ -28,8 +28,7 @@ $username = $_GET['columnist_name_slug'] ?? null;
 
 if (!$username) {
     http_response_code(404);
-    include __DIR__ . '/404.php';
-    exit;
+    return;
 }
 
 /* ================= 1. Datos del Columnista ================= */
@@ -43,25 +42,17 @@ $sqlUser = "
     LIMIT 1
 ";
 
-try {
-    $stmt = db()->prepare($sqlUser);
-    $stmt->execute([$username]);
-    $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    error_log("Error al buscar columnista: " . $e->getMessage());
-    http_response_code(500);
-    exit;
-}
+$stmt = db()->prepare($sqlUser);
+$stmt->execute([$username]);
+$usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$usuario) {
     http_response_code(404);
-    include __DIR__ . '/404.php';
-    exit;
+    return;
 }
 
 $authorName = trim($usuario['nombre'] . ' ' . $usuario['apellido']);
-$authorUserId = $usuario['id'];
-$authorUsername = $usuario['username'];
+$authorUserId = $usuario['id']; // ID del usuario para la consulta de posts
 
 // Lógica de imagen de perfil
 if (!empty($usuario['foto_perfil'])) {
@@ -78,7 +69,7 @@ if (!empty($usuario['foto_perfil'])) {
     ");
 }
 
-/* ================= 2. Obtener Columnas ================= */
+/* ================= 2. Obtener Columnas por author_user ================= */
 $sqlPosts = "
     SELECT p.id, p.title, p.slug, p.content, p.image, p.created_at, p.seo_description,
            c.name AS category_name, c.slug AS category_slug
@@ -91,137 +82,10 @@ $sqlPosts = "
     ORDER BY p.created_at DESC
 ";
 
-try {
-    $stmt = db()->prepare($sqlPosts);
-    // ✅ IMPORTANTE: Usa el campo correcto según tu BD
-    // Si author_user guarda el ID numérico:
-    $stmt->execute([$authorUserId]);
-    // Si author_user guarda el username:
-    // $stmt->execute([$authorUsername]);
-    
-    $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    error_log("Error al cargar posts del columnista: " . $e->getMessage());
-    $posts = [];
-}
-
-// Variables SEO
-$page_title = htmlspecialchars($authorName) . " - Columnista | " . NOMBRE_SITIO;
-$page_description = "Lee todas las columnas de " . htmlspecialchars($authorName) . " en " . NOMBRE_SITIO;
-$page_keywords = htmlspecialchars($authorName) . ", columnista, opinión, " . NOMBRE_SITIO;
-$page_image = $fotoPerfil;
-$page_canonical = URLBASE . '/columnistas/' . htmlspecialchars($username) . '/';
+$stmt = db()->prepare($sqlPosts);
+$stmt->execute([$usuario['username']]); // Usamos el username de la tabla usuarios
+$posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
-
-<!-- Breadcrumb Area Start Here -->
-<section class="breadcrumbs-area" style="background-image: url('<?= URLBASE ?>/template/newsedge/img/breadcrumbs-bg.jpg');">
-    <div class="container">
-        <div class="breadcrumbs-content">
-            <h1><?= htmlspecialchars($authorName) ?></h1>
-            <ul>
-                <li>
-                    <a href="<?= URLBASE ?>">Inicio</a>
-                    <i class="fa fa-angle-right" aria-hidden="true"></i>
-                </li>
-                <li>
-                    <a href="<?= URLBASE ?>/columnistas">Columnistas</a>
-                    <i class="fa fa-angle-right" aria-hidden="true"></i>
-                </li>
-                <li><?= htmlspecialchars($authorName) ?></li>
-            </ul>
-        </div>
-    </div>
-</section>
-<!-- Breadcrumb Area End Here -->
-
-<!-- Columnist Page Area Start Here -->
-<section class="bg-body section-space-less30">
-    <div class="container">
-        
-        <!-- Header del Columnista -->
-        <div class="row mb-40">
-            <div class="col-xl-3 col-lg-4 col-md-5 col-sm-12 text-center mb-30">
-                <div class="img-wrapper" style="max-width: 250px; height: 250px; overflow: hidden; margin: 0 auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-                    <img src="<?= $fotoPerfil ?>" 
-                         alt="<?= htmlspecialchars($authorName) ?>"
-                         class="img-fluid"
-                         style="width: 100%; height: 100%; object-fit: cover;">
-                </div>
-            </div>
-            <div class="col-xl-9 col-lg-8 col-md-7 col-sm-12 d-flex align-items-center">
-                <div>
-                    <h1 class="title-medium-dark size-xl mb-15">
-                        <?= htmlspecialchars($authorName) ?>
-                    </h1>
-                    <p class="description-body-dark">
-                        <i class="fa fa-pencil-square-o mr-2"></i>
-                        <?= count($posts) ?> columna<?= count($posts) !== 1 ? 's' : '' ?> publicada<?= count($posts) !== 1 ? 's' : '' ?>
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Listado de Columnas -->
-        <?php if (!empty($posts)): ?>
-            <div class="row">
-                <?php foreach ($posts as $post): 
-                    $postUrl = URLBASE . '/noticias/' . htmlspecialchars($post['slug']) . '/';
-                    $categoryUrl = !empty($post['category_slug']) 
-                        ? URLBASE . '/noticias/' . htmlspecialchars($post['category_slug']) . '/' 
-                        : '#';
-                ?>
-                    <div class="col-xl-6 col-lg-6 col-md-12 mb-30">
-                        <div class="news-item-box item-shadow-1 h-100">
-                            <div class="img-wrapper" style="height: 250px; overflow: hidden;">
-                                <a href="<?= $postUrl ?>">
-                                    <img src="<?= img_url($post['image']) ?>" 
-                                         alt="<?= htmlspecialchars($post['title']) ?>"
-                                         class="img-fluid"
-                                         style="width: 100%; height: 100%; object-fit: cover;">
-                                </a>
-                                <?php if (!empty($post['category_name'])): ?>
-                                    <div class="post-badge-wrapper">
-                                        <a href="<?= $categoryUrl ?>" class="post-badge-1">
-                                            <?= htmlspecialchars($post['category_name']) ?>
-                                        </a>
-                                    </div>
-                                <?php endif; ?>
-                            </div>
-                            <div class="news-content-box p-4">
-                                <h3 class="title-medium-dark size-lg mb-10">
-                                    <a href="<?= $postUrl ?>">
-                                        <?= htmlspecialchars($post['title']) ?>
-                                    </a>
-                                </h3>
-                                <ul class="post-meta mb-10">
-                                    <li>
-                                        <i class="fa fa-calendar"></i>
-                                        <?= date('d/m/Y', strtotime($post['created_at'])) ?>
-                                    </li>
-                                </ul>
-                                <p class="description-body-dark">
-                                    <?= truncate_text($post['seo_description'] ?: $post['content'], 150) ?>
-                                </p>
-                                <a href="<?= $postUrl ?>" class="read-more-link">
-                                    Leer más <i class="fa fa-long-arrow-right"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        <?php else: ?>
-            <div class="text-center py-5">
-                <div class="alert alert-info">
-                    <i class="fa fa-info-circle"></i>
-                    Este columnista aún no ha publicado ninguna columna.
-                </div>
-            </div>
-        <?php endif; ?>
-        
-    </div>
-</section>
-<!-- Columnist Page Area End Here -->
 
 <!-- Banner de Página (Breadcrumbs) -->
 <section class="breadcrumbs-area" style="background-image: url('<?= URLBASE ?>/template/NewsEdge/img/banner/inner-page-banner.jpg');">
