@@ -40,16 +40,18 @@ if ($parts[0] === 'buscar') {
 // ===============================
 // Columnistas: /columnistas/ o /columnistas/slug/
 // ===============================
-} elseif ($parts[0] === 'columnistas') {  // Cambiar a PLURAL
+} elseif ($parts[0] === 'columnistas') {
     $_GET['page'] = 'columnistas';
+    
     if (isset($parts[1]) && !empty($parts[1])) {
-        // Vista individual del columnista
+        // Vista individual del columnista: /columnistas/juan/
         $_GET['columnist_name_slug'] = $parts[1];
         $templateFile = __DIR__ . "/template/" . THEME . "/columnists.php";
     } else {
-        // Listado de todos los columnistas
+        // Listado de todos los columnistas: /columnistas/
         $templateFile = __DIR__ . "/template/" . THEME . "/columnists-list.php";
     }
+
 
 
 // ===============================
