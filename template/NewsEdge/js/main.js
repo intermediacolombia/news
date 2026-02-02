@@ -97,7 +97,7 @@
     }),
     e("nav#dropdown").meanmenu({
   siteLogo:
-    "<div class='mobile-menu-nav-back'><a href='" + SITE_CONFIG.urlBase + "' class='logo-mobile'><img src='" + SITE_CONFIG.siteLogo + "' alt='" + SITE_CONFIG.siteLogoAlt + "'/></a></div>",
+    "<div class='mobile-menu-nav-back'><a href='" + SITE_CONFIG.urlBase + "' class='logo-mobile'><img src='" + SITE_CONFIG.siteLogo + "' alt='" + SITE_CONFIG.siteLogoAlt + "'/ width='150px'></a></div>",
 }),
     new WOW().init(),
     e.scrollUp({
