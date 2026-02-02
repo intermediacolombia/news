@@ -50,50 +50,67 @@ $sliderAds = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </section>
 
 <style>
-/* FORZADO DE ESTRUCTURA OWL (Esto arregla el 'apeñuscado') */
 .ads-slider-wrapper { 
-    max-width: 900px; 
+    max-width: 600px; /* Ajustamos el ancho máximo para que no sea un cuadrado gigante en PC */
     margin: 0 auto; 
     position: relative;
     display: block !important;
 }
 
-/* Forzamos que cada item ocupe el 100% del carrusel */
-#adsOwlSlider .owl-item {
-    float: left;
+/* Contenedor del item para forzar el cuadrado */
+.ne-banner-slide-container {
     width: 100%;
-}
-
-#adsOwlSlider .item {
-    width: 100%;
-    display: block;
+    position: relative;
+    /* Aspect ratio 1/1 para que el alto sea igual al ancho */
+    aspect-ratio: 1 / 1; 
+    overflow: hidden;
+    border-radius: 8px;
+    background-color: #f4f4f4; /* Fondo neutro mientras carga */
 }
 
 .ad-image-slider {
-    width: 100% !important; /* Owl necesita width 100% para calcular */
-    height: 500px;
-    object-fit: cover;
-    border-radius: 8px;
+    width: 100% !important;
+    height: 100% !important;
+    /* object-fit: cover asegura que la imagen llene el cuadrado sin deformarse */
+    object-fit: cover; 
     display: block;
 }
 
-/* Estilo de navegación (Flechas) */
+/* Ajuste para navegadores antiguos que no soportan aspect-ratio */
+@supports not (aspect-ratio: 1 / 1) {
+    .ne-banner-slide-container {
+        padding-top: 100%; /* Esto crea un cuadrado basado en el ancho */
+    }
+    .ad-image-slider {
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+}
+
+/* Estilo de las flechas para que no tapen el contenido cuadrado */
 #adsOwlSlider .owl-nav button {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background: rgba(0,0,0,0.5) !important;
+    background: rgba(0,0,0,0.4) !important;
     color: #fff !important;
-    width: 40px;
-    height: 40px;
+    width: 35px;
+    height: 35px;
     border-radius: 50%;
+    transition: all 0.3s ease;
 }
-#adsOwlSlider .owl-nav .owl-prev { left: -20px; }
-#adsOwlSlider .owl-nav .owl-next { right: -20px; }
 
-@media(max-width:768px){ 
-    .ad-image-slider { height: 250px; } 
-    #adsOwlSlider .owl-nav { display: none; }
+#adsOwlSlider .owl-nav .owl-prev { left: 10px; }
+#adsOwlSlider .owl-nav .owl-next { right: 10px; }
+
+#adsOwlSlider .owl-nav button:hover {
+    background: rgba(0,0,0,0.8) !important;
+}
+
+/* Dots (puntos) más pegados al cuadrado */
+#adsOwlSlider .owl-dots {
+    margin-top: 15px !important;
 }
 </style>
 
