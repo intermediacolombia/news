@@ -1,6 +1,24 @@
 <?php
-if (!defined('DIRECT_ACCESS') && !isset($config)) {
-    require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/config.php';
+require_once __DIR__ . '/../../inc/config.php';
+
+// Helpers
+if (!function_exists('truncate_text')) {
+    function truncate_text(string $text, int $limit = 120): string {
+        $text = strip_tags($text);
+        return (mb_strlen($text) > $limit) ? mb_substr($text, 0, $limit) . '...' : $text;
+    }
+}
+
+if (!function_exists('img_url')) {
+    function img_url(?string $path): string {
+        if (empty($path)) {
+            return URLBASE . '/template/NewsEdge/img/placeholder.jpg';
+        }
+        if (filter_var($path, FILTER_VALIDATE_URL)) {
+            return $path;
+        }
+        return URLBASE . '/' . ltrim($path, '/');
+    }
 }
 
 $username = $_GET['columnist_name_slug'] ?? null;
@@ -11,9 +29,9 @@ if (!$username) {
     exit;
 }
 
-// 1. Buscar al usuario por username
+// 1. Obtener datos del columnista
 $sqlUser = "
-    SELECT nombre, apellido
+    SELECT nombre, apellido, foto_perfil
     FROM usuarios
     WHERE username = ?
       AND es_columnista = 1
@@ -38,8 +56,11 @@ if (!$usuario) {
 }
 
 $authorName = $usuario['nombre'] . ' ' . $usuario['apellido'];
+$fotoPerfil = !empty($usuario['foto_perfil']) 
+    ? img_url($usuario['foto_perfil']) 
+    : URLBASE . '/template/NewsEdge/img/avatar-default.jpg';
 
-// 2. Buscar posts donde author = nombre completo
+// 2. Obtener sus posts
 $sqlPosts = "
     SELECT id, title, slug, content, image, created_at
     FROM blog_post
@@ -59,36 +80,68 @@ try {
 }
 ?>
 
-<div class="container py-5">
-    <h1 class="text-center mb-4">Columnas de <?= htmlspecialchars($authorName) ?></h1>
+<section class="bg-body section-space-less30">
+    <div class="container">
+        <!-- Header del Columnista -->
+        <div class="row mb-40">
+            <div class="col-xl-3 col-lg-4 col-md-5 col-sm-12 text-center mb-30">
+                <div class="img-wrapper" style="height: 250px; overflow: hidden; margin: 0 auto; border-radius: 8px;">
+                    <img src="<?= $fotoPerfil ?>" 
+                         alt="<?= htmlspecialchars($authorName) ?>"
+                         class="img-fluid"
+                         style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+            </div>
+            <div class="col-xl-9 col-lg-8 col-md-7 col-sm-12 d-flex align-items-center">
+                <div>
+                    <h1 class="title-medium-dark size-xl mb-15"><?= htmlspecialchars($authorName) ?></h1>
+                    <p class="description-body-dark">
+                        <?= count($posts) ?> columna<?= count($posts) !== 1 ? 's' : '' ?> publicada<?= count($posts) !== 1 ? 's' : '' ?>
+                    </p>
+                </div>
+            </div>
+        </div>
 
-    <?php if (!empty($posts)): ?>
-        <div class="row g-4">
-            <?php foreach ($posts as $post): ?>
-                <div class="col-md-6">
-                    <div class="card h-100">
-                        <?php if (!empty($post['image'])): ?>
-                            <img src="<?= img_url($post['image']) ?>" 
-                                 class="card-img-top" 
-                                 alt="<?= htmlspecialchars($post['title']) ?>"
-                                 style="height: 200px; object-fit: cover;">
-                        <?php endif; ?>
-                        <div class="card-body d-flex flex-column">
-                            <small class="text-muted mb-2">
-                                <?= fecha_espanol(date('l j \d\e F \d\e Y', strtotime($post['created_at']))) ?>
-                            </small>
-                            <h5 class="card-title"><?= htmlspecialchars($post['title']) ?></h5>
-                            <p class="card-text"><?= htmlspecialchars(mb_substr(strip_tags($post['content']), 0, 150)) ?>...</p>
-                            <a href="<?= URLBASE ?>/noticias/<?= htmlspecialchars($post['slug']) ?>" 
-                               class="btn btn-sm btn-outline-secondary mt-auto">
-                                Leer más
-                            </a>
+        <!-- Listado de Columnas -->
+        <?php if (!empty($posts)): ?>
+            <div class="row">
+                <?php foreach ($posts as $post): 
+                    $postUrl = URLBASE . '/noticias/' . htmlspecialchars($post['slug']) . '/';
+                ?>
+                    <div class="col-xl-6 col-lg-6 col-md-12 mb-30">
+                        <div class="news-item-box item-shadow-1 h-100">
+                            <div class="img-wrapper">
+                                <a href="<?= $postUrl ?>">
+                                    <img src="<?= img_url($post['image']) ?>" 
+                                         alt="<?= htmlspecialchars($post['title']) ?>"
+                                         class="img-fluid search-result-img">
+                                </a>
+                            </div>
+                            <div class="news-content-box">
+                                <h3 class="title-medium-dark size-lg mb-10">
+                                    <a href="<?= $postUrl ?>"><?= htmlspecialchars($post['title']) ?></a>
+                                </h3>
+                                <ul class="post-meta mb-10">
+                                    <li>
+                                        <i class="fa fa-calendar"></i>
+                                        <?= fecha_espanol(date('l j \d\e F \d\e Y', strtotime($post['created_at']))) ?>
+                                    </li>
+                                </ul>
+                                <p class="description-body-dark">
+                                    <?= truncate_text($post['content'], 150) ?>
+                                </p>
+                                <a href="<?= $postUrl ?>" class="read-more-link">
+                                    Leer más <i class="fa fa-long-arrow-right"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
-                </div>
-            <?php endforeach; ?>
-        </div>
-    <?php else: ?>
-        <p class="text-center">Este columnista aún no ha publicado ninguna columna.</p>
-    <?php endif; ?>
-</div>
+                <?php endforeach; ?>
+            </div>
+        <?php else: ?>
+            <div class="text-center py-5">
+                <p>Este columnista aún no ha publicado ninguna columna.</p>
+            </div>
+        <?php endif; ?>
+    </div>
+</section>
