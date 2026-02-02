@@ -24,7 +24,7 @@ $postSlug     = $_GET['post'] ?? null;
 
 if (!$categorySlug || !$postSlug) {
     http_response_code(404);
-    include __DIR__ . '/../404.php';
+    include __DIR__ . '/404.php';
     exit;
 }
 
