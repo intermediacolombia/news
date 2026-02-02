@@ -3,6 +3,7 @@ require_once __DIR__ . '/../../inc/config.php';
 
 // ===============================
 // Helpers Locales
+// single.php
 // ===============================
 if (!function_exists('img_url')) {
     function img_url(?string $path): string {
@@ -22,11 +23,11 @@ if (!function_exists('truncate_text')) {
 $categorySlug = $_GET['category'] ?? null;
 $postSlug     = $_GET['post'] ?? null;
 
-/*if (!$categorySlug || !$postSlug) {
+if (!$categorySlug || !$postSlug) {
     http_response_code(404);
     header('Location: /error_404');
     exit;
-}*/
+}
 
 // Buscar la noticia
 $stmt = db()->prepare("
@@ -41,12 +42,12 @@ $stmt = db()->prepare("
 $stmt->execute([$postSlug, $categorySlug]);
 $post = $stmt->fetch();
 
-/*if (!$post) {
+if (!$post) {
     http_response_code(404);
     //include __DIR__ . '/404.php';
 	header('Location: /error_404');
     exit;
-}*/
+}
 
 /* ================================
    Registro de vistas
