@@ -1,5 +1,15 @@
 <?php
-require_once __DIR__ . '/../../../inc/config.php';
+if (!function_exists('img_url')) {
+    function img_url(?string $path): string {
+        if (empty($path)) {
+            return URLBASE . '/template/newsedge/img/placeholder.jpg';
+        }
+        if (filter_var($path, FILTER_VALIDATE_URL)) {
+            return $path;
+        }
+        return URLBASE . '/' . ltrim($path, '/');
+    }
+}
 
 // Obtener banners de la Sección 3
 $stmt = db()->query("
@@ -13,66 +23,127 @@ $horizontales = array_filter($ads, fn($a) => $a['type'] === 'horizontal');
 $cuadrados    = array_filter($ads, fn($a) => $a['type'] === 'square');
 ?>
 
-<!-- SECCIÓN DE BANNERS -->
-<section class="py-5">
-  <div class="container">
-
-    <!-- BANNERS HORIZONTALES -->
-    <?php if ($horizontales): ?>
-      <div class="mb-5">
-        <h3 class="fw-bold text-center mb-4 text-uppercase text-secondary">Publicidad Destacada</h3>
-        <div class="row g-4 justify-content-center">
-          <?php foreach ($horizontales as $ad): ?>
-            <div class="col-12 col-md-10">
-              <div class="card border-0 shadow-sm rounded-3 overflow-hidden hover-zoom">
-                <?php if (!empty($ad['target_url'])): ?>
-                  <a href="<?= htmlspecialchars($ad['target_url']) ?>" target="_blank" rel="nofollow">
-                    <img src="<?= htmlspecialchars($ad['image_url']) ?>" class="img-fluid w-100" alt="Banner Horizontal">
-                  </a>
-                <?php else: ?>
-                  <img src="<?= htmlspecialchars($ad['image_url']) ?>" class="img-fluid w-100" alt="Banner Horizontal">
-                <?php endif; ?>
-              </div>
+<?php if ($horizontales || $cuadrados): ?>
+<!-- Advertisement Section Start -->
+<section class="bg-body section-space-less30">
+    <div class="container">
+        
+        <!-- BANNERS HORIZONTALES -->
+        <?php if ($horizontales): ?>
+            <div class="ne-main-content mb-50">
+                <!-- Título de sección con estilo del tema -->
+                <div class="topic-border color-cod-gray mb-30">
+                    <div class="topic-box-lg color-cod-gray">Publicidad Destacada</div>
+                </div>
+                
+                <div class="row">
+                    <?php foreach ($horizontales as $ad): 
+                        $adImage = img_url($ad['image_url']);
+                    ?>
+                        <div class="col-12 mb-30">
+                            <div class="ne-banner-layout1">
+                                <?php if (!empty($ad['target_url'])): ?>
+                                    <a href="<?= htmlspecialchars($ad['target_url']) ?>" 
+                                       target="_blank" 
+                                       rel="nofollow noopener">
+                                        <img src="<?= $adImage ?>" 
+                                             alt="Publicidad" 
+                                             class="img-fluid width-100">
+                                    </a>
+                                <?php else: ?>
+                                    <img src="<?= $adImage ?>" 
+                                         alt="Publicidad" 
+                                         class="img-fluid width-100">
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
             </div>
-          <?php endforeach; ?>
-        </div>
-      </div>
-    <?php endif; ?>
+        <?php endif; ?>
 
-
-    <!-- BANNERS CUADRADOS -->
-    <?php if ($cuadrados): ?>
-      <div>
-        <h3 class="fw-bold text-center mb-4 text-uppercase text-secondary">Anuncios Promocionales</h3>
-        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4 justify-content-center">
-          <?php foreach ($cuadrados as $ad): ?>
-            <div class="col">
-              <div class="card border-0 shadow-sm rounded-4 overflow-hidden hover-zoom">
-                <?php if (!empty($ad['target_url'])): ?>
-                  <a href="<?= htmlspecialchars($ad['target_url']) ?>" target="_blank" rel="nofollow">
-                    <img src="<?= htmlspecialchars($ad['image_url']) ?>" class="img-fluid" alt="Banner Cuadrado">
-                  </a>
-                <?php else: ?>
-                  <img src="<?= htmlspecialchars($ad['image_url']) ?>" class="img-fluid" alt="Banner Cuadrado">
-                <?php endif; ?>
-              </div>
+        <!-- BANNERS CUADRADOS -->
+        <?php if ($cuadrados): ?>
+            <div class="ne-main-content">
+                <!-- Título de sección con estilo del tema -->
+                <div class="topic-border color-cod-gray mb-30">
+                    <div class="topic-box-lg color-cod-gray">Anuncios Promocionales</div>
+                </div>
+                
+                <div class="row">
+                    <?php foreach ($cuadrados as $ad): 
+                        $adImage = img_url($ad['image_url']);
+                    ?>
+                        <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-30">
+                            <div class="ne-banner-layout2 img-scale-animate">
+                                <?php if (!empty($ad['target_url'])): ?>
+                                    <a href="<?= htmlspecialchars($ad['target_url']) ?>" 
+                                       target="_blank" 
+                                       rel="nofollow noopener">
+                                        <img src="<?= $adImage ?>" 
+                                             alt="Publicidad" 
+                                             class="img-fluid width-100"
+                                             style="height: 250px; object-fit: cover;">
+                                    </a>
+                                <?php else: ?>
+                                    <img src="<?= $adImage ?>" 
+                                         alt="Publicidad" 
+                                         class="img-fluid width-100"
+                                         style="height: 250px; object-fit: cover;">
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
             </div>
-          <?php endforeach; ?>
-        </div>
-      </div>
-    <?php endif; ?>
+        <?php endif; ?>
 
-  </div>
+    </div>
 </section>
+<!-- Advertisement Section End -->
 
-<!-- EFECTO SUAVE DE HOVER -->
+<!-- Estilos adicionales para banners -->
 <style>
-.hover-zoom img {
-  transition: transform .4s ease, box-shadow .3s ease;
+/* Banner horizontal con efecto hover suave */
+.ne-banner-layout1 {
+    overflow: hidden;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: box-shadow 0.3s ease;
 }
-.hover-zoom:hover img {
-  transform: scale(1.03);
-  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+
+.ne-banner-layout1:hover {
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.ne-banner-layout1 img {
+    transition: transform 0.4s ease;
+}
+
+.ne-banner-layout1:hover img {
+    transform: scale(1.02);
+}
+
+/* Banner cuadrado con efecto de escala /
+.ne-banner-layout2 {
+    overflow: hidden;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+}
+
+.ne-banner-layout2:hover {
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    transform: translateY(-4px);
+}
+
+.img-scale-animate img {
+    transition: transform 0.4s ease;
+}
+
+.img-scale-animate:hover img {
+    transform: scale(1.05);
 }
 </style>
+<?php endif; ?>
 
