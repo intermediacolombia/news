@@ -40,42 +40,17 @@ if ($parts[0] === 'buscar') {
 // ===============================
 // Columnistas: /columnistas/ o /columnistas/slug/
 // ===============================
-// ===============================
-// Columnistas: /columnistas/ o /columnistas/slug/
-// ===============================
-} elseif ($parts[0] === 'columnistas') {
-
-    // /columnistas/
-    if (!isset($parts[1]) || empty($parts[1])) {
-        $_GET['page'] = 'columnistas';
-        $templateFile = __DIR__ . "/template/" . THEME . "/columnists-list.php";
-        return;
-    }
-
-    // /columnistas/slug/
-    $slug = $parts[1];
-
-    // ✅ VALIDAR SI EL SLUG ES UN COLUMNISTA REAL
-    $stmt = db()->prepare("
-        SELECT id 
-        FROM usuarios 
-        WHERE username = ?
-          AND es_columnista = 1
-          AND estado = 0
-          AND borrado = 0
-        LIMIT 1
-    ");
-    $stmt->execute([$slug]);
-
-    if ($stmt->fetch()) {
-        // ✅ Es columnista → perfil
-        $_GET['page'] = 'columnistas';
-        $_GET['columnist_name_slug'] = $slug;
+} elseif ($parts[0] === 'columnistas') {  // Cambiar a PLURAL
+    $_GET['page'] = 'columnistas';
+    if (isset($parts[1]) && !empty($parts[1])) {
+        // Vista individual del columnista
+        $_GET['columnist_name_slug'] = $parts[1];
         $templateFile = __DIR__ . "/template/" . THEME . "/columnists.php";
-        return;
+    } else {
+        // Listado de todos los columnistas
+        $templateFile = __DIR__ . "/template/" . THEME . "/columnists-list.php";
     }
 
- 
 
 // ===============================
 // Noticias
