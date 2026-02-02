@@ -115,6 +115,35 @@
                                                 <?php endforeach; ?>
                                             </ul>
                                         </li>
+										
+										<?php
+$stCols = db()->query("
+    SELECT nombre, apellido, username
+    FROM usuarios
+    WHERE es_columnista = 1
+      AND estado = 0
+      AND borrado = 0
+    ORDER BY nombre ASC, apellido ASC
+");
+$columnistasMenu = $stCols->fetchAll(PDO::FETCH_ASSOC);
+?>
+
+<?php if (!empty($columnistasMenu)): ?>
+    <li>
+        <a href="#">COLUMNISTAS</a>
+        <ul class="ne-dropdown-menu">
+            <?php foreach ($columnistasMenu as $col): 
+                $nombreCompleto = trim($col['nombre'] . ' ' . $col['apellido']);
+            ?>
+                <li>
+                    <a href="<?= URLBASE ?>/columnistas/<?= htmlspecialchars($col['username']) ?>/">
+                        <?= htmlspecialchars($nombreCompleto) ?>
+                    </a>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    </li>
+<?php endif; ?>
 
                                         <!-- Nosotros / Institucional Dinámico -->
                                         <li>
