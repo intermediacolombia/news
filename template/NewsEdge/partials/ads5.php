@@ -62,7 +62,7 @@ $sliderAds = $stmt->fetchAll(PDO::FETCH_ASSOC);
     aspect-ratio: 1 / 1; 
     overflow: hidden;
     border-radius: 8px;
-    background-color: #f4f4f4; /* Fondo neutro mientras carga */
+    /*background-color: #f4f4f4; /* Fondo neutro mientras carga */
 }
 
 .ad-image-slider {
