@@ -197,7 +197,7 @@ $tags = array_slice(array_keys($freq), 0, 9);
   
 
 <!-- CATEGORÍAS -->
-<div class="sidebar-box item-box-light-md">
+
     <div class="topic-border color-cinnabar mb-30">
         <div class="topic-box-lg color-cinnabar">Categorías</div>
     </div>
@@ -217,10 +217,10 @@ $tags = array_slice(array_keys($freq), 0, 9);
         </div>
         <?php endforeach; ?>
     </div>
-</div>
+
 
 <!-- LAS MÁS LEÍDAS -->
-<div class="sidebar-box item-box-light-md">
+
     <div class="topic-border color-cinnabar mb-30">
         <div class="topic-box-lg color-cinnabar">Populares</div>
     </div>
@@ -252,7 +252,7 @@ $tags = array_slice(array_keys($freq), 0, 9);
         </div>
     </div>
     <?php endforeach; ?>
-</div>
+
 
 <!-- TAGS -->
 <div class="sidebar-box item-box-light-md">
