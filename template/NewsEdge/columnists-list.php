@@ -1,23 +1,27 @@
 <?php
 /**
- * Template: Listado de páginas institucionales
- * Ubicación: /template/NewsEdge/institucional-list.php
+ * Template: Listado de columnistas
+ * Ubicación: /template/NewsEdge/columnists-list.php
  */
 
-// Cargar todas las páginas institucionales publicadas
-$sql = "SELECT id, title, slug, page_type, image, seo_description, display_order 
-        FROM institutional_pages 
-        WHERE status = 'published' 
-        ORDER BY display_order ASC, title ASC";
+require_once __DIR__ . '/../../inc/config.php';
+
+// Cargar todos los columnistas activos
+$sql = "SELECT id, nombre, apellido, username, foto_perfil, bio 
+        FROM usuarios 
+        WHERE es_columnista = 1 
+          AND estado = 0 
+          AND borrado = 0
+        ORDER BY nombre ASC, apellido ASC";
 $stmt = db()->query($sql);
-$pages = $stmt->fetchAll();
+$columnistas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // =======================
 // Variables SEO dinámicas
 // =======================
-$page_title       = "Información Institucional | " . NOMBRE_SITIO;
-$page_description = "Conoce más sobre " . NOMBRE_SITIO . ". Nuestra misión, visión, historia y valores corporativos.";
-$page_keywords    = NOMBRE_SITIO . ", Quiénes Somos, Misión, Visión, Historia, Valores";
+$page_title       = "Nuestros Columnistas | " . NOMBRE_SITIO;
+$page_description = "Conoce a nuestros columnistas y lee sus análisis y perspectivas más recientes en " . NOMBRE_SITIO;
+$page_keywords    = "columnistas, opinión, análisis, " . NOMBRE_SITIO;
 $page_author      = NOMBRE_SITIO;
 $page_image       = rtrim(URLBASE, '/') . FAVICON;
 
@@ -28,120 +32,136 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
 // Helpers
 if (!function_exists('img_url')) {
     function img_url(?string $path): string {
-        if (empty($path)) return URLBASE . '/template/newsedge/img/news/default.jpg';
+        if (empty($path)) return URLBASE . '/template/NewsEdge/img/news/default.jpg';
         if (preg_match('#^https?://#i', $path)) return $path;
         return URLBASE . '/' . ltrim($path, '/');
     }
 }
 
-// Nombres de tipos
-$typeNames = [
-    'general' => 'General',
-    'about' => 'Quiénes Somos',
-    'mission' => 'Misión y Visión',
-    'history' => 'Historia',
-    'organization' => 'Organigrama',
-    'board' => 'Junta Directiva',
-    'team' => 'Equipo',
-    'values' => 'Valores',
-    'policies' => 'Políticas'
-];
+if (!function_exists('get_columnist_avatar')) {
+    function get_columnist_avatar($nombre, $apellido, $foto_perfil): string {
+        if (!empty($foto_perfil)) {
+            return img_url($foto_perfil);
+        }
+        
+        // Generar avatar con iniciales
+        $iniciales = strtoupper(substr($nombre, 0, 1) . substr($apellido, 0, 1));
+        $colores = ['#667eea', '#764ba2', '#f093fb', '#4facfe', '#43e97b', '#fa709a', '#30cfd0'];
+        $color = $colores[array_sum(str_split(ord($nombre[0]))) % count($colores)];
+        
+        return 'data:image/svg+xml;base64,' . base64_encode("
+            <svg width='400' height='400' xmlns='http://www.w3.org/2000/svg'>
+                <rect width='400' height='400' fill='{$color}'/>
+                <text x='50%' y='50%' font-size='160' fill='white' text-anchor='middle' dy='.35em' font-family='Arial, sans-serif' font-weight='bold'>
+                    {$iniciales}
+                </text>
+            </svg>
+        ");
+    }
+}
 
-$typeIcons = [
-    'general' => 'fa-info-circle',
-    'about' => 'fa-building',
-    'mission' => 'fa-bullseye',
-    'history' => 'fa-history',
-    'organization' => 'fa-sitemap',
-    'board' => 'fa-users',
-    'team' => 'fa-user-friends',
-    'values' => 'fa-star',
-    'policies' => 'fa-file-contract'
-];
+// Contar posts por columnista
+foreach ($columnistas as &$columnista) {
+    $authorName = trim($columnista['nombre'] . ' ' . $columnista['apellido']);
+    $stmt = db()->prepare("
+        SELECT COUNT(*) 
+        FROM blog_posts 
+        WHERE author_user = ? 
+          AND status = 'published' 
+          AND deleted = 0
+    ");
+    $stmt->execute([$columnista['username']]);
+    $columnista['post_count'] = (int)$stmt->fetchColumn();
+}
+unset($columnista);
 ?>
 
-<!-- Institutional Pages Section Start -->
+<!-- Columnists Section Start -->
 <section class="bg-body section-space-less30">
     <div class="container">
         <div class="row">
             <!-- Contenido Principal -->
-            <div class="col-lg-8 col-md-12 mb-30">
+            <div class="col-lg-12 col-md-12 mb-30">
                 <div class="item-box-light-md-less30">
                     
                     <!-- Cabecera -->
                     <div class="topic-border color-cinnabar mb-40">
-                        <div class="topic-box-lg color-cinnabar">Información Institucional</div>
+                        <div class="topic-box-lg color-cinnabar">
+                            <i class="fa fa-users" aria-hidden="true"></i>
+                            Nuestros Columnistas
+                        </div>
                     </div>
                     
-                    <div class="institutional-intro mb-40">
+                    <div class="columnists-intro mb-40">
                         <p class="size-lg description-body-dark">
-                            Conoce más sobre nuestra organización, nuestra historia y nuestros valores.
+                            Conoce a nuestros columnistas, sus perspectivas únicas y análisis sobre los temas más relevantes de la actualidad.
                         </p>
                     </div>
                     
-                    <?php if(empty($pages)): ?>
+                    <?php if(empty($columnistas)): ?>
                         <div class="item-box-light-md item-shadow-1 p-30 mb-30">
                             <div class="alert-info-custom">
                                 <i class="fa fa-info-circle" aria-hidden="true"></i>
-                                <span>No hay información institucional disponible en este momento.</span>
+                                <span>No hay columnistas disponibles en este momento.</span>
                             </div>
                         </div>
                     <?php else: ?>
                         
-                        <!-- Grid de páginas institucionales -->
+                        <!-- Grid de columnistas -->
                         <div class="row">
-                            <?php foreach($pages as $page): 
-                                $typeName = $typeNames[$page['page_type']] ?? 'General';
-                                $typeIcon = $typeIcons[$page['page_type']] ?? 'fa-file-alt';
-                                $excerpt = $page['seo_description'] ?: substr(strip_tags($page['content'] ?? ''), 0, 150);
-                                $pageUrl = URLBASE . '/institucional/' . urlencode($page['slug']) . '/';
+                            <?php foreach($columnistas as $col): 
+                                $nombreCompleto = trim($col['nombre'] . ' ' . $col['apellido']);
+                                $avatarUrl = get_columnist_avatar($col['nombre'], $col['apellido'], $col['foto_perfil']);
+                                $profileUrl = URLBASE . '/columnista/' . urlencode($col['username']) . '/';
+                                $bio = !empty($col['bio']) ? $col['bio'] : 'Columnista de ' . NOMBRE_SITIO;
                             ?>
                             
-                            <div class="col-lg-6 col-md-6 col-sm-12 mb-30">
-                                <div class="institutional-card item-box-light-md item-shadow-1">
+                            <div class="col-lg-3 col-md-4 col-sm-6 mb-30">
+                                <div class="columnist-card item-box-light-md item-shadow-1">
                                     
-                                    <?php if(!empty($page['image'])): ?>
-                                    <div class="institutional-card-img position-relative">
-                                        <a href="<?= $pageUrl ?>" class="img-opacity-hover">
-                                            <img src="<?= img_url($page['image']) ?>" 
-                                                 class="img-fluid width-100" 
-                                                 alt="<?= htmlspecialchars($page['title']) ?>"
-                                                 style="height: 200px; object-fit: cover;">
+                                    <!-- Foto del columnista -->
+                                    <div class="columnist-card-img position-relative">
+                                        <a href="<?= $profileUrl ?>" class="img-opacity-hover">
+                                            <img src="<?= $avatarUrl ?>" 
+                                                 class="img-fluid" 
+                                                 alt="<?= htmlspecialchars($nombreCompleto) ?>"
+                                                 style="width: 100%; height: 280px; object-fit: cover;">
                                         </a>
-                                        <div class="topic-box-top-sm">
+                                        
+                                        <!-- Badge con cantidad de columnas -->
+                                        <?php if($col['post_count'] > 0): ?>
+                                        <div class="columnist-badge">
                                             <div class="topic-box-sm color-cinnabar">
-                                                <i class="fa <?= $typeIcon ?>" aria-hidden="true"></i>
-                                                <?= htmlspecialchars($typeName) ?>
+                                                <i class="fa fa-pencil" aria-hidden="true"></i>
+                                                <?= $col['post_count'] ?> columna<?= $col['post_count'] !== 1 ? 's' : '' ?>
                                             </div>
                                         </div>
+                                        <?php endif; ?>
                                     </div>
-                                    <?php else: ?>
-                                    <div class="institutional-card-img institutional-card-no-img position-relative">
-                                        <i class="fa <?= $typeIcon ?>" aria-hidden="true"></i>
-                                        <div class="topic-box-top-sm">
-                                            <div class="topic-box-sm color-cinnabar">
-                                                <i class="fa <?= $typeIcon ?>" aria-hidden="true"></i>
-                                                <?= htmlspecialchars($typeName) ?>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <?php endif; ?>
                                     
-                                    <div class="institutional-card-body p-25">
-                                        <h3 class="title-semibold-dark size-lg mb-15">
-                                            <a href="<?= $pageUrl ?>" class="institutional-card-title">
-                                                <?= htmlspecialchars($page['title']) ?>
+                                    <!-- Información del columnista -->
+                                    <div class="columnist-card-body p-25 text-center">
+                                        <h3 class="title-semibold-dark size-md mb-10">
+                                            <a href="<?= $profileUrl ?>" class="columnist-card-title">
+                                                <?= htmlspecialchars($nombreCompleto) ?>
                                             </a>
                                         </h3>
                                         
-                                        <p class="description-body-dark mb-20 institutional-card-excerpt">
-                                            <?= htmlspecialchars(substr($excerpt, 0, 120)) ?>...
+                                        <p class="columnist-role mb-15">
+                                            <i class="fa fa-user-circle" aria-hidden="true"></i>
+                                            Columnista
                                         </p>
                                         
-                                        <div class="more-info-link">
-                                            <a href="<?= $pageUrl ?>" class="btn-text-dark">
-                                                Leer más
-                                                <i class="fa fa-angle-right" aria-hidden="true"></i>
+                                        <?php if(!empty($col['bio'])): ?>
+                                        <p class="description-body-dark columnist-bio mb-20">
+                                            <?= htmlspecialchars(substr($bio, 0, 80)) ?><?= strlen($bio) > 80 ? '...' : '' ?>
+                                        </p>
+                                        <?php endif; ?>
+                                        
+                                        <div class="columnist-actions">
+                                            <a href="<?= $profileUrl ?>" class="btn-columnist">
+                                                Ver Perfil
+                                                <i class="fa fa-arrow-right" aria-hidden="true"></i>
                                             </a>
                                         </div>
                                     </div>
@@ -155,90 +175,140 @@ $typeIcons = [
                     
                 </div>
             </div>
-            
-            <!-- Sidebar -->
-            <div class="ne-sidebar sidebar-break-md col-lg-4 col-md-12">
-                <?php include __DIR__ . '/partials/sidebar.php'; ?>            
-            </div>
         </div>
     </div>
 </section>
-<!-- Institutional Pages Section End -->
+<!-- Columnists Section End -->
 
 <style>
-    /* Tarjetas institucionales */
-    .institutional-card {
+    /* ========================================
+       ESTILOS PARA TARJETAS DE COLUMNISTAS
+       ======================================== */
+    
+    /* Tarjeta principal */
+    .columnist-card {
         border-radius: 4px;
         overflow: hidden;
         height: 100%;
         display: flex;
         flex-direction: column;
         transition: all 0.3s ease;
+        background: #fff;
     }
     
-    .institutional-card:hover {
-        transform: translateY(-5px);
+    .columnist-card:hover {
+        transform: translateY(-8px);
         box-shadow: 0 15px 40px rgba(0,0,0,0.15) !important;
     }
     
-    .institutional-card-img {
+    /* Imagen del columnista */
+    .columnist-card-img {
         position: relative;
+        overflow: hidden;
     }
     
-    .institutional-card-no-img {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        height: 200px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+    .columnist-card-img img {
+        transition: transform 0.5s ease;
     }
     
-    .institutional-card-no-img > i {
-        font-size: 64px;
-        color: rgba(255,255,255,0.9);
+    .columnist-card:hover .columnist-card-img img {
+        transform: scale(1.05);
     }
     
-    .institutional-card-body {
+    /* Badge de columnas */
+    .columnist-badge {
+        position: absolute;
+        bottom: 15px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 2;
+    }
+    
+    /* Cuerpo de la tarjeta */
+    .columnist-card-body {
         flex: 1;
         display: flex;
         flex-direction: column;
+        align-items: center;
     }
     
-    .institutional-card-title {
-        color: #000;
+    /* Nombre del columnista */
+    .columnist-card-title {
+        color: #111;
         transition: color 0.3s ease;
         text-decoration: none;
-    }
-    
-    .institutional-card:hover .institutional-card-title {
-        color: var(--primary);
-    }
-    
-    .institutional-card-excerpt {
-        line-height: 1.7;
-        flex: 1;
-    }
-    
-    .btn-text-dark {
-        color: #000;
+        font-size: 18px;
         font-weight: 600;
-        text-decoration: none;
-        transition: all 0.3s ease;
-        display: inline-block;
     }
     
-    .btn-text-dark:hover {
+    .columnist-card:hover .columnist-card-title {
         color: var(--primary);
-        padding-left: 5px;
     }
     
-    .btn-text-dark i {
+    /* Rol */
+    .columnist-role {
+        color: #666;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 500;
+    }
+    
+    .columnist-role i {
+        color: var(--primary);
+        margin-right: 5px;
+    }
+    
+    /* Bio */
+    .columnist-bio {
+        font-size: 14px;
+        line-height: 1.6;
+        color: #666;
+        flex: 1;
+        min-height: 60px;
+    }
+    
+    /* Botón de perfil */
+    .columnist-actions {
+        width: 100%;
+        margin-top: auto;
+    }
+    
+    .btn-columnist {
+        display: inline-block;
+        padding: 10px 25px;
+        background: var(--primary);
+        color: #fff;
+        text-decoration: none;
+        border-radius: 4px;
+        font-weight: 600;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-columnist:hover {
+        background: var(--color-hover-link);
+        color: #fff;
+        transform: translateX(3px);
+    }
+    
+    .btn-columnist i {
+        margin-left: 8px;
         transition: transform 0.3s ease;
-        margin-left: 5px;
     }
     
-    .btn-text-dark:hover i {
+    .btn-columnist:hover i {
         transform: translateX(5px);
+    }
+    
+    /* Intro section */
+    .columnists-intro {
+        text-align: center;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
     }
     
     /* Alert personalizado */
@@ -246,35 +316,90 @@ $typeIcons = [
         background: #e3f2fd;
         border-left: 4px solid #2196f3;
         border-radius: 4px;
-        padding: 15px;
+        padding: 20px;
         display: flex;
         align-items: center;
+        justify-content: center;
     }
     
     .alert-info-custom i {
         color: #2196f3;
-        font-size: 20px;
-        margin-right: 10px;
+        font-size: 24px;
+        margin-right: 15px;
     }
     
     .alert-info-custom span {
         color: #1976d2;
         font-weight: 500;
+        font-size: 16px;
     }
     
-    /* Responsive adjustments /
-    @media (max-width: 768px) {
-        .institutional-card-body {
+    /* Topic box personalizado */
+    .topic-box-lg i {
+        margin-right: 10px;
+    }
+    
+    /* ========================================
+       RESPONSIVE
+       ======================================== */
+    
+    @media (max-width: 991px) {
+        .columnist-card-img img {
+            height: 250px !important;
+        }
+    }
+    
+    @media (max-width: 767px) {
+        .columnist-card-img img {
+            height: 280px !important;
+        }
+        
+        .columnist-card-body {
             padding: 20px !important;
         }
         
-        .institutional-card-img,
-        .institutional-card-no-img {
-            height: 180px !important;
-        }
-        
-        .institutional-card-no-img > i {
-            font-size: 48px;
+        .columnist-bio {
+            min-height: 50px;
         }
     }
+    
+    @media (max-width: 575px) {
+        .col-sm-6 {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+        
+        .columnist-card-img img {
+            height: 320px !important;
+        }
+    }
+    
+    /* ========================================
+       ANIMACIONES
+       ======================================== */
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .columnist-card {
+        animation: fadeInUp 0.5s ease forwards;
+    }
+    
+    /* Delay progresivo para las tarjetas */
+    .columnist-card:nth-child(1) { animation-delay: 0.1s; }
+    .columnist-card:nth-child(2) { animation-delay: 0.2s; }
+    .columnist-card:nth-child(3) { animation-delay: 0.3s; }
+    .columnist-card:nth-child(4) { animation-delay: 0.4s; }
+    .columnist-card:nth-child(5) { animation-delay: 0.5s; }
+    .columnist-card:nth-child(6) { animation-delay: 0.6s; }
+    .columnist-card:nth-child(7) { animation-delay: 0.7s; }
+    .columnist-card:nth-child(8) { animation-delay: 0.8s; }
 </style>
