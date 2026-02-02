@@ -32,11 +32,11 @@ $sliderAds = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <?php $img = img_url($ad['image_url']); ?>
             <div class="item">
               <?php if (!empty($ad['target_url'])): ?>
-                <a href="<​?= htmlspecialchars($ad['target_url']) ?>" target="_blank" rel="nofollow noopener">
-                  <img src="<​?= htmlspecialchars($img) ?>" class="img-fluid width-100 ad-image" alt="Anuncio destacado">
+                <a href="<?= htmlspecialchars($ad['target_url']) ?>" target="_blank" rel="nofollow noopener">
+                  <img src="<?= htmlspecialchars($img) ?>" class="img-fluid width-100 ad-image" alt="Anuncio destacado">
                 </a>
               <?php else: ?>
-                <img src="<​?= htmlspecialchars($img) ?>" class="img-fluid width-100 ad-image" alt="Anuncio destacado">
+                <img src="<?= htmlspecialchars($img) ?>" class="img-fluid width-100 ad-image" alt="Anuncio destacado">
               <?php endif; ?>
             </div>
           <?php endforeach; ?>
