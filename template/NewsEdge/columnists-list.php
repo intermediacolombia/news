@@ -1,104 +1,147 @@
 <?php
-if (!defined('DIRECT_ACCESS') && !isset($config)) {
-    require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/config.php';
-}
+require_once __DIR__ . '/../../inc/config.php';
 
-// Definir img_url si no existe
-if (!function_exists('img_url')) {
-    function img_url($path = '') {
-        // Ajusta esta ruta si tus imágenes están en otra carpeta
-        return rtrim(URLBASE, '/') . '/uploads/' . ltrim($path, '/');
+// Helpers
+if (!function_exists('truncate_text')) {
+    function truncate_text(string $text, int $limit = 120): string {
+        $text = strip_tags($text);
+        return (mb_strlen($text) > $limit) ? mb_substr($text, 0, $limit) . '...' : $text;
     }
 }
 
-/* ===== Consulta: Obtener Columnistas Activos ===== */
-$sqlColumnistas = "
-    SELECT u.id, 
-           u.nombre, 
-           u.apellido, 
-           u.username,
-           u.foto_perfil
-    FROM usuarios u
-    WHERE u.es_columnista = 1 
-      AND u.estado = 0
-      AND u.borrado = 0
-    ORDER BY u.nombre ASC
+if (!function_exists('img_url')) {
+    function img_url(?string $path): string {
+        if (empty($path)) {
+            return URLBASE . '/template/NewsEdge/img/placeholder.jpg';
+        }
+        if (filter_var($path, FILTER_VALIDATE_URL)) {
+            return $path;
+        }
+        return URLBASE . '/' . ltrim($path, '/');
+    }
+}
+
+$username = $_GET['columnist_name_slug'] ?? null;
+
+if (!$username) {
+    http_response_code(404);
+    include __DIR__ . '/404.php';
+    exit;
+}
+
+// 1. Obtener datos del columnista
+$sqlUser = "
+    SELECT nombre, apellido, foto_perfil
+    FROM usuarios
+    WHERE username = ?
+      AND es_columnista = 1
+      AND estado = 0
+      AND borrado = 0
+    LIMIT 1
 ";
 
 try {
-    $columnistas = db()->query($sqlColumnistas)->fetchAll(PDO::FETCH_ASSOC);
+    $stmt = db()->prepare($sqlUser);
+    $stmt->execute([$username]);
+    $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    error_log("Error en consulta columnistas: " . $e->getMessage());
-    $columnistas = [];
+    error_log("Error al buscar usuario: " . $e->getMessage());
+    $usuario = null;
+}
+
+if (!$usuario) {
+    http_response_code(404);
+    include __DIR__ . '/404.php';
+    exit;
+}
+
+$authorName = $usuario['nombre'] . ' ' . $usuario['apellido'];
+$fotoPerfil = !empty($usuario['foto_perfil']) 
+    ? img_url($usuario['foto_perfil']) 
+    : URLBASE . '/template/NewsEdge/img/avatar-default.jpg';
+
+// 2. Obtener sus posts
+$sqlPosts = "
+    SELECT id, title, slug, content, image, created_at
+    FROM blog_post
+    WHERE author = ?
+      AND status = 'published'
+      AND deleted = 0
+    ORDER BY created_at DESC
+";
+
+try {
+    $stmt = db()->prepare($sqlPosts);
+    $stmt->execute([$authorName]);
+    $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    error_log("Error al cargar posts: " . $e->getMessage());
+    $posts = [];
 }
 ?>
 
-<?php if (!empty($columnistas)): ?>
-<section class="bg-secondary-body section-space-default">
+<section class="bg-body section-space-less30">
     <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <div class="topic-border color-cinnabar mb-30 width-100">
-                    <div class="topic-box-lg color-cinnabar">NUESTROS COLUMNISTAS</div>
+        <!-- Header del Columnista -->
+        <div class="row mb-40">
+            <div class="col-xl-3 col-lg-4 col-md-5 col-sm-12 text-center mb-30">
+                <div class="img-wrapper" style="height: 250px; overflow: hidden; margin: 0 auto; border-radius: 8px;">
+                    <img src="<?= $fotoPerfil ?>" 
+                         alt="<?= htmlspecialchars($authorName) ?>"
+                         class="img-fluid"
+                         style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+            </div>
+            <div class="col-xl-9 col-lg-8 col-md-7 col-sm-12 d-flex align-items-center">
+                <div>
+                    <h1 class="title-medium-dark size-xl mb-15"><?= htmlspecialchars($authorName) ?></h1>
+                    <p class="description-body-dark">
+                        <?= count($posts) ?> columna<?= count($posts) !== 1 ? 's' : '' ?> publicada<?= count($posts) !== 1 ? 's' : '' ?>
+                    </p>
                 </div>
             </div>
         </div>
-        
-        <div class="ne-carousel nav-control-top2 color-white2" 
-             data-loop="true" data-items="3" data-margin="10" data-autoplay="true"
-             data-autoplay-timeout="5000" data-smart-speed="2000" data-dots="false" data-nav="true" 
-             data-nav-speed="false" data-r-x-small="1" data-r-x-small-nav="true" 
-             data-r-x-small-dots="false" data-r-x-medium="1" data-r-x-medium-nav="true"
-             data-r-x-medium-dots="false" data-r-small="2" data-r-small-nav="true" 
-             data-r-small-dots="false" data-r-medium="2" data-r-medium-nav="true" 
-             data-r-medium-dots="false" data-r-Large="3" data-r-Large-nav="true" 
-             data-r-Large-dots="false">
-            
-            <?php foreach ($columnistas as $col): 
-                $nombreCompleto = htmlspecialchars($col['nombre'] . ' ' . $col['apellido']);
-                
-                if (!empty($col['foto_perfil'])) {
-                    $fotoPerfil = img_url($col['foto_perfil']);
-                } else {
-                    $iniciales = strtoupper(substr($col['nombre'], 0, 1) . substr($col['apellido'], 0, 1));
-                    $fotoPerfil = 'data:image/svg+xml;base64,' . base64_encode("
-                        <svg width='400' height='400' xmlns='http://www.w3.org/2000/svg'>
-                            <rect width='400' height='400' fill='#667eea'/>
-                            <text x='50%' y='50%' font-size='120' fill='white' text-anchor='middle' dy='.35em' font-family='Arial'>
-                                {$iniciales}
-                            </text>
-                        </svg>
-                    ");
-                }
-                
-                $columnistaUrl = URLBASE . "/columnista/" . htmlspecialchars($col['username']);
-            ?>
-            <div class="img-overlay-70-c">
-                <div class="mask-content-sm">
-                    <div class="topic-box-sm color-cod-gray mb-20">
-                        COLUMNISTA
+
+        <!-- Listado de Columnas -->
+        <?php if (!empty($posts)): ?>
+            <div class="row">
+                <?php foreach ($posts as $post): 
+                    $postUrl = URLBASE . '/noticias/' . htmlspecialchars($post['slug']) . '/';
+                ?>
+                    <div class="col-xl-6 col-lg-6 col-md-12 mb-30">
+                        <div class="news-item-box item-shadow-1 h-100">
+                            <div class="img-wrapper">
+                                <a href="<?= $postUrl ?>">
+                                    <img src="<?= img_url($post['image']) ?>" 
+                                         alt="<?= htmlspecialchars($post['title']) ?>"
+                                         class="img-fluid search-result-img">
+                                </a>
+                            </div>
+                            <div class="news-content-box">
+                                <h3 class="title-medium-dark size-lg mb-10">
+                                    <a href="<?= $postUrl ?>"><?= htmlspecialchars($post['title']) ?></a>
+                                </h3>
+                                <ul class="post-meta mb-10">
+                                    <li>
+                                        <i class="fa fa-calendar"></i>
+                                        <?= fecha_espanol(date('l j \d\e F \d\e Y', strtotime($post['created_at']))) ?>
+                                    </li>
+                                </ul>
+                                <p class="description-body-dark">
+                                    <?= truncate_text($post['content'], 150) ?>
+                                </p>
+                                <a href="<?= $postUrl ?>" class="read-more-link">
+                                    Leer más <i class="fa fa-long-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
                     </div>
-                    <h3 class="title-medium-light">
-                        <a href="<?= $columnistaUrl ?>">
-                            <?= $nombreCompleto ?>
-                        </a>
-                    </h3>
-                </div>
-                
-                <div class="text-center">
-                    <a class="play-btn" href="<?= $columnistaUrl ?>">
-                        <i class="fa fa-pencil-square-o text-white" 
-                           style="font-size: 40px; background: rgba(0,0,0,0.5); padding: 15px; border-radius: 50%;"></i>
-                    </a>
-                </div>
-                
-                <img src="<?= $fotoPerfil ?>" 
-                     alt="<?= $nombreCompleto ?>" 
-                     class="img-fluid width-100"
-                     style="height: 350px; object-fit: cover;">
+                <?php endforeach; ?>
             </div>
-            <?php endforeach; ?>
-        </div>
+        <?php else: ?>
+            <div class="text-center py-5">
+                <p>Este columnista aún no ha publicado ninguna columna.</p>
+            </div>
+        <?php endif; ?>
     </div>
 </section>
-<?php endif; ?>
