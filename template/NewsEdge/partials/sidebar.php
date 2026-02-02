@@ -255,7 +255,7 @@ $tags = array_slice(array_keys($freq), 0, 9);
 
 
 <!-- TAGS -->
-<div class="sidebar-box item-box-light-md">
+
     <div class="topic-border color-cinnabar mb-25">
         <div class="topic-box-lg color-cinnabar">Tags Tendencias</div>
     </div>
@@ -268,7 +268,7 @@ $tags = array_slice(array_keys($freq), 0, 9);
         </li>
         <?php endforeach; ?>
     </ul>
-</div>
+
 
 
 
