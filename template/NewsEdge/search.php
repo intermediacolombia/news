@@ -58,8 +58,7 @@ $page_image       = URLBASE . SITE_LOGO;
 $currentPath      = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
 
-// Incluir header
-include __DIR__ . '/partials/header.php';
+
 ?>
 
 <!-- Inner Page Banner Area Start Here -->
@@ -466,7 +465,6 @@ include __DIR__ . '/partials/header.php';
     }
 </style>
 
-<?php include __DIR__ . '/partials/footer.php'; ?>
 
 
 
