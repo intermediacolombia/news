@@ -375,3 +375,25 @@ $sidebarNews = db()->query($sqlSidebar)->fetchAll();
     }
 }
 </style>
+
+<!-- Publicidad Position 2 (Banner Central) -->
+    <div class="container text-center mt-4 mb-2">
+        <?php
+        $stmt = db()->prepare("SELECT * FROM ads WHERE position = 2 AND status = 'active' LIMIT 1");
+        $stmt->execute();
+        $ad = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($ad && !empty($ad['image_url'])): 
+        ?>
+            <?php if (!empty($ad['target_url'])): ?>
+                <a href="<?= htmlspecialchars($ad['target_url']) ?>" target="_blank" rel="noopener">
+                    <img class="img-fluid" 
+                         src="<?= URLBASE . htmlspecialchars($ad['image_url']) ?>" 
+                         alt="Publicidad">
+                </a>
+            <?php else: ?>
+                <img class="img-fluid" 
+                     src="<?= URLBASE . htmlspecialchars($ad['image_url']) ?>" 
+                     alt="Publicidad">
+            <?php endif; ?>
+        <?php endif; ?>
+    </div>
