@@ -50,20 +50,20 @@ $exploreCats = db()->query($sqlExplore)->fetchAll(PDO::FETCH_ASSOC);
                 <div class="col-lg-4 col-md-6 col-sm-6 col-12">
                     <div class="category-box-layout1 overlay-dark-level-2 img-grayscale-hover text-center mb-10">
                         <!-- Imagen del último post de la categoría -->
-                        <img src="<​?= img_url($cat['last_post_image']) ?>" 
-                             alt="<​?= htmlspecialchars($cat['name']) ?>" 
+                        <img src="<?= img_url($cat['last_post_image']) ?>" 
+                             alt="<?= htmlspecialchars($cat['name']) ?>" 
                              class="img-fluid width-100" 
                              style="height: 300px; object-fit: cover;">
                         
                         <div class="content p-30-r">
                             <!-- Nombre de la Categoría -->
                             <div class="ctg-title-xs">
-                                <a href="<​?= $catUrl ?>" style="color: #fff;"><?= htmlspecialchars($cat['name']) ?></a>
+                                <a href="<?= $catUrl ?>" style="color: #fff;"><?= htmlspecialchars($cat['name']) ?></a>
                             </div>
                             
                             <!-- Título del último post -->
                             <h3 class="title-regular-light size-lg">
-                                <a href="<​?= $postUrl ?>"><?= truncate_text($cat['last_post_title'], 60) ?></a>
+                                <a href="<?= $postUrl ?>"><?= truncate_text($cat['last_post_title'], 60) ?></a>
                             </h3>
                             
                             <!-- Meta info -->
