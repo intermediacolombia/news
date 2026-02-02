@@ -36,13 +36,15 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
             <!-- News Feed Area End Here -->
             <!-- Slider Area Start Here -->
             <?php include __DIR__ . '/partials/home_latest_news.php'; ?>
-
+			<section>
              <?php include __DIR__ . '/partials/ads3.php'; ?>
+				</section>
             <!-- Slider Area End Here -->
             <!-- Popular Area Start Here -->
             <?php include __DIR__ . '/partials/features.php'; ?>
-
+			<section>
  			<?php include __DIR__ . '/partials/ads4.php'; ?>
+			</section>
             <!-- Popular Area End Here -->
             <!-- Latest Articles Area Start Here -->
             <section class="section-space-bottom-less30">
