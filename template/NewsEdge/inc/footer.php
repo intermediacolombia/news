@@ -528,6 +528,7 @@ global $sys;
 <script src="<?= URLBASE ?>/template/NewsEdge/js/isotope.pkgd.min.js"></script>
 <script src="<?= URLBASE ?>/template/NewsEdge/js/jquery.magnific-popup.min.js"></script>
 <script src="<?= URLBASE ?>/template/NewsEdge/js/ticker.js"></script>
+<script src="<?= URLBASE ?>/template/NewsEdge/js/owl.carousel.min.js"></script>
 
 <script>
     var SITE_CONFIG = {

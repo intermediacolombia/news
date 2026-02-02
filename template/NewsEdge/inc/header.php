@@ -88,6 +88,9 @@
     <link rel="stylesheet" type="text/css" href="<?php echo URLBASE; ?>/template/NewsEdge/css/magnific-popup.css">
     <!-- Switch Style CSS -->
     <link rel="stylesheet" href="<?php echo URLBASE; ?>/template/NewsEdge/css/hover-min.css">
+	
+	<!-- AWL Carrousel CSS -->
+    <link rel="stylesheet" href="<?php echo URLBASE; ?>/template/NewsEdge/css/owl.carousel.min.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="<?php echo URLBASE; ?>/template/NewsEdge/style.css?<?php echo time(); ?>">
     <!-- For IE -->
@@ -98,6 +101,8 @@
     
     <!-- Modernizr Js -->
     <script src="<?php echo URLBASE; ?>/template/NewsEdge/js/modernizr-2.8.3.min.js"></script>
+	
+    
 
     <!-- Facebook SDK -->
     <div id="fb-root"></div>
