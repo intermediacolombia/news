@@ -24,7 +24,7 @@ $postSlug     = $_GET['post'] ?? null;
 
 if (!$categorySlug || !$postSlug) {
     http_response_code(404);
-    include __DIR__ . '/4045.php';
+    include __DIR__ . '/404.php';
     exit;
 }
 
@@ -43,7 +43,7 @@ $post = $stmt->fetch();
 
 if (!$post) {
     http_response_code(404);
-    include __DIR__ . '/../404.php';
+    //include __DIR__ . '/404.php';
     exit;
 }
 
