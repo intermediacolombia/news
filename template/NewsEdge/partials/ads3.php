@@ -25,7 +25,7 @@ $cuadrados    = array_filter($ads, fn($a) => $a['type'] === 'square');
 
 <?php if ($horizontales || $cuadrados): ?>
 <!-- Advertisement Section Start -->
-<section class="bg-body section-space-less30">
+<section class="section-space-less30">
     <div class="container">
         
         <!-- BANNERS HORIZONTALES -->

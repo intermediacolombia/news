@@ -21,7 +21,7 @@ $sliderAds = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <?php if ($sliderAds): ?>
 <!-- Advertisement Slider Section Start -->
-<section class="bg-body section-space-less30">
+<section class="section-space-less30">
     <div class="container">
         <div class="ne-main-content">
             <!-- Título de sección -->
