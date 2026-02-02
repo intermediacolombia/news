@@ -1,15 +1,5 @@
 <?php
-if (!function_exists('img_url')) {
-    function img_url(?string $path): string {
-        if (empty($path)) {
-            return URLBASE . '/template/newsedge/img/placeholder.jpg';
-        }
-        if (filter_var($path, FILTER_VALIDATE_URL)) {
-            return $path;
-        }
-        return URLBASE . '/' . ltrim($path, '/');
-    }
-}
+require_once __DIR__ . '/../../../inc/config.php';
 
 $stmt = db()->query("
     SELECT * FROM ads_gallery 
@@ -20,180 +10,100 @@ $sliderAds = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <?php if ($sliderAds): ?>
-<!-- Advertisement Slider Section Start -->
-<section class="section-space-less30">
-    <div class="container">
-        <div class="ne-main-content">
-            <!-- Título de sección -->
-            <div class="topic-border color-burning-orange mb-30">
-                <div class="topic-box-lg color-burning-orange">Publicidad Destacada</div>
-            </div>
-
-            <!-- Carrusel de Banners -->
-            <div class="ne-ads-slider-wrapper">
-                <div class="owl-carousel ne-ads-slider" id="adsOwlCarousel">
-                    <?php foreach ($sliderAds as $ad): 
-                        $adImage = img_url($ad['image_url']);
-                    ?>
-                        <div class="item">
-                            <div class="ne-banner-slide">
-                                <?php if (!empty($ad['target_url'])): ?>
-                                    <a href="<​?= htmlspecialchars($ad['target_url']) ?>" 
-                                       target="_blank" 
-                                       rel="nofollow noopener">
-                                        <img src="<​?= $adImage ?>" 
-                                             alt="Anuncio destacado" 
-                                             class="img-fluid width-100">
-                                    </a>
-                                <?php else: ?>
-                                    <img src="<​?= $adImage ?>" 
-                                         alt="Anuncio destacado" 
-                                         class="img-fluid width-100">
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- Advertisement Slider Section End -->
-
-<!-- Estilos personalizados para el slider de anuncios -->
-<style>
-.ne-ads-slider-wrapper {
-    position: relative;
-    max-width: 900px;
-    margin: 0 auto;
-}
-
-.ne-banner-slide {
-    overflow: hidden;
-    border-radius: 6px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    transition: all 0.3s ease;
-}
-
-.ne-banner-slide:hover {
-    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-    transform: translateY(-3px);
-}
-
-.ne-banner-slide img {
-    transition: transform 0.5s ease, filter 0.3s ease;
-    filter: brightness(98%);
-    height: 500px;
-    object-fit: cover;
-}
-
-.ne-banner-slide:hover img {
-    transform: scale(1.05);
-    filter: brightness(102%);
-}
-
-/* Personalización de controles Owl Carousel */
-.ne-ads-slider .owl-nav button.owl-prev,
-.ne-ads-slider .owl-nav button.owl-next {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(0,0,0,0.5) !important;
-    color: #fff !important;
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    font-size: 24px;
-    line-height: 45px;
-    text-align: center;
-    transition: all 0.3s ease;
-    opacity: 0;
-}
-
-.ne-ads-slider-wrapper:hover .owl-nav button {
-    opacity: 1;
-}
-
-.ne-ads-slider .owl-nav button.owl-prev {
-    left: 15px;
-}
-
-.ne-ads-slider .owl-nav button.owl-next {
-    right: 15px;
-}
-
-.ne-ads-slider .owl-nav button:hover {
-    background: rgba(0,0,0,0.8) !important;
-    transform: translateY(-50%) scale(1.1);
-}
-
-/* Personalización de dots (indicadores) */
-.ne-ads-slider .owl-dots {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.ne-ads-slider .owl-dot {
-    display: inline-block;
-    width: 12px;
-    height: 12px;
-    background: #ddd;
-    border-radius: 50%;
-    margin: 0 5px;
-    transition: all 0.3s ease;
-}
-
-.ne-ads-slider .owl-dot.active {
-    background: #ff6b35; /* Color naranja del tema */
-    width: 30px;
-    border-radius: 6px;
-}
-
-.ne-ads-slider .owl-dot:hover {
-    background: #ff8c5a;
-}
-
-/* Responsive /
-@media (max-width: 768px) {
-    .ne-banner-slide img {
-        height: 300px;
-    }
+<section class="ads-slider-section my-5">
+  <div id="adsSlider" class="carousel slide shadow-lg rounded-4 overflow-hidden" data-bs-ride="carousel">
     
-    .ne-ads-slider .owl-nav button.owl-prev,
-    .ne-ads-slider .owl-nav button.owl-next {
-        width: 35px;
-        height: 35px;
-        line-height: 35px;
-        font-size: 18px;
-    }
+    <div class="carousel-inner">
+      <?php foreach ($sliderAds as $i => $ad): ?>
+        <div class="carousel-item <?= $i === 0 ? 'active' : '' ?>">
+          <?php if (!empty($ad['target_url'])): ?>
+            <a href="<?= htmlspecialchars($ad['target_url']) ?>" target="_blank" rel="nofollow">
+              <img src="<?= htmlspecialchars($ad['image_url']) ?>" 
+                   class="d-block w-100 ad-image" 
+                   alt="Anuncio destacado">
+            </a>
+          <?php else: ?>
+            <img src="<?= htmlspecialchars($ad['image_url']) ?>" 
+                 class="d-block w-100 ad-image" 
+                 alt="Anuncio destacado">
+          <?php endif; ?>
+        </div>
+      <?php endforeach; ?>
+    </div>
+
+    <!-- Indicadores -->
+    <div class="carousel-indicators mb-0">
+      <?php foreach ($sliderAds as $i => $ad): ?>
+        <button type="button" data-bs-target="#adsSlider" data-bs-slide-to="<?= $i ?>" 
+                class="<?= $i === 0 ? 'active' : '' ?>" 
+                aria-current="<?= $i === 0 ? 'true' : 'false' ?>"></button>
+      <?php endforeach; ?>
+    </div>
+
+    <!-- Controles -->
+    <button class="carousel-control-prev" type="button" data-bs-target="#adsSlider" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Anterior</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#adsSlider" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Siguiente</span>
+    </button>
+  </div>
+</section>
+
+<!-- ESTILOS PERSONALIZADOS -->
+<style>
+.ads-slider-section {
+  max-width: 900px;
+  margin: 0 auto;
+  border-radius: 1rem;
+}
+
+.ad-image {
+  transition: transform .6s ease, filter .4s ease;
+  filter: brightness(95%);
+}
+
+.ad-image:hover {
+  transform: scale(1.03);
+  filter: brightness(105%);
+}
+
+/* Indicadores modernos */
+.carousel-indicators [data-bs-target] {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, .6);
+  transition: background-color .3s ease;
+  margin: 5px;
+}
+
+.carousel-indicators .active {
+  background-color: #00c853; /* verde moderno */
+}
+
+/* Botones de control más elegantes */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-color: rgba(0,0,0,0.4);
+  border-radius: 50%;
+  padding: 1rem;
+  background-size: 60%;
+  transition: background-color .3s ease;
+}
+
+.carousel-control-prev-icon:hover,
+.carousel-control-next-icon:hover {
+  background-color: rgba(0,0,0,0.6);
+}
+
+/* Sombra exterior del carrusel */
+.carousel.slide {
+  border-radius: 1rem;
+  overflow: hidden;
 }
 </style>
-
-<!-- Script de inicialización del carrusel -->
-<script>
-jQuery(document).ready(function($) {
-    $('#adsOwlCarousel').owlCarousel({
-        items: 1,
-        loop: true,
-        autoplay: true,
-        autoplayTimeout: 5000,
-        autoplayHoverPause: true,
-        nav: true,
-        navText: ['<i class="fa fa-angle-left"></i>', '<i class="fa fa-angle-right"></i>'],
-        dots: true,
-        smartSpeed: 800,
-        animateOut: 'fadeOut',
-        animateIn: 'fadeIn',
-        responsive: {
-            0: {
-                nav: false
-            },
-            768: {
-                nav: true
-            }
-        }
-    });
-});
-</script>
 <?php endif; ?>
 
