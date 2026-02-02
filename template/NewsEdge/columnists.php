@@ -93,7 +93,7 @@ try {
             <div class="row align-items-center">
                 <div class="col-lg-3 col-md-4 text-center mb-30">
                     <div class="columnist-profile-image">
-                        <img src="<​?= $fotoPerfil ?>" alt="<​?= htmlspecialchars($authorName) ?>" class="img-fluid rounded-circle shadow">
+                        <img src="<?= $fotoPerfil ?>" alt="<?= htmlspecialchars($authorName) ?>" class="img-fluid rounded-circle shadow">
                     </div>
                 </div>
                 <div class="col-lg-9 col-md-8">
@@ -128,8 +128,8 @@ try {
                         <div class="row no-gutters h-100">
                             <div class="col-sm-5">
                                 <div class="columnist-post-image h-100">
-                                    <a href="<​?= $postUrl ?>">
-                                        <img src="<​?= img_url($post['image']) ?>" alt="<​?= htmlspecialchars($post['title']) ?>" class="h-100 w-100" style="object-fit: cover; min-height: 200px;">
+                                    <a href="<?= $postUrl ?>">
+                                        <img src="<?= img_url($post['image']) ?>" alt="<?= htmlspecialchars($post['title']) ?>" class="h-100 w-100" style="object-fit: cover; min-height: 200px;">
                                     </a>
                                 </div>
                             </div>
@@ -139,7 +139,7 @@ try {
                                         <?= htmlspecialchars($post['category_name']) ?>
                                     </span>
                                     <h3 class="title-medium-dark mt-2">
-                                        <a href="<​?= $postUrl ?>"><?= htmlspecialchars($post['title']) ?></a>
+                                        <a href="<?= $postUrl ?>"><?= htmlspecialchars($post['title']) ?></a>
                                     </h3>
                                     <p class="text-muted small mb-3">
                                         <i class="fa fa-calendar"></i> <?= date('d M, Y', strtotime($post['created_at'])) ?>
@@ -147,7 +147,7 @@ try {
                                     <p class="description-body-dark mb-3">
                                         <?= truncate_text($post['seo_description'] ?: $post['content'], 100) ?>
                                     </p>
-                                    <a href="<​?= $postUrl ?>" class="read-more-link font-weight-bold text-dark">
+                                    <a href="<?= $postUrl ?>" class="read-more-link font-weight-bold text-dark">
                                         Leer más <i class="fa fa-long-arrow-right"></i>
                                     </a>
                                 </div>
