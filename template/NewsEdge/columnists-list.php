@@ -22,7 +22,7 @@ if (!function_exists('img_url')) {
 }
 
 // Obtener username desde la URL
-$username = $_GET['columnist_name_slug'] ?? null;
+$username = $_GET['columnist_slug'] ?? null;
 
 // Debug temporal (eliminar después)
 error_log("DEBUG Columnista - Username recibido: " . ($username ?? 'NULL'));
