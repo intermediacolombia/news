@@ -3,50 +3,43 @@ if (!defined('DIRECT_ACCESS') && !isset($config)) {
     require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/config.php';
 }
 
-$slug = $_GET['columnist_name_slug'] ?? null;
+$username = $_GET['columnist_name_slug'] ?? null;
 
-if (!$slug) {
+if (!$username) {
     http_response_code(404);
     include __DIR__ . '/404.php';
     exit;
 }
 
-// Convertir slug a nombre esperado en blog_post.author
-// Ej: "juan-perez" → "Juan Perez"
-function slug_to_name($slug) {
-    $name = str_replace('-', ' ', $slug);
-    return ucwords($name); // Primera letra en mayúscula
-}
-
-$authorName = slug_to_name($slug);
-
-// Verificar si existe al menos un post con ese autor
-$sqlCheck = "
-    SELECT COUNT(*) 
-    FROM blog_post 
-    WHERE author = ? 
-      AND status = 'published' 
-      AND deleted = 0
+// 1. Buscar al usuario por username
+$sqlUser = "
+    SELECT nombre, apellido
+    FROM usuarios
+    WHERE username = ?
+      AND es_columnista = 1
+      AND estado = 0
+      AND borrado = 0
+    LIMIT 1
 ";
 
 try {
-    $stmt = db()->prepare($sqlCheck);
-    $stmt->execute([$authorName]);
-    $exists = $stmt->fetchColumn() > 0;
+    $stmt = db()->prepare($sqlUser);
+    $stmt->execute([$username]);
+    $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    error_log("Error al verificar autor: " . $e->getMessage());
-    $exists = false;
+    error_log("Error al buscar usuario: " . $e->getMessage());
+    $usuario = null;
 }
 
-if (!$exists) {
-    // Opcional: verificar si hay un usuario con ese nombre (para mostrar perfil vacío)
-    // Pero si no hay posts, mostramos 404
+if (!$usuario) {
     http_response_code(404);
     include __DIR__ . '/404.php';
     exit;
 }
 
-// Obtener los posts del autor
+$authorName = $usuario['nombre'] . ' ' . $usuario['apellido'];
+
+// 2. Buscar posts donde author = nombre completo
 $sqlPosts = "
     SELECT id, title, slug, content, image, created_at
     FROM blog_post
@@ -96,6 +89,6 @@ try {
             <?php endforeach; ?>
         </div>
     <?php else: ?>
-        <p class="text-center">No se encontraron columnas para este autor.</p>
+        <p class="text-center">Este columnista aún no ha publicado ninguna columna.</p>
     <?php endif; ?>
 </div>

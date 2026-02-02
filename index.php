@@ -42,13 +42,13 @@ if ($parts[0] === 'buscar') {
 // ===============================
 } elseif ($parts[0] === 'columnista') {
     $_GET['page'] = 'columnista';
-    
     if (isset($parts[1]) && !empty($parts[1])) {
-        $_GET['columnist_slug'] = $parts[1]; // también corregí el nombre de la variable
+        $_GET['columnist_name_slug'] = $parts[1]; // ← mismo nombre que usas en columnists.php
         $templateFile = __DIR__ . "/template/" . THEME . "/columnists.php";
     } else {
         $templateFile = __DIR__ . "/template/" . THEME . "/columnists-list.php";
     }
+}
 
 // ===============================
 // Noticias
