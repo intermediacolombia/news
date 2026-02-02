@@ -192,13 +192,9 @@ $tags = array_slice(array_keys($freq), 0, 9);
 </div>
 
 <!-- PUBLICIDAD -->
-<div class="sidebar-box item-box-light-md">
-    <div class="ne-banner-layout1 text-center">
-		
-        <div class="topic-box-lg color-cinnabar">Publicidad</div>
+
       <?php include __DIR__ . '/ads5.php'; ?>
-    </div>
-</div>
+  
 
 <!-- CATEGORÍAS -->
 <div class="sidebar-box item-box-light-md">

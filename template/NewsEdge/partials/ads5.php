@@ -17,7 +17,12 @@ $stmt = db()->query("
 $sliderAds = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
-<section>
+
+	
+	<div class="sidebar-box item-box-light-md">
+    <div class="topic-border color-cinnabar mb-30">
+        <div class="topic-box-lg color-cinnabar">Categorías</div>
+    </div>
    
         <div class="ne-main-content">
          
@@ -43,8 +48,7 @@ $sliderAds = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
 
         </div>
-    
-</section>
+
 
 <style>
 .ads-slider-wrapper { 
