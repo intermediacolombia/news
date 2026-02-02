@@ -19,7 +19,7 @@ if (!function_exists('img_url')) {
         if (filter_var($path, FILTER_VALIDATE_URL)) {
             return $path;
         }
-        return URLBASE . '/uploads/' . ltrim($path, '/');
+        return URLBASE . '/' . ltrim($path, '/');
     }
 }
 
@@ -71,19 +71,19 @@ if (!empty($usuario['foto_perfil'])) {
 
 /* ================= 2. Obtener Columnas por author_user ================= */
 $sqlPosts = "
-    SELECT p.id, p.title, p.slug, p.content, p.image, p.created_at, p.seo_description,
-           c.name AS category_name, c.slug AS category_slug
+    SELECT 
+        p.id, p.title, p.slug, p.content, p.image, p.created_at, p.seo_description,
+        c.name AS category_name, c.slug AS category_slug
     FROM blog_posts p
     LEFT JOIN blog_post_category pc ON pc.post_id = p.id
     LEFT JOIN blog_categories c ON c.id = pc.category_id
     WHERE p.author_user = ?
-      AND p.status = 'published'
-      AND p.deleted = 0
+      AND (p.status = 'published' OR p.estado = 1 OR p.publicado = 1) 
+      AND (p.deleted = 0 OR p.deleted IS NULL)
     ORDER BY p.created_at DESC
 ";
-
 $stmt = db()->prepare($sqlPosts);
-$stmt->execute([$authorUserId]);
+$stmt->execute([$authorUser]);
 $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
