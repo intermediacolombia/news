@@ -131,8 +131,7 @@ function img_url_dashboard($path) {
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
   <style>
-    :root {
-      --primary-color: #E21F0C;
+    :root {      
       --primary-dark: #8A0002;
       --accent-gold: #DDC686;
       --bg-light: #f8f9fa;
@@ -585,7 +584,7 @@ function img_url_dashboard($path) {
               <i class="fa fa-clock-o widget-icon"></i>
               Últimos Posts Publicados
             </h3>
-            <a href="<?= URLBASE ?>/admin/posts/" class="btn btn-sm btn-outline-primary">
+            <a href="<?= URLBASE ?>/admin/blog/" class="btn btn-sm btn-outline-primary">
               Ver todos
             </a>
           </div>
@@ -627,7 +626,7 @@ function img_url_dashboard($path) {
                   </td>
                   <td><?= date('d/m/Y', strtotime($post['created_at'])) ?></td>
                   <td>
-                    <a href="<?= URLBASE ?>/admin/posts/edit.php?id=<?= $post['id'] ?>" 
+                    <a href="<?= URLBASE ?>/admin/blog/edit.php?id=<?= $post['id'] ?>" 
                        class="btn btn-sm btn-outline-primary">
                       <i class="fa fa-pencil"></i>
                     </a>
