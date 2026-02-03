@@ -36,6 +36,14 @@ function db() {
         return $pdo;
 
     } catch (PDOException $e) {
+		
+	// Si el archivo de configuración no existe, redirigir al instalador
+    if (!file_exists(__DIR__ . '/url_bd.php')) {
+        if (!str_contains($_SERVER['REQUEST_URI'], '/install/')) {
+            header('Location: /install/');
+            exit;
+        }
+    }
 
         // Detectar si es AJAX o API
         $isAjax =
