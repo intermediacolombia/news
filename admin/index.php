@@ -27,8 +27,8 @@ $postsBorradores = db()->query("
 // 4. Total de vistas este mes
 $vistasEsteMes = db()->query("
     SELECT COUNT(*) FROM blog_post_views 
-    WHERE MONTH(viewed_at) = MONTH(CURRENT_DATE()) 
-      AND YEAR(viewed_at) = YEAR(CURRENT_DATE())
+    WHERE MONTH(created_at) = MONTH(CURRENT_DATE()) 
+      AND YEAR(created_at) = YEAR(CURRENT_DATE())
 ")->fetchColumn();
 
 // 5. Total de categorías activas
