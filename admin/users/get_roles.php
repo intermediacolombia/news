@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . '/../../inc/config.php';
-   
+include('../../inc/config.php');
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'];
@@ -46,21 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                         $stmtInsertPermissions->execute($params);
                     }
-					
-					// LOGS
-require_once __DIR__ . '/../inc/log_action.php';
-$desc = json_encode([
-    'rol_id'      => $roleId,
-    'accion'      => 'Rol reactivado',
-    'nombre'      => $name,
-    'descripcion' => $description,
-    'permisos'    => $permissions
-], JSON_UNESCAPED_UNICODE);
 
-log_action('Reactivar rol', $desc, 'Roles');
-// END LOGS
-
-					
                     echo json_encode(['status' => 'success', 'message' => 'Rol reactivado correctamente']);
                     exit;
                 } else {
@@ -92,21 +78,6 @@ log_action('Reactivar rol', $desc, 'Roles');
                 $stmt->execute($params);
             }
 
-			
-			// LOGS
-require_once __DIR__ . '/../inc/log_action.php';
-$desc = json_encode([
-    'rol_id'      => $roleId,
-    'accion'      => 'Rol creado',
-    'nombre'      => $name,
-    'descripcion' => $description,
-    'permisos'    => $permissions
-], JSON_UNESCAPED_UNICODE);
-
-log_action('Crear rol', $desc, 'Roles');
-// END LOGS
-
-			
             echo json_encode(['status' => 'success', 'message' => 'Rol agregado correctamente']);
             exit;
         } else {
@@ -146,21 +117,6 @@ log_action('Crear rol', $desc, 'Roles');
             $stmt->execute($params);
         }
 
-		
-		// LOGS
-require_once __DIR__ . '/../inc/log_action.php';
-$desc = json_encode([
-    'rol_id'      => $roleId,
-    'accion'      => 'Rol actualizado',
-    'nombre'      => $name,
-    'descripcion' => $description,
-    'permisos'    => $permissions
-], JSON_UNESCAPED_UNICODE);
-
-log_action('Editar rol', $desc, 'Roles');
-// END LOGS
-
-		
         echo json_encode(['status' => 'success', 'message' => 'Rol actualizado correctamente']);
         exit;
 
@@ -171,18 +127,6 @@ log_action('Editar rol', $desc, 'Roles');
         // Actualizar el estado de borrado
         $stmt = db()->prepare("UPDATE roles SET borrado = 1 WHERE id = :id");
         if ($stmt->execute([':id' => $roleId])) {
-			
-			// LOGS
-require_once __DIR__ . '/../inc/log_action.php';
-$desc = json_encode([
-    'rol_id'  => $roleId,
-    'accion'  => 'Rol marcado como borrado'
-], JSON_UNESCAPED_UNICODE);
-
-log_action('Eliminar rol', $desc, 'Roles');
-// END LOGS
-
-			
             echo json_encode(['status' => 'success', 'message' => 'Rol borrado correctamente']);
         } else {
             echo json_encode(['status' => 'error', 'message' => 'Error al borrar el rol']);
