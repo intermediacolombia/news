@@ -87,8 +87,8 @@ define('SMTP_USER', $sys['mail_smtp_user'] ?? '');
 define('SMTP_PASS', $sys['mail_smtp_pass'] ?? '');
 define('SMTP_PORT', $sys['mail_smtp_port'] ?? '');
 
-define('COLOR_PRIMARY', $sys['primary'] ?? '');
-define('COLOR_PRIMARY_HOVER_LINK', $sys['color-hover-link'] ?? '');
+define('COLOR_PRIMARY', $sys['primary'] ?? '#000');
+define('COLOR_PRIMARY_HOVER_LINK', $sys['color-hover-link'] ?? '#242424');
 
 
 /* ========= Mensajes ws y mail ========= */
@@ -105,7 +105,7 @@ define('WS_DELIVERED_ORDER', $sys['ws_delivered_message'] ?? '');
 /* =========Fin Mensajes ws y mail ========= */
 
 /* =========Apariencia ========= */
-define('THEME', $sys['site_theme'] ?? '');
+define('THEME', $sys['site_theme'] ?? 'news');
 define('TEXT_TO_SPEECH', $sys['enable_text_to_speech'] ?? '');
 
 
