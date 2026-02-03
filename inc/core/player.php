@@ -1,8 +1,16 @@
 <?php if (!empty($sys['code_player'])): ?>
 <style>
-.container-fluid.copyright.bg-dark.py-4, p.m-0.text-center, .footer-area-bottom {
+.container-fluid.copyright.bg-dark.py-4, p.m-0.text-center{
   {
-    padding-bottom: <?= $sys['player_height'] + 15 ?? 70 ?>px!important;
+    padding-bottom: <?= $sys['player_height'] + 10 ?? 70 ?>px!important;
+}
+</style>
+
+<style>
+footer .footer-area-bottom {
+     {
+    padding-bottom: <?= $sys['player_height'] + 10 ?? 70 ?>px!important;
+}
 }
 </style>
 
