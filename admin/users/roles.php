@@ -120,10 +120,11 @@ try {
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
   <script>
     $(document).ready(function () {
-      // Inicializar DataTable
+      // Inicializar DataTable con ID oculto
       var table = $('#roles-table').DataTable({
         "ajax": "get_roles.php?action=fetch",
         "columns": [
+          { "data": "id", "visible": false }, // ← COLUMNA OCULTA CON EL ID
           { "data": "name" },
           { "data": "description" }
         ],
@@ -137,6 +138,8 @@ try {
         $("#formAddRole")[0].reset();
         $("#edit_role_id").val("");
         $(".form-check-input").prop("checked", false);
+        $("#modalAddRoleLabel").text("Agregar Nuevo Rol");
+        $("#btnDeleteRole").hide(); // Ocultar botón de borrar en modo agregar
         $("#modalAddRole").modal("show");
       });
 
@@ -166,6 +169,10 @@ try {
             } else {
               Swal.fire("Error", response.message, "error");
             }
+          },
+          error: function(xhr, status, error) {
+            console.error("Error:", error);
+            Swal.fire("Error", "Ocurrió un error al procesar la solicitud", "error");
           }
         });
       });
@@ -183,6 +190,7 @@ try {
           text: "Este rol se marcará como borrado y no se mostrará en la lista.",
           icon: "warning",
           showCancelButton: true,
+          cancelButtonText: "Cancelar",
           confirmButtonColor: "#d33",
           confirmButtonText: "Sí, borrar"
         }).then((result) => {
@@ -200,6 +208,10 @@ try {
                 } else {
                   Swal.fire("Error", response.message, "error");
                 }
+              },
+              error: function(xhr, status, error) {
+                console.error("Error:", error);
+                Swal.fire("Error", "Ocurrió un error al borrar el rol", "error");
               }
             });
           }
@@ -209,7 +221,14 @@ try {
       // Editar rol (al hacer clic en una fila)
       $('#roles-table tbody').on('click', 'tr', function () {
         var data = table.row(this).data(); // Obtener los datos de la fila seleccionada
-        if (data) {
+        
+        console.log("Data de la fila:", data); // Debug
+        
+        if (data && data.id) {
+          // Cambiar título del modal
+          $("#modalAddRoleLabel").text("Editar Rol");
+          $("#btnDeleteRole").show(); // Mostrar botón de borrar en modo editar
+          
           // Cargar los datos del rol en el formulario
           $("#edit_role_id").val(data.id);
           $("#role_name").val(data.name);
@@ -225,16 +244,27 @@ try {
             data: { action: "get", id: data.id },
             dataType: "json",
             success: function (response) {
+              console.log("Respuesta de permisos:", response); // Debug
+              
               if (response.status === "success") {
-                response.data.permissions.forEach(function (permissionId) {
-                  $(`#permission_${permissionId}`).prop("checked", true);
-                });
+                // Marcar los permisos del rol
+                if (response.data.permissions && Array.isArray(response.data.permissions)) {
+                  response.data.permissions.forEach(function (permissionId) {
+                    $(`#permission_${permissionId}`).prop("checked", true);
+                  });
+                }
                 $("#modalAddRole").modal("show"); // Abrir el modal
               } else {
                 Swal.fire("Error", response.message, "error");
               }
+            },
+            error: function(xhr, status, error) {
+              console.error("Error al cargar permisos:", error);
+              Swal.fire("Error", "No se pudieron cargar los permisos del rol", "error");
             }
           });
+        } else {
+          console.error("No se pudo obtener el ID de la fila");
         }
       });
     });
