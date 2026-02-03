@@ -1,18 +1,10 @@
-<?php
-session_start();
-
-// Cargar config SIEMPRE con una ruta absoluta real
-require_once realpath(__DIR__ . '/../../inc/config.php');
-
-// Cargar sesión de usuario (ya NO debe cargar config.php nuevamente)
-require_once realpath(__DIR__ . '/../login/session.php');
-
+<?php require_once __DIR__ . '/../login/session.php'; ?>
+<?php 
 $permisopage = 'Gestionar Roles';
-
-// Cargar restricción de permisos
-require_once realpath(__DIR__ . '/../login/restriction.php');
+include('../login/restriction.php'); ?>
+<?php
+require_once __DIR__ . '/../../inc/config.php';
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -120,11 +112,10 @@ try {
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
   <script>
     $(document).ready(function () {
-      // Inicializar DataTable con ID oculto
+      // Inicializar DataTable
       var table = $('#roles-table').DataTable({
         "ajax": "get_roles.php?action=fetch",
         "columns": [
-          { "data": "id", "visible": false }, // ← COLUMNA OCULTA CON EL ID
           { "data": "name" },
           { "data": "description" }
         ],
@@ -138,47 +129,28 @@ try {
         $("#formAddRole")[0].reset();
         $("#edit_role_id").val("");
         $(".form-check-input").prop("checked", false);
-        $("#modalAddRoleLabel").text("Agregar Nuevo Rol");
-        $("#btnDeleteRole").hide(); // Ocultar botón de borrar en modo agregar
         $("#modalAddRole").modal("show");
       });
 
       // Agregar/Editar rol vía Ajax
       $("#formAddRole").on("submit", function (e) {
         e.preventDefault();
-        
         const roleId = $("#edit_role_id").val();
         const action = roleId ? "edit" : "add";
-        
-        // Capturar permisos marcados ANTES de hacer el AJAX
-        const selectedPermissions = [];
-        $("input[name='permissions[]']:checked").each(function() {
-          selectedPermissions.push($(this).val());
-        });
-        
-        console.log("Permisos seleccionados:", selectedPermissions); // Debug
-        console.log("Role ID:", roleId); // Debug
-        console.log("Action:", action); // Debug
-        
-        // Preparar datos
-        const formData = {
-          action: action,
-          id: roleId,
-          name: $("#role_name").val(),
-          description: $("#role_description").val(),
-          permissions: selectedPermissions
-        };
-        
-        console.log("Datos a enviar:", formData); // Debug
-        
         $.ajax({
           url: "get_roles.php",
           method: "POST",
-          data: formData,
+          data: {
+            action: action,
+            id: roleId,
+            name: $("#role_name").val(),
+            description: $("#role_description").val(),
+            permissions: $("input[name='permissions[]']:checked").map(function () {
+              return $(this).val();
+            }).get()
+          },
           dataType: "json",
           success: function (response) {
-            console.log("Respuesta del servidor:", response); // Debug
-            
             if (response.status === "success") {
               Swal.fire("Éxito", response.message, "success");
               $("#modalAddRole").modal("hide");
@@ -186,11 +158,6 @@ try {
             } else {
               Swal.fire("Error", response.message, "error");
             }
-          },
-          error: function(xhr, status, error) {
-            console.error("Error AJAX:", error);
-            console.error("Response:", xhr.responseText);
-            Swal.fire("Error", "Ocurrió un error al procesar la solicitud", "error");
           }
         });
       });
@@ -208,7 +175,6 @@ try {
           text: "Este rol se marcará como borrado y no se mostrará en la lista.",
           icon: "warning",
           showCancelButton: true,
-          cancelButtonText: "Cancelar",
           confirmButtonColor: "#d33",
           confirmButtonText: "Sí, borrar"
         }).then((result) => {
@@ -226,10 +192,6 @@ try {
                 } else {
                   Swal.fire("Error", response.message, "error");
                 }
-              },
-              error: function(xhr, status, error) {
-                console.error("Error:", error);
-                Swal.fire("Error", "Ocurrió un error al borrar el rol", "error");
               }
             });
           }
@@ -239,14 +201,7 @@ try {
       // Editar rol (al hacer clic en una fila)
       $('#roles-table tbody').on('click', 'tr', function () {
         var data = table.row(this).data(); // Obtener los datos de la fila seleccionada
-        
-        console.log("Data de la fila:", data); // Debug
-        
-        if (data && data.id) {
-          // Cambiar título del modal
-          $("#modalAddRoleLabel").text("Editar Rol");
-          $("#btnDeleteRole").show(); // Mostrar botón de borrar en modo editar
-          
+        if (data) {
           // Cargar los datos del rol en el formulario
           $("#edit_role_id").val(data.id);
           $("#role_name").val(data.name);
@@ -262,27 +217,16 @@ try {
             data: { action: "get", id: data.id },
             dataType: "json",
             success: function (response) {
-              console.log("Respuesta de permisos:", response); // Debug
-              
               if (response.status === "success") {
-                // Marcar los permisos del rol
-                if (response.data.permissions && Array.isArray(response.data.permissions)) {
-                  response.data.permissions.forEach(function (permissionId) {
-                    $(`#permission_${permissionId}`).prop("checked", true);
-                  });
-                }
+                response.data.permissions.forEach(function (permissionId) {
+                  $(`#permission_${permissionId}`).prop("checked", true);
+                });
                 $("#modalAddRole").modal("show"); // Abrir el modal
               } else {
                 Swal.fire("Error", response.message, "error");
               }
-            },
-            error: function(xhr, status, error) {
-              console.error("Error al cargar permisos:", error);
-              Swal.fire("Error", "No se pudieron cargar los permisos del rol", "error");
             }
           });
-        } else {
-          console.error("No se pudo obtener el ID de la fila");
         }
       });
     });
