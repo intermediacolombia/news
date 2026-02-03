@@ -20,6 +20,18 @@ function hasAnyPermission($permissions) {
 }
 
 // =============================================
+// DETERMINAR SI VE SOLO SUS POSTS O TODOS
+// =============================================
+$verSoloMisPosts = !hasPermission('Ver Otras Entradas');
+$currentUsername = $_SESSION['username'] ?? '';
+
+// Construir WHERE clause para posts
+$whereUserFilter = '';
+if ($verSoloMisPosts && !empty($currentUsername)) {
+    $whereUserFilter = " AND p.author_user = :current_user ";
+}
+
+// =============================================
 // CONSULTAS CONDICIONALES SEGÚN PERMISOS
 // =============================================
 
@@ -40,83 +52,189 @@ $actividadReciente = [];
 if (hasAnyPermission(['Ver Blogs', 'Crear Entrada', 'Editar Entrada', 'Borrar Entrada'])) {
     
     // 1. Contar posts totales
-    $totalPosts = db()->query("
-        SELECT COUNT(*) FROM blog_posts 
-        WHERE deleted = 0
-    ")->fetchColumn();
+    if ($verSoloMisPosts) {
+        $stmt = db()->prepare("
+            SELECT COUNT(*) FROM blog_posts 
+            WHERE deleted = 0 AND author_user = :current_user
+        ");
+        $stmt->execute([':current_user' => $currentUsername]);
+        $totalPosts = $stmt->fetchColumn();
+    } else {
+        $totalPosts = db()->query("
+            SELECT COUNT(*) FROM blog_posts 
+            WHERE deleted = 0
+        ")->fetchColumn();
+    }
 
     // 2. Contar posts publicados
-    $postsPublicados = db()->query("
-        SELECT COUNT(*) FROM blog_posts 
-        WHERE status = 'published' AND deleted = 0
-    ")->fetchColumn();
+    if ($verSoloMisPosts) {
+        $stmt = db()->prepare("
+            SELECT COUNT(*) FROM blog_posts 
+            WHERE status = 'published' AND deleted = 0 AND author_user = :current_user
+        ");
+        $stmt->execute([':current_user' => $currentUsername]);
+        $postsPublicados = $stmt->fetchColumn();
+    } else {
+        $postsPublicados = db()->query("
+            SELECT COUNT(*) FROM blog_posts 
+            WHERE status = 'published' AND deleted = 0
+        ")->fetchColumn();
+    }
 
     // 3. Contar borradores
-    $postsBorradores = db()->query("
-        SELECT COUNT(*) FROM blog_posts 
-        WHERE status = 'draft' AND deleted = 0
-    ")->fetchColumn();
+    if ($verSoloMisPosts) {
+        $stmt = db()->prepare("
+            SELECT COUNT(*) FROM blog_posts 
+            WHERE status = 'draft' AND deleted = 0 AND author_user = :current_user
+        ");
+        $stmt->execute([':current_user' => $currentUsername]);
+        $postsBorradores = $stmt->fetchColumn();
+    } else {
+        $postsBorradores = db()->query("
+            SELECT COUNT(*) FROM blog_posts 
+            WHERE status = 'draft' AND deleted = 0
+        ")->fetchColumn();
+    }
 
-    // 4. Total de vistas este mes
-    $vistasEsteMes = db()->query("
-        SELECT COUNT(*) FROM blog_post_views 
-        WHERE MONTH(created_at) = MONTH(CURRENT_DATE()) 
-          AND YEAR(created_at) = YEAR(CURRENT_DATE())
-    ")->fetchColumn();
+    // 4. Total de vistas este mes (solo de sus posts)
+    if ($verSoloMisPosts) {
+        $stmt = db()->prepare("
+            SELECT COUNT(*) FROM blog_post_views v
+            INNER JOIN blog_posts p ON p.id = v.post_id
+            WHERE MONTH(v.created_at) = MONTH(CURRENT_DATE()) 
+              AND YEAR(v.created_at) = YEAR(CURRENT_DATE())
+              AND p.author_user = :current_user
+        ");
+        $stmt->execute([':current_user' => $currentUsername]);
+        $vistasEsteMes = $stmt->fetchColumn();
+    } else {
+        $vistasEsteMes = db()->query("
+            SELECT COUNT(*) FROM blog_post_views 
+            WHERE MONTH(created_at) = MONTH(CURRENT_DATE()) 
+              AND YEAR(created_at) = YEAR(CURRENT_DATE())
+        ")->fetchColumn();
+    }
 
-    // 7. Últimos 5 posts publicados
-    $ultimosPosts = db()->query("
-        SELECT p.id, p.title, p.slug, p.created_at, p.status,
-               c.name AS category_name, c.slug AS category_slug,
-               (SELECT COUNT(*) FROM blog_post_views WHERE post_id = p.id) AS views
-        FROM blog_posts p
-        LEFT JOIN blog_post_category pc ON pc.post_id = p.id
-        LEFT JOIN blog_categories c ON c.id = pc.category_id
-        WHERE p.deleted = 0
-        ORDER BY p.created_at DESC
-        LIMIT 5
-    ")->fetchAll();
+    // 7. Últimos 5 posts publicados (filtrados por usuario)
+    if ($verSoloMisPosts) {
+        $stmt = db()->prepare("
+            SELECT p.id, p.title, p.slug, p.created_at, p.status,
+                   c.name AS category_name, c.slug AS category_slug,
+                   (SELECT COUNT(*) FROM blog_post_views WHERE post_id = p.id) AS views
+            FROM blog_posts p
+            LEFT JOIN blog_post_category pc ON pc.post_id = p.id
+            LEFT JOIN blog_categories c ON c.id = pc.category_id
+            WHERE p.deleted = 0 AND p.author_user = :current_user
+            ORDER BY p.created_at DESC
+            LIMIT 5
+        ");
+        $stmt->execute([':current_user' => $currentUsername]);
+        $ultimosPosts = $stmt->fetchAll();
+    } else {
+        $ultimosPosts = db()->query("
+            SELECT p.id, p.title, p.slug, p.created_at, p.status,
+                   c.name AS category_name, c.slug AS category_slug,
+                   (SELECT COUNT(*) FROM blog_post_views WHERE post_id = p.id) AS views
+            FROM blog_posts p
+            LEFT JOIN blog_post_category pc ON pc.post_id = p.id
+            LEFT JOIN blog_categories c ON c.id = pc.category_id
+            WHERE p.deleted = 0
+            ORDER BY p.created_at DESC
+            LIMIT 5
+        ")->fetchAll();
+    }
 
-    // 8. Top 5 posts más vistos
-    $topPosts = db()->query("
-        SELECT p.id, p.title, p.slug, p.image,
-               COUNT(v.id) AS total_views,
-               c.slug AS category_slug
-        FROM blog_posts p
-        LEFT JOIN blog_post_views v ON v.post_id = p.id
-        LEFT JOIN blog_post_category pc ON pc.post_id = p.id
-        LEFT JOIN blog_categories c ON c.id = pc.category_id
-        WHERE p.status = 'published' AND p.deleted = 0
-        GROUP BY p.id
-        ORDER BY total_views DESC
-        LIMIT 5
-    ")->fetchAll();
+    // 8. Top 5 posts más vistos (filtrados por usuario)
+    if ($verSoloMisPosts) {
+        $stmt = db()->prepare("
+            SELECT p.id, p.title, p.slug, p.image,
+                   COUNT(v.id) AS total_views,
+                   c.slug AS category_slug
+            FROM blog_posts p
+            LEFT JOIN blog_post_views v ON v.post_id = p.id
+            LEFT JOIN blog_post_category pc ON pc.post_id = p.id
+            LEFT JOIN blog_categories c ON c.id = pc.category_id
+            WHERE p.status = 'published' AND p.deleted = 0 AND p.author_user = :current_user
+            GROUP BY p.id
+            ORDER BY total_views DESC
+            LIMIT 5
+        ");
+        $stmt->execute([':current_user' => $currentUsername]);
+        $topPosts = $stmt->fetchAll();
+    } else {
+        $topPosts = db()->query("
+            SELECT p.id, p.title, p.slug, p.image,
+                   COUNT(v.id) AS total_views,
+                   c.slug AS category_slug
+            FROM blog_posts p
+            LEFT JOIN blog_post_views v ON v.post_id = p.id
+            LEFT JOIN blog_post_category pc ON pc.post_id = p.id
+            LEFT JOIN blog_categories c ON c.id = pc.category_id
+            WHERE p.status = 'published' AND p.deleted = 0
+            GROUP BY p.id
+            ORDER BY total_views DESC
+            LIMIT 5
+        ")->fetchAll();
+    }
 
-    // 9. Posts por mes (últimos 6 meses)
-    $postsPorMes = db()->query("
-        SELECT 
-            DATE_FORMAT(created_at, '%Y-%m') AS mes,
-            COUNT(*) AS total
-        FROM blog_posts
-        WHERE deleted = 0
-          AND created_at >= DATE_SUB(CURRENT_DATE(), INTERVAL 6 MONTH)
-        GROUP BY mes
-        ORDER BY mes ASC
-    ")->fetchAll();
+    // 9. Posts por mes (últimos 6 meses, filtrados por usuario)
+    if ($verSoloMisPosts) {
+        $stmt = db()->prepare("
+            SELECT 
+                DATE_FORMAT(created_at, '%Y-%m') AS mes,
+                COUNT(*) AS total
+            FROM blog_posts
+            WHERE deleted = 0
+              AND created_at >= DATE_SUB(CURRENT_DATE(), INTERVAL 6 MONTH)
+              AND author_user = :current_user
+            GROUP BY mes
+            ORDER BY mes ASC
+        ");
+        $stmt->execute([':current_user' => $currentUsername]);
+        $postsPorMes = $stmt->fetchAll();
+    } else {
+        $postsPorMes = db()->query("
+            SELECT 
+                DATE_FORMAT(created_at, '%Y-%m') AS mes,
+                COUNT(*) AS total
+            FROM blog_posts
+            WHERE deleted = 0
+              AND created_at >= DATE_SUB(CURRENT_DATE(), INTERVAL 6 MONTH)
+            GROUP BY mes
+            ORDER BY mes ASC
+        ")->fetchAll();
+    }
 
-    // 11. Actividad reciente
-    $actividadReciente = db()->query("
-        SELECT 
-            p.title,
-            p.created_at,
-            p.status,
-            CONCAT(u.nombre, ' ', u.apellido) AS autor
-        FROM blog_posts p
-        LEFT JOIN usuarios u ON u.username = p.author_user
-        WHERE p.deleted = 0
-        ORDER BY p.updated_at DESC
-        LIMIT 8
-    ")->fetchAll();
+    // 11. Actividad reciente (filtrada por usuario)
+    if ($verSoloMisPosts) {
+        $stmt = db()->prepare("
+            SELECT 
+                p.title,
+                p.created_at,
+                p.status,
+                CONCAT(u.nombre, ' ', u.apellido) AS autor
+            FROM blog_posts p
+            LEFT JOIN usuarios u ON u.username = p.author_user
+            WHERE p.deleted = 0 AND p.author_user = :current_user
+            ORDER BY p.updated_at DESC
+            LIMIT 8
+        ");
+        $stmt->execute([':current_user' => $currentUsername]);
+        $actividadReciente = $stmt->fetchAll();
+    } else {
+        $actividadReciente = db()->query("
+            SELECT 
+                p.title,
+                p.created_at,
+                p.status,
+                CONCAT(u.nombre, ' ', u.apellido) AS autor
+            FROM blog_posts p
+            LEFT JOIN usuarios u ON u.username = p.author_user
+            WHERE p.deleted = 0
+            ORDER BY p.updated_at DESC
+            LIMIT 8
+        ")->fetchAll();
+    }
 }
 
 // Solo si tiene permisos de Categorías
@@ -266,7 +384,6 @@ function img_url_dashboard($path) {
     }
     
     .stat-card.warning .stat-card-icon {
-
       background: linear-gradient(135deg, #ffc107, #fd7e14);
       color: white;
     }
@@ -476,6 +593,14 @@ function img_url_dashboard($path) {
         <i class="fa fa-calendar"></i>
         <?= strftime("%A, %d de %B de %Y", time()) ?>
       </div>
+      <?php if (hasAnyPermission(['Ver Blogs', 'Crear Entrada'])): ?>
+      <div style="position: absolute; top: 20px; right: 20px; z-index: 10;">
+        <span class="badge" style="background: rgba(255,255,255,0.2); padding: 8px 15px; font-size: 13px; border-radius: 20px;">
+          <i class="fa <?= $verSoloMisPosts ? 'fa-user' : 'fa-users' ?>"></i>
+          <?= $verSoloMisPosts ? 'Vista Personal' : 'Vista Global' ?>
+        </span>
+      </div>
+      <?php endif; ?>
     </div>
     
     <?php if (empty($userPermissions)): ?>
@@ -498,7 +623,7 @@ function img_url_dashboard($path) {
             <i class="fa fa-newspaper"></i>
           </div>
           <div class="stat-card-value"><?= number_format($totalPosts) ?></div>
-          <div class="stat-card-label">Total Posts</div>
+          <div class="stat-card-label"><?= $verSoloMisPosts ? 'Mis Posts' : 'Total Posts' ?></div>
         </div>
       </div>
       
@@ -508,7 +633,7 @@ function img_url_dashboard($path) {
             <i class="fa fa-check-circle"></i>
           </div>
           <div class="stat-card-value"><?= number_format($postsPublicados) ?></div>
-          <div class="stat-card-label">Publicados</div>
+          <div class="stat-card-label"><?= $verSoloMisPosts ? 'Mis Publicados' : 'Publicados' ?></div>
         </div>
       </div>
       
@@ -518,7 +643,7 @@ function img_url_dashboard($path) {
             <i class="fa fa-eye"></i>
           </div>
           <div class="stat-card-value"><?= number_format($vistasEsteMes) ?></div>
-          <div class="stat-card-label">Vistas este mes</div>
+          <div class="stat-card-label"><?= $verSoloMisPosts ? 'Mis Vistas (mes)' : 'Vistas este mes' ?></div>
         </div>
       </div>
       <?php endif; ?>
@@ -546,7 +671,7 @@ function img_url_dashboard($path) {
           <div class="widget-header">
             <h3 class="widget-title">
               <i class="fa fa-bar-chart widget-icon"></i>
-              Posts Publicados (Últimos 6 meses)
+              <?= $verSoloMisPosts ? 'Mis Posts (Últimos 6 meses)' : 'Posts Publicados (Últimos 6 meses)' ?>
             </h3>
           </div>
           <div class="chart-container">
@@ -583,7 +708,7 @@ function img_url_dashboard($path) {
           <div class="widget-header">
             <h3 class="widget-title">
               <i class="fa fa-clock-o widget-icon"></i>
-              Últimos Posts Publicados
+              <?= $verSoloMisPosts ? 'Mis Últimos Posts' : 'Últimos Posts Publicados' ?>
             </h3>
             <a href="<?= URLBASE ?>/admin/blog/" class="btn btn-sm btn-outline-primary">
               Ver todos
@@ -653,7 +778,7 @@ function img_url_dashboard($path) {
           <div class="widget-header">
             <h3 class="widget-title">
               <i class="fa fa-fire widget-icon"></i>
-              Posts Más Vistos
+              <?= $verSoloMisPosts ? 'Mis Posts Más Vistos' : 'Posts Más Vistos' ?>
             </h3>
           </div>
           
