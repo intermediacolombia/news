@@ -1,4 +1,5 @@
 <?php
+
 /* ========= Conexión PDO (única instancia) ========= */
 function db() {
     static $pdo = null;
@@ -6,22 +7,23 @@ function db() {
 
     $config_file = __DIR__ . '/url_bd.php';
 
-    // 1. VERIFICAR SI EL ARCHIVO EXISTE ANTES DE HACER EL REQUIRE
     if (!file_exists($config_file)) {
-        // Si no estamos ya en la carpeta install, redirigir
         if (strpos($_SERVER['REQUEST_URI'], '/install/') === false) {
             header('Location: ./install/index.php');
             exit;
         }
-        return null; // Retornar null si estamos en el instalador y no hay config
+        return null;
     }
 
     try {
-        // 2. AHORA SÍ ES SEGURO CARGARLO
+        // CARGAR EL ARCHIVO
         require_once $config_file;
         
-        // Usar las variables cargadas desde url_bd.php
-        // Si las variables no están definidas en el scope global, las tomamos del archivo
+        // HACER QUE $url_site SEA ACCESIBLE FUERA DE LA FUNCIÓN
+        if (isset($url_site)) {
+            $GLOBALS['url_site'] = $url_site;
+        }
+
         $host   = $GLOBALS['host'] ?? (isset($host) ? $host : 'localhost');
         $dbname = $GLOBALS['dbname'] ?? (isset($dbname) ? $dbname : '');
         $dbuser = $GLOBALS['dbuser'] ?? (isset($dbuser) ? $dbuser : '');
@@ -36,13 +38,21 @@ function db() {
         return $pdo;
 
     } catch (PDOException $e) {
-        // Si la conexión falla (ej. datos incorrectos), mandar al instalador
         if (strpos($_SERVER['REQUEST_URI'], '/install/') === false) {
             header('Location: ./install/index.php?error=db_connection');
             exit;
         }
         return null;
     }
+}
+
+// Inicializar la base de datos para cargar las variables
+db();
+
+// AHORA DEFINIR LAS CONSTANTES USANDO EL GLOBALS
+if (!defined('URLBASE')) {
+    // Si por alguna razón db() no cargó la variable, usamos un fallback
+    define('URLBASE', $GLOBALS['url_site'] ?? 'http://localhost');
 }
 
 date_default_timezone_set('America/Bogota');
