@@ -2,112 +2,152 @@
 require_once __DIR__ . '/../inc/config.php';
 require_once __DIR__ . '/login/session.php';
 
+// Obtener permisos del usuario
+$userPermissions = $_SESSION["user_permissions"] ?? [];
+
 // =============================================
-// CONSULTAS PARA EL DASHBOARD
+// FUNCIÓN HELPER PARA VERIFICAR PERMISOS
+// =============================================
+function hasPermission($permission) {
+    return isset($_SESSION["user_permissions"]) && in_array($permission, $_SESSION["user_permissions"]);
+}
+
+function hasAnyPermission($permissions) {
+    foreach ($permissions as $perm) {
+        if (hasPermission($perm)) return true;
+    }
+    return false;
+}
+
+// =============================================
+// CONSULTAS CONDICIONALES SEGÚN PERMISOS
 // =============================================
 
-// 1. Contar posts totales
-$totalPosts = db()->query("
-    SELECT COUNT(*) FROM blog_posts 
-    WHERE deleted = 0
-")->fetchColumn();
+// Variables inicializadas
+$totalPosts = 0;
+$postsPublicados = 0;
+$postsBorradores = 0;
+$vistasEsteMes = 0;
+$totalCategorias = 0;
+$totalColumnistas = 0;
+$ultimosPosts = [];
+$topPosts = [];
+$postsPorMes = [];
+$categoriasPopulares = [];
+$actividadReciente = [];
 
-// 2. Contar posts publicados
-$postsPublicados = db()->query("
-    SELECT COUNT(*) FROM blog_posts 
-    WHERE status = 'published' AND deleted = 0
-")->fetchColumn();
+// Solo consultar si tiene permisos de Blog
+if (hasAnyPermission(['Ver Blogs', 'Crear Entrada', 'Editar Entrada', 'Borrar Entrada'])) {
+    
+    // 1. Contar posts totales
+    $totalPosts = db()->query("
+        SELECT COUNT(*) FROM blog_posts 
+        WHERE deleted = 0
+    ")->fetchColumn();
 
-// 3. Contar borradores
-$postsBorradores = db()->query("
-    SELECT COUNT(*) FROM blog_posts 
-    WHERE status = 'draft' AND deleted = 0
-")->fetchColumn();
+    // 2. Contar posts publicados
+    $postsPublicados = db()->query("
+        SELECT COUNT(*) FROM blog_posts 
+        WHERE status = 'published' AND deleted = 0
+    ")->fetchColumn();
 
-// 4. Total de vistas este mes
-$vistasEsteMes = db()->query("
-    SELECT COUNT(*) FROM blog_post_views 
-    WHERE MONTH(created_at) = MONTH(CURRENT_DATE()) 
-      AND YEAR(created_at) = YEAR(CURRENT_DATE())
-")->fetchColumn();
+    // 3. Contar borradores
+    $postsBorradores = db()->query("
+        SELECT COUNT(*) FROM blog_posts 
+        WHERE status = 'draft' AND deleted = 0
+    ")->fetchColumn();
 
-// 5. Total de categorías activas
-$totalCategorias = db()->query("
-    SELECT COUNT(*) FROM blog_categories 
-    WHERE deleted = 0
-")->fetchColumn();
+    // 4. Total de vistas este mes
+    $vistasEsteMes = db()->query("
+        SELECT COUNT(*) FROM blog_post_views 
+        WHERE MONTH(created_at) = MONTH(CURRENT_DATE()) 
+          AND YEAR(created_at) = YEAR(CURRENT_DATE())
+    ")->fetchColumn();
 
-// 6. Total de columnistas
-$totalColumnistas = db()->query("
-    SELECT COUNT(*) FROM usuarios 
-    WHERE es_columnista = 1 AND estado = 0 AND borrado = 0
-")->fetchColumn();
+    // 7. Últimos 5 posts publicados
+    $ultimosPosts = db()->query("
+        SELECT p.id, p.title, p.slug, p.created_at, p.status,
+               c.name AS category_name, c.slug AS category_slug,
+               (SELECT COUNT(*) FROM blog_post_views WHERE post_id = p.id) AS views
+        FROM blog_posts p
+        LEFT JOIN blog_post_category pc ON pc.post_id = p.id
+        LEFT JOIN blog_categories c ON c.id = pc.category_id
+        WHERE p.deleted = 0
+        ORDER BY p.created_at DESC
+        LIMIT 5
+    ")->fetchAll();
 
-// 7. Últimos 5 posts publicados
-$ultimosPosts = db()->query("
-    SELECT p.id, p.title, p.slug, p.created_at, p.status,
-           c.name AS category_name, c.slug AS category_slug,
-           (SELECT COUNT(*) FROM blog_post_views WHERE post_id = p.id) AS views
-    FROM blog_posts p
-    LEFT JOIN blog_post_category pc ON pc.post_id = p.id
-    LEFT JOIN blog_categories c ON c.id = pc.category_id
-    WHERE p.deleted = 0
-    ORDER BY p.created_at DESC
-    LIMIT 5
-")->fetchAll();
+    // 8. Top 5 posts más vistos
+    $topPosts = db()->query("
+        SELECT p.id, p.title, p.slug, p.image,
+               COUNT(v.id) AS total_views,
+               c.slug AS category_slug
+        FROM blog_posts p
+        LEFT JOIN blog_post_views v ON v.post_id = p.id
+        LEFT JOIN blog_post_category pc ON pc.post_id = p.id
+        LEFT JOIN blog_categories c ON c.id = pc.category_id
+        WHERE p.status = 'published' AND p.deleted = 0
+        GROUP BY p.id
+        ORDER BY total_views DESC
+        LIMIT 5
+    ")->fetchAll();
 
-// 8. Top 5 posts más vistos
-$topPosts = db()->query("
-    SELECT p.id, p.title, p.slug, p.image,
-           COUNT(v.id) AS total_views,
-           c.slug AS category_slug
-    FROM blog_posts p
-    LEFT JOIN blog_post_views v ON v.post_id = p.id
-    LEFT JOIN blog_post_category pc ON pc.post_id = p.id
-    LEFT JOIN blog_categories c ON c.id = pc.category_id
-    WHERE p.status = 'published' AND p.deleted = 0
-    GROUP BY p.id
-    ORDER BY total_views DESC
-    LIMIT 5
-")->fetchAll();
+    // 9. Posts por mes (últimos 6 meses)
+    $postsPorMes = db()->query("
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') AS mes,
+            COUNT(*) AS total
+        FROM blog_posts
+        WHERE deleted = 0
+          AND created_at >= DATE_SUB(CURRENT_DATE(), INTERVAL 6 MONTH)
+        GROUP BY mes
+        ORDER BY mes ASC
+    ")->fetchAll();
 
-// 9. Posts por mes (últimos 6 meses)
-$postsPorMes = db()->query("
-    SELECT 
-        DATE_FORMAT(created_at, '%Y-%m') AS mes,
-        COUNT(*) AS total
-    FROM blog_posts
-    WHERE deleted = 0
-      AND created_at >= DATE_SUB(CURRENT_DATE(), INTERVAL 6 MONTH)
-    GROUP BY mes
-    ORDER BY mes ASC
-")->fetchAll();
+    // 11. Actividad reciente
+    $actividadReciente = db()->query("
+        SELECT 
+            p.title,
+            p.created_at,
+            p.status,
+            CONCAT(u.nombre, ' ', u.apellido) AS autor
+        FROM blog_posts p
+        LEFT JOIN usuarios u ON u.username = p.author_user
+        WHERE p.deleted = 0
+        ORDER BY p.updated_at DESC
+        LIMIT 8
+    ")->fetchAll();
+}
 
-// 10. Categorías más populares
-$categoriasPopulares = db()->query("
-    SELECT c.name, COUNT(pc.post_id) AS total_posts
-    FROM blog_categories c
-    LEFT JOIN blog_post_category pc ON pc.category_id = c.id
-    LEFT JOIN blog_posts p ON p.id = pc.post_id
-    WHERE c.deleted = 0 AND p.deleted = 0
-    GROUP BY c.id
-    ORDER BY total_posts DESC
-    LIMIT 5
-")->fetchAll();
+// Solo si tiene permisos de Categorías
+if (hasAnyPermission(['Ver Categorias', 'Crear Categorias', 'Editar Categorias', 'Borrar Categorias'])) {
+    // 5. Total de categorías activas
+    $totalCategorias = db()->query("
+        SELECT COUNT(*) FROM blog_categories 
+        WHERE deleted = 0
+    ")->fetchColumn();
 
-// 11. Actividad reciente
-$actividadReciente = db()->query("
-    SELECT 
-        p.title,
-        p.created_at,
-        p.status,
-        CONCAT(u.nombre, ' ', u.apellido) AS autor
-    FROM blog_posts p
-    LEFT JOIN usuarios u ON u.username = p.author_user
-    WHERE p.deleted = 0
-    ORDER BY p.updated_at DESC
-    LIMIT 8
-")->fetchAll();
+    // 10. Categorías más populares
+    $categoriasPopulares = db()->query("
+        SELECT c.name, COUNT(pc.post_id) AS total_posts
+        FROM blog_categories c
+        LEFT JOIN blog_post_category pc ON pc.category_id = c.id
+        LEFT JOIN blog_posts p ON p.id = pc.post_id
+        WHERE c.deleted = 0 AND (p.deleted = 0 OR p.deleted IS NULL)
+        GROUP BY c.id
+        ORDER BY total_posts DESC
+        LIMIT 5
+    ")->fetchAll();
+}
+
+// Solo si tiene permisos de Usuarios
+if (hasPermission('Ver y Editar Usuarios')) {
+    // 6. Total de columnistas
+    $totalColumnistas = db()->query("
+        SELECT COUNT(*) FROM usuarios 
+        WHERE es_columnista = 1 AND estado = 0 AND borrado = 0
+    ")->fetchColumn();
+}
 
 // Helper para imagen
 function img_url_dashboard($path) {
@@ -127,12 +167,10 @@ function img_url_dashboard($path) {
   <!-- Chart.js para gráficos -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   
-  <!-- Font Awesome (si no está en header.php) -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  
   <style>
-    :root {      
-      --primary-dark: <?= COLOR_PRIMARY_HOVER_LINK ?? '#007bff' ?>;
+    :root {
+      --primary-color: <?= COLOR_PRIMARY ?? '#E21F0C' ?>;
+      --primary-dark: <?= COLOR_PRIMARY_HOVER_LINK ?? '#8A0002' ?>;
       --accent-gold: #DDC686;
       --bg-light: #f8f9fa;
       --card-shadow: 0 4px 15px rgba(0,0,0,0.08);
@@ -201,21 +239,10 @@ function img_url_dashboard($path) {
       box-shadow: var(--card-hover);
     }
     
-    .stat-card.primary {
-      border-left-color: var(--primary-color);
-    }
-    
-    .stat-card.success {
-      border-left-color: #28a745;
-    }
-    
-    .stat-card.warning {
-      border-left-color: #ffc107;
-    }
-    
-    .stat-card.info {
-      border-left-color: #17a2b8;
-    }
+    .stat-card.primary { border-left-color: var(--primary-color); }
+    .stat-card.success { border-left-color: #28a745; }
+    .stat-card.warning { border-left-color: #ffc107; }
+    .stat-card.info { border-left-color: #17a2b8; }
     
     .stat-card-icon {
       width: 60px;
@@ -239,6 +266,7 @@ function img_url_dashboard($path) {
     }
     
     .stat-card.warning .stat-card-icon {
+
       background: linear-gradient(135deg, #ffc107, #fd7e14);
       color: white;
     }
@@ -293,64 +321,38 @@ function img_url_dashboard($path) {
       gap: 10px;
     }
     
-    .widget-icon {
-      color: var(--primary-color);
-    }
+    .widget-icon { color: var(--primary-color); }
     
     /* ===== TABLA POSTS ===== */
-    .posts-table {
-      width: 100%;
-      font-size: 0.9rem;
-    }
-    
-    .posts-table thead {
-      background: #f8f9fa;
-    }
-    
+    .posts-table { width: 100%; font-size: 0.9rem; }
+    .posts-table thead { background: #f8f9fa; }
     .posts-table th {
       font-weight: 600;
       color: #495057;
       padding: 12px;
       border: none;
     }
-    
     .posts-table td {
       padding: 12px;
       vertical-align: middle;
       border-bottom: 1px solid #f0f0f0;
     }
-    
-    .posts-table tbody tr:hover {
-      background: #f8f9fa;
-    }
-    
+    .posts-table tbody tr:hover { background: #f8f9fa; }
     .post-title-link {
       color: #2c3e50;
       text-decoration: none;
       font-weight: 500;
       transition: color 0.2s;
     }
-    
-    .post-title-link:hover {
-      color: var(--primary-color);
-    }
-    
+    .post-title-link:hover { color: var(--primary-color); }
     .badge-status {
       padding: 5px 12px;
       border-radius: 20px;
       font-size: 0.75rem;
       font-weight: 600;
     }
-    
-    .badge-published {
-      background: #d4edda;
-      color: #155724;
-    }
-    
-    .badge-draft {
-      background: #fff3cd;
-      color: #856404;
-    }
+    .badge-published { background: #d4edda; color: #155724; }
+    .badge-draft { background: #fff3cd; color: #856404; }
     
     /* ===== TOP POSTS ===== */
     .top-post-item {
@@ -361,11 +363,7 @@ function img_url_dashboard($path) {
       transition: all 0.3s;
       margin-bottom: 12px;
     }
-    
-    .top-post-item:hover {
-      background: #f8f9fa;
-    }
-    
+    .top-post-item:hover { background: #f8f9fa; }
     .top-post-img {
       width: 80px;
       height: 80px;
@@ -373,21 +371,18 @@ function img_url_dashboard($path) {
       object-fit: cover;
       flex-shrink: 0;
     }
-    
     .top-post-info {
       flex: 1;
       display: flex;
       flex-direction: column;
       justify-content: center;
     }
-    
     .top-post-title {
       font-weight: 600;
       color: #2c3e50;
       margin-bottom: 5px;
       font-size: 0.95rem;
     }
-    
     .top-post-views {
       color: #6c757d;
       font-size: 0.85rem;
@@ -403,11 +398,7 @@ function img_url_dashboard($path) {
       padding: 15px 0;
       border-bottom: 1px solid #f0f0f0;
     }
-    
-    .activity-item:last-child {
-      border-bottom: none;
-    }
-    
+    .activity-item:last-child { border-bottom: none; }
     .activity-icon {
       width: 40px;
       height: 40px;
@@ -418,28 +409,15 @@ function img_url_dashboard($path) {
       flex-shrink: 0;
       font-size: 16px;
     }
-    
-    .activity-icon.published {
-      background: #d4edda;
-      color: #28a745;
-    }
-    
-    .activity-icon.draft {
-      background: #fff3cd;
-      color: #ffc107;
-    }
-    
-    .activity-content {
-      flex: 1;
-    }
-    
+    .activity-icon.published { background: #d4edda; color: #28a745; }
+    .activity-icon.draft { background: #fff3cd; color: #ffc107; }
+    .activity-content { flex: 1; }
     .activity-title {
       font-weight: 600;
       color: #2c3e50;
       margin-bottom: 3px;
       font-size: 0.9rem;
     }
-    
     .activity-meta {
       color: #6c757d;
       font-size: 0.8rem;
@@ -451,23 +429,26 @@ function img_url_dashboard($path) {
       height: 300px;
     }
     
+    /* ===== EMPTY STATE ===== */
+    .empty-dashboard {
+      text-align: center;
+      padding: 60px 20px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: var(--card-shadow);
+    }
+    .empty-dashboard i {
+      font-size: 64px;
+      color: #ddd;
+      margin-bottom: 20px;
+    }
+    
     /* ===== RESPONSIVE ===== */
     @media (max-width: 768px) {
-      .dashboard-header {
-        padding: 25px;
-      }
-      
-      .dashboard-header h1 {
-        font-size: 1.5rem;
-      }
-      
-      .dashboard-header .user-name {
-        font-size: 1.8rem;
-      }
-      
-      .stat-card-value {
-        font-size: 2rem;
-      }
+      .dashboard-header { padding: 25px; }
+      .dashboard-header h1 { font-size: 1.5rem; }
+      .dashboard-header .user-name { font-size: 1.8rem; }
+      .stat-card-value { font-size: 2rem; }
     }
   </style>
 </head>
@@ -497,8 +478,20 @@ function img_url_dashboard($path) {
       </div>
     </div>
     
+    <?php if (empty($userPermissions)): ?>
+      <!-- Usuario sin permisos -->
+      <div class="empty-dashboard">
+        <i class="fa fa-lock"></i>
+        <h3>No tienes permisos asignados</h3>
+        <p class="text-muted">Contacta al administrador para que te asigne permisos.</p>
+      </div>
+    
+    <?php else: ?>
+    
     <!-- ===== STAT CARDS ===== -->
+    <?php if (hasAnyPermission(['Ver Blogs', 'Crear Entrada', 'Ver Categorias', 'Ver y Editar Usuarios'])): ?>
     <div class="row mb-4">
+      <?php if (hasAnyPermission(['Ver Blogs', 'Crear Entrada'])): ?>
       <div class="col-xl-3 col-md-6 mb-4">
         <div class="stat-card primary">
           <div class="stat-card-icon">
@@ -528,7 +521,9 @@ function img_url_dashboard($path) {
           <div class="stat-card-label">Vistas este mes</div>
         </div>
       </div>
+      <?php endif; ?>
       
+      <?php if (hasPermission('Ver y Editar Usuarios')): ?>
       <div class="col-xl-3 col-md-6 mb-4">
         <div class="stat-card info">
           <div class="stat-card-icon">
@@ -538,11 +533,14 @@ function img_url_dashboard($path) {
           <div class="stat-card-label">Columnistas</div>
         </div>
       </div>
+      <?php endif; ?>
     </div>
+    <?php endif; ?>
     
     <!-- ===== GRÁFICOS ===== -->
+    <?php if (hasAnyPermission(['Ver Blogs', 'Crear Entrada', 'Ver Categorias'])): ?>
     <div class="row mb-4">
-      <!-- Gráfico: Posts por Mes -->
+      <?php if (hasAnyPermission(['Ver Blogs', 'Crear Entrada']) && !empty($postsPorMes)): ?>
       <div class="col-xl-8 col-lg-7 mb-4">
         <div class="widget-card">
           <div class="widget-header">
@@ -556,8 +554,9 @@ function img_url_dashboard($path) {
           </div>
         </div>
       </div>
+      <?php endif; ?>
       
-      <!-- Gráfico: Categorías Populares -->
+      <?php if (hasAnyPermission(['Ver Categorias']) && !empty($categoriasPopulares)): ?>
       <div class="col-xl-4 col-lg-5 mb-4">
         <div class="widget-card">
           <div class="widget-header">
@@ -571,12 +570,14 @@ function img_url_dashboard($path) {
           </div>
         </div>
       </div>
+      <?php endif; ?>
     </div>
+    <?php endif; ?>
     
     <!-- ===== CONTENIDO PRINCIPAL ===== -->
     <div class="row">
       
-      <!-- Últimos Posts -->
+      <?php if (hasAnyPermission(['Ver Blogs', 'Crear Entrada']) && !empty($ultimosPosts)): ?>
       <div class="col-xl-8 col-lg-7 mb-4">
         <div class="widget-card">
           <div class="widget-header">
@@ -598,7 +599,9 @@ function img_url_dashboard($path) {
                   <th>Vistas</th>
                   <th>Estado</th>
                   <th>Fecha</th>
+                  <?php if (hasPermission('Editar Entrada')): ?>
                   <th>Acciones</th>
+                  <?php endif; ?>
                 </tr>
               </thead>
               <tbody>
@@ -625,12 +628,14 @@ function img_url_dashboard($path) {
                     </span>
                   </td>
                   <td><?= date('d/m/Y', strtotime($post['created_at'])) ?></td>
+                  <?php if (hasPermission('Editar Entrada')): ?>
                   <td>
                     <a href="<?= URLBASE ?>/admin/blog/edit.php?id=<?= $post['id'] ?>" 
                        class="btn btn-sm btn-outline-primary">
                       <i class="fa fa-pencil"></i>
                     </a>
                   </td>
+                  <?php endif; ?>
                 </tr>
                 <?php endforeach; ?>
               </tbody>
@@ -638,11 +643,12 @@ function img_url_dashboard($path) {
           </div>
         </div>
       </div>
+      <?php endif; ?>
       
       <!-- Sidebar Derecho -->
       <div class="col-xl-4 col-lg-5">
         
-        <!-- Top Posts -->
+        <?php if (hasAnyPermission(['Ver Blogs', 'Crear Entrada']) && !empty($topPosts)): ?>
         <div class="widget-card mb-4">
           <div class="widget-header">
             <h3 class="widget-title">
@@ -668,8 +674,9 @@ function img_url_dashboard($path) {
           </div>
           <?php endforeach; ?>
         </div>
+        <?php endif; ?>
         
-        <!-- Actividad Reciente -->
+        <?php if (hasAnyPermission(['Ver Blogs', 'Crear Entrada']) && !empty($actividadReciente)): ?>
         <div class="widget-card">
           <div class="widget-header">
             <h3 class="widget-title">
@@ -695,20 +702,23 @@ function img_url_dashboard($path) {
           </div>
           <?php endforeach; ?>
         </div>
+        <?php endif; ?>
         
       </div>
     </div>
+    
+    <?php endif; ?>
     
   </div>
   
   <?php require_once __DIR__ . '/inc/menu-footer.php'; ?>
   
   <script>
-    // ===== CONFIGURACIÓN DE GRÁFICOS =====
+    <?php if (hasAnyPermission(['Ver Blogs', 'Crear Entrada']) && !empty($postsPorMes)): ?>
+    // ===== GRÁFICO: POSTS POR MES =====
     Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto';
     Chart.defaults.color = '#6c757d';
     
-    // ===== GRÁFICO: POSTS POR MES =====
     const postsData = {
       labels: [
         <?php 
@@ -722,7 +732,7 @@ function img_url_dashboard($path) {
         label: 'Posts Publicados',
         data: [<?php foreach($postsPorMes as $data) echo $data['total'] . ','; ?>],
         backgroundColor: 'rgba(226, 31, 12, 0.1)',
-        borderColor: '#E21F0C',
+        borderColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color'),
         borderWidth: 3,
         fill: true,
         tension: 0.4
@@ -735,22 +745,18 @@ function img_url_dashboard($path) {
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false
-          }
-        },
+        plugins: { legend: { display: false } },
         scales: {
           y: {
             beginAtZero: true,
-            ticks: {
-              precision: 0
-            }
+            ticks: { precision: 0 }
           }
         }
       }
     });
+    <?php endif; ?>
     
+    <?php if (hasAnyPermission(['Ver Categorias']) && !empty($categoriasPopulares)): ?>
     // ===== GRÁFICO: CATEGORÍAS POPULARES =====
     const categoriesData = {
       labels: [
@@ -760,13 +766,7 @@ function img_url_dashboard($path) {
       ],
       datasets: [{
         data: [<?php foreach($categoriasPopulares as $cat) echo $cat['total_posts'] . ','; ?>],
-        backgroundColor: [
-          '#E21F0C',
-          '#DDC686',
-          '#28a745',
-          '#17a2b8',
-          '#ffc107'
-        ],
+        backgroundColor: ['#E21F0C', '#DDC686', '#28a745', '#17a2b8', '#ffc107'],
         borderWidth: 0
       }]
     };
@@ -777,13 +777,10 @@ function img_url_dashboard($path) {
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            position: 'bottom'
-          }
-        }
+        plugins: { legend: { position: 'bottom' } }
       }
     });
+    <?php endif; ?>
   </script>
 </body>
 </html>
