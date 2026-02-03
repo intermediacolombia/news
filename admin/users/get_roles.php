@@ -1,23 +1,25 @@
 <?php
 include('../../inc/config.php');
 
-// Debug: Registrar datos recibidos
-error_log("POST recibido: " . print_r($_POST, true));
+// Función helper para logging (opcional, puedes comentarla en producción)
+function logDebug($message, $data = null) {
+    error_log("ROLES DEBUG: " . $message . ($data ? " - " . json_encode($data) : ""));
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $action = $_POST['action'];
+    $action = $_POST['action'] ?? '';
+    
+    // Log para debug
+    logDebug("Action recibida", $action);
+    logDebug("POST data", $_POST);
 
     if ($action == "add") {
         // Agregar un nuevo rol
         $name = trim($_POST['name']);
         $description = trim($_POST['description']);
+        $permissions = isset($_POST['permissions']) && is_array($_POST['permissions']) ? $_POST['permissions'] : [];
         
-        // CORRECCIÓN: Validar que permissions sea un array
-        $permissions = isset($_POST['permissions']) && is_array($_POST['permissions']) 
-            ? $_POST['permissions'] 
-            : [];
-        
-        error_log("Permisos recibidos para ADD: " . print_r($permissions, true));
+        logDebug("Agregando rol", ['name' => $name, 'permissions_count' => count($permissions)]);
 
         // Verificar si el rol ya existe
         $stmtCheck = db()->prepare("SELECT id, borrado FROM roles WHERE name = :name LIMIT 1");
@@ -26,6 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($existingRole) {
             if ($existingRole['borrado'] == 0) {
+                // El rol ya existe y no está borrado
                 echo json_encode(['status' => 'error', 'message' => 'El rol ya existe']);
                 exit;
             } else {
@@ -40,8 +43,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     // Insertar nuevos permisos
                     if (!empty($permissions)) {
                         foreach ($permissions as $permissionId) {
-                            $stmtInsert = db()->prepare("INSERT INTO role_permissions (role_id, permission_id) VALUES (:role_id, :permission_id)");
-                            $stmtInsert->execute([
+                            $stmtPerm = db()->prepare("INSERT INTO role_permissions (role_id, permission_id) VALUES (:role_id, :permission_id)");
+                            $stmtPerm->execute([
                                 ':role_id' => $roleId,
                                 ':permission_id' => $permissionId
                             ]);
@@ -61,16 +64,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = db()->prepare("INSERT INTO roles (name, description, borrado) VALUES (:name, :description, 0)");
         if ($stmt->execute([':name' => $name, ':description' => $description])) {
             $roleId = db()->lastInsertId();
+            
+            logDebug("Rol creado con ID", $roleId);
 
             // Asignar permisos
             if (!empty($permissions)) {
                 foreach ($permissions as $permissionId) {
-                    $stmtInsert = db()->prepare("INSERT INTO role_permissions (role_id, permission_id) VALUES (:role_id, :permission_id)");
-                    $stmtInsert->execute([
+                    $stmtPerm = db()->prepare("INSERT INTO role_permissions (role_id, permission_id) VALUES (:role_id, :permission_id)");
+                    $stmtPerm->execute([
                         ':role_id' => $roleId,
                         ':permission_id' => $permissionId
                     ]);
                 }
+                logDebug("Permisos insertados", count($permissions));
             }
 
             echo json_encode(['status' => 'success', 'message' => 'Rol agregado correctamente']);
@@ -85,42 +91,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $roleId = trim($_POST['id']);
         $name = trim($_POST['name']);
         $description = trim($_POST['description']);
+        $permissions = isset($_POST['permissions']) && is_array($_POST['permissions']) ? $_POST['permissions'] : [];
         
-        // CORRECCIÓN: Validar que permissions sea un array
-        $permissions = isset($_POST['permissions']) && is_array($_POST['permissions']) 
-            ? $_POST['permissions'] 
-            : [];
-        
-        error_log("Permisos recibidos para EDIT (ID: $roleId): " . print_r($permissions, true));
+        logDebug("Editando rol", [
+            'role_id' => $roleId, 
+            'name' => $name, 
+            'permissions_count' => count($permissions),
+            'permissions' => $permissions
+        ]);
 
         // Actualizar el rol
         $stmt = db()->prepare("UPDATE roles SET name = :name, description = :description WHERE id = :id");
         $stmt->execute([':name' => $name, ':description' => $description, ':id' => $roleId]);
+        
+        logDebug("Rol actualizado");
 
         // Eliminar permisos antiguos
         $stmt = db()->prepare("DELETE FROM role_permissions WHERE role_id = :role_id");
         $stmt->execute([':role_id' => $roleId]);
+        
+        logDebug("Permisos antiguos eliminados");
 
-        // Insertar nuevos permisos (solo si hay permisos seleccionados)
+        // Insertar nuevos permisos
         if (!empty($permissions)) {
-            error_log("Insertando " . count($permissions) . " permisos para el rol $roleId");
-            
+            $insertedCount = 0;
             foreach ($permissions as $permissionId) {
-                $stmtInsert = db()->prepare("INSERT INTO role_permissions (role_id, permission_id) VALUES (:role_id, :permission_id)");
-                $result = $stmtInsert->execute([
-                    ':role_id' => $roleId,
-                    ':permission_id' => $permissionId
-                ]);
-                
-                if (!$result) {
-                    error_log("Error insertando permiso $permissionId para rol $roleId");
+                try {
+                    $stmtPerm = db()->prepare("INSERT INTO role_permissions (role_id, permission_id) VALUES (:role_id, :permission_id)");
+                    $stmtPerm->execute([
+                        ':role_id' => $roleId,
+                        ':permission_id' => $permissionId
+                    ]);
+                    $insertedCount++;
+                } catch (PDOException $e) {
+                    logDebug("Error insertando permiso", ['permission_id' => $permissionId, 'error' => $e->getMessage()]);
                 }
             }
+            logDebug("Nuevos permisos insertados", $insertedCount);
         } else {
-            error_log("ADVERTENCIA: No se recibieron permisos para el rol $roleId");
+            logDebug("ADVERTENCIA: Array de permisos vacío");
         }
 
-        echo json_encode(['status' => 'success', 'message' => 'Rol actualizado correctamente']);
+        echo json_encode([
+            'status' => 'success', 
+            'message' => 'Rol actualizado correctamente',
+            'debug' => [
+                'permissions_received' => count($permissions),
+                'role_id' => $roleId
+            ]
+        ]);
         exit;
 
     } elseif ($action == "delete") {
@@ -145,17 +164,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute([':id' => $roleId]);
         $role = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if (!$role) {
-            echo json_encode(['status' => 'error', 'message' => 'Rol no encontrado']);
-            exit;
-        }
-
         // Obtener los permisos del rol
         $stmt = db()->prepare("SELECT permission_id FROM role_permissions WHERE role_id = :role_id");
         $stmt->execute([':role_id' => $roleId]);
         $permissions = $stmt->fetchAll(PDO::FETCH_COLUMN);
         
-        error_log("Permisos del rol $roleId: " . print_r($permissions, true));
+        logDebug("Obteniendo rol", ['role_id' => $roleId, 'permissions_count' => count($permissions)]);
 
         echo json_encode([
             'status' => 'success',
@@ -176,4 +190,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     echo json_encode(['data' => $roles]);
     exit;
 }
+
+// Si llegamos aquí, acción no reconocida
+echo json_encode(['status' => 'error', 'message' => 'Acción no reconocida']);
 ?>
