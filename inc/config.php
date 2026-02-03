@@ -72,7 +72,7 @@ $url = URLBASE;
 define('NOMBRE_SITIO', $sys['site_name'] ?? '');
 
 define('FAVICON', $sys['site_favicon'] ?? '');
-define('SITE_LOGO', $sys['site_logo'] ?? '');
+define('SITE_LOGO', $sys['site_logo'] ?? '/img/logo.webp');
 
 /*=======Tienda=====================*/
 define('FREE_SHIPPING', $sys['free_shipping'] ?? '');

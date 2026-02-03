@@ -81,7 +81,7 @@ try {
 
     $stmt = $pdo->prepare("
         INSERT INTO usuarios (nombre, apellido, correo, username, password, rol, estado, borrado, created_at)
-        VALUES (?, ?, ?, ?, ?, 'admin', 1, 0, NOW())
+        VALUES (?, ?, ?, ?, ?, 'admin', 0, 0, NOW())
     ");
     $stmt->execute([$admin_name, $admin_lastname, $admin_email, $admin_username, $passwordHash]);
     $adminId = (int)$pdo->lastInsertId();
@@ -116,7 +116,7 @@ try {
         throw new Exception("No se pudo escribir /inc/url_bd.php (permisos).");
     }
 
-    header('Location: ../admin/login.php?installed=1');
+    header('Location: ../admin/');
     exit;
 
 } catch (PDOException $e) {
