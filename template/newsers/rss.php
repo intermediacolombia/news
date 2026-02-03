@@ -80,7 +80,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
       <pubDate><?= $pubDate ?></pubDate>
       <description><?= cdata($desc) ?></description>
 <?php if ($imgUrl): ?>
-      <media:content url="<​?= safe_xml_text($imgUrl) ?>" medium="image" />
+      <media:content url="<?= safe_xml_text($imgUrl) ?>" medium="image" />
 <?php endif; ?>
     </item>
 <?php endforeach; ?>
