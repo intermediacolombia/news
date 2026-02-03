@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 // 1. Ajuste de ruta: Si rss.php está en la raíz, suele ser ./inc/config.php
-require_once __DIR__ . '/../inc/config.php'; 
+require_once __DIR__ . '/../../inc/config.php';
 
 if (ob_get_level()) {
     @ob_end_clean();
