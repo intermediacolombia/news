@@ -1,13 +1,17 @@
 <?php
-declare(strict_types=1);
+// 1. Desactivar reporte de errores visuales para no romper el XML
+ini_set('display_errors', '0');
+error_reporting(0);
 
-// 1. Ajuste de ruta: Si rss.php está en la raíz, suele ser ./inc/config.php
+// 2. Cargar configuración
 require_once __DIR__ . '/../../inc/config.php';
 
-if (ob_get_level()) {
-    @ob_end_clean();
+// 3. LIMPIEZA TOTAL: Eliminar cualquier HTML que config.php haya intentado imprimir
+while (ob_get_level()) {
+    ob_end_clean();
 }
 
+// 4. Cabecera XML estricta
 header('Content-Type: application/rss+xml; charset=UTF-8');
 
 function safe_xml_text(string $s): string {
@@ -18,9 +22,8 @@ function cdata(string $s): string {
     return '<![CDATA[' . str_replace(']]>', ']]]]><![CDATA[>', $s) . ']]>';
 }
 
-// ---------- Consulta ----------
+// ---------- Consulta SQL ----------
 try {
-    // Eliminamos el GROUP BY innecesario que suele causar errores
     $sql = "SELECT p.id, p.title, p.slug, p.content, p.image, p.created_at,
                    (SELECT c.slug FROM blog_categories c 
                     JOIN blog_post_category pc ON c.id = pc.category_id 
@@ -33,16 +36,13 @@ try {
     $stmt = db()->query($sql);
     $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (Throwable $e) {
-    // Si falla, comentamos esto para debuggear si es necesario:
-    // die($e->getMessage()); 
     $posts = [];
 }
 
 $baseUrl = rtrim(URLBASE, '/');
-$selfUrl = $baseUrl . '/rss.php';
-$feedTitle = NOMBRE_SITIO . ' - Noticias';
-$feedDescription = 'Últimas publicaciones de ' . NOMBRE_SITIO;
+$feedTitle = (defined('NOMBRE_SITIO') ? NOMBRE_SITIO : 'Noticias');
 
+// ---------- EMPEZAR SALIDA XML ----------
 echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
 ?>
 <rss version="2.0"
@@ -51,35 +51,26 @@ echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
   <channel>
     <title><?= safe_xml_text($feedTitle) ?></title>
     <link><?= safe_xml_text($baseUrl) ?></link>
-    <description><?= safe_xml_text($feedDescription) ?></description>
+    <description>Últimas noticias de <?= safe_xml_text($feedTitle) ?></description>
     <language>es-ES</language>
     <lastBuildDate><?= date(DATE_RSS) ?></lastBuildDate>
-    <atom:link href="<​?= safe_xml_text($selfUrl) ?>" rel="self" type="application/rss+xml" />
+    <atom:link href="<?= safe_xml_text($baseUrl) ?>/rss.php" rel="self" type="application/rss+xml" />
 
 <?php foreach ($posts as $post):
     $title = $post['title'] ?? '';
     $slug  = $post['slug'] ?? '';
     $cat   = $post['category_slug'] ?? 'noticias';
-    
-    // Construcción de URL: categoria/slug
     $itemUrl = $baseUrl . '/' . $cat . '/' . $slug;
     
     $pubTs   = strtotime((string)$post['created_at']);
     $pubDate = $pubTs ? date(DATE_RSS, $pubTs) : date(DATE_RSS);
     
-    // Limpiar contenido para la descripción
-    $desc = strip_tags((string)$post['content']);
-    $desc = mb_substr($desc, 0, 300) . '...';
+    $desc = mb_substr(strip_tags((string)$post['content']), 0, 300) . '...';
 
     $imgUrl = '';
     if (!empty($post['image'])) {
-        // Usamos la lógica de tu helper img_url
         $img = $post['image'];
-        if (filter_var($img, FILTER_VALIDATE_URL)) {
-            $imgUrl = $img;
-        } else {
-            $imgUrl = $baseUrl . '/' . ltrim($img, '/');
-        }
+        $imgUrl = (filter_var($img, FILTER_VALIDATE_URL)) ? $img : $baseUrl . '/' . ltrim($img, '/');
     }
 ?>
     <item>
@@ -95,4 +86,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
 <?php endforeach; ?>
   </channel>
 </rss>
+<?php
+// 5. Finalizar ejecución para que nada más se imprima
+exit;
 
