@@ -1,72 +1,51 @@
 <?php
-// Zona horaria
-date_default_timezone_set('America/Bogota');
-
-require_once __DIR__ . '/url_bd.php';
-
-// inc/config.php
-require_once dirname(__DIR__) . '/vendor/autoload.php';
-
 /* ========= Conexión PDO (única instancia) ========= */
 function db() {
     static $pdo = null;
+    if ($pdo !== null) return $pdo;
 
-    if ($pdo !== null) {
-        return $pdo;
+    $config_file = __DIR__ . '/url_bd.php';
+
+    // 1. VERIFICAR SI EL ARCHIVO EXISTE ANTES DE HACER EL REQUIRE
+    if (!file_exists($config_file)) {
+        // Si no estamos ya en la carpeta install, redirigir
+        if (strpos($_SERVER['REQUEST_URI'], '/install/') === false) {
+            header('Location: ./install/index.php');
+            exit;
+        }
+        return null; // Retornar null si estamos en el instalador y no hay config
     }
 
     try {
+        // 2. AHORA SÍ ES SEGURO CARGARLO
+        require_once $config_file;
+        
+        // Usar las variables cargadas desde url_bd.php
+        // Si las variables no están definidas en el scope global, las tomamos del archivo
+        $host   = $GLOBALS['host'] ?? (isset($host) ? $host : 'localhost');
+        $dbname = $GLOBALS['dbname'] ?? (isset($dbname) ? $dbname : '');
+        $dbuser = $GLOBALS['dbuser'] ?? (isset($dbuser) ? $dbuser : '');
+        $dbpass = $GLOBALS['dbpass'] ?? (isset($dbpass) ? $dbpass : '');
 
-        // Extraer variables desde config
-        $host   = $GLOBALS['host'];
-        $dbname = $GLOBALS['dbname'];
-        $dbuser = $GLOBALS['dbuser'];
-        $dbpass = $GLOBALS['dbpass'];
-
-        $pdo = new PDO(
-            "mysql:host=$host;dbname=$dbname;charset=utf8mb4",
-            $dbuser,
-            $dbpass,
-            [
-                PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-            ]
-        );
-
+        $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $dbuser, $dbpass, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false,
+        ]);
+        
         return $pdo;
 
     } catch (PDOException $e) {
-		
-	// Si el archivo de configuración no existe, redirigir al instalador
-    if (!file_exists(__DIR__ . '/url_bd.php')) {
-        if (!str_contains($_SERVER['REQUEST_URI'], '/install/')) {
-            header('Location: /install/');
+        // Si la conexión falla (ej. datos incorrectos), mandar al instalador
+        if (strpos($_SERVER['REQUEST_URI'], '/install/') === false) {
+            header('Location: ./install/index.php?error=db_connection');
             exit;
         }
-    }
-
-        // Detectar si es AJAX o API
-        $isAjax =
-            (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
-             strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest')
-            ||
-            (str_contains($_SERVER['CONTENT_TYPE'] ?? '', 'application/json'));
-
-        if ($isAjax) {
-            header('Content-Type: application/json');
-            echo json_encode([
-                'status'  => 'error',
-                'message' => 'Error de conexión a la base de datos.',
-                'code'    => $e->getCode()
-            ]);
-            exit;
-        }
-
-        // Página normal HTML
-        die("Error de conexión. Intenta más tarde.");
+        return null;
     }
 }
 
+date_default_timezone_set('America/Bogota');
 /* ========= Carga de ajustes del sistema (con cache global) ========= */
 if (!isset($GLOBALS['SYS_SETTINGS'])) {
     try {
