@@ -643,5 +643,9 @@ if (file_exists($playerPath)) {
     });
   });
 </script>
+
+
+<!--fin player-->
+</div>
 </body>
 </html>
