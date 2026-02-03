@@ -146,22 +146,39 @@ try {
       // Agregar/Editar rol vía Ajax
       $("#formAddRole").on("submit", function (e) {
         e.preventDefault();
+        
         const roleId = $("#edit_role_id").val();
         const action = roleId ? "edit" : "add";
+        
+        // Capturar permisos marcados ANTES de hacer el AJAX
+        const selectedPermissions = [];
+        $("input[name='permissions[]']:checked").each(function() {
+          selectedPermissions.push($(this).val());
+        });
+        
+        console.log("Permisos seleccionados:", selectedPermissions); // Debug
+        console.log("Role ID:", roleId); // Debug
+        console.log("Action:", action); // Debug
+        
+        // Preparar datos
+        const formData = {
+          action: action,
+          id: roleId,
+          name: $("#role_name").val(),
+          description: $("#role_description").val(),
+          permissions: selectedPermissions
+        };
+        
+        console.log("Datos a enviar:", formData); // Debug
+        
         $.ajax({
           url: "get_roles.php",
           method: "POST",
-          data: {
-            action: action,
-            id: roleId,
-            name: $("#role_name").val(),
-            description: $("#role_description").val(),
-            permissions: $("input[name='permissions[]']:checked").map(function () {
-              return $(this).val();
-            }).get()
-          },
+          data: formData,
           dataType: "json",
           success: function (response) {
+            console.log("Respuesta del servidor:", response); // Debug
+            
             if (response.status === "success") {
               Swal.fire("Éxito", response.message, "success");
               $("#modalAddRole").modal("hide");
@@ -171,7 +188,8 @@ try {
             }
           },
           error: function(xhr, status, error) {
-            console.error("Error:", error);
+            console.error("Error AJAX:", error);
+            console.error("Response:", xhr.responseText);
             Swal.fire("Error", "Ocurrió un error al procesar la solicitud", "error");
           }
         });
