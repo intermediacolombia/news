@@ -54,7 +54,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
     <description>Últimas noticias de <?= safe_xml_text($feedTitle) ?></description>
     <language>es-ES</language>
     <lastBuildDate><?= date(DATE_RSS) ?></lastBuildDate>
-    <atom:link href="<?= safe_xml_text($baseUrl) ?>/rss.php" rel="self" type="application/rss+xml" />
+    <atom:link href="<?= safe_xml_text($baseUrl) ?>/rss" rel="self" type="application/rss+xml" />
 
 <?php foreach ($posts as $post):
     $title = $post['title'] ?? '';
