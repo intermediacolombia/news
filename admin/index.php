@@ -132,7 +132,7 @@ function img_url_dashboard($path) {
   
   <style>
     :root {      
-      --primary-dark: #8A0002;
+      --primary-dark: <?= COLOR_PRIMARY_HOVER_LINK ?? '#007bff' ?>;
       --accent-gold: #DDC686;
       --bg-light: #f8f9fa;
       --card-shadow: 0 4px 15px rgba(0,0,0,0.08);
