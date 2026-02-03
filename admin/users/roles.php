@@ -1,16 +1,9 @@
-<?php
-session_start();
-
-// Cargar config SIEMPRE PRIMERO
-require_once realpath(__DIR__ . '/../../inc/config.php');
-
-// Cargar sesión de usuario
-require_once realpath(__DIR__ . '/../login/session.php');
-
+<?php require_once __DIR__ . '/../login/session.php'; ?>
+<?php 
 $permisopage = 'Gestionar Roles';
-
-// Cargar restricción de permisos
-require_once realpath(__DIR__ . '/../login/restriction.php');
+include('../login/restriction.php'); ?>
+<?php
+require_once __DIR__ . '/../../inc/config.php';
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -91,7 +84,7 @@ try {
 
         // Mostrar el permiso como un interruptor (switch)
         echo "<div class='form-check form-switch'>"; // Clase Bootstrap para el switch
-        echo "<input class='form-check-input permission-checkbox' type='checkbox' name='permissions[]' value='{$permission['id']}' id='permission_{$permission['id']}'>";
+        echo "<input class='form-check-input' type='checkbox' name='permissions[]' value='{$permission['id']}' id='permission_{$permission['id']}'>";
         echo "<label class='form-check-label' for='permission_{$permission['id']}'>{$permission['name']}</label>";
         echo "</div>";
     }
@@ -102,7 +95,7 @@ try {
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-danger" id="btnDeleteRole" style="display:none;"><i class="fa fa-trash"></i> Borrar Rol</button>
+            <button type="button" class="btn btn-danger" id="btnDeleteRole"><i class="fa fa-trash"></i> Borrar Rol</button>
             <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Guardar</button>
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
           </div>
@@ -119,11 +112,10 @@ try {
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
   <script>
     $(document).ready(function () {
-      // Inicializar DataTable con columna ID oculta
+      // Inicializar DataTable
       var table = $('#roles-table').DataTable({
         "ajax": "get_roles.php?action=fetch",
         "columns": [
-          { "data": "id", "visible": false }, // Columna oculta
           { "data": "name" },
           { "data": "description" }
         ],
@@ -134,54 +126,31 @@ try {
 
       // Abrir modal para agregar un nuevo rol
       $("#btnAddRole").click(function () {
-        console.log("Abriendo modal para AGREGAR rol");
         $("#formAddRole")[0].reset();
         $("#edit_role_id").val("");
-        $(".permission-checkbox").prop("checked", false);
-        $("#modalAddRoleLabel").text("Agregar Nuevo Rol");
-        $("#btnDeleteRole").hide();
+        $(".form-check-input").prop("checked", false);
         $("#modalAddRole").modal("show");
       });
 
       // Agregar/Editar rol vía Ajax
       $("#formAddRole").on("submit", function (e) {
         e.preventDefault();
-        
         const roleId = $("#edit_role_id").val();
         const action = roleId ? "edit" : "add";
-        
-        // Capturar permisos marcados
-        const selectedPermissions = [];
-        $("input.permission-checkbox:checked").each(function() {
-          selectedPermissions.push($(this).val());
-        });
-        
-        console.log("=== DATOS DEL FORMULARIO ===");
-        console.log("Action:", action);
-        console.log("Role ID:", roleId);
-        console.log("Nombre:", $("#role_name").val());
-        console.log("Descripción:", $("#role_description").val());
-        console.log("Permisos seleccionados:", selectedPermissions);
-        console.log("Total permisos:", selectedPermissions.length);
-        
-        const formData = {
-          action: action,
-          id: roleId,
-          name: $("#role_name").val(),
-          description: $("#role_description").val(),
-          permissions: selectedPermissions
-        };
-        
-        console.log("Datos a enviar:", formData);
-        
         $.ajax({
           url: "get_roles.php",
           method: "POST",
-          data: formData,
+          data: {
+            action: action,
+            id: roleId,
+            name: $("#role_name").val(),
+            description: $("#role_description").val(),
+            permissions: $("input[name='permissions[]']:checked").map(function () {
+              return $(this).val();
+            }).get()
+          },
           dataType: "json",
           success: function (response) {
-            console.log("Respuesta del servidor:", response);
-            
             if (response.status === "success") {
               Swal.fire("Éxito", response.message, "success");
               $("#modalAddRole").modal("hide");
@@ -189,11 +158,6 @@ try {
             } else {
               Swal.fire("Error", response.message, "error");
             }
-          },
-          error: function(xhr, status, error) {
-            console.error("Error AJAX:", error);
-            console.error("Response text:", xhr.responseText);
-            Swal.fire("Error", "Ocurrió un error al procesar la solicitud", "error");
           }
         });
       });
@@ -211,7 +175,6 @@ try {
           text: "Este rol se marcará como borrado y no se mostrará en la lista.",
           icon: "warning",
           showCancelButton: true,
-          cancelButtonText: "Cancelar",
           confirmButtonColor: "#d33",
           confirmButtonText: "Sí, borrar"
         }).then((result) => {
@@ -237,57 +200,31 @@ try {
 
       // Editar rol (al hacer clic en una fila)
       $('#roles-table tbody').on('click', 'tr', function () {
-        var data = table.row(this).data();
-        
-        console.log("=== EDITANDO ROL ===");
-        console.log("Data de la fila:", data);
-        
-        if (data && data.id) {
-          $("#modalAddRoleLabel").text("Editar Rol");
-          $("#btnDeleteRole").show();
-          
+        var data = table.row(this).data(); // Obtener los datos de la fila seleccionada
+        if (data) {
+          // Cargar los datos del rol en el formulario
           $("#edit_role_id").val(data.id);
           $("#role_name").val(data.name);
           $("#role_description").val(data.description);
 
-          // Desmarcar todas las casillas
-          $(".permission-checkbox").prop("checked", false);
+          // Desmarcar todas las casillas de permisos
+          $(".form-check-input").prop("checked", false);
 
-          // Obtener permisos del rol
+          // Marcar las casillas correspondientes a los permisos del rol
           $.ajax({
             url: "get_roles.php",
             method: "POST",
             data: { action: "get", id: data.id },
             dataType: "json",
             success: function (response) {
-              console.log("Respuesta de permisos:", response);
-              
               if (response.status === "success") {
-                if (response.data.permissions && Array.isArray(response.data.permissions)) {
-                  console.log("Marcando permisos:", response.data.permissions);
-                  
-                  response.data.permissions.forEach(function (permissionId) {
-                    const checkbox = $(`#permission_${permissionId}`);
-                    if (checkbox.length) {
-                      checkbox.prop("checked", true);
-                      console.log("Permiso marcado:", permissionId);
-                    } else {
-                      console.warn("Checkbox no encontrado para permiso:", permissionId);
-                    }
-                  });
-                  
-                  // Verificar cuántos están marcados
-                  const checkedCount = $(".permission-checkbox:checked").length;
-                  console.log("Total checkboxes marcados:", checkedCount);
-                }
-                $("#modalAddRole").modal("show");
+                response.data.permissions.forEach(function (permissionId) {
+                  $(`#permission_${permissionId}`).prop("checked", true);
+                });
+                $("#modalAddRole").modal("show"); // Abrir el modal
               } else {
                 Swal.fire("Error", response.message, "error");
               }
-            },
-            error: function(xhr, status, error) {
-              console.error("Error al cargar permisos:", error);
-              Swal.fire("Error", "No se pudieron cargar los permisos del rol", "error");
             }
           });
         }
