@@ -118,6 +118,8 @@ define('WS_DELIVERED_ORDER', $sys['ws_delivered_message'] ?? '');
 define('THEME', $sys['site_theme'] ?? 'news');
 define('TEXT_TO_SPEECH', $sys['enable_text_to_speech'] ?? '');
 
+define('ENABLE_STOP_PLAYER', $sys['enable_stop_player'] ?? '');
+
 
 /* =========Fin Apariencia ========= */
 

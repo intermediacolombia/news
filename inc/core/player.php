@@ -17,7 +17,11 @@ footer .footer-area-bottom {
  <div id="globalPlayer" style="position:fixed;left:0;right:0;bottom:0;height:<?= $sys['player_height'] ?? 70 ?>px;z-index:1500;overflow:hidden;display:flex;">
     <iframe src="<?= $sys['code_player'] ?? '' ?>" frameborder="0" scrolling="no" style="width:100%;height:100%;"></iframe>
   </div>
-<!--script>
+
+
+<?php if (!empty(ENABLE_STOP_PLAYER) && ENABLE_STOP_PLAYER == '1'): ?>
+
+<script>
 (function () {
   // === 1) Utilidades para assets en <head> ===
   function assetKey(el) {
@@ -211,9 +215,9 @@ footer .footer-area-bottom {
     navigateTo(url, false);
   });
 })();
-</script-->
+</script>
 
-<!--script>
+<script>
 (function () {
 
   // === Utilidades de comparación de assets ===
@@ -496,7 +500,7 @@ footer .footer-area-bottom {
   });
 
 })();
-</script-->
-
+</script>
+<?php endif; ?>
 
 <?php endif; ?>

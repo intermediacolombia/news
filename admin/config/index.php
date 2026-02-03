@@ -49,6 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		'info_footer',
 		'business_map',
 		'enable_text_to_speech',
+		
 		//SEO
 		'seo_home_title',
 		'seo_home_description',
@@ -60,6 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		'code_sliderbar',
 		'code_player',
 		'player_height',
+		'enable_stop_player',
 		
 		//identidad		
 		'about_us',
@@ -222,6 +224,7 @@ $defaults = [
 	'code_sliderbar' => '',
 	'code_player' => '',
 	'player_height' => '',
+	'enable_stop_player' => '',
 	
 	//redes
 	
@@ -565,6 +568,21 @@ document.addEventListener('DOMContentLoaded', function(){
               <input type="text" name="code_player" class="form-control"
                      value="<?= $configs['code_player'] ?>">
             </div>
+			  
+			  
+			  <div class="mb-3">
+  <div class="form-check form-switch">
+    <input class="form-check-input" type="checkbox" id="enable_stop_player" 
+           name="enable_stop_player" value="1"
+           <?= !empty($configs['enable_stop_player']) ? 'checked' : '' ?>>
+    <label class="form-check-label" for="enable_stop_player">
+      <i class="fas fa-volume-up me-2"></i>Habilitar reproducción continua (no detiene el audio al cambiar de página).
+    </label>
+  </div>
+  <small class="text-muted">Esto puede causar fallos en diferentes temas y otras funciones pueden no funcionar; por favor, úselo con precaución. Si nota algún fallo, por favor, deshabilite esta opción.</small>
+</div>
+			  
+			  
 			  
 			  <div class="mb-3">
   <label class="form-label">Alto del Reproductor (px)</label>
