@@ -127,6 +127,9 @@ function img_url_dashboard($path) {
   <!-- Chart.js para gráficos -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   
+  <!-- Font Awesome (si no está en header.php) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
   <style>
     :root {
       --primary-color: #E21F0C;
@@ -474,7 +477,7 @@ function img_url_dashboard($path) {
   
   <?php if (isset($_SESSION['error'])): ?>
     <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0 mt-3 mx-auto" role="alert" style="max-width:600px;">
-      <i class="bi bi-exclamation-triangle-fill me-2"></i>
+      <i class="fa fa-exclamation-triangle me-2"></i>
       <?= $_SESSION['error'] ?>
       <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
@@ -490,7 +493,7 @@ function img_url_dashboard($path) {
         <span class="user-name"><?= htmlspecialchars($nombre . " " . $apellido) ?></span>
       </h1>
       <div class="welcome-date">
-        <i class="bi bi-calendar3"></i>
+        <i class="fa fa-calendar"></i>
         <?= strftime("%A, %d de %B de %Y", time()) ?>
       </div>
     </div>
@@ -500,7 +503,7 @@ function img_url_dashboard($path) {
       <div class="col-xl-3 col-md-6 mb-4">
         <div class="stat-card primary">
           <div class="stat-card-icon">
-            <i class="bi bi-newspaper"></i>
+            <i class="fa fa-newspaper"></i>
           </div>
           <div class="stat-card-value"><?= number_format($totalPosts) ?></div>
           <div class="stat-card-label">Total Posts</div>
@@ -510,7 +513,7 @@ function img_url_dashboard($path) {
       <div class="col-xl-3 col-md-6 mb-4">
         <div class="stat-card success">
           <div class="stat-card-icon">
-            <i class="bi bi-check-circle"></i>
+            <i class="fa fa-check-circle"></i>
           </div>
           <div class="stat-card-value"><?= number_format($postsPublicados) ?></div>
           <div class="stat-card-label">Publicados</div>
@@ -520,7 +523,7 @@ function img_url_dashboard($path) {
       <div class="col-xl-3 col-md-6 mb-4">
         <div class="stat-card warning">
           <div class="stat-card-icon">
-            <i class="bi bi-eye"></i>
+            <i class="fa fa-eye"></i>
           </div>
           <div class="stat-card-value"><?= number_format($vistasEsteMes) ?></div>
           <div class="stat-card-label">Vistas este mes</div>
@@ -530,7 +533,7 @@ function img_url_dashboard($path) {
       <div class="col-xl-3 col-md-6 mb-4">
         <div class="stat-card info">
           <div class="stat-card-icon">
-            <i class="bi bi-people"></i>
+            <i class="fa fa-users"></i>
           </div>
           <div class="stat-card-value"><?= number_format($totalColumnistas) ?></div>
           <div class="stat-card-label">Columnistas</div>
@@ -545,7 +548,7 @@ function img_url_dashboard($path) {
         <div class="widget-card">
           <div class="widget-header">
             <h3 class="widget-title">
-              <i class="bi bi-bar-chart widget-icon"></i>
+              <i class="fa fa-bar-chart widget-icon"></i>
               Posts Publicados (Últimos 6 meses)
             </h3>
           </div>
@@ -560,7 +563,7 @@ function img_url_dashboard($path) {
         <div class="widget-card">
           <div class="widget-header">
             <h3 class="widget-title">
-              <i class="bi bi-pie-chart widget-icon"></i>
+              <i class="fa fa-pie-chart widget-icon"></i>
               Categorías Populares
             </h3>
           </div>
@@ -579,7 +582,7 @@ function img_url_dashboard($path) {
         <div class="widget-card">
           <div class="widget-header">
             <h3 class="widget-title">
-              <i class="bi bi-clock-history widget-icon"></i>
+              <i class="fa fa-clock-o widget-icon"></i>
               Últimos Posts Publicados
             </h3>
             <a href="<?= URLBASE ?>/admin/posts/" class="btn btn-sm btn-outline-primary">
@@ -614,7 +617,7 @@ function img_url_dashboard($path) {
                     </span>
                   </td>
                   <td>
-                    <i class="bi bi-eye text-muted"></i>
+                    <i class="fa fa-eye text-muted"></i>
                     <?= number_format($post['views']) ?>
                   </td>
                   <td>
@@ -626,7 +629,7 @@ function img_url_dashboard($path) {
                   <td>
                     <a href="<?= URLBASE ?>/admin/posts/edit.php?id=<?= $post['id'] ?>" 
                        class="btn btn-sm btn-outline-primary">
-                      <i class="bi bi-pencil"></i>
+                      <i class="fa fa-pencil"></i>
                     </a>
                   </td>
                 </tr>
@@ -644,7 +647,7 @@ function img_url_dashboard($path) {
         <div class="widget-card mb-4">
           <div class="widget-header">
             <h3 class="widget-title">
-              <i class="bi bi-fire widget-icon"></i>
+              <i class="fa fa-fire widget-icon"></i>
               Posts Más Vistos
             </h3>
           </div>
@@ -659,7 +662,7 @@ function img_url_dashboard($path) {
                 #<?= $index + 1 ?>. <?= mb_substr(htmlspecialchars($top['title']), 0, 40) ?>...
               </div>
               <div class="top-post-views">
-                <i class="bi bi-eye-fill"></i>
+                <i class="fa fa-eye"></i>
                 <?= number_format($top['total_views']) ?> vistas
               </div>
             </div>
@@ -671,7 +674,7 @@ function img_url_dashboard($path) {
         <div class="widget-card">
           <div class="widget-header">
             <h3 class="widget-title">
-              <i class="bi bi-activity widget-icon"></i>
+              <i class="fa fa-line-chart widget-icon"></i>
               Actividad Reciente
             </h3>
           </div>
@@ -679,14 +682,14 @@ function img_url_dashboard($path) {
           <?php foreach(array_slice($actividadReciente, 0, 5) as $activity): ?>
           <div class="activity-item">
             <div class="activity-icon <?= $activity['status'] === 'published' ? 'published' : 'draft' ?>">
-              <i class="bi <?= $activity['status'] === 'published' ? 'bi-check-circle' : 'bi-file-earmark' ?>"></i>
+              <i class="fa <?= $activity['status'] === 'published' ? 'fa-check-circle' : 'fa-file-text-o' ?>"></i>
             </div>
             <div class="activity-content">
               <div class="activity-title">
                 <?= mb_substr(htmlspecialchars($activity['title']), 0, 40) ?>...
               </div>
               <div class="activity-meta">
-                <i class="bi bi-person"></i> <?= htmlspecialchars($activity['autor'] ?? 'Desconocido') ?>
+                <i class="fa fa-user"></i> <?= htmlspecialchars($activity['autor'] ?? 'Desconocido') ?>
                 • <?= date('d/m H:i', strtotime($activity['created_at'])) ?>
               </div>
             </div>
