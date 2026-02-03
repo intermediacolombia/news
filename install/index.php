@@ -79,7 +79,7 @@ if (file_exists(__DIR__ . '/../inc/url_bd.php')) {
 
             <div class="form-group">
                 <label for="db_pass">Contraseña de MySQL</label>
-                <input type="password" id="db_pass" name="db_pass">
+                <input type="password" id="db_pass" name="db_pass" required>
             </div>
 
             <div class="form-group">
