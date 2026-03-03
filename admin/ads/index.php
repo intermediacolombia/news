@@ -316,7 +316,7 @@ $gallery5 = db()->query("SELECT * FROM ads_gallery WHERE section=5 AND type='squ
     <?php if (!$autoAdsActivo): ?>
     <div class="tab-pane fade" id="adsense">
 
-    // En publicidad/index.php — botón en la tab AdSense
+  
 <button type="button" class="btn btn-outline-secondary btn-sm" id="btnRefreshZoneMap">
     <i class="bi bi-arrow-clockwise"></i> Regenerar mapa de zonas
 </button>
