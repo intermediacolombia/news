@@ -80,6 +80,17 @@ function detectZone(string $selector): ?string {
     return null;
 }
 
+// ── Cache del zoneMap por 1 hora ──────────────────────────────────────────
+$cacheFile = sys_get_temp_dir() . '/ads_zonemap_' . md5(URLBASE) . '.json';
+$cacheTtl  = 3600; // 1 hora
+
+if (file_exists($cacheFile) && (time() - filemtime($cacheFile)) < $cacheTtl) {
+    $zoneMap = json_decode(file_get_contents($cacheFile), true);
+} else {
+    $zoneMap = buildZoneMap(URLBASE);
+    file_put_contents($cacheFile, json_encode($zoneMap));
+}
+
 // ── 4. Construir zoneMap desde el HTML real ───────────────────────────────
 function buildZoneMap(string $baseUrl): array {
     $pages = [
