@@ -316,6 +316,19 @@ $gallery5 = db()->query("SELECT * FROM ads_gallery WHERE section=5 AND type='squ
     <?php if (!$autoAdsActivo): ?>
     <div class="tab-pane fade" id="adsense">
 
+    // En publicidad/index.php — botón en la tab AdSense
+<button type="button" class="btn btn-outline-secondary btn-sm" id="btnRefreshZoneMap">
+    <i class="bi bi-arrow-clockwise"></i> Regenerar mapa de zonas
+</button>
+
+<script>
+document.getElementById('btnRefreshZoneMap')?.addEventListener('click', function () {
+    fetch('clear_ads_cache.php')
+        .then(r => r.json())
+        .then(d => Swal.fire({ icon: 'success', title: d.message, timer: 1500 }));
+});
+</script>
+
       <?php if (empty($pubId)): ?>
         <div class="alert alert-warning mt-3">
           <i class="fa-solid fa-triangle-exclamation me-2"></i>
