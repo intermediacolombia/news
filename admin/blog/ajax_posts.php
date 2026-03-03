@@ -124,15 +124,21 @@ foreach ($posts as $p) {
         ? '<span class="badge bg-success">Publicado</span>'
         : '<span class="badge bg-secondary">Borrador</span>';
 
-    // Acciones
-    $actions = '
-        <a class="btn btn-sm btn-outline-primary" href="' . $GLOBALS['url'] . '/admin/blog/edit.php?id=' . (int)$p['id'] . '" title="Editar">
-            <i class="fa fa-pencil"></i>
-        </a>
-        <button class="btn-trash btn-delete" data-id="' . (int)$p['id'] . '" data-name="' . htmlspecialchars($p['title']) . '" title="Eliminar">
-            <i class="fa fa-trash"></i>
-        </button>
-    ';
+    // Actions:
+$actions = '
+    <a class="btn btn-sm btn-outline-primary" href="' . $GLOBALS['url'] . '/admin/blog/edit.php?id=' . (int)$p['id'] . '" title="Editar">
+        <i class="fa fa-pencil"></i>
+    </a>
+    <button class="btn-transfer-row btn-transfer-single"
+            data-id="' . (int)$p['id'] . '"
+            data-author="' . htmlspecialchars($p['author']) . '"
+            title="Transferir autoría">
+        <i class="fa-solid fa-arrow-right-arrow-left"></i>
+    </button>
+    <button class="btn-trash btn-delete" data-id="' . (int)$p['id'] . '" data-name="' . htmlspecialchars($p['title']) . '" title="Eliminar">
+        <i class="fa fa-trash"></i>
+    </button>
+';
 
     $data[] = [
         '<input type="checkbox" class="chkPost form-check-input" value="' . (int)$p['id'] . '">',

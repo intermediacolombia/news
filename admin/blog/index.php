@@ -22,86 +22,126 @@ $usuarios = db()->query("SELECT id, nombre, apellido, username
 <style>
   #postsTable thead th {
     background-color:#214A82; color:#fff;
-  }
-  #postsTable tbody tr:hover {
+}
+#postsTable tbody tr:hover {
     background-color:#4972AA !important;
     color:#fff; cursor:pointer;
-  }
-  .post-thumb {
+}
+.post-thumb {
     width:100px; border-radius:6px; box-shadow:0 2px 6px rgba(0,0,0,.1);
-  }
-  .no-click { cursor:default !important; }
-  .btn-trash {
+}
+.no-click { cursor:default !important; }
+.btn-trash {
     display:inline-flex; align-items:center; justify-content:center;
     width:32px; height:32px; border:1px solid #dc3545; border-radius:6px;
     background:#fff; color:#dc3545;
-  }
-  .btn-trash:hover { background:#fff3f3; }
-  #massActions {
+}
+.btn-trash:hover { background:#fff3f3; }
+#massActions {
     background:#f8f9fa; border:1px solid #dee2e6;
     border-radius:6px; padding:10px 12px; margin-bottom:15px;
-  }
-  .post-title {
+}
+.post-title {
     max-width:300px; overflow:hidden;
     text-overflow:ellipsis; white-space:nowrap; cursor:help;
-  }
-  .post-title:hover { color:#0d6efd; }
+}
+.post-title:hover { color:#0d6efd; }
 
-  /* — Modal transferencia — */
-  .transfer-modal-header {
+/* — Modal transferencia — */
+.transfer-modal-header {
     background: linear-gradient(135deg, #214A82 0%, #4972AA 100%);
     color: #fff;
-  }
-  .transfer-modal-header .btn-close { filter: invert(1); }
-  .author-card {
+}
+.transfer-modal-header .btn-close { filter: invert(1); }
+.author-card {
     border: 2px solid #dee2e6;
     border-radius: 12px;
     padding: 16px;
     text-align: center;
     transition: .2s;
-  }
-  .author-card.current { background: #fff3cd; border-color: #ffc107; }
-  .author-card.new     { background: #d1fae5; border-color: #10b981; }
-  .author-avatar {
+}
+.author-card.current { background: #fff3cd; border-color: #ffc107; }
+.author-card.new     { background: #d1fae5; border-color: #10b981; }
+.author-avatar {
     width: 56px; height: 56px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
     font-size: 22px; font-weight: 700; margin: 0 auto 8px;
     color: #fff;
-  }
-  .avatar-current { background: #f59e0b; }
-  .avatar-new     { background: #10b981; }
-  .transfer-arrow {
+}
+.avatar-current { background: #f59e0b; }
+.avatar-new     { background: #10b981; }
+.transfer-arrow {
     font-size: 28px; color: #6c757d;
     display: flex; align-items: center; justify-content: center;
-  }
-  .user-select-option {
-    display: flex; align-items: center; gap: 10px;
-    padding: 8px 12px; cursor: pointer;
-    border-radius: 8px; transition: .15s;
-  }
-  .user-select-option:hover { background: #f0f4ff; }
-  .user-select-option.selected { background: #dbeafe; border: 1px solid #3b82f6; }
-  #user-search-input {
+}
+
+/* — Lista de usuarios — */
+.user-select-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: .15s;
+    border: 1px solid transparent;
+}
+.user-select-option:hover   { background: #f0f4ff; border-color: #bfdbfe; }
+.user-select-option.selected { background: #dbeafe; border-color: #3b82f6; }
+
+.user-option-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: #10b981; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700; flex-shrink: 0;
+}
+.user-option-info { flex: 1; text-align: left; }
+.user-option-info .name     { font-weight: 600; font-size: 14px; color: #1e293b; }
+.user-option-info .username { font-size: 12px; color: #64748b; }
+
+#user-search-input {
     border-radius: 8px; border: 1.5px solid #dee2e6;
     padding: 8px 12px; width: 100%; margin-bottom: 10px;
-  }
-  #user-search-input:focus { outline: none; border-color: #214A82; }
-  #users-list {
-    max-height: 220px; overflow-y: auto;
-    border: 1px solid #dee2e6; border-radius: 8px; padding: 6px;
-  }
-  .transfer-summary {
+    font-size: 14px;
+}
+#user-search-input:focus { outline: none; border-color: #214A82; box-shadow: 0 0 0 3px rgba(33,74,130,.1); }
+
+#users-list {
+    max-height: 240px;
+    overflow-y: auto;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 4px;
+    background: #fff;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+#users-list::-webkit-scrollbar       { width: 6px; }
+#users-list::-webkit-scrollbar-track { background: transparent; }
+#users-list::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+
+.transfer-summary {
     background: linear-gradient(135deg, #f0f4ff, #e0f2fe);
     border-radius: 12px; padding: 16px; margin-top: 16px;
     border: 1px solid #bfdbfe;
-  }
-  #btn-transfer-confirm {
+}
+#btn-transfer-confirm {
     background: linear-gradient(135deg, #214A82, #4972AA);
     border: none; color: #fff; font-weight: 600;
     padding: 10px 24px; border-radius: 8px; transition: .2s;
-  }
-  #btn-transfer-confirm:hover { opacity: .9; transform: translateY(-1px); }
-  #btn-transfer-confirm:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+}
+#btn-transfer-confirm:hover    { opacity: .9; transform: translateY(-1px); }
+#btn-transfer-confirm:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+/* — Botón transferir en fila — */
+.btn-transfer-row {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px;
+    border: 1px solid #214A82; border-radius: 6px;
+    background: #fff; color: #214A82;
+    cursor: pointer; transition: .15s;
+}
+.btn-transfer-row:hover { background: #214A82; color: #fff; }
 </style>
 </head>
 <body>
@@ -228,17 +268,14 @@ $usuarios = db()->query("SELECT id, nombre, apellido, username
               $username = htmlspecialchars($u['username'] ?? '');
             ?>
             <div class="user-select-option"
-                 data-id="<?= $u['id'] ?>"
-                 data-name="<?= $fullName ?>"
-                 data-username="<?= $username ?>"
-                 data-initials="<?= $initials ?>">
-              <div class="author-avatar avatar-new"
-                   style="width:36px;height:36px;font-size:14px;flex-shrink:0;">
-                <?= $initials ?>
-              </div>
-              <div>
-                <div class="fw-semibold small"><?= $fullName ?></div>
-                <div class="text-muted" style="font-size:11px">@<?= $username ?></div>
+                data-id="<?= $u['id'] ?>"
+                data-name="<?= $fullName ?>"
+                data-username="<?= $username ?>"
+                data-initials="<?= $initials ?>">
+              <div class="user-option-avatar"><?= $initials ?></div>
+              <div class="user-option-info">
+                <div class="name"><?= $fullName ?></div>
+                <div class="username">@<?= $username ?></div>
               </div>
             </div>
             <?php endforeach; ?>
@@ -335,42 +372,49 @@ $(document).ready(function () {
   function bulkAction(action, title, text, color) {
     const ids = $('.chkPost:checked').map(function(){ return this.value; }).get();
     if (!ids.length) return Swal.fire('Nada seleccionado','','info');
-    Swal.fire({ icon:'question', title, text, showCancelButton:true,
-      confirmButtonText:'Sí, continuar', confirmButtonColor:color
-    }).then(r => { if (r.isConfirmed) $.post('bulk_actions.php',{action,ids}, () => table.ajax.reload()); });
+    Swal.fire({
+      icon:'question', title, text,
+      showCancelButton:true,
+      confirmButtonText:'Sí, continuar',
+      confirmButtonColor:color
+    }).then(r => {
+      if (r.isConfirmed) $.post('bulk_actions.php', {action, ids}, () => table.ajax.reload());
+    });
   }
 
-  $('#btnDeleteSelected').on('click', () => bulkAction('delete','¿Eliminar seleccionados?','Se eliminarán las entradas seleccionadas.','#d33'));
-  $('#btnDraftSelected').on('click',  () => bulkAction('draft','¿Pasar a borrador?','Las entradas seleccionadas se marcarán como borrador.','#6c757d'));
-  $('#btnPublishSelected').on('click',() => bulkAction('publish','¿Publicar seleccionados?','Las entradas seleccionadas se publicarán.','#28a745'));
+  $('#btnDeleteSelected').on('click',  () => bulkAction('delete',  '¿Eliminar seleccionados?',     'Se eliminarán las entradas seleccionadas.',           '#d33'));
+  $('#btnDraftSelected').on('click',   () => bulkAction('draft',   '¿Pasar a borrador?',            'Las entradas seleccionadas se marcarán como borrador.','#6c757d'));
+  $('#btnPublishSelected').on('click', () => bulkAction('publish', '¿Publicar seleccionados?',      'Las entradas seleccionadas se publicarán.',            '#28a745'));
 
   /* ── Eliminar individual ── */
-  $('#postsTable').on('click','.btn-delete', function (e) {
+  $('#postsTable').on('click', '.btn-delete', function (e) {
     e.preventDefault();
     const id   = $(this).data('id');
     const name = $(this).data('name') || 'la entrada';
     Swal.fire({
-      icon:'warning', title:'¿Eliminar?', text:`Se eliminará "${name}".`,
-      showCancelButton:true, confirmButtonText:'Sí, eliminar',
-      cancelButtonText:'Cancelar', confirmButtonColor:'#d33'
+      icon:'warning', title:'¿Eliminar?',
+      text:`Se eliminará "${name}".`,
+      showCancelButton:true,
+      confirmButtonText:'Sí, eliminar',
+      cancelButtonText:'Cancelar',
+      confirmButtonColor:'#d33'
     }).then(r => {
-      if (r.isConfirmed) $.post('<?= $url ?>/admin/blog/delete.php',{id}, () => table.ajax.reload());
+      if (r.isConfirmed) $.post('<?= $url ?>/admin/blog/delete.php', {id}, () => table.ajax.reload());
     });
   });
 
   /* ══════════════════════════════════════════
-     TRANSFERIR AUTORÍA
+     TRANSFERIR AUTORÍA — variables compartidas
   ══════════════════════════════════════════ */
   let selectedUserId   = null;
   let selectedUserName = null;
 
-  $('#btnTransferSelected').on('click', function () {
-    const ids = $('.chkPost:checked').map(function(){ return this.value; }).get();
-    if (!ids.length) return Swal.fire('Nada seleccionado','Selecciona al menos una entrada.','info');
+  /* — Función reutilizable para abrir el modal — */
+  function openTransferModal(ids, authorName) {
+    const n        = ids.length;
+    const initials = authorName.split(' ').map(w => w[0] || '').join('').substring(0,2).toUpperCase();
 
-    const n = ids.length;
-
-    // Resetear estado del modal
+    // Resetear estado
     selectedUserId   = null;
     selectedUserName = null;
     $('#btn-transfer-confirm').prop('disabled', true);
@@ -379,23 +423,46 @@ $(document).ready(function () {
     $('#user-search-input').val('');
     $('#users-list .user-select-option').removeClass('selected').show();
 
-    // Info entradas
+    // Guardar ids en el modal
+    $('#modalTransfer').data('transfer-ids', ids);
+
+    // Info cabecera
     $('#transfer-count').text(n);
     $('#transfer-plural').text(n > 1 ? 's' : '');
     $('#transfer-plural2').text(n > 1 ? 's' : '');
 
-    // Autor actual (tomar del primer row seleccionado)
-    const firstRow = table.row($('.chkPost:checked').first().closest('tr')).data();
-    const authorName = firstRow ? $(firstRow[4]).text() || firstRow[4] : '—';
-    const initials   = authorName.split(' ').map(w => w[0]).join('').substring(0,2).toUpperCase();
+    // Autor actual
     $('#current-author-name').text(authorName);
     $('#current-author-user').text('');
     $('#current-avatar').text(initials || '?');
 
     new bootstrap.Modal(document.getElementById('modalTransfer')).show();
+  }
+
+  /* — Botón masivo — */
+  $('#btnTransferSelected').on('click', function () {
+    const ids = $('.chkPost:checked').map(function(){ return this.value; }).get();
+    if (!ids.length) return Swal.fire('Nada seleccionado', 'Selecciona al menos una entrada.', 'info');
+
+    // Autor del primer row seleccionado
+    const firstRow   = table.row($('.chkPost:checked').first().closest('tr')).data();
+    const authorName = firstRow ? ($(firstRow[4]).text() || firstRow[4]) : '—';
+
+    openTransferModal(ids, authorName);
   });
 
-  /* Buscador de usuarios */
+  /* — Botón en fila individual — */
+  $('#postsTable').on('click', '.btn-transfer-single', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const id         = $(this).data('id');
+    const authorName = $(this).data('author') || '—';
+
+    openTransferModal([id], authorName);
+  });
+
+  /* — Buscador de usuarios — */
   $('#user-search-input').on('input', function () {
     const q = this.value.toLowerCase();
     $('#users-list .user-select-option').each(function () {
@@ -405,7 +472,7 @@ $(document).ready(function () {
     });
   });
 
-  /* Seleccionar usuario */
+  /* — Seleccionar usuario de la lista — */
   $('#users-list').on('click', '.user-select-option', function () {
     $('#users-list .user-select-option').removeClass('selected');
     $(this).addClass('selected');
@@ -415,7 +482,7 @@ $(document).ready(function () {
     const initials   = $(this).data('initials');
     const username   = $(this).data('username');
 
-    // Actualizar card nuevo autor
+    // Card nuevo autor
     $('#new-author-card')
       .css('opacity','1')
       .html(`
@@ -424,9 +491,9 @@ $(document).ready(function () {
         <small class="text-muted">@${username}</small>
       `);
 
-    // Mostrar resumen
-    const n = $('.chkPost:checked').length;
-    $('#summary-count').text(n);
+    // Resumen
+    const ids = $('#modalTransfer').data('transfer-ids') || [];
+    $('#summary-count').text(ids.length);
     $('#summary-from').text($('#current-author-name').text());
     $('#summary-to').text(selectedUserName);
     $('#transfer-summary').removeClass('d-none');
@@ -434,10 +501,12 @@ $(document).ready(function () {
     $('#btn-transfer-confirm').prop('disabled', false);
   });
 
-  /* Confirmar transferencia */
+  /* — Confirmar transferencia — */
   $('#btn-transfer-confirm').on('click', function () {
-    const ids  = $('.chkPost:checked').map(function(){ return this.value; }).get();
-    const btn  = $(this);
+    const ids = $('#modalTransfer').data('transfer-ids') || [];
+    if (!ids.length || !selectedUserId) return;
+
+    const btn = $(this);
 
     Swal.fire({
       icon             : 'question',
@@ -450,11 +519,13 @@ $(document).ready(function () {
     }).then(r => {
       if (!r.isConfirmed) return;
 
-      btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span> Transfiriendo...');
+      btn.prop('disabled', true)
+         .html('<span class="spinner-border spinner-border-sm me-2"></span> Transfiriendo...');
 
       $.post('transfer_author.php', { ids: ids, user_id: selectedUserId }, function (res) {
         bootstrap.Modal.getInstance(document.getElementById('modalTransfer')).hide();
-        btn.prop('disabled', false).html('<i class="fa-solid fa-arrow-right-arrow-left me-2"></i> Confirmar transferencia');
+        btn.prop('disabled', false)
+           .html('<i class="fa-solid fa-arrow-right-arrow-left me-2"></i> Confirmar transferencia');
 
         if (res.success) {
           Swal.fire({
@@ -468,7 +539,8 @@ $(document).ready(function () {
           Swal.fire('Error', res.message || 'No se pudo completar.', 'error');
         }
       }, 'json').fail(() => {
-        btn.prop('disabled', false).html('<i class="fa-solid fa-arrow-right-arrow-left me-2"></i> Confirmar transferencia');
+        btn.prop('disabled', false)
+           .html('<i class="fa-solid fa-arrow-right-arrow-left me-2"></i> Confirmar transferencia');
         Swal.fire('Error', 'Error de conexión.', 'error');
       });
     });
