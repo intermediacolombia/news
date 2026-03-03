@@ -8,14 +8,8 @@ ob_end_clean(); // Descarta todo lo que hayan generado los includes
 // Recién aquí enviar headers limpios
 header('Content-Type: application/xml; charset=UTF-8');
 
-// Cache
-$cacheFile = __DIR__ . '/sitemap.xml';
-$cacheTtl  = 3600;
-
-if (file_exists($cacheFile) && (time() - filemtime($cacheFile)) < $cacheTtl) {
-    readfile($cacheFile);
-    exit;
-}
+// Archivo donde se guarda el sitemap estático
+$sitemapFile = __DIR__ . '/public/sitemap.xml';
 
 $base = rtrim(URLBASE, '/');
 $urls = [];
@@ -183,16 +177,16 @@ foreach ($urls as $url) {
 
 $xml .= '</urlset>';
 
-// ── Guardar caché y enviar output ─────────────────────────────────────────
-$cacheDir = dirname($cacheFile);
-if (!is_dir($cacheDir)) {
-    mkdir($cacheDir, 0775, true);
+// ── Guardar sitemap.xml y enviar output ───────────────────────────────────
+$sitemapDir = dirname($sitemapFile);
+if (!is_dir($sitemapDir)) {
+    mkdir($sitemapDir, 0775, true);
 }
 
-if (is_writable($cacheDir)) {
-    file_put_contents($cacheFile, $xml);
+if (is_writable($sitemapDir)) {
+    file_put_contents($sitemapFile, $xml);
 } else {
-    error_log('[sitemap] No se puede escribir en: ' . $cacheDir);
+    error_log('[sitemap] No se puede escribir en: ' . $sitemapDir);
 }
 
 echo $xml;
