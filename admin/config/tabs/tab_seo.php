@@ -55,7 +55,7 @@
       <div class="mb-3">
   <div class="form-check form-switch">
 
-    {{-- Campo hidden que envía 0 cuando el checkbox está desmarcado --}}
+   
     <input type="hidden" name="adsense_auto_ads" value="0">
 
     <input class="form-check-input" type="checkbox" id="adsense_auto_ads"
