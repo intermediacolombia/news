@@ -1,14 +1,15 @@
 <?php
+// ── 1. Sesión PRIMERO, igual que en los demás archivos del admin ──────────
+session_start();
+
 require_once __DIR__ . '/../../inc/config.php';
 require_once __DIR__ . '/../login/session.php';
-$permisopage = 'Editar Configuraciones';
-require_once __DIR__ . '/../login/restriction.php';
-require_once __DIR__ . '/../inc/flash_helpers.php';
 
-// 3. Recién aquí el header JSON (ya no hay riesgo de que la sesión no esté activa)
+// ── 2. Header JSON ANTES de cualquier output ──────────────────────────────
 header('Content-Type: application/json; charset=UTF-8');
 
-// 4. Verificar sesión
+// ── 3. Verificar sesión manualmente (NO usar restriction.php aquí)
+//    restriction.php hace header('Location:...') que rompe la respuesta JSON
 if (empty($_SESSION['user_id'])) {
     http_response_code(403);
     echo json_encode(['success' => false, 'message' => 'No autorizado.']);
@@ -49,7 +50,7 @@ try {
         db()->prepare("DELETE FROM system_settings WHERE setting_name = ?")->execute([$settingName]);
     }
 
-    // 2. IMAGENES
+    // 2. IMÁGENES
     $imageMap = [
         'site_logo'       => ['logo',          'site_logo'],
         'site_favicon'    => ['favicon',        'site_favicon'],
@@ -69,16 +70,16 @@ try {
         $stmt->execute([$settingName, '/public/images/' . $fileName]);
     }
 
-    // 3. CAMPOS DE TEXTO — AUTOMATICO, sin lista hardcodeada
+    // 3. CAMPOS DE TEXTO — AUTOMÁTICO
     $stmt = db()->prepare("INSERT INTO system_settings (setting_name, value, enabled)
         VALUES (:name, :value, :enabled)
         ON DUPLICATE KEY UPDATE value = VALUES(value), enabled = VALUES(enabled), updated_at = CURRENT_TIMESTAMP");
 
     foreach ($_POST as $key => $rawValue) {
-        if (str_starts_with($key, 'delete_'))    continue;
-        if (str_ends_with($key, '_enabled'))     continue;
-        if (!isValidKey($key))                   continue;
-        if (in_array($key, BLOCKED_KEYS, true))  continue;
+        if (str_starts_with($key, 'delete_'))     continue;
+        if (str_ends_with($key, '_enabled'))      continue;
+        if (!isValidKey($key))                    continue;
+        if (in_array($key, BLOCKED_KEYS, true))   continue;
 
         $value   = trim((string) $rawValue);
         $enabled = 1;
