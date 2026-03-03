@@ -98,6 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_adsense'])) {
             'slot_id' => $slot,
             'format'  => $format,
             'pub_id'  => $pubId,
+            'css_selector' => trim($slotData['css_selector'] ?? ''),
         ]);
 
         db()->prepare("INSERT INTO ads (position,title,image_url,target_url,status,ad_type,ad_code)
@@ -569,6 +570,12 @@ document.addEventListener('DOMContentLoaded', function () {
             <td><input type="text" name="adsense_slots[${pos}][slot_id]"
                        class="form-control form-control-sm font-monospace"
                        placeholder="1234567890"></td>
+               
+<td>
+    <input type="text" name="adsense_slots[${pos}][css_selector]"
+           class="form-control form-control-sm font-monospace"
+           placeholder="Ej: .news-grid (opcional, sobreescribe zona)">
+</td>       
             <td>
                 <select name="adsense_slots[${pos}][format]" class="form-select form-select-sm">
                     <option value="auto">Auto</option>
