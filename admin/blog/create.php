@@ -156,14 +156,35 @@ $oldStatus = $old['status'] ?? 'draft';
             <br>
 
             <div class="mb-4">
-              <label class="form-label">Imagen destacada</label>
-              <div class="img-drop">
-                <input class="form-control<?= isset($errors['image'])?' is-invalid':'' ?>" type="file" name="image" id="image" accept="image/*">
-                <div class="hint mt-2">JPG/PNG/WebP, máx 5 MB.</div>
-                <?php if(isset($errors['image'])): ?><div class="invalid-feedback d-block"><?= htmlspecialchars($errors['image']) ?></div><?php endif; ?>
-              </div>
-              <div id="imagePreview" class="preview-grid mt-2"></div>
-            </div>
+  <label class="form-label">Imagen destacada</label>
+
+  <!-- Preview imagen seleccionada -->
+  <div id="featured-preview" class="mb-2 d-none">
+    <img id="featured-preview-img" src="" alt=""
+         style="max-width:100%; max-height:150px; border-radius:6px; border:1px solid #dee2e6;">
+    <div class="mt-1">
+      <button type="button" class="btn btn-xs btn-outline-danger" id="btn-remove-featured">
+        <i class="bi bi-x-circle me-1"></i> Quitar imagen
+      </button>
+    </div>
+  </div>
+
+  <!-- Input oculto que guarda la ruta relativa -->
+  <input type="hidden" name="image_path" id="image_path" value="">
+
+  <!-- Input file para subir nueva (oculto, se activa desde el modal) -->
+  <input type="file" id="media-upload-input" name="image" accept="image/*" class="d-none">
+
+  <div class="d-flex gap-2">
+    <button type="button" class="btn btn-outline-primary btn-sm" id="btn-open-media">
+      <i class="bi bi-images me-1"></i> Seleccionar imagen
+    </button>
+  </div>
+
+  <?php if(isset($errors['image'])): ?>
+    <div class="text-danger small mt-1"><?= htmlspecialchars($errors['image']) ?></div>
+  <?php endif; ?>
+</div>
 
             <div class="divider"></div>
             <div class="d-grid gap-2">
@@ -252,8 +273,287 @@ document.addEventListener("DOMContentLoaded", function(){
 </script>
 
 	
+<!-- Modal Biblioteca de Medios -->
+<div class="modal fade" id="modalMediaLibrary" tabindex="-1" data-bs-backdrop="static">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="bi bi-images me-2"></i>Biblioteca de medios</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-0">
 
-	
+        <!-- Tabs: Biblioteca / Subir nueva -->
+        <ul class="nav nav-tabs px-3 pt-2" id="mediaTabs">
+          <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#tab-library">
+              <i class="bi bi-grid me-1"></i> Biblioteca
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#tab-upload">
+              <i class="bi bi-cloud-upload me-1"></i> Subir nueva
+            </a>
+          </li>
+        </ul>
+
+        <div class="tab-content">
+
+          <!-- Tab Biblioteca -->
+          <div class="tab-pane fade show active p-3" id="tab-library">
+
+            <!-- Filtros -->
+            <div class="d-flex gap-2 mb-3 flex-wrap align-items-center">
+              <input type="text" id="media-search" class="form-control form-control-sm"
+                     style="max-width:200px" placeholder="Buscar...">
+              <select id="media-filter-type" class="form-select form-select-sm" style="max-width:140px">
+                <option value="image">Imágenes</option>
+                <option value="">Todos</option>
+              </select>
+              <button type="button" class="btn btn-sm btn-outline-secondary" id="btn-media-search">
+                <i class="bi bi-search"></i>
+              </button>
+              <span class="ms-auto text-muted small" id="media-total"></span>
+            </div>
+
+            <!-- Grid de imágenes -->
+            <div id="media-library-grid" class="row g-2" style="min-height:200px">
+              <div class="col-12 text-center py-5 text-muted" id="media-loading">
+                <div class="spinner-border spinner-border-sm me-2"></div> Cargando...
+              </div>
+            </div>
+
+            <!-- Paginación biblioteca -->
+            <div id="media-pagination" class="d-flex justify-content-center mt-3 gap-2"></div>
+
+          </div>
+
+          <!-- Tab Subir nueva -->
+          <div class="tab-pane fade p-3" id="tab-upload">
+            <div class="upload-zone-modal border rounded p-4 text-center mb-3"
+                 id="modal-upload-zone" style="cursor:pointer; border-style:dashed !important;">
+              <i class="bi bi-cloud-arrow-up fs-1 text-muted"></i>
+              <div class="mt-2 text-muted">Arrastra o haz clic para subir</div>
+              <small class="text-muted">JPG, PNG, WebP, GIF — Máx 20MB</small>
+            </div>
+            <input type="file" id="modal-file-input" accept="image/*" class="d-none">
+
+            <div id="modal-upload-preview" class="d-none mb-3 text-center">
+              <img id="modal-preview-img" src="" class="img-thumbnail" style="max-height:120px">
+              <div class="small text-muted mt-1" id="modal-preview-name"></div>
+            </div>
+
+            <div id="modal-upload-progress" class="d-none mb-3">
+              <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated w-100"></div>
+              </div>
+              <div class="text-muted small text-center mt-1">Subiendo...</div>
+            </div>
+
+            <button type="button" class="btn btn-primary w-100" id="btn-modal-upload" disabled>
+              <i class="bi bi-upload me-1"></i> Subir e insertar
+            </button>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="me-auto small text-muted" id="selected-file-info"></div>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="btn-insert-media" disabled>
+          <i class="bi bi-check-circle me-1"></i> Insertar imagen
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+	<script>
+(function () {
+  const BASE = '<?= URLBASE ?>';
+  let mediaPage     = 1;
+  let selectedMedia = null; // { path, url, name }
+  let uploadedFile  = null;
+
+  const modal       = document.getElementById('modalMediaLibrary');
+  const grid        = document.getElementById('media-library-grid');
+  const pagination  = document.getElementById('media-pagination');
+  const btnInsert   = document.getElementById('btn-insert-media');
+  const btnOpen     = document.getElementById('btn-open-media');
+  const preview     = document.getElementById('featured-preview');
+  const previewImg  = document.getElementById('featured-preview-img');
+  const imagePath   = document.getElementById('image_path');
+  const fileInput   = document.getElementById('media-upload-input');
+
+  /* — Abrir modal — */
+  btnOpen?.addEventListener('click', () => {
+    selectedMedia = null;
+    btnInsert.disabled = true;
+    document.getElementById('selected-file-info').textContent = '';
+    loadLibrary(1);
+    new bootstrap.Modal(modal).show();
+  });
+
+  /* — Quitar imagen — */
+  document.getElementById('btn-remove-featured')?.addEventListener('click', () => {
+    imagePath.value     = '';
+    previewImg.src      = '';
+    fileInput.value     = '';
+    preview.classList.add('d-none');
+  });
+
+  /* — Cargar biblioteca vía AJAX — */
+  function loadLibrary(page) {
+    const q    = document.getElementById('media-search').value.trim();
+    const type = document.getElementById('media-filter-type').value;
+    mediaPage  = page;
+
+    grid.innerHTML = '<div class="col-12 text-center py-5 text-muted"><div class="spinner-border spinner-border-sm me-2"></div> Cargando...</div>';
+    pagination.innerHTML = '';
+
+    fetch(`${BASE}/admin/multimedia/media_picker.php?p=${page}&q=${encodeURIComponent(q)}&type=${encodeURIComponent(type)}`)
+      .then(r => r.json())
+      .then(data => {
+        grid.innerHTML = '';
+        document.getElementById('media-total').textContent = data.total + ' archivos';
+
+        if (!data.files.length) {
+          grid.innerHTML = '<div class="col-12 text-center py-4 text-muted">No hay imágenes</div>';
+          return;
+        }
+
+        data.files.forEach(f => {
+          const col = document.createElement('div');
+          col.className = 'col-6 col-sm-4 col-md-3 col-lg-2';
+          col.innerHTML = `
+            <div class="media-pick-card border rounded overflow-hidden"
+                 style="cursor:pointer; transition:.2s;"
+                 data-path="${f.path}" data-url="${f.url}" data-name="${f.name}">
+              <div style="height:80px; overflow:hidden; background:#f8f9fa; display:flex; align-items:center; justify-content:center;">
+                <img src="${f.url}" alt="${f.name}"
+                     style="width:100%; height:80px; object-fit:cover;" loading="lazy">
+              </div>
+              <div class="p-1" style="font-size:10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                ${f.name}
+              </div>
+            </div>`;
+
+          col.querySelector('.media-pick-card').addEventListener('click', function () {
+            // Deseleccionar anterior
+            document.querySelectorAll('.media-pick-card.selected').forEach(el => {
+              el.classList.remove('selected');
+              el.style.outline = '';
+            });
+            // Seleccionar este
+            this.classList.add('selected');
+            this.style.outline = '3px solid #0d6efd';
+            selectedMedia = { path: this.dataset.path, url: this.dataset.url, name: this.dataset.name };
+            btnInsert.disabled = false;
+            document.getElementById('selected-file-info').textContent = this.dataset.name;
+          });
+
+          grid.appendChild(col);
+        });
+
+        // Paginación
+        renderPagination(data.page, data.total_pages);
+      })
+      .catch(() => {
+        grid.innerHTML = '<div class="col-12 text-center py-4 text-danger">Error al cargar</div>';
+      });
+  }
+
+  function renderPagination(current, total) {
+    if (total <= 1) return;
+    const qs = `&q=${encodeURIComponent(document.getElementById('media-search').value)}&type=${encodeURIComponent(document.getElementById('media-filter-type').value)}`;
+    let html = '';
+    if (current > 1)  html += `<button class="btn btn-sm btn-outline-secondary media-pg" data-p="${current-1}">‹</button>`;
+    html += `<span class="btn btn-sm btn-primary disabled">${current} / ${total}</span>`;
+    if (current < total) html += `<button class="btn btn-sm btn-outline-secondary media-pg" data-p="${current+1}">›</button>`;
+    pagination.innerHTML = html;
+    pagination.querySelectorAll('.media-pg').forEach(b => {
+      b.addEventListener('click', () => loadLibrary(parseInt(b.dataset.p)));
+    });
+  }
+
+  /* — Buscar — */
+  document.getElementById('btn-media-search')?.addEventListener('click', () => loadLibrary(1));
+  document.getElementById('media-search')?.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); loadLibrary(1); }
+  });
+  document.getElementById('media-filter-type')?.addEventListener('change', () => loadLibrary(1));
+
+  /* — Insertar imagen seleccionada de biblioteca — */
+  btnInsert?.addEventListener('click', () => {
+    if (!selectedMedia) return;
+    imagePath.value    = selectedMedia.path;
+    previewImg.src     = selectedMedia.url;
+    fileInput.value    = ''; // limpiar file input
+    preview.classList.remove('d-none');
+    bootstrap.Modal.getInstance(modal).hide();
+  });
+
+  /* — Upload nueva imagen desde modal — */
+  const modalUploadZone  = document.getElementById('modal-upload-zone');
+  const modalFileInput   = document.getElementById('modal-file-input');
+  const modalPreview     = document.getElementById('modal-upload-preview');
+  const modalPreviewImg  = document.getElementById('modal-preview-img');
+  const modalPreviewName = document.getElementById('modal-preview-name');
+  const btnModalUpload   = document.getElementById('btn-modal-upload');
+  const uploadProgress   = document.getElementById('modal-upload-progress');
+
+  modalUploadZone?.addEventListener('click', () => modalFileInput.click());
+  ['dragenter','dragover'].forEach(e => modalUploadZone?.addEventListener(e, ev => { ev.preventDefault(); modalUploadZone.style.background = '#f0f4ff'; }));
+  ['dragleave','drop'].forEach(e => modalUploadZone?.addEventListener(e, ev => { ev.preventDefault(); modalUploadZone.style.background = ''; }));
+  modalUploadZone?.addEventListener('drop', ev => { modalFileInput.files = ev.dataTransfer.files; handleModalFile(); });
+  modalFileInput?.addEventListener('change', handleModalFile);
+
+  function handleModalFile() {
+    if (!modalFileInput.files.length) return;
+    uploadedFile = modalFileInput.files[0];
+    modalPreviewImg.src      = URL.createObjectURL(uploadedFile);
+    modalPreviewName.textContent = uploadedFile.name + ' (' + (uploadedFile.size/1024).toFixed(0) + 'KB)';
+    modalPreview.classList.remove('d-none');
+    btnModalUpload.disabled = false;
+  }
+
+  btnModalUpload?.addEventListener('click', () => {
+    if (!uploadedFile) return;
+
+    const formData = new FormData();
+    formData.append('file', uploadedFile);
+
+    btnModalUpload.disabled = true;
+    uploadProgress.classList.remove('d-none');
+
+    fetch(`${BASE}/admin/multimedia/upload_ajax.php`, {
+      method: 'POST',
+      body  : formData,
+    })
+    .then(r => r.json())
+    .then(d => {
+      uploadProgress.classList.add('d-none');
+      btnModalUpload.disabled = false;
+
+      if (d.success) {
+        // Insertar directamente y cerrar modal
+        imagePath.value = d.path;
+        previewImg.src  = d.url;
+        fileInput.value = '';
+        preview.classList.remove('d-none');
+        bootstrap.Modal.getInstance(modal).hide();
+      } else {
+        alert('Error: ' + d.message);
+      }
+    })
+    .catch(() => {
+      uploadProgress.classList.add('d-none');
+      btnModalUpload.disabled = false;
+      alert('Error al subir el archivo.');
+    });
+  });
+
+})();
+</script>
 <?php require_once __DIR__ . '/../inc/summernote.php'; ?>
 <?php require_once __DIR__ . '/../inc/flash_simple.php'; ?>
 	<!-- Summernote JS -->
