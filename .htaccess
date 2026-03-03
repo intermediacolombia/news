@@ -11,6 +11,9 @@ RewriteRule ^ - [L]
 # Redirigir todo a index.php (que ahora maneja /institucional/)
 RewriteRule . /index.php [L]
 
+# Sitemap
+RewriteRule ^sitemap\.xml$ sitemap.php [L]
+
 # php -- BEGIN cPanel-generated handler, do not edit
 # Set the "ea-php80" package as the default "PHP" programming language.
 <IfModule mime_module>
