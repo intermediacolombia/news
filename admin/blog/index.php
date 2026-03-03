@@ -7,7 +7,7 @@ include('../login/restriction.php');
 require_once __DIR__ . '/../inc/flash_helpers.php';
 
 // Cargar usuarios para el selector de transferencia
-$usuarios = db()->query("SELECT id, nombre, apellido, username 
+$usuarios = db()->query("SELECT id, nombre, apellido, username, foto_perfil 
                          FROM usuarios 
                          WHERE borrado = 0 AND estado = 0 
                          ORDER BY nombre ASC")
@@ -271,8 +271,16 @@ $usuarios = db()->query("SELECT id, nombre, apellido, username
                 data-id="<?= $u['id'] ?>"
                 data-name="<?= $fullName ?>"
                 data-username="<?= $username ?>"
-                data-initials="<?= $initials ?>">
-              <div class="user-option-avatar"><?= $initials ?></div>
+                data-initials="<?= $initials ?>"
+                data-foto="<?= htmlspecialchars($u['foto_perfil'] ?? '') ?>">
+              <div class="user-option-avatar">
+                <?php if (!empty($u['foto_perfil']) && file_exists('../../' . $u['foto_perfil'])): ?>
+                  <img src="<?= $url . '/' . htmlspecialchars($u['foto_perfil']) ?>"
+                      style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
+                <?php else: ?>
+                  <?= $initials ?>
+                <?php endif; ?>
+              </div>
               <div class="user-option-info">
                 <div class="name"><?= $fullName ?></div>
                 <div class="username">@<?= $username ?></div>
@@ -410,11 +418,11 @@ $(document).ready(function () {
   let selectedUserName = null;
 
   /* — Función reutilizable para abrir el modal — */
-  function openTransferModal(ids, authorName) {
+  function openTransferModal(ids, authorName, authorFoto) {
     const n        = ids.length;
     const initials = authorName.split(' ').map(w => w[0] || '').join('').substring(0,2).toUpperCase();
 
-    // Resetear estado
+    // Resetear
     selectedUserId   = null;
     selectedUserName = null;
     $('#btn-transfer-confirm').prop('disabled', true);
@@ -422,22 +430,48 @@ $(document).ready(function () {
     $('#new-author-card').css('opacity','.4').html('<span class="text-muted small">Selecciona abajo</span>');
     $('#user-search-input').val('');
     $('#users-list .user-select-option').removeClass('selected').show();
-
-    // Guardar ids en el modal
     $('#modalTransfer').data('transfer-ids', ids);
 
-    // Info cabecera
     $('#transfer-count').text(n);
     $('#transfer-plural').text(n > 1 ? 's' : '');
     $('#transfer-plural2').text(n > 1 ? 's' : '');
 
-    // Autor actual
     $('#current-author-name').text(authorName);
     $('#current-author-user').text('');
-    $('#current-avatar').text(initials || '?');
+
+    // ← Mostrar foto o iniciales en el avatar actual
+    if (authorFoto) {
+        $('#current-avatar').html(
+            `<img src="${authorFoto}"
+                  style="width:56px;height:56px;border-radius:50%;object-fit:cover;">`
+        ).css('background', 'transparent');
+    } else {
+        $('#current-avatar').text(initials || '?').css('background', '');
+    }
 
     new bootstrap.Modal(document.getElementById('modalTransfer')).show();
-  }
+}
+
+/* — Botón masivo — */
+$('#btnTransferSelected').on('click', function () {
+    const ids = $('.chkPost:checked').map(function(){ return this.value; }).get();
+    if (!ids.length) return Swal.fire('Nada seleccionado','Selecciona al menos una entrada.','info');
+    const firstRow   = table.row($('.chkPost:checked').first().closest('tr')).data();
+    const authorName = firstRow ? ($(firstRow[4]).text() || firstRow[4]) : '—';
+    openTransferModal(ids, authorName, null); // masivo no tiene foto fácil
+});
+
+/* — Botón fila individual — */
+$('#postsTable').on('click', '.btn-transfer-single', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    const id         = $(this).data('id');
+    const authorName = $(this).data('author') || '—';
+    const foto       = $(this).data('foto')
+                       ? '<?= URLBASE ?>/' + $(this).data('foto')
+                       : null;
+    openTransferModal([id], authorName, foto);
+});
 
   /* — Botón masivo — */
   $('#btnTransferSelected').on('click', function () {
@@ -481,25 +515,29 @@ $(document).ready(function () {
     selectedUserName = $(this).data('name');
     const initials   = $(this).data('initials');
     const username   = $(this).data('username');
+    const foto       = $(this).data('foto');
 
-    // Card nuevo autor
+    // Avatar con foto o iniciales
+    const avatarHtml = foto
+        ? `<img src="<?= URLBASE ?>/${foto}"
+               style="width:56px;height:56px;border-radius:50%;object-fit:cover;margin:0 auto 8px;display:block;">`
+        : `<div class="author-avatar avatar-new">${initials}</div>`;
+
     $('#new-author-card')
       .css('opacity','1')
       .html(`
-        <div class="author-avatar avatar-new">${initials}</div>
+        ${avatarHtml}
         <div class="fw-semibold">${selectedUserName}</div>
         <small class="text-muted">@${username}</small>
       `);
 
-    // Resumen
     const ids = $('#modalTransfer').data('transfer-ids') || [];
     $('#summary-count').text(ids.length);
     $('#summary-from').text($('#current-author-name').text());
     $('#summary-to').text(selectedUserName);
     $('#transfer-summary').removeClass('d-none');
-
     $('#btn-transfer-confirm').prop('disabled', false);
-  });
+});
 
   /* — Confirmar transferencia — */
   $('#btn-transfer-confirm').on('click', function () {

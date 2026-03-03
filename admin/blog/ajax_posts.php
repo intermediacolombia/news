@@ -66,21 +66,19 @@ $recordsFiltered = $stFiltered->fetch()['total'];
 // Consulta principal con paginación
 $sql = "
     SELECT 
-        p.id,
-        p.title,
-        p.image,
-        p.author,
-        p.status,
-        p.created_at,
-        GROUP_CONCAT(DISTINCT c.name SEPARATOR ', ') AS categorias
+        p.id, p.title, p.image, p.author, p.author_user, p.status, p.created_at,
+        GROUP_CONCAT(DISTINCT c.name SEPARATOR ', ') AS categorias,
+        u.foto_perfil AS author_foto
     FROM blog_posts p
     LEFT JOIN blog_post_category pc ON pc.post_id = p.id
-    LEFT JOIN blog_categories c ON c.id = pc.category_id AND c.deleted = 0
+    LEFT JOIN blog_categories c     ON c.id = pc.category_id AND c.deleted = 0
+    LEFT JOIN usuarios u            ON u.username = p.author_user AND u.borrado = 0
     WHERE $whereSQL
     GROUP BY p.id
     ORDER BY $orderBy $orderDir
     LIMIT :start, :length
 ";
+
 
 $st = db()->prepare($sql);
 $params[':start'] = $start;
@@ -125,6 +123,7 @@ foreach ($posts as $p) {
         : '<span class="badge bg-secondary">Borrador</span>';
 
     // Actions:
+// En el bloque de acciones, agrega data-foto al botón de transferir:
 $actions = '
     <a class="btn btn-sm btn-outline-primary" href="' . $GLOBALS['url'] . '/admin/blog/edit.php?id=' . (int)$p['id'] . '" title="Editar">
         <i class="fa fa-pencil"></i>
@@ -132,6 +131,7 @@ $actions = '
     <button class="btn-transfer-row btn-transfer-single"
             data-id="' . (int)$p['id'] . '"
             data-author="' . htmlspecialchars($p['author']) . '"
+            data-foto="' . htmlspecialchars($p['author_foto'] ?? '') . '"
             title="Transferir autoría">
         <i class="fa-solid fa-arrow-right-arrow-left"></i>
     </button>
