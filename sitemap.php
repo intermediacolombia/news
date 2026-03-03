@@ -23,7 +23,7 @@ $urls[] = [
 
 // ── 2. Listado General de Noticias ────────────────────────────────────────
 $urls[] = [
-    'loc'        => $base . '/noticiassssssssssss/',
+    'loc'        => $base . '/noticias/',
     'changefreq' => 'hourly',
     'priority'   => '0.9',
     'lastmod'    => date('Y-m-d'),
@@ -32,7 +32,10 @@ $urls[] = [
 // ── 3. Categorías de Noticias → /noticias/{categoria_slug}/ ───────────────
 try {
     $cats = db()->query(
-        "SELECT slug, updated_at FROM blog_categories WHERE (borrado = 0 OR borrado IS NULL)"
+        "SELECT slug, updated_at 
+         FROM blog_categories 
+         WHERE status = 'active' 
+           AND deleted = 0"
     )->fetchAll(PDO::FETCH_ASSOC);
 
     foreach ($cats as $cat) {
@@ -48,16 +51,23 @@ try {
     error_log('[sitemap] Error categorías: ' . $e->getMessage());
 }
 
-// ── 4. Posts Individuales → /{categoria_slug}/{post_slug}/ ────────────────
+// ── 4. Posts Individuales → /noticias/{categoria_slug}/{post_slug}/ ───────
 try {
     $posts = db()->query(
-        "SELECT bp.slug AS post_slug, bc.slug AS cat_slug, bp.updated_at, bp.created_at
+        "SELECT 
+            bp.slug  AS post_slug, 
+            bc.slug  AS cat_slug, 
+            bp.updated_at, 
+            bp.created_at
          FROM blog_posts bp
          LEFT JOIN blog_post_category bpc ON bpc.post_id = bp.id
-         LEFT JOIN blog_categories bc ON bc.id = bpc.category_id
+         LEFT JOIN blog_categories bc     ON bc.id = bpc.category_id
          WHERE bp.status = 'published'
+           AND bp.deleted = 0
+           AND bc.deleted = 0
          GROUP BY bp.id
-         ORDER BY bp.created_at DESC LIMIT 5000"
+         ORDER BY bp.created_at DESC
+         LIMIT 5000"
     )->fetchAll(PDO::FETCH_ASSOC);
 
     foreach ($posts as $post) {
@@ -67,7 +77,7 @@ try {
 
         $lastmod = $post['updated_at'] ?? $post['created_at'];
         $urls[]  = [
-            'loc'        => $base . '/' . $catSlug . '/' . $postSlug . '/',
+            'loc'        => $base . '/noticias/' . $catSlug . '/' . $postSlug . '/',
             'changefreq' => 'weekly',
             'priority'   => '0.7',
             'lastmod'    => date('Y-m-d', strtotime($lastmod)),
