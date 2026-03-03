@@ -9,7 +9,7 @@ ob_end_clean(); // Descarta todo lo que hayan generado los includes
 header('Content-Type: application/xml; charset=UTF-8');
 
 // Cache
-$cacheFile = __DIR__ . '/public/sitemap_cache.xml';
+$cacheFile = __DIR__ . '/sitemap.xml';
 $cacheTtl  = 3600;
 
 if (file_exists($cacheFile) && (time() - filemtime($cacheFile)) < $cacheTtl) {
