@@ -97,7 +97,7 @@
         <i class="fa-solid fa-sitemap"></i>
         <span>
           <strong>Sitemap:</strong> La URL que debes enviar a Google Search Console es
-          <code><?= rtrim($configs['site_url'] ?? '', '/') ?>/sitemap.php</code>
+          <code><?= rtrim(URLBASE ?? '', '/') ?>/sitemap.php</code>
           — en Search Console ve a <strong>Sitemaps</strong> y pega esa URL.
         </span>
       </div>
