@@ -329,22 +329,27 @@ $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
       </div>
 
       <?php if ($totalPages > 1):
-    $range  = 2; // páginas a cada lado de la actual
-    $start  = max(1, $page - $range);
-    $end    = min($totalPages, $page + $range);
-    $qs     = '&type=' . urlencode($filterType) . '&q=' . urlencode($filterQ);
+    $range = 2;
+    $start = max(1, $page - $range);
+    $end   = min($totalPages, $page + $range);
+    $qs    = '&type=' . urlencode($filterType) . '&q=' . urlencode($filterQ);
 ?>
 <nav class="mt-4">
   <ul class="pagination pagination-sm justify-content-center flex-wrap">
 
     <!-- Primera -->
-    <?php if ($start > 1): ?>
-    <li class="page-item">
+    <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
       <a class="page-link" href="?p=1<?= $qs ?>">«</a>
     </li>
-    <?php if ($start > 2): ?>
+
+    <!-- Anterior -->
+    <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
+      <a class="page-link" href="?p=<?= max(1, $page - 1) ?><?= $qs ?>">‹</a>
+    </li>
+
+    <!-- Ellipsis inicio -->
+    <?php if ($start > 1): ?>
     <li class="page-item disabled"><span class="page-link">…</span></li>
-    <?php endif; ?>
     <?php endif; ?>
 
     <!-- Páginas alrededor -->
@@ -354,15 +359,20 @@ $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </li>
     <?php endfor; ?>
 
-    <!-- Última -->
+    <!-- Ellipsis final -->
     <?php if ($end < $totalPages): ?>
-    <?php if ($end < $totalPages - 1): ?>
     <li class="page-item disabled"><span class="page-link">…</span></li>
     <?php endif; ?>
-    <li class="page-item">
+
+    <!-- Siguiente -->
+    <li class="page-item <?= $page >= $totalPages ? 'disabled' : '' ?>">
+      <a class="page-link" href="?p=<?= min($totalPages, $page + 1) ?><?= $qs ?>">›</a>
+    </li>
+
+    <!-- Última -->
+    <li class="page-item <?= $page >= $totalPages ? 'disabled' : '' ?>">
       <a class="page-link" href="?p=<?= $totalPages ?><?= $qs ?>">»</a>
     </li>
-    <?php endif; ?>
 
   </ul>
   <div class="text-center text-muted small mt-1">
