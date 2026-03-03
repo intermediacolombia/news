@@ -39,7 +39,7 @@ $urls[] = [
 // ── 3. Posts publicados → /{categoria_slug}/{post_slug}/ ──────────────────
 try {
     $posts = db()->query(
-        "SELECT 
+        "SELECT
             bp.slug          AS post_slug,
             bc.slug          AS cat_slug,
             bp.updated_at,
@@ -88,7 +88,9 @@ try {
             'lastmod'    => date('Y-m-d', strtotime($cat['updated_at'] ?? 'now')),
         ];
     }
-} catch (Throwable $e) {}
+} catch (Throwable $e) {
+    error_log('[sitemap] Error categorías: ' . $e->getMessage());
+}
 
 // ── 5. Columnistas → /columnista/ y /columnista/{slug}/ ──────────────────
 try {
@@ -114,7 +116,9 @@ try {
             'lastmod'    => date('Y-m-d', strtotime($col['updated_at'] ?? 'now')),
         ];
     }
-} catch (Throwable $e) {}
+} catch (Throwable $e) {
+    error_log('[sitemap] Error columnistas: ' . $e->getMessage());
+}
 
 // ── 6. Institucional → /institucional/ y /institucional/{slug}/ ───────────
 try {
@@ -124,9 +128,36 @@ try {
         'priority'   => '0.5',
         'lastmod'    => date('Y-m-d'),
     ];
-} catch (Throwable $e) {}
 
-// ── 7. Búsqueda ───────────────────────────────────────────────────────────
+    $pages = db()->query(
+        "SELECT slug, updated_at
+         FROM institutional_pages
+         WHERE (borrado = 0 OR borrado IS NULL)
+         ORDER BY id ASC"
+    )->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($pages as $page) {
+        if (empty($page['slug'])) continue;
+        $urls[] = [
+            'loc'        => $base . '/institucional/' . $page['slug'] . '/',
+            'changefreq' => 'monthly',
+            'priority'   => '0.5',
+            'lastmod'    => date('Y-m-d', strtotime($page['updated_at'] ?? 'now')),
+        ];
+    }
+} catch (Throwable $e) {
+    error_log('[sitemap] Error institucional: ' . $e->getMessage());
+}
+
+// ── 7. Contacto ───────────────────────────────────────────────────────────
+$urls[] = [
+    'loc'        => $base . '/contact/',
+    'changefreq' => 'monthly',
+    'priority'   => '0.5',
+    'lastmod'    => date('Y-m-d'),
+];
+
+// ── 8. Búsqueda ───────────────────────────────────────────────────────────
 $urls[] = [
     'loc'        => $base . '/buscar/',
     'changefreq' => 'yearly',
