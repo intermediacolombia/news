@@ -209,6 +209,11 @@ INSERT INTO `permissions` (`id`, `name`, `category`, `created_at`, `updated_at`)
 (19, 'Eliminar Institucional', 'Marca', '2026-01-29 16:49:47', '2026-01-29 16:49:47'),
 (21, 'Ver Institucional', 'Marca', '2026-01-29 16:50:43', '2026-01-29 16:50:43');
 
+
+INSERT INTO `permissions` (name, category) VALUES ('Gestionar Multimedia', 'Multimedia');
+-- Asignar al rol Administrador (rol_id = 1):
+INSERT INTO `role_permissions` (role_id, permission_id) 
+VALUES (1, (SELECT id FROM permissions WHERE name = 'Gestionar Multimedia'));
 -- --------------------------------------------------------
 
 --
@@ -325,6 +330,30 @@ CREATE TABLE `visit_stats` (
   `visit_time` datetime NOT NULL,
   `is_unique` tinyint(1) DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `multimedia` (
+  `id`          bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+  `file_name`   varchar(255)    NOT NULL,
+  `file_path`   varchar(500)    NOT NULL,
+  `file_url`    varchar(500)    NOT NULL,
+  `file_type`   enum('image','video','audio','document','other') NOT NULL DEFAULT 'image',
+  `mime_type`   varchar(100)    DEFAULT NULL,
+  `file_size`   int UNSIGNED    DEFAULT NULL COMMENT 'bytes',
+  `width`       int UNSIGNED    DEFAULT NULL COMMENT 'px, solo imágenes',
+  `height`      int UNSIGNED    DEFAULT NULL COMMENT 'px, solo imágenes',
+  `alt_text`    varchar(255)    DEFAULT NULL,
+  `caption`     text            DEFAULT NULL,
+  `uploaded_by` int             DEFAULT NULL COMMENT 'usuarios.id',
+  `origin`      varchar(100)    DEFAULT 'manual' COMMENT 'manual, blog, ads, usuarios',
+  `origin_id`   bigint UNSIGNED DEFAULT NULL COMMENT 'id del post/ad/usuario relacionado',
+  `created_at`  timestamp       NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at`  timestamp       NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `deleted`     tinyint(1)      NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `idx_file_type` (`file_type`),
+  KEY `idx_uploaded_by` (`uploaded_by`),
+  KEY `idx_origin` (`origin`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Índices para tablas volcadas

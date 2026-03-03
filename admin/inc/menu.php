@@ -48,6 +48,13 @@
         </div>
     <?php endif; ?>
 
+    <!-- MULTIMEDIA -->
+<?php if (isset($_SESSION["user_permissions"]) && in_array('Gestionar Multimedia', $_SESSION["user_permissions"])): ?>
+    <a href="<?php echo URLBASE; ?>/admin/multimedia/" onclick="closeSubmenus()">
+        <i class="fa-solid fa-photo-film"></i> Multimedia
+    </a>
+<?php endif; ?>
+
     <!-- MARCA (INSTITUCIONAL) -->
     <?php if (
         isset($_SESSION["user_permissions"]) && (

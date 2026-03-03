@@ -161,6 +161,7 @@
 <script src="<?= URLBASE ?>/admin/publicidad/ads_config.php"></script>
 <script defer src="<?= URLBASE ?>/public/js/ads-injector.js"></script>
 <?php endif; ?>
+
 </head>
 <body>
 
