@@ -1,4 +1,4 @@
-ponmele aqui al usuario debajo de los de serach console que la url a enviarle a google es /sitemap.php <?php /* tabs/tab_seo.php */ ?>
+<?php /* tabs/tab_seo.php */ ?>
 
 <div class="tab-pane fade" id="seo">
 
@@ -10,7 +10,7 @@ ponmele aqui al usuario debajo de los de serach console que la url a enviarle a 
       <div class="mb-3">
         <label class="form-label">SEO Title</label>
         <input type="text" name="seo_home_title" id="seo_home_title" maxlength="180" class="form-control"
-               value="<​?= htmlspecialchars($configs['seo_home_title'], ENT_QUOTES, 'UTF-8') ?>">
+               value="<?= htmlspecialchars($configs['seo_home_title'], ENT_QUOTES, 'UTF-8') ?>">
         <div class="form-text">Max 60-70 caracteres. <span id="seo_home_title_counter" class="badge bg-secondary">0</span></div>
       </div>
 
@@ -23,7 +23,7 @@ ponmele aqui al usuario debajo de los de serach console que la url a enviarle a 
       <div class="mb-3">
         <label class="form-label">SEO Keywords</label>
         <input type="text" name="seo_home_keywords" id="seo_home_keywords" maxlength="300" class="form-control"
-               value="<​?= htmlspecialchars($configs['seo_home_keywords'], ENT_QUOTES, 'UTF-8') ?>">
+               value="<?= htmlspecialchars($configs['seo_home_keywords'], ENT_QUOTES, 'UTF-8') ?>">
         <div class="form-text">Separa por comas. <span id="seo_home_keywords_counter" class="badge bg-secondary">0</span></div>
       </div>
 
@@ -48,7 +48,7 @@ ponmele aqui al usuario debajo de los de serach console que la url a enviarle a 
         <label class="form-label fw-semibold"><i class="fa-brands fa-google me-1 text-primary"></i> Publisher ID</label>
         <input type="text" name="adsense_publisher_id" class="form-control font-monospace"
                placeholder="ca-pub-XXXXXXXXXXXXXXXX"
-               value="<​?= htmlspecialchars($configs['adsense_publisher_id'], ENT_QUOTES, 'UTF-8') ?>">
+               value="<?= htmlspecialchars($configs['adsense_publisher_id'], ENT_QUOTES, 'UTF-8') ?>">
         <div class="form-text">En <a href="https://adsense.google.com" target="_blank">Google AdSense</a> → Cuenta → Informacion de cuenta.</div>
       </div>
 
@@ -89,7 +89,7 @@ ponmele aqui al usuario debajo de los de serach console que la url a enviarle a 
         <label class="form-label fw-semibold"><i class="fa-brands fa-google me-1" style="color:#4285F4"></i> Google Search Console</label>
         <input type="text" name="verify_google" class="form-control font-monospace"
                placeholder="Codigo de verificacion..."
-               value="<​?= htmlspecialchars($configs['verify_google'], ENT_QUOTES, 'UTF-8') ?>">
+               value="<?= htmlspecialchars($configs['verify_google'], ENT_QUOTES, 'UTF-8') ?>">
         <div class="form-text"><a href="https://search.google.com/search-console" target="_blank">Search Console</a> → Agregar propiedad → Etiqueta HTML → valor del atributo content.</div>
       </div>
 
@@ -106,7 +106,7 @@ ponmele aqui al usuario debajo de los de serach console que la url a enviarle a 
         <label class="form-label fw-semibold"><i class="fa-brands fa-microsoft me-1" style="color:#00A4EF"></i> Bing Webmaster Tools</label>
         <input type="text" name="verify_bing" class="form-control font-monospace"
                placeholder="Codigo de verificacion..."
-               value="<​?= htmlspecialchars($configs['verify_bing'], ENT_QUOTES, 'UTF-8') ?>">
+               value="<?= htmlspecialchars($configs['verify_bing'], ENT_QUOTES, 'UTF-8') ?>">
         <div class="form-text"><a href="https://www.bing.com/webmasters" target="_blank">Bing Webmaster</a> → Agregar sitio → Etiqueta meta → valor content.</div>
       </div>
 
@@ -114,7 +114,7 @@ ponmele aqui al usuario debajo de los de serach console que la url a enviarle a 
         <label class="form-label fw-semibold"><i class="fa-solid fa-y me-1" style="color:#FF0000"></i> Yandex Webmaster</label>
         <input type="text" name="verify_yandex" class="form-control font-monospace"
                placeholder="Codigo de verificacion..."
-               value="<​?= htmlspecialchars($configs['verify_yandex'], ENT_QUOTES, 'UTF-8') ?>">
+               value="<?= htmlspecialchars($configs['verify_yandex'], ENT_QUOTES, 'UTF-8') ?>">
         <div class="form-text"><a href="https://webmaster.yandex.com" target="_blank">Yandex Webmaster</a> → Agregar sitio → Etiqueta meta.</div>
       </div>
 
@@ -122,7 +122,7 @@ ponmele aqui al usuario debajo de los de serach console que la url a enviarle a 
         <label class="form-label fw-semibold"><i class="fa-brands fa-meta me-1" style="color:#0866FF"></i> Meta (Facebook Domain Verification)</label>
         <input type="text" name="verify_meta" class="form-control font-monospace"
                placeholder="Codigo de verificacion..."
-               value="<​?= htmlspecialchars($configs['verify_meta'], ENT_QUOTES, 'UTF-8') ?>">
+               value="<?= htmlspecialchars($configs['verify_meta'], ENT_QUOTES, 'UTF-8') ?>">
         <div class="form-text"><a href="https://business.facebook.com/settings/owned-domains" target="_blank">Meta Business</a> → Configuracion → Dominios.</div>
       </div>
 
@@ -130,7 +130,7 @@ ponmele aqui al usuario debajo de los de serach console que la url a enviarle a 
         <label class="form-label fw-semibold"><i class="fa-brands fa-pinterest me-1" style="color:#E60023"></i> Pinterest</label>
         <input type="text" name="verify_pinterest" class="form-control font-monospace"
                placeholder="Codigo de verificacion..."
-               value="<​?= htmlspecialchars($configs['verify_pinterest'], ENT_QUOTES, 'UTF-8') ?>">
+               value="<?= htmlspecialchars($configs['verify_pinterest'], ENT_QUOTES, 'UTF-8') ?>">
       </div>
 
     </div>
@@ -144,7 +144,7 @@ ponmele aqui al usuario debajo de los de serach console que la url a enviarle a 
         <label class="form-label fw-semibold">GTM Container ID</label>
         <input type="text" name="gtm_container_id" class="form-control font-monospace"
                placeholder="GTM-XXXXXXX"
-               value="<​?= htmlspecialchars($configs['gtm_container_id'], ENT_QUOTES, 'UTF-8') ?>">
+               value="<?= htmlspecialchars($configs['gtm_container_id'], ENT_QUOTES, 'UTF-8') ?>">
         <div class="form-text">Deja vacio si no usas GTM. El snippet se inserta automaticamente en head y body.</div>
       </div>
     </div>
