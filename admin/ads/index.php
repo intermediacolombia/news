@@ -352,6 +352,7 @@ $gallery5 = db()->query("SELECT * FROM ads_gallery WHERE section=5 AND type='squ
                 <th>Pos.</th>
                 <th>Etiqueta</th>
                 <th>Slot ID</th>
+                <th>Ubicación</th>
                 <th>Formato</th>
                 <th>Estado</th>
                 <th>Código</th>
