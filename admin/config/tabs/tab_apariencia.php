@@ -5,7 +5,7 @@
   <div class="card-body">
 
     <?php
-    $themesDir = __DIR__ . '/../../template/';
+    $themesDir = __DIR__ . '/../template/';
     $themes    = [];
     if (is_dir($themesDir)) {
         foreach (scandir($themesDir) as $file) {

@@ -27,6 +27,7 @@
 
     <div class="mb-3">
       <div class="form-check form-switch">
+        <input type="hidden" name="enable_stop_player" value="0">
         <input class="form-check-input" type="checkbox" id="enable_stop_player"
                name="enable_stop_player" value="1"
                <?= !empty($configs['enable_stop_player']) ? 'checked' : '' ?>>

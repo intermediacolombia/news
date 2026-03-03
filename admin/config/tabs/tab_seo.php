@@ -53,17 +53,21 @@
       </div>
 
       <div class="mb-3">
-        <div class="form-check form-switch">
-          <input class="form-check-input" type="checkbox" id="adsense_auto_ads"
-                 name="adsense_auto_ads" value="1"
-                 <?= !empty($configs['adsense_auto_ads']) ? 'checked' : '' ?>>
-          <label class="form-check-label" for="adsense_auto_ads">
-            <i class="fa-solid fa-wand-magic-sparkles me-1"></i>
-            Habilitar <strong>Auto Ads</strong> (Google coloca anuncios automaticamente)
-          </label>
-        </div>
-        <div class="form-text">Desactiva si prefieres control manual de posiciones desde Publicidad.</div>
-      </div>
+  <div class="form-check form-switch">
+
+    {{-- Campo hidden que envía 0 cuando el checkbox está desmarcado --}}
+    <input type="hidden" name="adsense_auto_ads" value="0">
+
+    <input class="form-check-input" type="checkbox" id="adsense_auto_ads"
+           name="adsense_auto_ads" value="1"
+           <?= !empty($configs['adsense_auto_ads']) && $configs['adsense_auto_ads'] == '1' ? 'checked' : '' ?>>
+    <label class="form-check-label" for="adsense_auto_ads">
+      <i class="fa-solid fa-wand-magic-sparkles me-1"></i>
+      Habilitar <strong>Auto Ads</strong> (Google coloca anuncios automaticamente)
+    </label>
+  </div>
+  <div class="form-text">Desactiva si prefieres control manual de posiciones desde Publicidad.</div>
+</div>
 
       <?php if (!empty($configs['adsense_publisher_id'])): ?>
       <div class="mb-2">
