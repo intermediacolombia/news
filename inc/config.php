@@ -191,5 +191,43 @@ if (!function_exists('setFlash')) {
     }
 }
 
+/* ========= Helper: renderizar bloque AdSense por posición ========= */
+if (!function_exists('renderAdsenseBlock')) {
+    function renderAdsenseBlock(int $position): string {
+        $sys   = $GLOBALS['SYS_SETTINGS'] ?? [];
+        $pubId = trim($sys['adsense_publisher_id'] ?? '');
+
+        // Si Auto Ads está activo, Google gestiona todo
+        if (!empty($sys['adsense_auto_ads']) && $sys['adsense_auto_ads'] == '1') return '';
+        if (empty($pubId)) return '';
+
+        try {
+            $stmt = db()->prepare(
+                "SELECT * FROM ads WHERE position = ? AND ad_type = 'adsense' AND status = 'active' LIMIT 1"
+            );
+            $stmt->execute([$position]);
+            $block = $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (Throwable $e) {
+            return '';
+        }
+
+        if (!$block) return '';
+
+        $meta   = json_decode($block['ad_code'] ?? '{}', true);
+        $slotId = trim($meta['slot_id'] ?? '');
+        $format = trim($meta['format']  ?? 'auto');
+
+        if (empty($slotId)) return '';
+
+        return '<ins class="adsbygoogle"'
+             . ' style="display:block"'
+             . ' data-ad-client="' . htmlspecialchars($pubId,   ENT_QUOTES) . '"'
+             . ' data-ad-slot="'   . htmlspecialchars($slotId,  ENT_QUOTES) . '"'
+             . ' data-ad-format="' . htmlspecialchars($format,  ENT_QUOTES) . '"'
+             . ' data-full-width-responsive="true"></ins>'
+             . '<script>(adsbygoogle = window.adsbygoogle || []).push({});</script>';
+    }
+}
+
 
 
