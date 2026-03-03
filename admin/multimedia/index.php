@@ -328,17 +328,48 @@ $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <?php endforeach; ?>
       </div>
 
-      <?php if ($totalPages > 1): ?>
-      <nav class="mt-4">
-        <ul class="pagination pagination-sm justify-content-center">
-          <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-          <li class="page-item <?= $i === $page ? 'active' : '' ?>">
-            <a class="page-link" href="?p=<?= $i ?>&type=<?= urlencode($filterType) ?>&q=<?= urlencode($filterQ) ?>"><?= $i ?></a>
-          </li>
-          <?php endfor; ?>
-        </ul>
-      </nav>
-      <?php endif; ?>
+      <?php if ($totalPages > 1):
+    $range  = 2; // páginas a cada lado de la actual
+    $start  = max(1, $page - $range);
+    $end    = min($totalPages, $page + $range);
+    $qs     = '&type=' . urlencode($filterType) . '&q=' . urlencode($filterQ);
+?>
+<nav class="mt-4">
+  <ul class="pagination pagination-sm justify-content-center flex-wrap">
+
+    <!-- Primera -->
+    <?php if ($start > 1): ?>
+    <li class="page-item">
+      <a class="page-link" href="?p=1<?= $qs ?>">«</a>
+    </li>
+    <?php if ($start > 2): ?>
+    <li class="page-item disabled"><span class="page-link">…</span></li>
+    <?php endif; ?>
+    <?php endif; ?>
+
+    <!-- Páginas alrededor -->
+    <?php for ($i = $start; $i <= $end; $i++): ?>
+    <li class="page-item <?= $i === $page ? 'active' : '' ?>">
+      <a class="page-link" href="?p=<?= $i ?><?= $qs ?>"><?= $i ?></a>
+    </li>
+    <?php endfor; ?>
+
+    <!-- Última -->
+    <?php if ($end < $totalPages): ?>
+    <?php if ($end < $totalPages - 1): ?>
+    <li class="page-item disabled"><span class="page-link">…</span></li>
+    <?php endif; ?>
+    <li class="page-item">
+      <a class="page-link" href="?p=<?= $totalPages ?><?= $qs ?>">»</a>
+    </li>
+    <?php endif; ?>
+
+  </ul>
+  <div class="text-center text-muted small mt-1">
+    Página <?= $page ?> de <?= $totalPages ?> · <?= $totalFiles ?> archivos
+  </div>
+</nav>
+<?php endif; ?>
       <?php endif; ?>
 
     </div><!-- /col-lg-9 -->
