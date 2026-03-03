@@ -66,7 +66,9 @@ try {
             'lastmod'    => date('Y-m-d', strtotime($lastmod)),
         ];
     }
-} catch (Throwable $e) {}
+} catch (Throwable $e) {
+    error_log('[sitemap] Error posts: ' . $e->getMessage());
+}
 
 // ── 4. Categorías → /noticias/{categoria_slug}/ ───────────────────────────
 try {
@@ -149,4 +151,19 @@ foreach ($urls as $url) {
 }
 
 $xml .= '</urlset>';
+
+// ── Guardar caché y enviar output ─────────────────────────────────────────
+$cacheDir = dirname($cacheFile);
+if (!is_dir($cacheDir)) {
+    mkdir($cacheDir, 0775, true);
+}
+
+if (is_writable($cacheDir)) {
+    file_put_contents($cacheFile, $xml);
+} else {
+    error_log('[sitemap] No se puede escribir en: ' . $cacheDir);
+}
+
+echo $xml;
+exit;
 
