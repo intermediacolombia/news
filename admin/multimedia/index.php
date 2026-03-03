@@ -53,7 +53,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
         header("Location: index.php"); exit;
     }
 
-    // Determinar tipo
     $fileType = match(true) {
         str_starts_with($mime, 'image/') => 'image',
         str_starts_with($mime, 'video/') => 'video',
@@ -62,21 +61,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
         default                           => 'other',
     };
 
-    // Directorio por tipo y año/mes
     $subDir    = 'public/uploads/' . $fileType . '/' . date('Y/m') . '/';
     $uploadDir = __DIR__ . '/../../' . $subDir;
     if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
 
     $fileName = time() . '_' . preg_replace('/[^a-z0-9\.\-]/i', '_', $file['name']);
     $filePath = $subDir . $fileName;
-    $fileUrl  = URLBASE . '/' . $filePath;
 
     if (!move_uploaded_file($file['tmp_name'], $uploadDir . $fileName)) {
         setFlash('error', 'No se pudo guardar el archivo.');
         header("Location: index.php"); exit;
     }
 
-    // Dimensiones si es imagen
     $width = $height = null;
     if ($fileType === 'image') {
         $info   = @getimagesize($uploadDir . $fileName);
@@ -85,10 +81,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
     }
 
     db()->prepare("INSERT INTO multimedia 
-        (file_name, file_path, file_url, file_type, mime_type, file_size, width, height, alt_text, caption, uploaded_by, origin)
-        VALUES (?,?,?,?,?,?,?,?,?,?,?,'manual')")
+        (file_name, file_path, file_type, mime_type, file_size, width, height, alt_text, caption, uploaded_by, origin)
+        VALUES (?,?,?,?,?,?,?,?,?,?,'manual')")
         ->execute([
-            $fileName, $filePath, $fileUrl, $fileType, $mime,
+            $fileName, $filePath, $fileType, $mime,
             $file['size'], $width, $height, $altText, $caption,
             $id_user
         ]);
@@ -129,13 +125,12 @@ $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
     .media-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:16px; }
     .media-card { border:1px solid #dee2e6; border-radius:8px; overflow:hidden; background:#fff; position:relative; }
     .media-card:hover { box-shadow:0 4px 12px rgba(0,0,0,.15); }
-    .media-thumb { width:100%; height:140px; object-fit:cover; background:#f8f9fa; display:flex; align-items:center; justify-content:center; }
+    .media-thumb { width:100%; height:140px; background:#f8f9fa; display:flex; align-items:center; justify-content:center; overflow:hidden; }
     .media-thumb img { width:100%; height:140px; object-fit:cover; }
     .media-thumb .media-icon { font-size:48px; color:#6c757d; }
     .media-info { padding:8px; font-size:12px; }
     .media-info .name { font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .media-actions { display:flex; gap:4px; padding:0 8px 8px; }
-    .media-check { position:absolute; top:8px; left:8px; }
     .upload-zone { border:2px dashed #dee2e6; border-radius:8px; padding:40px; text-align:center; cursor:pointer; transition:.2s; }
     .upload-zone:hover, .upload-zone.drag-over { border-color:#0d6efd; background:#f0f4ff; }
     .type-badge-image    { background:#d1fae5; color:#065f46; }
@@ -143,6 +138,7 @@ $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
     .type-badge-audio    { background:#fce7f3; color:#9d174d; }
     .type-badge-document { background:#fef3c7; color:#92400e; }
     .type-badge-other    { background:#f3f4f6; color:#374151; }
+    .btn-xs { padding:2px 8px; font-size:12px; }
   </style>
 </head>
 <body>
@@ -159,8 +155,10 @@ $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
   <div class="row g-4">
 
-    <!-- ── Panel subir ── -->
+    <!-- ══ Columna izquierda ══ -->
     <div class="col-lg-3">
+
+      <!-- Subir -->
       <div class="card mb-3">
         <div class="card-header bg-light"><strong><i class="bi bi-cloud-upload me-2"></i>Subir archivo</strong></div>
         <div class="card-body">
@@ -172,21 +170,17 @@ $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
             <input type="file" id="file-input" name="file" class="d-none"
                    accept="image/*,video/mp4,video/webm,audio/mpeg,audio/wav,application/pdf">
-
             <div id="file-preview" class="mb-3 d-none text-center">
               <img id="preview-img" src="" class="img-thumbnail" style="max-height:100px">
               <div id="preview-name" class="small text-muted mt-1"></div>
             </div>
-
             <div class="mb-3">
               <label class="form-label small fw-semibold">Texto alternativo (alt)</label>
-              <input type="text" name="alt_text" class="form-control form-control-sm"
-                     placeholder="Descripción de la imagen">
+              <input type="text" name="alt_text" class="form-control form-control-sm" placeholder="Descripción de la imagen">
             </div>
             <div class="mb-3">
               <label class="form-label small fw-semibold">Caption</label>
-              <textarea name="caption" class="form-control form-control-sm" rows="2"
-                        placeholder="Pie de foto opcional"></textarea>
+              <textarea name="caption" class="form-control form-control-sm" rows="2" placeholder="Pie de foto opcional"></textarea>
             </div>
             <button type="submit" class="btn btn-primary w-100" id="btn-upload" disabled>
               <i class="bi bi-upload me-1"></i> Subir
@@ -196,15 +190,13 @@ $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
       </div>
 
       <!-- Stats -->
-      <div class="card">
+      <div class="card mb-3">
         <div class="card-header bg-light"><strong>Resumen</strong></div>
         <div class="card-body p-0">
           <?php
           $stats = db()->query(
-              "SELECT file_type, COUNT(*) as total,
-               SUM(file_size) as total_size
-               FROM multimedia WHERE deleted = 0
-               GROUP BY file_type"
+              "SELECT file_type, COUNT(*) as total, SUM(file_size) as total_size
+               FROM multimedia WHERE deleted = 0 GROUP BY file_type"
           )->fetchAll(PDO::FETCH_ASSOC);
           $icons = ['image'=>'bi-image','video'=>'bi-camera-video','audio'=>'bi-music-note','document'=>'bi-file-pdf','other'=>'bi-file'];
           ?>
@@ -221,32 +213,48 @@ $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
           </ul>
         </div>
       </div>
-    </div>
 
-    <!-- ── Galería ── -->
+      <!-- Escanear — DENTRO del col-lg-3 -->
+      <div class="card">
+        <div class="card-header bg-light"><strong><i class="bi bi-radar me-2"></i>Sincronizar biblioteca</strong></div>
+        <div class="card-body">
+          <p class="text-muted small mb-3">
+            Escanea todas las carpetas del sistema y registra los archivos que aún no están en la biblioteca.
+          </p>
+          <button type="button" class="btn btn-outline-primary w-100" id="btn-scan-files">
+            <i class="bi bi-search me-1"></i> Escanear archivos
+          </button>
+          <div id="scan-progress" class="mt-3 d-none">
+            <div class="progress mb-2">
+              <div class="progress-bar progress-bar-striped progress-bar-animated" style="width:100%"></div>
+            </div>
+            <div class="text-muted small text-center" id="scan-status">Escaneando...</div>
+          </div>
+          <div id="scan-result-info" class="mt-3 d-none"></div>
+        </div>
+      </div>
+
+    </div><!-- /col-lg-3 -->
+
+    <!-- ══ Galería ══ -->
     <div class="col-lg-9">
 
-      <!-- Filtros -->
       <form method="get" class="d-flex gap-2 mb-3 flex-wrap">
         <input type="text" name="q" class="form-control form-control-sm" style="max-width:200px"
                placeholder="Buscar..." value="<?= htmlspecialchars($filterQ) ?>">
-        <select name="type" class="form-select form-select-sm" style="max-width:140px"
-                onchange="this.form.submit()">
+        <select name="type" class="form-select form-select-sm" style="max-width:140px" onchange="this.form.submit()">
           <option value="">Todos los tipos</option>
           <?php foreach (['image'=>'Imágenes','video'=>'Videos','audio'=>'Audio','document'=>'Documentos','other'=>'Otros'] as $v=>$l): ?>
           <option value="<?= $v ?>" <?= $filterType === $v ? 'selected' : '' ?>><?= $l ?></option>
           <?php endforeach; ?>
         </select>
-        <button type="submit" class="btn btn-sm btn-outline-secondary">
-          <i class="bi bi-search"></i>
-        </button>
+        <button type="submit" class="btn btn-sm btn-outline-secondary"><i class="bi bi-search"></i></button>
         <?php if ($filterType || $filterQ): ?>
         <a href="index.php" class="btn btn-sm btn-outline-danger"><i class="bi bi-x"></i> Limpiar</a>
         <?php endif; ?>
         <span class="ms-auto text-muted small align-self-center"><?= $totalFiles ?> archivos</span>
       </form>
 
-      <!-- Grid -->
       <?php if (empty($files)): ?>
       <div class="text-center text-muted py-5">
         <i class="bi bi-images fs-1"></i>
@@ -255,16 +263,16 @@ $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
       <?php else: ?>
       <div class="media-grid">
         <?php foreach ($files as $f):
-          $isImage = $f['file_type'] === 'image';
-          $sizeKb  = round($f['file_size'] / 1024);
-          $sizeTxt = $sizeKb > 1024 ? round($sizeKb/1024, 1).'MB' : $sizeKb.'KB';
+          $isImage   = $f['file_type'] === 'image';
+          $fileUrl   = URLBASE . '/' . $f['file_path']; // ← construir URL aquí
+          $sizeKb    = round($f['file_size'] / 1024);
+          $sizeTxt   = $sizeKb > 1024 ? round($sizeKb/1024,1).'MB' : $sizeKb.'KB';
           $typeIcons = ['image'=>'bi-image','video'=>'bi-camera-video','audio'=>'bi-music-note-beamed','document'=>'bi-file-pdf','other'=>'bi-file-earmark'];
         ?>
         <div class="media-card">
-          <!-- Thumb -->
           <div class="media-thumb">
             <?php if ($isImage): ?>
-              <img src="<?= htmlspecialchars(URLBASE . '/' . $f['file_path']) ?>"
+              <img src="<?= htmlspecialchars($fileUrl) ?>"
                    alt="<?= htmlspecialchars($f['alt_text'] ?? $f['file_name']) ?>"
                    loading="lazy">
             <?php else: ?>
@@ -274,12 +282,8 @@ $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
               </div>
             <?php endif; ?>
           </div>
-
-          <!-- Info -->
           <div class="media-info">
-            <div class="name" title="<?= htmlspecialchars($f['file_name']) ?>">
-              <?= htmlspecialchars($f['file_name']) ?>
-            </div>
+            <div class="name" title="<?= htmlspecialchars($f['file_name']) ?>"><?= htmlspecialchars($f['file_name']) ?></div>
             <div class="text-muted">
               <?= $sizeTxt ?>
               <?php if ($f['width']): ?> · <?= $f['width'] ?>×<?= $f['height'] ?>px<?php endif; ?>
@@ -291,15 +295,12 @@ $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
               <?php endif; ?>
             </div>
           </div>
-
-          <!-- Acciones -->
           <div class="media-actions">
             <button type="button" class="btn btn-xs btn-outline-secondary btn-copy-url flex-fill"
-                    data-url="<?= htmlspecialchars($f['file_url']) ?>"
-                    title="Copiar URL">
+                    data-url="<?= htmlspecialchars($fileUrl) ?>" title="Copiar URL">
               <i class="bi bi-clipboard"></i>
             </button>
-            <a href="<?= htmlspecialchars($f['file_url']) ?>" target="_blank"
+            <a href="<?= htmlspecialchars($fileUrl) ?>" target="_blank"
                class="btn btn-xs btn-outline-primary" title="Ver">
               <i class="bi bi-eye"></i>
             </a>
@@ -307,7 +308,7 @@ $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     data-id="<?= $f['id'] ?>"
                     data-alt="<?= htmlspecialchars($f['alt_text'] ?? '') ?>"
                     data-caption="<?= htmlspecialchars($f['caption'] ?? '') ?>"
-                    data-url="<?= htmlspecialchars($f['file_url']) ?>"
+                    data-url="<?= htmlspecialchars($fileUrl) ?>"
                     title="Editar">
               <i class="bi bi-pencil"></i>
             </button>
@@ -320,26 +321,24 @@ $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <?php endforeach; ?>
       </div>
 
-      <!-- Paginación -->
       <?php if ($totalPages > 1): ?>
       <nav class="mt-4">
         <ul class="pagination pagination-sm justify-content-center">
           <?php for ($i = 1; $i <= $totalPages; $i++): ?>
           <li class="page-item <?= $i === $page ? 'active' : '' ?>">
-            <a class="page-link" href="?p=<?= $i ?>&type=<?= urlencode($filterType) ?>&q=<?= urlencode($filterQ) ?>">
-              <?= $i ?>
-            </a>
+            <a class="page-link" href="?p=<?= $i ?>&type=<?= urlencode($filterType) ?>&q=<?= urlencode($filterQ) ?>"><?= $i ?></a>
           </li>
           <?php endfor; ?>
         </ul>
       </nav>
       <?php endif; ?>
       <?php endif; ?>
-    </div>
-  </div>
+
+    </div><!-- /col-lg-9 -->
+  </div><!-- /row -->
 </div>
 
-<!-- Modal editar metadata -->
+<!-- Modal editar -->
 <div class="modal fade" id="modalEditMedia" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -357,17 +356,15 @@ $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </button>
           </div>
         </div>
-        <form id="form-edit-media">
-          <input type="hidden" id="modal-id">
-          <div class="mb-3">
-            <label class="form-label small fw-semibold">Texto alternativo (alt)</label>
-            <input type="text" id="modal-alt" class="form-control form-control-sm">
-          </div>
-          <div class="mb-3">
-            <label class="form-label small fw-semibold">Caption</label>
-            <textarea id="modal-caption" class="form-control form-control-sm" rows="2"></textarea>
-          </div>
-        </form>
+        <input type="hidden" id="modal-id">
+        <div class="mb-3">
+          <label class="form-label small fw-semibold">Texto alternativo (alt)</label>
+          <input type="text" id="modal-alt" class="form-control form-control-sm">
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-semibold">Caption</label>
+          <textarea id="modal-caption" class="form-control form-control-sm" rows="2"></textarea>
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -385,7 +382,7 @@ $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
-    /* — Upload zone drag & drop — */
+    /* — Upload drag & drop — */
     const zone  = document.getElementById('upload-zone');
     const input = document.getElementById('file-input');
     const btn   = document.getElementById('btn-upload');
@@ -401,11 +398,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const preview = document.getElementById('file-preview');
         const img     = document.getElementById('preview-img');
         const name    = document.getElementById('preview-name');
-
         name.textContent = file.name + ' (' + (file.size / 1024).toFixed(0) + 'KB)';
         preview.classList.remove('d-none');
         btn.disabled = false;
-
         if (file.type.startsWith('image/')) {
             img.src = URL.createObjectURL(file);
             img.classList.remove('d-none');
@@ -414,9 +409,9 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    /* — Copiar URL — */
-    document.querySelectorAll('.btn-copy-url').forEach(btn => {
-        btn.addEventListener('click', function () {
+    /* — Copiar URL tarjetas — */
+    document.querySelectorAll('.btn-copy-url').forEach(b => {
+        b.addEventListener('click', function () {
             navigator.clipboard.writeText(this.dataset.url).then(() => {
                 const orig = this.innerHTML;
                 this.innerHTML = '<i class="bi bi-check-lg"></i>';
@@ -426,8 +421,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     /* — Modal editar — */
-    document.querySelectorAll('.btn-edit-media').forEach(btn => {
-        btn.addEventListener('click', function () {
+    document.querySelectorAll('.btn-edit-media').forEach(b => {
+        b.addEventListener('click', function () {
             document.getElementById('modal-id').value      = this.dataset.id;
             document.getElementById('modal-alt').value     = this.dataset.alt;
             document.getElementById('modal-caption').value = this.dataset.caption;
@@ -443,20 +438,57 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     document.getElementById('btn-save-media')?.addEventListener('click', function () {
-        const id      = document.getElementById('modal-id').value;
-        const alt     = document.getElementById('modal-alt').value;
-        const caption = document.getElementById('modal-caption').value;
-
         fetch('update_media.php', {
             method  : 'POST',
             headers : { 'Content-Type': 'application/json' },
-            body    : JSON.stringify({ id, alt_text: alt, caption }),
+            body    : JSON.stringify({
+                id      : document.getElementById('modal-id').value,
+                alt_text: document.getElementById('modal-alt').value,
+                caption : document.getElementById('modal-caption').value,
+            }),
         })
         .then(r => r.json())
         .then(d => {
             bootstrap.Modal.getInstance(document.getElementById('modalEditMedia')).hide();
             Swal.fire({ icon: d.success ? 'success' : 'error', title: d.message, timer: 1500, showConfirmButton: false });
         });
+    });
+
+    /* — Escanear archivos — */
+    document.getElementById('btn-scan-files')?.addEventListener('click', function () {
+        const btn      = this;
+        const progress = document.getElementById('scan-progress');
+        const result   = document.getElementById('scan-result-info');
+
+        btn.disabled  = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Escaneando...';
+        progress.classList.remove('d-none');
+        result.classList.add('d-none');
+
+        fetch('scan_files.php')
+            .then(r => r.json())
+            .then(d => {
+                btn.disabled  = false;
+                btn.innerHTML = '<i class="bi bi-search me-1"></i> Escanear archivos';
+                progress.classList.add('d-none');
+                result.classList.remove('d-none');
+                result.innerHTML = d.success
+                    ? `<div class="alert alert-success py-2 small">
+                         <i class="bi bi-check-circle me-1"></i>
+                         <strong>${d.inserted}</strong> nuevos registrados<br>
+                         <span class="text-muted">${d.skipped} ya existían</span>
+                         ${d.errors ? '<br><span class="text-danger">' + d.errors + ' errores</span>' : ''}
+                       </div>`
+                    : `<div class="alert alert-danger py-2 small">${d.message}</div>`;
+                if (d.inserted > 0) setTimeout(() => location.reload(), 1800);
+            })
+            .catch(() => {
+                btn.disabled  = false;
+                btn.innerHTML = '<i class="bi bi-search me-1"></i> Escanear archivos';
+                progress.classList.add('d-none');
+                result.classList.remove('d-none');
+                result.innerHTML = '<div class="alert alert-danger py-2 small">Error de conexión.</div>';
+            });
     });
 
 });
