@@ -584,6 +584,14 @@ $('#postsTable').on('click', '.btn-transfer-single', function (e) {
     });
   });
 
+  /* — Limpiar backdrop en TODOS los modales — */
+$(document).on('hidden.bs.modal', '.modal', function () {
+    if ($('.modal:visible').length === 0) {
+        $('.modal-backdrop').remove();
+        $('body').removeClass('modal-open').css('overflow', '').css('padding-right', '');
+    }
+});
+
 });
 </script>
 </body>
