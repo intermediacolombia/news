@@ -12,7 +12,7 @@ header('Content-Type: application/json; charset=UTF-8');
 //    restriction.php hace header('Location:...') que rompe la respuesta JSON
 if (empty($_SESSION['user_id'])) {
     http_response_code(403);
-    echo json_encode(['success' => false, 'message' => 'No autorizado.']);
+    echo json_encode(['success' => false, 'message' => 'No autorizadooooooooo.']);
     exit;
 }
 
