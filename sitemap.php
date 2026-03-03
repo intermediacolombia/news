@@ -23,7 +23,7 @@ $urls[] = [
 
 // ── 2. Listado General de Noticias ────────────────────────────────────────
 $urls[] = [
-    'loc'        => $base . '/noticias/',
+    'loc'        => $base . '/noticiassssssssssss/',
     'changefreq' => 'hourly',
     'priority'   => '0.9',
     'lastmod'    => date('Y-m-d'),
