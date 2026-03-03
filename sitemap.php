@@ -1,5 +1,11 @@
 <?php
+// Debug temporal — quitar después
+ob_start();
 require_once __DIR__ . '/inc/config.php';
+$output = ob_get_clean();
+if (!empty(trim($output))) {
+    die('OUTPUT ANTES DEL HEADER: ' . htmlspecialchars($output));
+}
 
 header('Content-Type: application/xml; charset=UTF-8');
 
