@@ -1,15 +1,14 @@
 <?php
-// Debug temporal — quitar después
-ob_start();
-require_once __DIR__ . '/inc/config.php';
-$output = ob_get_clean();
-if (!empty(trim($output))) {
-    die('OUTPUT ANTES DEL HEADER: ' . htmlspecialchars($output));
-}
+ob_start(); // Captura cualquier output basura de los includes
 
+require_once __DIR__ . '/inc/config.php';
+
+ob_end_clean(); // Descarta todo lo que hayan generado los includes
+
+// Recién aquí enviar headers limpios
 header('Content-Type: application/xml; charset=UTF-8');
 
-// Cache de 1 hora
+// Cache
 $cacheFile = __DIR__ . '/public/sitemap_cache.xml';
 $cacheTtl  = 3600;
 
