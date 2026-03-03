@@ -1,9 +1,14 @@
 <?php
 require_once __DIR__ . '/../../inc/config.php';
 require_once __DIR__ . '/../login/session.php';
+$permisopage = 'Editar Configuraciones';
+require_once __DIR__ . '/../login/restriction.php';
+require_once __DIR__ . '/../inc/flash_helpers.php';
 
+// 3. Recién aquí el header JSON (ya no hay riesgo de que la sesión no esté activa)
 header('Content-Type: application/json; charset=UTF-8');
 
+// 4. Verificar sesión
 if (empty($_SESSION['user_id'])) {
     http_response_code(403);
     echo json_encode(['success' => false, 'message' => 'No autorizado.']);
