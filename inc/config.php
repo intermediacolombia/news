@@ -161,6 +161,25 @@ if (!defined('MP_FAILURE_URL')) define('MP_FAILURE_URL', URLBASE . '/mp_failure'
 if (!defined('MP_PENDING_URL')) define('MP_PENDING_URL', URLBASE . '/mp_pending');
 
 
+/* ========= SEO Avanzado ========= */
+define('SEO_HOME_TITLE',       $sys['seo_home_title']       ?? '');
+define('SEO_HOME_DESCRIPTION', $sys['seo_home_description'] ?? '');
+define('SEO_HOME_KEYWORDS',    $sys['seo_home_keywords']    ?? '');
+
+/* ========= Monetización Google AdSense ========= */
+define('ADSENSE_PUBLISHER_ID', $sys['adsense_publisher_id'] ?? '');
+define('ADSENSE_AUTO_ADS',     $sys['adsense_auto_ads']     ?? '0');
+
+/* ========= Google Tag Manager ========= */
+define('GTM_CONTAINER_ID',     $sys['gtm_container_id']     ?? '');
+
+/* ========= Verificación de Buscadores ========= */
+define('VERIFY_GOOGLE',        $sys['verify_google']        ?? '');
+define('VERIFY_BING',          $sys['verify_bing']          ?? '');
+define('VERIFY_YANDEX',        $sys['verify_yandex']        ?? '');
+define('VERIFY_META',          $sys['verify_meta']          ?? '');
+define('VERIFY_PINTEREST',     $sys['verify_pinterest']     ?? '');
+
 
 /* ========= Helpers ========= */
 if (!function_exists('setFlash')) {
