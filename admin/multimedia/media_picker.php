@@ -24,14 +24,19 @@ $total->execute($params);
 $totalFiles = (int)$total->fetchColumn();
 $totalPages = (int)ceil($totalFiles / $perPage);
 
-$stmt = db()->prepare("SELECT file_name, file_path FROM multimedia $where ORDER BY created_at DESC LIMIT $perPage OFFSET $offset");
+$stmt = db()->prepare("SELECT file_name, file_path, alt_text, caption, file_size, width, height 
+                       FROM multimedia $where ORDER BY created_at DESC LIMIT $perPage OFFSET $offset");
 $stmt->execute($params);
 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $files = array_map(fn($r) => [
-    'name' => $r['file_name'],
-    'path' => $r['file_path'],
-    'url'  => URLBASE . '/' . $r['file_path'],
+    'name'    => $r['file_name'],
+    'path'    => $r['file_path'],
+    'url'     => URLBASE . '/' . $r['file_path'],
+    'alt'     => $r['alt_text'] ?? '',
+    'caption' => $r['caption']  ?? '',
+    'size'    => $r['file_size'] ? round($r['file_size']/1024) . 'KB' : '',
+    'dims'    => ($r['width'] && $r['height']) ? $r['width'].'×'.$r['height'].'px' : '',
 ], $rows);
 
 echo json_encode([

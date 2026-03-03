@@ -283,7 +283,6 @@ document.addEventListener("DOMContentLoaded", function(){
       </div>
       <div class="modal-body p-0">
 
-        <!-- Tabs: Biblioteca / Subir nueva -->
         <ul class="nav nav-tabs px-3 pt-2" id="mediaTabs">
           <li class="nav-item">
             <a class="nav-link active" data-bs-toggle="tab" href="#tab-library">
@@ -303,35 +302,77 @@ document.addEventListener("DOMContentLoaded", function(){
           <div class="tab-pane fade show active p-3" id="tab-library">
 
             <!-- Filtros -->
-            <div class="d-flex gap-2 mb-3 flex-wrap align-items-center">
-              <input type="text" id="media-search" class="form-control form-control-sm"
-                     style="max-width:200px" placeholder="Buscar...">
-              <select id="media-filter-type" class="form-select form-select-sm" style="max-width:140px">
-                <option value="image">Imágenes</option>
-                <option value="">Todos</option>
-              </select>
-              <button type="button" class="btn btn-sm btn-outline-secondary" id="btn-media-search">
-                <i class="bi bi-search"></i>
-              </button>
-              <span class="ms-auto text-muted small" id="media-total"></span>
-            </div>
-
-            <!-- Grid de imágenes -->
-            <div id="media-library-grid" class="row g-2" style="min-height:200px">
-              <div class="col-12 text-center py-5 text-muted" id="media-loading">
-                <div class="spinner-border spinner-border-sm me-2"></div> Cargando...
+            <div class="row g-2 mb-3 align-items-end">
+              <div class="col-sm-5">
+                <label class="form-label small fw-semibold mb-1">Buscar</label>
+                <input type="text" id="media-search" class="form-control form-control-sm"
+                       placeholder="Nombre del archivo...">
+              </div>
+              <div class="col-sm-3">
+                <label class="form-label small fw-semibold mb-1">Tipo</label>
+                <select id="media-filter-type" class="form-select form-select-sm">
+                  <option value="image">Imágenes</option>
+                  <option value="">Todos</option>
+                </select>
+              </div>
+              <div class="col-sm-2">
+                <button type="button" class="btn btn-sm btn-primary w-100" id="btn-media-search">
+                  <i class="bi bi-search me-1"></i> Buscar
+                </button>
+              </div>
+              <div class="col-sm-2 text-end">
+                <span class="text-muted small" id="media-total"></span>
               </div>
             </div>
 
-            <!-- Paginación biblioteca -->
-            <div id="media-pagination" class="d-flex justify-content-center mt-3 gap-2"></div>
+            <div class="row g-2">
+              <!-- Grid imágenes -->
+              <div class="col-lg-8">
+                <div id="media-library-grid" class="row g-2" style="min-height:300px">
+                  <div class="col-12 text-center py-5 text-muted" id="media-loading">
+                    <div class="spinner-border spinner-border-sm me-2"></div> Cargando...
+                  </div>
+                </div>
+                <div id="media-pagination" class="d-flex justify-content-center mt-3 gap-1 flex-wrap"></div>
+              </div>
+
+              <!-- Panel detalle imagen seleccionada -->
+              <div class="col-lg-4">
+                <div id="media-detail-panel"
+                     class="border rounded p-3 h-100"
+                     style="background:#f8f9fa; min-height:300px;">
+                  <div id="media-detail-empty" class="text-center text-muted py-5">
+                    <i class="bi bi-hand-index-thumb fs-2"></i>
+                    <div class="mt-2 small">Selecciona una imagen<br>para ver sus detalles</div>
+                  </div>
+                  <div id="media-detail-content" class="d-none">
+                    <img id="detail-preview-img" src="" alt=""
+                         class="img-fluid rounded mb-3 w-100"
+                         style="max-height:140px; object-fit:cover;">
+                    <div class="small text-muted mb-2" id="detail-file-info"></div>
+                    <div class="mb-2">
+                      <label class="form-label small fw-semibold mb-1">Texto alternativo (alt)</label>
+                      <input type="text" id="detail-alt" class="form-control form-control-sm"
+                             placeholder="Descripción de la imagen">
+                    </div>
+                    <div class="mb-2">
+                      <label class="form-label small fw-semibold mb-1">Caption</label>
+                      <textarea id="detail-caption" class="form-control form-control-sm"
+                                rows="2" placeholder="Pie de foto opcional"></textarea>
+                    </div>
+                    <div class="small text-break text-muted mt-2" id="detail-path"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
           </div>
 
           <!-- Tab Subir nueva -->
           <div class="tab-pane fade p-3" id="tab-upload">
-            <div class="upload-zone-modal border rounded p-4 text-center mb-3"
-                 id="modal-upload-zone" style="cursor:pointer; border-style:dashed !important;">
+            <div class="border rounded p-4 text-center mb-3"
+                 id="modal-upload-zone"
+                 style="cursor:pointer; border-style:dashed !important; border-color:#dee2e6; transition:.2s;">
               <i class="bi bi-cloud-arrow-up fs-1 text-muted"></i>
               <div class="mt-2 text-muted">Arrastra o haz clic para subir</div>
               <small class="text-muted">JPG, PNG, WebP, GIF — Máx 20MB</small>
@@ -341,6 +382,22 @@ document.addEventListener("DOMContentLoaded", function(){
             <div id="modal-upload-preview" class="d-none mb-3 text-center">
               <img id="modal-preview-img" src="" class="img-thumbnail" style="max-height:120px">
               <div class="small text-muted mt-1" id="modal-preview-name"></div>
+            </div>
+
+            <!-- Alt y Caption al subir -->
+            <div id="modal-upload-meta" class="d-none">
+              <div class="row g-2 mb-3">
+                <div class="col-sm-6">
+                  <label class="form-label small fw-semibold mb-1">Texto alternativo (alt)</label>
+                  <input type="text" id="upload-alt" class="form-control form-control-sm"
+                         placeholder="Descripción de la imagen">
+                </div>
+                <div class="col-sm-6">
+                  <label class="form-label small fw-semibold mb-1">Caption</label>
+                  <input type="text" id="upload-caption" class="form-control form-control-sm"
+                         placeholder="Pie de foto">
+                </div>
+              </div>
             </div>
 
             <div id="modal-upload-progress" class="d-none mb-3">
@@ -357,6 +414,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
         </div>
       </div>
+
       <div class="modal-footer">
         <div class="me-auto small text-muted" id="selected-file-info"></div>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -367,28 +425,49 @@ document.addEventListener("DOMContentLoaded", function(){
     </div>
   </div>
 </div>
-	<script>
+<script>
 (function () {
   const BASE = '<?= URLBASE ?>';
   let mediaPage     = 1;
-  let selectedMedia = null; // { path, url, name }
+  let selectedMedia = null; // { path, url, name, alt, caption }
   let uploadedFile  = null;
 
-  const modal       = document.getElementById('modalMediaLibrary');
-  const grid        = document.getElementById('media-library-grid');
-  const pagination  = document.getElementById('media-pagination');
-  const btnInsert   = document.getElementById('btn-insert-media');
-  const btnOpen     = document.getElementById('btn-open-media');
-  const preview     = document.getElementById('featured-preview');
-  const previewImg  = document.getElementById('featured-preview-img');
-  const imagePath   = document.getElementById('image_path');
-  const fileInput   = document.getElementById('media-upload-input');
+  const modal      = document.getElementById('modalMediaLibrary');
+  const grid       = document.getElementById('media-library-grid');
+  const pagination = document.getElementById('media-pagination');
+  const btnInsert  = document.getElementById('btn-insert-media');
+  const btnOpen    = document.getElementById('btn-open-media');
+  const preview    = document.getElementById('featured-preview');
+  const previewImg = document.getElementById('featured-preview-img');
+  const imagePath  = document.getElementById('image_path');
+  const fileInput  = document.getElementById('media-upload-input');
+
+  // Campos ocultos para alt y caption de la imagen destacada
+  // Los creamos dinámicamente si no existen
+  let altInput     = document.getElementById('featured_alt');
+  let captionInput = document.getElementById('featured_caption');
+  if (!altInput) {
+    altInput = document.createElement('input');
+    altInput.type = 'hidden';
+    altInput.name = 'featured_alt';
+    altInput.id   = 'featured_alt';
+    imagePath.parentNode.appendChild(altInput);
+  }
+  if (!captionInput) {
+    captionInput = document.createElement('input');
+    captionInput.type = 'hidden';
+    captionInput.name = 'featured_caption';
+    captionInput.id   = 'featured_caption';
+    imagePath.parentNode.appendChild(captionInput);
+  }
 
   /* — Abrir modal — */
   btnOpen?.addEventListener('click', () => {
     selectedMedia = null;
     btnInsert.disabled = true;
     document.getElementById('selected-file-info').textContent = '';
+    document.getElementById('media-detail-empty').classList.remove('d-none');
+    document.getElementById('media-detail-content').classList.add('d-none');
     loadLibrary(1);
     new bootstrap.Modal(modal).show();
   });
@@ -396,12 +475,14 @@ document.addEventListener("DOMContentLoaded", function(){
   /* — Quitar imagen — */
   document.getElementById('btn-remove-featured')?.addEventListener('click', () => {
     imagePath.value     = '';
+    altInput.value      = '';
+    captionInput.value  = '';
     previewImg.src      = '';
     fileInput.value     = '';
     preview.classList.add('d-none');
   });
 
-  /* — Cargar biblioteca vía AJAX — */
+  /* — Cargar biblioteca — */
   function loadLibrary(page) {
     const q    = document.getElementById('media-search').value.trim();
     const type = document.getElementById('media-filter-type').value;
@@ -417,58 +498,81 @@ document.addEventListener("DOMContentLoaded", function(){
         document.getElementById('media-total').textContent = data.total + ' archivos';
 
         if (!data.files.length) {
-          grid.innerHTML = '<div class="col-12 text-center py-4 text-muted">No hay imágenes</div>';
+          grid.innerHTML = '<div class="col-12 text-center py-4 text-muted"><i class="bi bi-images fs-2"></i><div class="mt-2">No hay imágenes</div></div>';
           return;
         }
 
         data.files.forEach(f => {
           const col = document.createElement('div');
-          col.className = 'col-6 col-sm-4 col-md-3 col-lg-2';
+          col.className = 'col-6 col-sm-4 col-md-3';
           col.innerHTML = `
             <div class="media-pick-card border rounded overflow-hidden"
-                 style="cursor:pointer; transition:.2s;"
-                 data-path="${f.path}" data-url="${f.url}" data-name="${f.name}">
-              <div style="height:80px; overflow:hidden; background:#f8f9fa; display:flex; align-items:center; justify-content:center;">
+                 style="cursor:pointer; transition:.15s;"
+                 data-path="${f.path}"
+                 data-url="${f.url}"
+                 data-name="${f.name}"
+                 data-alt="${f.alt || ''}"
+                 data-caption="${f.caption || ''}"
+                 data-size="${f.size || ''}"
+                 data-dims="${f.dims || ''}">
+              <div style="height:90px; overflow:hidden; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
                 <img src="${f.url}" alt="${f.name}"
-                     style="width:100%; height:80px; object-fit:cover;" loading="lazy">
+                     style="width:100%; height:90px; object-fit:cover;" loading="lazy"
+                     onerror="this.parentNode.innerHTML='<i class=\'bi bi-image text-muted\' style=\'font-size:32px\'></i>'">
               </div>
-              <div class="p-1" style="font-size:10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+              <div class="p-1 bg-white" style="font-size:10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
                 ${f.name}
               </div>
             </div>`;
 
           col.querySelector('.media-pick-card').addEventListener('click', function () {
             // Deseleccionar anterior
-            document.querySelectorAll('.media-pick-card.selected').forEach(el => {
-              el.classList.remove('selected');
+            document.querySelectorAll('.media-pick-card').forEach(el => {
               el.style.outline = '';
+              el.style.boxShadow = '';
             });
             // Seleccionar este
-            this.classList.add('selected');
-            this.style.outline = '3px solid #0d6efd';
-            selectedMedia = { path: this.dataset.path, url: this.dataset.url, name: this.dataset.name };
+            this.style.outline   = '3px solid #0d6efd';
+            this.style.boxShadow = '0 0 0 1px #0d6efd';
+
+            selectedMedia = {
+              path   : this.dataset.path,
+              url    : this.dataset.url,
+              name   : this.dataset.name,
+              alt    : this.dataset.alt,
+              caption: this.dataset.caption,
+            };
+
+            // Mostrar panel detalle
+            document.getElementById('media-detail-empty').classList.add('d-none');
+            document.getElementById('media-detail-content').classList.remove('d-none');
+            document.getElementById('detail-preview-img').src = selectedMedia.url;
+            document.getElementById('detail-alt').value       = selectedMedia.alt;
+            document.getElementById('detail-caption').value   = selectedMedia.caption;
+            document.getElementById('detail-file-info').textContent =
+              (this.dataset.size ? this.dataset.size + ' · ' : '') + (this.dataset.dims || '');
+            document.getElementById('detail-path').textContent = selectedMedia.path;
+
             btnInsert.disabled = false;
-            document.getElementById('selected-file-info').textContent = this.dataset.name;
+            document.getElementById('selected-file-info').textContent = selectedMedia.name;
           });
 
           grid.appendChild(col);
         });
 
-        // Paginación
         renderPagination(data.page, data.total_pages);
       })
       .catch(() => {
-        grid.innerHTML = '<div class="col-12 text-center py-4 text-danger">Error al cargar</div>';
+        grid.innerHTML = '<div class="col-12 text-center py-4 text-danger">Error al cargar la biblioteca</div>';
       });
   }
 
   function renderPagination(current, total) {
     if (total <= 1) return;
-    const qs = `&q=${encodeURIComponent(document.getElementById('media-search').value)}&type=${encodeURIComponent(document.getElementById('media-filter-type').value)}`;
     let html = '';
-    if (current > 1)  html += `<button class="btn btn-sm btn-outline-secondary media-pg" data-p="${current-1}">‹</button>`;
-    html += `<span class="btn btn-sm btn-primary disabled">${current} / ${total}</span>`;
-    if (current < total) html += `<button class="btn btn-sm btn-outline-secondary media-pg" data-p="${current+1}">›</button>`;
+    if (current > 1)    html += `<button class="btn btn-sm btn-outline-secondary media-pg" data-p="${current-1}">‹ Anterior</button>`;
+    html += `<span class="btn btn-sm btn-light disabled px-3">${current} / ${total}</span>`;
+    if (current < total) html += `<button class="btn btn-sm btn-outline-secondary media-pg" data-p="${current+1}">Siguiente ›</button>`;
     pagination.innerHTML = html;
     pagination.querySelectorAll('.media-pg').forEach(b => {
       b.addEventListener('click', () => loadLibrary(parseInt(b.dataset.p)));
@@ -482,17 +586,39 @@ document.addEventListener("DOMContentLoaded", function(){
   });
   document.getElementById('media-filter-type')?.addEventListener('change', () => loadLibrary(1));
 
-  /* — Insertar imagen seleccionada de biblioteca — */
+  /* — Insertar imagen seleccionada — */
   btnInsert?.addEventListener('click', () => {
     if (!selectedMedia) return;
+
+    // Leer alt y caption actualizados del panel detalle
+    const finalAlt     = document.getElementById('detail-alt').value;
+    const finalCaption = document.getElementById('detail-caption').value;
+
+    // Si se editaron, guardar en BD
+    if (finalAlt !== selectedMedia.alt || finalCaption !== selectedMedia.caption) {
+      fetch(`${BASE}/admin/multimedia/update_media.php`, {
+        method  : 'POST',
+        headers : { 'Content-Type': 'application/json' },
+        body    : JSON.stringify({
+          id      : null, // no tenemos el id aquí
+          path    : selectedMedia.path,
+          alt_text: finalAlt,
+          caption : finalCaption,
+        }),
+      }).catch(() => {});
+    }
+
     imagePath.value    = selectedMedia.path;
+    altInput.value     = finalAlt;
+    captionInput.value = finalCaption;
     previewImg.src     = selectedMedia.url;
-    fileInput.value    = ''; // limpiar file input
+    previewImg.alt     = finalAlt;
+    fileInput.value    = '';
     preview.classList.remove('d-none');
     bootstrap.Modal.getInstance(modal).hide();
   });
 
-  /* — Upload nueva imagen desde modal — */
+  /* — Upload nueva imagen — */
   const modalUploadZone  = document.getElementById('modal-upload-zone');
   const modalFileInput   = document.getElementById('modal-file-input');
   const modalPreview     = document.getElementById('modal-upload-preview');
@@ -500,10 +626,15 @@ document.addEventListener("DOMContentLoaded", function(){
   const modalPreviewName = document.getElementById('modal-preview-name');
   const btnModalUpload   = document.getElementById('btn-modal-upload');
   const uploadProgress   = document.getElementById('modal-upload-progress');
+  const uploadMeta       = document.getElementById('modal-upload-meta');
 
   modalUploadZone?.addEventListener('click', () => modalFileInput.click());
-  ['dragenter','dragover'].forEach(e => modalUploadZone?.addEventListener(e, ev => { ev.preventDefault(); modalUploadZone.style.background = '#f0f4ff'; }));
-  ['dragleave','drop'].forEach(e => modalUploadZone?.addEventListener(e, ev => { ev.preventDefault(); modalUploadZone.style.background = ''; }));
+  ['dragenter','dragover'].forEach(e => modalUploadZone?.addEventListener(e, ev => {
+    ev.preventDefault(); modalUploadZone.style.background = '#f0f4ff'; modalUploadZone.style.borderColor = '#0d6efd';
+  }));
+  ['dragleave','drop'].forEach(e => modalUploadZone?.addEventListener(e, ev => {
+    ev.preventDefault(); modalUploadZone.style.background = ''; modalUploadZone.style.borderColor = '#dee2e6';
+  }));
   modalUploadZone?.addEventListener('drop', ev => { modalFileInput.files = ev.dataTransfer.files; handleModalFile(); });
   modalFileInput?.addEventListener('change', handleModalFile);
 
@@ -513,6 +644,7 @@ document.addEventListener("DOMContentLoaded", function(){
     modalPreviewImg.src      = URL.createObjectURL(uploadedFile);
     modalPreviewName.textContent = uploadedFile.name + ' (' + (uploadedFile.size/1024).toFixed(0) + 'KB)';
     modalPreview.classList.remove('d-none');
+    uploadMeta.classList.remove('d-none');
     btnModalUpload.disabled = false;
   }
 
@@ -520,36 +652,36 @@ document.addEventListener("DOMContentLoaded", function(){
     if (!uploadedFile) return;
 
     const formData = new FormData();
-    formData.append('file', uploadedFile);
+    formData.append('file',    uploadedFile);
+    formData.append('alt',     document.getElementById('upload-alt').value);
+    formData.append('caption', document.getElementById('upload-caption').value);
 
     btnModalUpload.disabled = true;
     uploadProgress.classList.remove('d-none');
 
-    fetch(`${BASE}/admin/multimedia/upload_ajax.php`, {
-      method: 'POST',
-      body  : formData,
-    })
-    .then(r => r.json())
-    .then(d => {
-      uploadProgress.classList.add('d-none');
-      btnModalUpload.disabled = false;
-
-      if (d.success) {
-        // Insertar directamente y cerrar modal
-        imagePath.value = d.path;
-        previewImg.src  = d.url;
-        fileInput.value = '';
-        preview.classList.remove('d-none');
-        bootstrap.Modal.getInstance(modal).hide();
-      } else {
-        alert('Error: ' + d.message);
-      }
-    })
-    .catch(() => {
-      uploadProgress.classList.add('d-none');
-      btnModalUpload.disabled = false;
-      alert('Error al subir el archivo.');
-    });
+    fetch(`${BASE}/admin/multimedia/upload_ajax.php`, { method:'POST', body: formData })
+      .then(r => r.json())
+      .then(d => {
+        uploadProgress.classList.add('d-none');
+        btnModalUpload.disabled = false;
+        if (d.success) {
+          imagePath.value    = d.path;
+          altInput.value     = d.alt     || '';
+          captionInput.value = d.caption || '';
+          previewImg.src     = d.url;
+          previewImg.alt     = d.alt || '';
+          fileInput.value    = '';
+          preview.classList.remove('d-none');
+          bootstrap.Modal.getInstance(modal).hide();
+        } else {
+          alert('Error: ' + d.message);
+        }
+      })
+      .catch(() => {
+        uploadProgress.classList.add('d-none');
+        btnModalUpload.disabled = false;
+        alert('Error al subir el archivo.');
+      });
   });
 
 })();
