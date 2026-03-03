@@ -300,18 +300,25 @@ $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     data-url="<?= htmlspecialchars($fileUrl) ?>" title="Copiar URL">
               <i class="bi bi-clipboard"></i>
             </button>
-            <a href="<?= htmlspecialchars($fileUrl) ?>" target="_blank"
-               class="btn btn-xs btn-outline-primary" title="Ver">
-              <i class="bi bi-eye"></i>
-            </a>
+            <button type="button" class="btn btn-xs btn-outline-primary btn-preview-media"
+        data-url="<?= htmlspecialchars($fileUrl) ?>"
+        data-type="<?= $f['file_type'] ?>"
+        data-name="<?= htmlspecialchars($f['file_name']) ?>"
+        data-size="<?= $sizeTxt ?>"
+        data-dims="<?= $f['width'] ? $f['width'].'×'.$f['height'].'px' : '' ?>"
+        title="Ver">
+  <i class="bi bi-eye"></i>
+</button>
             <button type="button" class="btn btn-xs btn-outline-info btn-edit-media"
-                    data-id="<?= $f['id'] ?>"
-                    data-alt="<?= htmlspecialchars($f['alt_text'] ?? '') ?>"
-                    data-caption="<?= htmlspecialchars($f['caption'] ?? '') ?>"
-                    data-url="<?= htmlspecialchars($fileUrl) ?>"
-                    title="Editar">
-              <i class="bi bi-pencil"></i>
-            </button>
+        data-id="<?= $f['id'] ?>"
+        data-type="<?= $f['file_type'] ?>"
+        data-name="<?= htmlspecialchars($f['file_name']) ?>"
+        data-alt="<?= htmlspecialchars($f['alt_text'] ?? '') ?>"
+        data-caption="<?= htmlspecialchars($f['caption'] ?? '') ?>"
+        data-url="<?= htmlspecialchars($fileUrl) ?>"
+        title="Editar">
+  <i class="bi bi-pencil"></i>
+</button>
             <a href="?delete=<?= $f['id'] ?>" class="btn btn-xs btn-outline-danger"
                onclick="return confirm('¿Eliminar archivo?')" title="Eliminar">
               <i class="bi bi-trash"></i>
@@ -338,7 +345,31 @@ $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
   </div><!-- /row -->
 </div>
 
-<!-- Modal editar -->
+<!-- Modal Preview -->
+<div class="modal fade" id="modalPreviewMedia" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header py-2">
+        <h6 class="modal-title text-truncate" id="preview-modal-name"></h6>
+        <div class="d-flex align-items-center gap-2 ms-auto">
+          <a id="preview-modal-link" href="#" target="_blank"
+             class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-box-arrow-up-right"></i> Abrir
+          </a>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+      </div>
+      <div class="modal-body text-center p-2" id="preview-modal-body">
+        <!-- contenido dinámico -->
+      </div>
+      <div class="modal-footer py-2 justify-content-start">
+        <small class="text-muted" id="preview-modal-meta"></small>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Editar -->
 <div class="modal fade" id="modalEditMedia" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -347,6 +378,18 @@ $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
+
+        <!-- Preview pequeño -->
+        <div id="edit-preview-wrap" class="mb-3 text-center d-none">
+          <img id="edit-preview-img" src="" alt=""
+               class="img-thumbnail" style="max-height:80px; max-width:100%;">
+        </div>
+        <div id="edit-preview-icon" class="mb-3 text-center d-none">
+          <i id="edit-preview-icon-el" class="bi fs-1 text-muted"></i>
+          <div class="small text-muted mt-1" id="edit-preview-icon-name"></div>
+        </div>
+
+        <!-- URL -->
         <div class="mb-3">
           <label class="form-label small fw-semibold">URL del archivo</label>
           <div class="input-group">
@@ -356,6 +399,7 @@ $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </button>
           </div>
         </div>
+
         <input type="hidden" id="modal-id">
         <div class="mb-3">
           <label class="form-label small fw-semibold">Texto alternativo (alt)</label>
@@ -394,7 +438,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function handleFileSelect() {
         if (!input.files.length) return;
-        const file    = input.files[0];
+        const file = input.files[0];
         const preview = document.getElementById('file-preview');
         const img     = document.getElementById('preview-img');
         const name    = document.getElementById('preview-name');
@@ -420,13 +464,89 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    /* — Modal editar — */
+    /* — Modal PREVIEW — */
+    const typeIcons = {
+        video    : 'bi-camera-video',
+        audio    : 'bi-music-note-beamed',
+        document : 'bi-file-pdf',
+        other    : 'bi-file-earmark',
+    };
+
+    document.querySelectorAll('.btn-preview-media').forEach(b => {
+        b.addEventListener('click', function () {
+            const url   = this.dataset.url;
+            const type  = this.dataset.type;
+            const name  = this.dataset.name;
+            const size  = this.dataset.size;
+            const dims  = this.dataset.dims;
+
+            document.getElementById('preview-modal-name').textContent = name;
+            document.getElementById('preview-modal-link').href        = url;
+            document.getElementById('preview-modal-meta').textContent =
+                size + (dims ? ' · ' + dims : '');
+
+            const body = document.getElementById('preview-modal-body');
+
+            if (type === 'image') {
+                body.innerHTML = `<img src="${url}" class="img-fluid rounded"
+                                       style="max-height:70vh" alt="${name}">`;
+            } else if (type === 'video') {
+                body.innerHTML = `<video controls class="w-100" style="max-height:70vh">
+                                    <source src="${url}">
+                                  </video>`;
+            } else if (type === 'audio') {
+                body.innerHTML = `<div class="py-4">
+                                    <i class="bi bi-music-note-beamed" style="font-size:64px;color:#9d174d"></i>
+                                    <div class="mt-3">
+                                      <audio controls class="w-100"><source src="${url}"></audio>
+                                    </div>
+                                  </div>`;
+            } else if (type === 'document') {
+                body.innerHTML = `<div class="py-4">
+                                    <i class="bi bi-file-pdf" style="font-size:64px;color:#92400e"></i>
+                                    <div class="mt-3">
+                                      <a href="${url}" target="_blank" class="btn btn-outline-danger">
+                                        <i class="bi bi-box-arrow-up-right me-1"></i> Abrir PDF
+                                      </a>
+                                    </div>
+                                  </div>`;
+            } else {
+                body.innerHTML = `<div class="py-4">
+                                    <i class="bi bi-file-earmark" style="font-size:64px;color:#6c757d"></i>
+                                  </div>`;
+            }
+
+            new bootstrap.Modal(document.getElementById('modalPreviewMedia')).show();
+        });
+    });
+
+    /* — Modal EDITAR — */
     document.querySelectorAll('.btn-edit-media').forEach(b => {
         b.addEventListener('click', function () {
+            const type = this.dataset.type;
+            const url  = this.dataset.url;
+
             document.getElementById('modal-id').value      = this.dataset.id;
             document.getElementById('modal-alt').value     = this.dataset.alt;
             document.getElementById('modal-caption').value = this.dataset.caption;
-            document.getElementById('modal-url').value     = this.dataset.url;
+            document.getElementById('modal-url').value     = url;
+
+            const imgWrap  = document.getElementById('edit-preview-wrap');
+            const iconWrap = document.getElementById('edit-preview-icon');
+
+            if (type === 'image') {
+                document.getElementById('edit-preview-img').src = url;
+                imgWrap.classList.remove('d-none');
+                iconWrap.classList.add('d-none');
+            } else {
+                const iconEl   = document.getElementById('edit-preview-icon-el');
+                const iconName = document.getElementById('edit-preview-icon-name');
+                iconEl.className   = 'bi ' + (typeIcons[type] || 'bi-file-earmark') + ' fs-1 text-muted';
+                iconName.textContent = this.dataset.name;
+                iconWrap.classList.remove('d-none');
+                imgWrap.classList.add('d-none');
+            }
+
             new bootstrap.Modal(document.getElementById('modalEditMedia')).show();
         });
     });
