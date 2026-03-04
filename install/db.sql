@@ -258,10 +258,6 @@ CREATE TABLE `roles` (
 -- Volcado de datos para la tabla `roles`
 --
 
-INSERT INTO `roles` (`id`, `name`, `description`, `created_at`, `updated_at`, `borrado`) VALUES
-(1, 'Administrador', '', '2025-09-03 21:33:26', '2025-09-16 01:35:39', 0),
-(2, 'Periodista', '', '2025-10-29 01:18:53', '2025-10-29 01:18:53', 0);
-
 -- --------------------------------------------------------
 
 --
