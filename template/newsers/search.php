@@ -10,16 +10,19 @@ if ($q !== '') {
         FROM blog_posts p
         INNER JOIN blog_post_category pc ON pc.post_id = p.id
         INNER JOIN blog_categories c ON c.id = pc.category_id
-        WHERE (p.title LIKE :q OR p.content LIKE :q)
+        WHERE (p.title LIKE :q1 OR p.content LIKE :q2 OR p.seo_description LIKE :q3)
           AND p.status='published' AND p.deleted=0
+        GROUP BY p.id
         ORDER BY p.created_at DESC
     ");
-    $stmt->execute([':q' => "%$q%"]);
-    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt->execute([
+        ':q1' => "%$q%",
+        ':q2' => "%$q%",
+        ':q3' => "%$q%",
+    ]);
+    $results     = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $totalResults = count($results);
 }
-?>
-
-<?php
 // =======================
 // Variables SEO dinámicas
 // =======================
