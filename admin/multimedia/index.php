@@ -114,21 +114,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
 
 /* ── Filtros y paginación ── */
 $filterType = $_GET['type'] ?? '';
-$filterQ    = trim($_GET['q'] ?? '');
+$filterQ    = trim($_GET['q']  ?? '');
 $page       = max(1, (int)($_GET['p']  ?? 1));
-$perPage    = in_array((int)($_GET['pp'] ?? 24), [24,48,96,200])
-              ? (int)$_GET['pp'] : 24;
+$ppRaw      = isset($_GET['pp']) ? (int)$_GET['pp'] : 24;
+$perPage    = in_array($ppRaw, [24, 48, 96, 200]) ? $ppRaw : 24;
 $offset     = ($page - 1) * $perPage;
 
 $where  = "WHERE deleted = 0";
 $params = [];
-if ($filterType) { $where .= " AND file_type = ?";                          $params[] = $filterType; }
-if ($filterQ)    { $where .= " AND (file_name LIKE ? OR alt_text LIKE ?)";  $params[] = "%$filterQ%"; $params[] = "%$filterQ%"; }
+if ($filterType) { $where .= " AND file_type = ?";                         $params[] = $filterType; }
+if ($filterQ)    { $where .= " AND (file_name LIKE ? OR alt_text LIKE ?)"; $params[] = "%$filterQ%"; $params[] = "%$filterQ%"; }
 
 $total      = db()->prepare("SELECT COUNT(*) FROM multimedia $where");
 $total->execute($params);
 $totalFiles = (int)$total->fetchColumn();
-$totalPages = (int)ceil($totalFiles / $perPage);
+$totalPages = $totalFiles > 0 ? (int)ceil($totalFiles / $perPage) : 1;
 
 $stmt = db()->prepare("SELECT * FROM multimedia $where ORDER BY created_at DESC LIMIT $perPage OFFSET $offset");
 $stmt->execute($params);
