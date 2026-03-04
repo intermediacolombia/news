@@ -57,12 +57,14 @@ try {
     
     /* Estilos para imagen de perfil */
     .profile-img-table {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid #ddd;
-    }
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ddd;
+    display: block;  /* ← agregar */
+    margin: 0 auto;  /* ← agregar */
+}
     
     .profile-img-preview {
       width: 120px;
@@ -74,18 +76,20 @@ try {
       display: block;
     }
     
-    .default-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: bold;
-      font-size: 16px;
-    }
+    /* Reemplaza el estilo actual de default-avatar */
+.default-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    margin: 0 auto; /* ← esto centra el div dentro del td */
+}
     
     .file-upload-wrapper {
       position: relative;
@@ -179,7 +183,7 @@ try {
               data-estado="<?= htmlspecialchars($row['estado']) ?>"
               data-columnista="<?= htmlspecialchars($row['es_columnista'] ?? 0) ?>"
               data-foto="<?= htmlspecialchars($row['foto_perfil'] ?? '') ?>">
-            <td class="text-center">
+            <td class="text-center align-middle" style="width:60px;">
               <?php if (!empty($row['foto_perfil']) && file_exists('../../' . $row['foto_perfil'])): ?>
                 <img src="<?= $url . '/' . htmlspecialchars($row['foto_perfil']) ?>" 
                      alt="Foto" class="profile-img-table">
