@@ -85,7 +85,7 @@ if (!$baseDir) {
 }
 
 $subDir    = 'public/uploads/image/' . date('Y/m') . '/';
-$uploadDir = __DIR__ . '/../../' . $subDir;
+$uploadDir = rtrim($_SERVER['DOCUMENT_ROOT'], '/') . '/' . $subDir;
 
 // Crear directorio con manejo de error
 if (!is_dir($uploadDir)) {

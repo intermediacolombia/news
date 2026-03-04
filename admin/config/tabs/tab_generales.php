@@ -293,18 +293,20 @@
     document.getElementById('banner-open-media')?.addEventListener('click',  () => openPicker('banner'));
 
     /* — Quitar imagen — */
-    document.getElementById('logo-remove-btn')?.addEventListener('click', () => {
-        document.getElementById('site_logo_path').value = '';
-        document.getElementById('logo-preview-wrap').style.display = 'none';
-    });
-    document.getElementById('favicon-remove-btn')?.addEventListener('click', () => {
-        document.getElementById('site_favicon_path').value = '';
-        document.getElementById('favicon-preview-wrap').style.display = 'none';
-    });
-    document.getElementById('banner-remove-btn')?.addEventListener('click', () => {
-        document.getElementById('banner_inferior_path').value = '';
-        document.getElementById('banner-preview-wrap').style.display = 'none';
-    });
+   function removeMedia(inputId, previewImgId, wrapId) {
+    document.getElementById(inputId).value      = '';
+    document.getElementById(previewImgId).src   = '';
+    document.getElementById(wrapId).style.cssText = 'display:none!important';
+}
+
+document.getElementById('logo-remove-btn')?.addEventListener('click', () =>
+    removeMedia('site_logo_path', 'logo-preview-img', 'logo-preview-wrap'));
+
+document.getElementById('favicon-remove-btn')?.addEventListener('click', () =>
+    removeMedia('site_favicon_path', 'favicon-preview-img', 'favicon-preview-wrap'));
+
+document.getElementById('banner-remove-btn')?.addEventListener('click', () =>
+    removeMedia('banner_inferior_path', 'banner-preview-img', 'banner-preview-wrap'));
 
     /* — Cargar biblioteca — */
     function loadLibrary(page) {
@@ -394,17 +396,16 @@
     });
 
     /* — Aplicar imagen al campo destino — */
+    // Reemplaza applyMedia por:
     function applyMedia(path, url) {
-        const t = targets[currentTarget];
-        document.getElementById(t.inputId).value    = path;
-        document.getElementById(t.previewId).src    = url;
-        document.getElementById(t.wrapId).style.display = '';
-        document.getElementById(t.wrapId).style.removeProperty('display');
-        document.getElementById(t.wrapId).classList.remove('d-none');
-        // Forzar visibilidad
-        document.getElementById(t.wrapId).removeAttribute('style');
-    }
-
+    const t = targets[currentTarget];
+    document.getElementById(t.inputId).value  = path;
+    document.getElementById(t.previewId).src  = url;
+    // Quitar todos los estilos inline y clases que lo oculten
+    const wrap = document.getElementById(t.wrapId);
+    wrap.style.cssText = '';
+    wrap.classList.remove('d-none');
+}
     /* — Upload zona — */
     const mpcZone     = document.getElementById('mpc-upload-zone');
     const mpcFileIn   = document.getElementById('mpc-file-input');
