@@ -30,7 +30,38 @@ $file    = $_FILES['file'];
 $alt     = trim($_POST['alt']     ?? '');
 $caption = trim($_POST['caption'] ?? '');
 
-$mime = mime_content_type($file['tmp_name']);
+function getMimeType($filePath, $fileName) {
+    // Método 1: finfo (más seguro)
+    if (function_exists('finfo_open')) {
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime  = finfo_file($finfo, $filePath);
+        finfo_close($finfo);
+        return $mime;
+    }
+
+    // Método 2: getimagesize para imágenes
+    $info = @getimagesize($filePath);
+    if (!empty($info['mime'])) return $info['mime'];
+
+    // Método 3: por extensión como fallback
+    $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+    $map = [
+        'jpg'  => 'image/jpeg',
+        'jpeg' => 'image/jpeg',
+        'png'  => 'image/png',
+        'webp' => 'image/webp',
+        'gif'  => 'image/gif',
+        'mp4'  => 'video/mp4',
+        'webm' => 'video/webm',
+        'mp3'  => 'audio/mpeg',
+        'wav'  => 'audio/wav',
+        'pdf'  => 'application/pdf',
+    ];
+    return $map[$ext] ?? 'application/octet-stream';
+}
+
+$mime = getMimeType($file['tmp_name'], $file['name']);
+
 $ext  = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
 
 $allowed = [
