@@ -531,7 +531,7 @@ $(document).ready(function() {
 
   $('#editRemoveImage').on('click', function() {
     $('#editFotoPerfil').val('');
-    $('#editProfilePreview').attr('src', '<?= $url ?>/assets/images/default-avatar.png');
+    $('#editProfilePreview').attr('src', '<?= $url ?>/admin/assets/images/default-avatar.png');
     $('#editRemoveFoto').val('1');
     $(this).hide();
   });
@@ -582,7 +582,7 @@ $(document).ready(function() {
       $('#editProfilePreview').attr('src', '<?= $url ?>/' + foto);
       $('#editRemoveImage').show();
     } else {
-      $('#editProfilePreview').attr('src', '<?= $url ?>/assets/images/default-avatar.png');
+      $('#editProfilePreview').attr('src', '<?= $url ?>/admin/assets/images/default-avatar.png');
       $('#editRemoveImage').hide();
     }
 
