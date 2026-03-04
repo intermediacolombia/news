@@ -6,7 +6,7 @@ try {
     db()->exec("SET NAMES utf8mb4");
 
     // === GUARDAR ARCHIVOS ===
-    $uploadDir = __DIR__ . '/../uploads/';
+    $uploadDir = __DIR__ . '/uploads/';
     if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
 
     $files = ['system_logo', 'system_favicon'];
