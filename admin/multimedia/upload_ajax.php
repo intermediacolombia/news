@@ -1,4 +1,19 @@
 <?php
+ini_set('display_errors', 0);
+error_reporting(E_ALL);
+set_error_handler(function($errno, $errstr, $errfile, $errline) {
+    header('Content-Type: application/json; charset=UTF-8');
+    echo json_encode(['success' => false, 'message' => "Error PHP: $errstr en línea $errline"]);
+    exit;
+});
+register_shutdown_function(function() {
+    $error = error_get_last();
+    if ($error && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
+        header('Content-Type: application/json; charset=UTF-8');
+        echo json_encode(['success' => false, 'message' => 'Fatal: ' . $error['message'] . ' línea ' . $error['line']]);
+    }
+});
+
 session_start();
 require_once __DIR__ . '/../../inc/config.php';
 header('Content-Type: application/json; charset=UTF-8');
@@ -32,15 +47,32 @@ if ($file['size'] > 20 * 1024 * 1024) {
     echo json_encode(['success' => false, 'message' => 'El archivo supera los 20MB.']); exit;
 }
 
+// Verificar que el directorio base existe
+$baseDir = realpath(__DIR__ . '/../../public');
+if (!$baseDir) {
+    echo json_encode(['success' => false, 'message' => 'Directorio public no encontrado: ' . __DIR__ . '/../../public']); exit;
+}
+
 $subDir    = 'public/uploads/image/' . date('Y/m') . '/';
 $uploadDir = __DIR__ . '/../../' . $subDir;
-if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+
+// Crear directorio con manejo de error
+if (!is_dir($uploadDir)) {
+    if (!mkdir($uploadDir, 0755, true)) {
+        echo json_encode(['success' => false, 'message' => 'No se pudo crear el directorio: ' . $uploadDir]); exit;
+    }
+}
+
+// Verificar que es escribible
+if (!is_writable($uploadDir)) {
+    echo json_encode(['success' => false, 'message' => 'Directorio sin permisos de escritura: ' . $uploadDir]); exit;
+}
 
 $fileName = time() . '_' . preg_replace('/[^a-z0-9\.\-]/i', '_', $file['name']);
 $filePath = $subDir . $fileName;
 
 if (!move_uploaded_file($file['tmp_name'], $uploadDir . $fileName)) {
-    echo json_encode(['success' => false, 'message' => 'No se pudo guardar el archivo.']); exit;
+    echo json_encode(['success' => false, 'message' => 'move_uploaded_file falló. tmp: ' . $file['tmp_name'] . ' dest: ' . $uploadDir . $fileName]); exit;
 }
 
 $info   = @getimagesize($uploadDir . $fileName);
@@ -63,7 +95,9 @@ try {
             $_SESSION['user']['id'],
         ]);
 } catch (Throwable $e) {
-    // El archivo ya se subió, no bloquear por error de BD
+    // Archivo subido pero error en BD — no bloquear
+    // Descomentar para debug:
+    // echo json_encode(['success' => false, 'message' => 'BD: ' . $e->getMessage()]); exit;
 }
 
 echo json_encode([
