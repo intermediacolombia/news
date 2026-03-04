@@ -84,7 +84,7 @@ if (!$baseDir) {
     echo json_encode(['success' => false, 'message' => 'Directorio public no encontrado: ' . __DIR__ . '/../../public']); exit;
 }
 
-$subDir    = 'public/uploads/image/' . date('Y/m') . '/';
+$subDir    = '/public/uploads/image/' . date('Y/m') . '/';
 $uploadDir = __DIR__ . '/../../' . $subDir;
 
 // Crear directorio con manejo de error
