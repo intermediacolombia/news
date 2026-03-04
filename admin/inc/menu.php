@@ -1,6 +1,6 @@
 <div class="menu">
     <div class="logo-container">
-        <img src="<?php echo URLBASE . SITE_LOGO; ?>?<?php echo time(); ?>" alt="Logo">
+        <img src="<?php echo URLBASE . SITE_LOGO; ?>" alt="Logo">
         <br><br>
         <?php echo htmlspecialchars($nombre . " " . $apellido); ?>
         <p><strong><?php echo htmlspecialchars($rolUser); ?></strong></p>			
