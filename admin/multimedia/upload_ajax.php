@@ -51,6 +51,8 @@ function getMimeType($filePath, $fileName) {
         'png'  => 'image/png',
         'webp' => 'image/webp',
         'gif'  => 'image/gif',
+        'svg'  => 'image/svg+xml',
+        'ico'  => 'image/x-icon',
         'mp4'  => 'video/mp4',
         'webm' => 'video/webm',
         'mp3'  => 'audio/mpeg',
@@ -61,18 +63,12 @@ function getMimeType($filePath, $fileName) {
 }
 
 $mime = getMimeType($file['tmp_name'], $file['name']);
-
 $ext  = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
 
-$allowed = [
-    'image/jpeg' => ['jpg','jpeg'],
-    'image/png'  => ['png'],
-    'image/webp' => ['webp'],
-    'image/gif'  => ['gif'],
-];
+$allowedExts = ['jpg','jpeg','png','webp','gif','svg','ico'];
 
-if (!isset($allowed[$mime]) || !in_array($ext, $allowed[$mime])) {
-    echo json_encode(['success' => false, 'message' => 'Tipo no permitido. Solo JPG, PNG, WebP, GIF.']); exit;
+if (!in_array($ext, $allowedExts)) {
+    echo json_encode(['success' => false, 'message' => 'Tipo no permitido. Solo JPG, PNG, WebP, GIF, SVG, ICO.']); exit;
 }
 if ($file['size'] > 20 * 1024 * 1024) {
     echo json_encode(['success' => false, 'message' => 'El archivo supera los 20MB.']); exit;
