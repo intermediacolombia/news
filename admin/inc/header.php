@@ -39,6 +39,6 @@
 <!-- Google Material Icons -->
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-<!-- Script custom -->
+<!-- Script custom 
 <script src="<?= htmlspecialchars($url) ?>/template/assets/js/departamentos.js" crossorigin="anonymous"></script>
-
+-->
