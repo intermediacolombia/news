@@ -39,17 +39,21 @@ if ($categorySlug) {
 
     // Posts
     $stmt = db()->prepare("
-        SELECT p.*, c.name AS category_name, c.slug AS category_slug
+        SELECT DISTINCT p.*
         FROM blog_posts p
         INNER JOIN blog_post_category pc ON pc.post_id = p.id
-        INNER JOIN blog_categories c ON c.id = pc.category_id
-        WHERE c.id=? AND p.status='published' AND p.deleted=0
-        GROUP BY p.id
+        WHERE pc.category_id=? AND p.status='published' AND p.deleted=0
         ORDER BY p.created_at DESC
         LIMIT $perPage OFFSET $offset
     ");
     $stmt->execute([$category['id']]);
     $posts = $stmt->fetchAll();
+    // Inyectar la categoría correcta (la que estamos navegando)
+    foreach ($posts as &$p) {
+        $p['category_name'] = $category['name'];
+        $p['category_slug'] = $category['slug'];
+    }
+    unset($p);
 
 } else {
 
