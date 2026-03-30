@@ -44,6 +44,7 @@ if ($categorySlug) {
         INNER JOIN blog_post_category pc ON pc.post_id = p.id
         INNER JOIN blog_categories c ON c.id = pc.category_id
         WHERE c.id=? AND p.status='published' AND p.deleted=0
+        GROUP BY p.id
         ORDER BY p.created_at DESC
         LIMIT $perPage OFFSET $offset
     ");
@@ -63,8 +64,12 @@ if ($categorySlug) {
     $stmt = db()->query("
         SELECT p.*, c.name AS category_name, c.slug AS category_slug
         FROM blog_posts p
-        INNER JOIN blog_post_category pc ON pc.post_id = p.id
-        INNER JOIN blog_categories c ON c.id = pc.category_id
+        LEFT JOIN (
+            SELECT post_id, MIN(category_id) AS category_id
+            FROM blog_post_category
+            GROUP BY post_id
+        ) fc ON fc.post_id = p.id
+        LEFT JOIN blog_categories c ON c.id = fc.category_id
         WHERE p.status='published' AND p.deleted=0
         ORDER BY p.created_at DESC
         LIMIT $perPage OFFSET $offset
@@ -123,19 +128,41 @@ $totalPages = max(1, ceil($totalPosts / $perPage));
                 </div>
 
                 <!-- PAGINACIÓN -->
-                <?php if ($totalPages > 1): ?>
+                <?php if ($totalPages > 1):
+                    $delta    = 2;
+                    $pageBase = URLBASE . '/noticias' . ($categorySlug ? '/' . $categorySlug : '') . '/page/';
+                    // Construir lista de páginas con elipsis
+                    $pages = [];
+                    for ($i = 1; $i <= $totalPages; $i++) {
+                        if ($i == 1 || $i == $totalPages ||
+                            ($i >= $pageNum - $delta && $i <= $pageNum + $delta)) {
+                            $pages[] = $i;
+                        }
+                    }
+                    $items = [];
+                    $prev  = null;
+                    foreach ($pages as $pg) {
+                        if ($prev !== null && $pg - $prev > 1) {
+                            $items[] = null; // elipsis
+                        }
+                        $items[] = $pg;
+                        $prev    = $pg;
+                    }
+                ?>
                 <div class="row mt-20-r mb-30">
 
                     <div class="col-sm-6 col-12">
                         <div class="pagination-btn-wrapper text-center--xs mb15--xs">
                             <ul>
-                                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                                <li class="<?= $i == $pageNum ? 'active' : '' ?>">
-                                    <a href="<?= URLBASE ?>/noticias<?= $categorySlug ? '/' . $categorySlug : '' ?>/page/<?= $i ?>/">
-                                        <?= $i ?>
-                                    </a>
+                                <?php foreach ($items as $item): ?>
+                                <?php if ($item === null): ?>
+                                <li class="disabled"><span>...</span></li>
+                                <?php else: ?>
+                                <li class="<?= $item == $pageNum ? 'active' : '' ?>">
+                                    <a href="<?= $pageBase . $item ?>/"><?= $item ?></a>
                                 </li>
-                                <?php endfor; ?>
+                                <?php endif; ?>
+                                <?php endforeach; ?>
                             </ul>
                         </div>
                     </div>
