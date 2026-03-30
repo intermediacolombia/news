@@ -348,7 +348,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['migrar'])) {
                 <hr>
 
                 <h6 class="fw-bold mb-3 text-primary">
-                    <i class="fa fa-imageme-1"></i> Imágenes
+                    <i class="fa fa-image"></i> Imágenes
                 </h6>
 
                 <div class="row g-3 mb-4">
