@@ -172,7 +172,7 @@ $usuarios = db()->query("SELECT id, nombre, apellido, username, foto_perfil
             <i class="fa fa-check"></i> Pasar a publicado
           </button>
           <button id="btnTransferSelected" class="btn btn-outline-primary btn-sm">
-            <i class="fa fa-arrow-right-arrow-left"></i> Transferir autoría
+            <i class="fa fa-exchange"></i> Transferir autoría
           </button>
         </div>
         <small class="text-muted mt-1" id="countSelected"></small>

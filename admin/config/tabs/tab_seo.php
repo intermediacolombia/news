@@ -4,7 +4,7 @@
 
   <!-- SEO Basico -->
   <div class="card mb-3">
-    <div class="card-header bg-light"><strong><i class="fa-brands fa-google me-2"></i>SEO Pagina Principal</strong></div>
+    <div class="card-header bg-light"><strong><i class="fa fa-google me-2"></i>SEO Pagina Principal</strong></div>
     <div class="card-body">
 
       <div class="mb-3">
@@ -45,7 +45,7 @@
       </div>
 
       <div class="mb-3">
-        <label class="form-label fw-semibold"><i class="fa-brands fa-google me-1 text-primary"></i> Publisher ID</label>
+        <label class="form-label fw-semibold"><i class="fa fa-google me-1 text-primary"></i> Publisher ID</label>
         <input type="text" name="adsense_publisher_id" class="form-control font-monospace"
                placeholder="ca-pub-XXXXXXXXXXXXXXXX"
                value="<?= htmlspecialchars($configs['adsense_publisher_id'], ENT_QUOTES, 'UTF-8') ?>">
@@ -86,7 +86,7 @@
       <p class="text-muted small mb-3">Pega solo el valor del atributo <code>content</code>, no el tag completo.</p>
 
       <div class="mb-3">
-        <label class="form-label fw-semibold"><i class="fa-brands fa-google me-1" style="color:#4285F4"></i> Google Search Console</label>
+        <label class="form-label fw-semibold"><i class="fa fa-google me-1" style="color:#4285F4"></i> Google Search Console</label>
         <input type="text" name="verify_google" class="form-control font-monospace"
                placeholder="Codigo de verificacion..."
                value="<?= htmlspecialchars($configs['verify_google'], ENT_QUOTES, 'UTF-8') ?>">
@@ -103,7 +103,7 @@
       </div>
 
       <div class="mb-3">
-        <label class="form-label fw-semibold"><i class="fa-brands fa-microsoft me-1" style="color:#00A4EF"></i> Bing Webmaster Tools</label>
+        <label class="form-label fw-semibold"><i class="fa fa-microsoft me-1" style="color:#00A4EF"></i> Bing Webmaster Tools</label>
         <input type="text" name="verify_bing" class="form-control font-monospace"
                placeholder="Codigo de verificacion..."
                value="<?= htmlspecialchars($configs['verify_bing'], ENT_QUOTES, 'UTF-8') ?>">
@@ -119,7 +119,7 @@
       </div>
 
       <div class="mb-3">
-        <label class="form-label fw-semibold"><i class="fa-brands fa-meta me-1" style="color:#0866FF"></i> Meta (Facebook Domain Verification)</label>
+        <label class="form-label fw-semibold"><i class="fa fa-meta me-1" style="color:#0866FF"></i> Meta (Facebook Domain Verification)</label>
         <input type="text" name="verify_meta" class="form-control font-monospace"
                placeholder="Codigo de verificacion..."
                value="<?= htmlspecialchars($configs['verify_meta'], ENT_QUOTES, 'UTF-8') ?>">
@@ -127,7 +127,7 @@
       </div>
 
       <div class="mb-3">
-        <label class="form-label fw-semibold"><i class="fa-brands fa-pinterest me-1" style="color:#E60023"></i> Pinterest</label>
+        <label class="form-label fw-semibold"><i class="fa fa-pinterest me-1" style="color:#E60023"></i> Pinterest</label>
         <input type="text" name="verify_pinterest" class="form-control font-monospace"
                placeholder="Codigo de verificacion..."
                value="<?= htmlspecialchars($configs['verify_pinterest'], ENT_QUOTES, 'UTF-8') ?>">

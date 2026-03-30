@@ -183,7 +183,7 @@ if (!empty($sys['ads_zone_map'])) {
     <?php if (!$autoAdsActivo): ?>
     <li class="nav-item">
       <a class="nav-link" data-bs-toggle="tab" href="#adsense">
-        <i class="fa-brands fa-google me-1"></i> Google AdSense
+        <i class="fa fa-google me-1"></i> Google AdSense
       </a>
     </li>
     <?php endif; ?>
@@ -286,7 +286,7 @@ if (!empty($sys['ads_zone_map'])) {
       </div>
       <?php else: ?>
       <div class="alert alert-success py-2 mt-3">
-        <i class="fa-brands fa-google me-2"></i>
+        <i class="fa fa-google me-2"></i>
         Publisher ID activo: <code><?= htmlspecialchars($pubId) ?></code>
         <button type="button" class="btn btn-outline-secondary btn-sm float-end" id="btnRefreshZoneMap">
           <i class="bi bi-arrow-clockwise"></i> Limpiar caché de zonas

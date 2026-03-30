@@ -147,7 +147,7 @@ try {
                     data-author="' . htmlspecialchars($p['author']) . '"
                     data-foto="' . $fotoData . '"
                     title="Transferir autoría">
-                <i class="fa fa-arrow-right-arrow-left"></i>
+                <i class="fa fa-exchange"></i>
             </button>
             <button class="btn-trash btn-delete"
                     data-id="' . (int)$p['id'] . '"

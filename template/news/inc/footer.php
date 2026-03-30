@@ -10,27 +10,27 @@
                 <div class="d-flex justify-content-start mt-4">
 					
 					<?php if (!empty($sys['twitter'])): ?>
-                    <a class="btn btn-outline-secondary text-center mr-2 px-0" style="width: 38px; height: 38px;" href="<?= htmlspecialchars($sys['twitter']) ?>" target="_blank"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a class="btn btn-outline-secondary text-center mr-2 px-0" style="width: 38px; height: 38px;" href="<?= htmlspecialchars($sys['twitter']) ?>" target="_blank"><i class="fa fa-x-twitter"></i></a>
 					<?php endif; ?>
 					
 					<?php if (!empty($sys['facebook'])): ?>
-                    <a class="btn btn-outline-secondary text-center mr-2 px-0" style="width: 38px; height: 38px;" href="<?= htmlspecialchars($sys['facebook']) ?>" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a class="btn btn-outline-secondary text-center mr-2 px-0" style="width: 38px; height: 38px;" href="<?= htmlspecialchars($sys['facebook']) ?>" target="_blank"><i class="fa fa-facebook-f"></i></a>
 					<?php endif; ?>
 					
 					<?php if (!empty($sys['instagram'])): ?>
-                    <a class="btn btn-outline-secondary text-center mr-2 px-0" style="width: 38px; height: 38px;" href="<?= htmlspecialchars($sys['instagram']) ?>" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+                    <a class="btn btn-outline-secondary text-center mr-2 px-0" style="width: 38px; height: 38px;" href="<?= htmlspecialchars($sys['instagram']) ?>" target="_blank"><i class="fa fa-instagram"></i></a>
 					<?php endif; ?>
 					
 					<?php if (!empty($sys['tiktok'])): ?>
-                    <a class="btn btn-outline-secondary text-center mr-2 px-0" style="width: 38px; height: 38px;" href="<?= htmlspecialchars($sys['tiktok']) ?>" target="_blank"><i class="fa-brands fa-tiktok"></i></a>
+                    <a class="btn btn-outline-secondary text-center mr-2 px-0" style="width: 38px; height: 38px;" href="<?= htmlspecialchars($sys['tiktok']) ?>" target="_blank"><i class="fa fa-tiktok"></i></a>
 					<?php endif; ?>
 					
 					<?php if (!empty($sys['youtube'])): ?>
-                    <a class="btn btn-outline-secondary text-center mr-2 px-0" style="width: 38px; height: 38px;" href="<?= htmlspecialchars($sys['youtube']) ?>" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+                    <a class="btn btn-outline-secondary text-center mr-2 px-0" style="width: 38px; height: 38px;" href="<?= htmlspecialchars($sys['youtube']) ?>" target="_blank"><i class="fa fa-youtube"></i></a>
 					<?php endif; ?>
 					
 					<?php if (!empty($sys['whatsapp'])): ?>
-                    <a class="btn btn-outline-secondary text-center mr-2 px-0" style="width: 38px; height: 38px;" href="<?= htmlspecialchars($sys['whatsapp']) ?>" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
+                    <a class="btn btn-outline-secondary text-center mr-2 px-0" style="width: 38px; height: 38px;" href="<?= htmlspecialchars($sys['whatsapp']) ?>" target="_blank"><i class="fa fa-whatsapp"></i></a>
 					<?php endif; ?>
 					
                 </div>

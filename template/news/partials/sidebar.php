@@ -7,36 +7,36 @@
                         <div class="d-flex mb-3">
 							<?php if (!empty($sys['facebook'])): ?>
                             <a href="<?= htmlspecialchars($sys['facebook']) ?>" target="_blank" class="d-block w-50 py-2 px-3 text-white text-decoration-none mr-2" style="background: #39569E;">
-                                <small class="fa-brands fa-facebook-f mr-2"></small><small>Facebook</small>
+                                <small class="fa fa-facebook-f mr-2"></small><small>Facebook</small>
                             </a>
 							<?php endif; ?>
 							<?php if (!empty($sys['twitter'])): ?>
                             <a href="<?= htmlspecialchars($sys['twitter']) ?>" target="_blank" class="d-block w-50 py-2 px-3 text-white text-decoration-none ml-2" style="background: #000000;">
-                                <small class="fa-brands fa-x-twitter mr-2"></small><small>X</small>
+                                <small class="fa fa-x-twitter mr-2"></small><small>X</small>
                             </a>
 							<?php endif; ?>
                         </div>
 						<?php if (!empty($sys['instagram'])): ?>
                         <div class="d-flex mb-3">
                             <a href="<?= htmlspecialchars($sys['instagram']) ?>" target="_blank" class="d-block w-50 py-2 px-3 text-white text-decoration-none mr-2" style="background: #C13584;">
-                                <small class="fa-brands fa-instagram mr-2"></small><small>Instagram</small>
+                                <small class="fa fa-instagram mr-2"></small><small>Instagram</small>
                             </a>
 							<?php endif; ?>
 							<?php if (!empty($sys['tiktok'])): ?>
                             <a href="<?= htmlspecialchars($sys['tiktok']) ?>" target="_blank" class="d-block w-50 py-2 px-3 text-white text-decoration-none ml-2" style="background: #000000;">
-                                <small class="fa-brands fa-tiktok mr-2"></small><small>TikTok</small>
+                                <small class="fa fa-tiktok mr-2"></small><small>TikTok</small>
                             </a>
 							<?php endif; ?>
                         </div>
                         <div class="d-flex mb-3">
 							<?php if (!empty($sys['youtube'])): ?>
                             <a href="<?= htmlspecialchars($sys['youtube']) ?>" target="_blank" class="d-block w-50 py-2 px-3 text-white text-decoration-none mr-2" style="background: #FF0000;">
-                                <small class="fa-brands fa-youtube mr-2"></small><small>YouTube</small>
+                                <small class="fa fa-youtube mr-2"></small><small>YouTube</small>
                             </a>
 							<?php endif; ?>
 							<?php if (!empty($sys['whatsapp'])): ?>
                             <a href="<?= htmlspecialchars($sys['whatsapp']) ?>" target="_blank" class="d-block w-50 py-2 px-3 text-white text-decoration-none ml-2" style="background: #075E54;">
-                                <small class="fa-brands fa-whatsapp mr-2"></small><small>WhatsApp</small>
+                                <small class="fa fa-whatsapp mr-2"></small><small>WhatsApp</small>
                             </a>
 							<?php endif; ?>
 							
