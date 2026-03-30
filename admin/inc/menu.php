@@ -51,7 +51,7 @@
     <!-- MULTIMEDIA -->
 <?php if (isset($_SESSION["user_permissions"]) && in_array('Gestionar Multimedia', $_SESSION["user_permissions"])): ?>
     <a href="<?php echo URLBASE; ?>/admin/multimedia/" onclick="closeSubmenus()">
-        <i class="fa fa-photo-film"></i> Multimedia
+        <i class="fa fa-photo"></i> Multimedia
     </a>
 <?php endif; ?>
 
@@ -72,14 +72,14 @@
     <!-- PUBLICIDAD -->
     <?php if (isset($_SESSION["user_permissions"]) && in_array('Manejar Publicidad', $_SESSION["user_permissions"])): ?>
         <a href="<?php echo URLBASE; ?>/admin/ads/" onclick="closeSubmenus()">
-            <i class="fa fa-money-bill-trend-up"></i> Publicidad
+            <i class="fa fa-money-bill"></i> Publicidad
         </a>
     <?php endif; ?>
 
     <!-- USUARIOS -->
     <?php if (isset($_SESSION["user_permissions"]) && in_array('Ver y Editar Usuarios', $_SESSION["user_permissions"])): ?>
         <a href="#" class="has-submenu" onclick="toggleSubmenu(event)">
-            <i class="fa fa-users-gear"></i> Usuarios <i class="fa fa-chevron-down"></i>
+            <i class="fa fa-users"></i> Usuarios <i class="fa fa-chevron-down"></i>
         </a>
         <div class="submenu">
             <a href="<?php echo URLBASE; ?>/admin/users/" onclick="closeSubmenus()">- Todos</a>
@@ -105,7 +105,7 @@
     <!-- HERRAMIENTAS -->
     <?php if (isset($_SESSION["user_permissions"]) && in_array('Editar Configuraciones', $_SESSION["user_permissions"])): ?>
         <a href="#" class="has-submenu" onclick="toggleSubmenu(event)">
-            <i class="fa fa-screwdriver-wrench"></i> Herramientas <i class="fa fa-chevron-down"></i>
+            <i class="fas fa-tools"></i> Herramientas <i class="fa fa-chevron-down"></i>
         </a>
         <div class="submenu">
             <a href="<?php echo URLBASE; ?>/admin/herramientas/migrar-wordpress.php" onclick="closeSubmenus()">- Migrar desde WordPress</a>
