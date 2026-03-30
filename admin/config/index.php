@@ -69,10 +69,10 @@ foreach ($defaults as $k => $v) {
   <ul class="nav nav-tabs" id="configTabs" role="tablist">
     <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#generales"><i class="fa fa-cog"></i> Generales</a></li>
     <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#identidad"><i class="fa-regular fa-user"></i> Identidad</a></li>
-    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#code"><i class="fa-solid fa-code"></i> Codigo HTML</a></li>
+    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#code"><i class="fa fa-code"></i> Codigo HTML</a></li>
     <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#seo"><i class="fa-brands fa-google"></i> SEO</a></li>
-    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#email"><i class="fa-solid fa-envelope"></i> Email</a></li>
-    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#apariencia"><i class="fa-solid fa-brush"></i> Apariencia</a></li>
+    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#email"><i class="fa fa-envelope"></i> Email</a></li>
+    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#apariencia"><i class="fa fa-brush"></i> Apariencia</a></li>
   </ul>
 
   <form id="configForm" method="post" action="save_config.php"

@@ -244,7 +244,7 @@ $oldType   = $old['page_type'] ?? $page['page_type'] ?? 'general';
                 <i class="fas fa-save"></i> Actualizar Página
               </button>
               <a class="btn btn-secondary" href="<?= htmlspecialchars($url) ?>/admin/institutional/index.php">
-                <i class="fa-solid fa-arrow-left"></i> Volver al listado
+                <i class="fa fa-arrow-left"></i> Volver al listado
               </a>
             </div>
           </div>

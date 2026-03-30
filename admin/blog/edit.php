@@ -225,7 +225,7 @@ function oldv_raw($key, $default = ''){
             <div class="divider"></div>
             <div class="d-grid gap-2">
               <button class="btn btn-success btn-lg" type="submit"><i class="fas fa-save"></i> Guardar Entrada</button>
-              <a class="btn btn-secondary" href="<?= htmlspecialchars($url) ?>/admin/blog/index.php"><i class="fa-solid fa-arrow-left"></i> Volver al listado</a>
+              <a class="btn btn-secondary" href="<?= htmlspecialchars($url) ?>/admin/blog/index.php"><i class="fa fa-arrow-left"></i> Volver al listado</a>
             </div>
           </div>
         </div>

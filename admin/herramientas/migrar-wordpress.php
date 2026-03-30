@@ -264,7 +264,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['migrar'])) {
 <body>
 <div class="container" style="padding:0; background:rgba(0,0,0,0)">
     <div class="portada">
-        <h1 class="mb-4"><i class="fa-solid fa-screwdriver-wrench"></i> Herramientas</h1>
+        <h1 class="mb-4"><i class="fa fa-screwdriver-wrench"></i> Herramientas</h1>
     </div>
 </div>
 <?php require_once __DIR__ . '/../inc/menu.php'; ?>

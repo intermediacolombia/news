@@ -151,7 +151,7 @@
              placeholder="https://x.com/tuusuario">
     </div>
     <div class="mb-3">
-      <label class="form-label"><i class="fa-solid fa-hashtag me-1"></i> Hash Tag</label>
+      <label class="form-label"><i class="fa fa-hashtag me-1"></i> Hash Tag</label>
       <input type="text" name="hashtag" class="form-control"
              value="<?= htmlspecialchars($configs['hashtag'], ENT_QUOTES, 'UTF-8') ?>"
              placeholder="#TuSitio">
@@ -163,7 +163,7 @@
   <div class="card-header bg-light"><strong>Mapa Google Maps</strong></div>
   <div class="card-body">
     <div class="mb-3">
-      <label class="form-label"><i class="fa-solid fa-code me-1"></i> URL Embed</label>
+      <label class="form-label"><i class="fa fa-code me-1"></i> URL Embed</label>
       <input type="text" name="business_map" class="form-control"
              value="<?= htmlspecialchars($configs['business_map'], ENT_QUOTES, 'UTF-8') ?>"
              placeholder="https://www.google.com/maps/embed?pb=...">

@@ -44,7 +44,7 @@ $categories = $st->fetchAll();
 
     <!-- BS5: data-bs-* -->
     <a class="btn btn-success float-end" href="<?= $url ?>/admin/blog/category_create.php">
-      <i class="fa-solid fa-plus"></i> Nueva Categoria
+      <i class="fa fa-plus"></i> Nueva Categoria
     </a>
   </div>
 </div>

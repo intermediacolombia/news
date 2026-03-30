@@ -33,13 +33,13 @@
   <!-- Google AdSense -->
   <div class="card mb-3">
     <div class="card-header bg-light d-flex align-items-center justify-content-between">
-      <strong><i class="fa-solid fa-rectangle-ad me-2"></i>Google AdSense (Monetizacion)</strong>
+      <strong><i class="fa fa-rectangle-ad me-2"></i>Google AdSense (Monetizacion)</strong>
       <span class="badge bg-success">Monetizacion</span>
     </div>
     <div class="card-body">
 
       <div class="alert alert-info py-2 mb-3">
-        <i class="fa-solid fa-circle-info me-2"></i>
+        <i class="fa fa-circle-info me-2"></i>
         El <strong>Publisher ID</strong> activa AdSense en todo el sitio. Los bloques individuales
         se gestionan desde el modulo de <strong>Publicidad</strong>.
       </div>
@@ -62,7 +62,7 @@
            name="adsense_auto_ads" value="1"
            <?= !empty($configs['adsense_auto_ads']) && $configs['adsense_auto_ads'] == '1' ? 'checked' : '' ?>>
     <label class="form-check-label" for="adsense_auto_ads">
-      <i class="fa-solid fa-wand-magic-sparkles me-1"></i>
+      <i class="fa fa-wand-magic-sparkles me-1"></i>
       Habilitar <strong>Auto Ads</strong> (Google coloca anuncios automaticamente)
     </label>
   </div>
@@ -81,7 +81,7 @@
 
   <!-- Verificacion de Buscadores -->
   <div class="card mb-3">
-    <div class="card-header bg-light"><strong><i class="fa-solid fa-magnifying-glass me-2"></i>Verificacion de Buscadores</strong></div>
+    <div class="card-header bg-light"><strong><i class="fa fa-magnifying-glass me-2"></i>Verificacion de Buscadores</strong></div>
     <div class="card-body">
       <p class="text-muted small mb-3">Pega solo el valor del atributo <code>content</code>, no el tag completo.</p>
 
@@ -94,7 +94,7 @@
       </div>
 
       <div class="alert alert-success py-2 mb-0 mt-1 d-flex align-items-center gap-2">
-        <i class="fa-solid fa-sitemap"></i>
+        <i class="fa fa-sitemap"></i>
         <span>
           <strong>Sitemap:</strong> La URL que debes enviar a Google Search Console es
           <code><?= rtrim(URLBASE ?? '', '/') ?>/sitemap.php</code>
@@ -111,7 +111,7 @@
       </div>
 
       <div class="mb-3">
-        <label class="form-label fw-semibold"><i class="fa-solid fa-y me-1" style="color:#FF0000"></i> Yandex Webmaster</label>
+        <label class="form-label fw-semibold"><i class="fa fa-y me-1" style="color:#FF0000"></i> Yandex Webmaster</label>
         <input type="text" name="verify_yandex" class="form-control font-monospace"
                placeholder="Codigo de verificacion..."
                value="<?= htmlspecialchars($configs['verify_yandex'], ENT_QUOTES, 'UTF-8') ?>">
@@ -138,7 +138,7 @@
 
   <!-- Google Tag Manager -->
   <div class="card mb-3">
-    <div class="card-header bg-light"><strong><i class="fa-solid fa-tags me-2"></i>Google Tag Manager</strong></div>
+    <div class="card-header bg-light"><strong><i class="fa fa-tags me-2"></i>Google Tag Manager</strong></div>
     <div class="card-body">
       <div class="mb-3">
         <label class="form-label fw-semibold">GTM Container ID</label>

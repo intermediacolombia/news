@@ -149,7 +149,7 @@ $usuarios = db()->query("SELECT id, nombre, apellido, username, foto_perfil
   <div class="portada">
     <h1><i class="bi bi-journal-text"></i> Blog</h1>
     <a class="btn btn-success float-end" href="<?= $url ?>/admin/blog/create.php">
-      <i class="fa-solid fa-plus"></i> Nueva entrada
+      <i class="fa fa-plus"></i> Nueva entrada
     </a>
   </div>
 </div>
@@ -172,7 +172,7 @@ $usuarios = db()->query("SELECT id, nombre, apellido, username, foto_perfil
             <i class="fa fa-check"></i> Pasar a publicado
           </button>
           <button id="btnTransferSelected" class="btn btn-outline-primary btn-sm">
-            <i class="fa-solid fa-arrow-right-arrow-left"></i> Transferir autoría
+            <i class="fa fa-arrow-right-arrow-left"></i> Transferir autoría
           </button>
         </div>
         <small class="text-muted mt-1" id="countSelected"></small>
@@ -207,7 +207,7 @@ $usuarios = db()->query("SELECT id, nombre, apellido, username, foto_perfil
       <div class="modal-header transfer-modal-header">
         <div>
           <h5 class="modal-title mb-0">
-            <i class="fa-solid fa-arrow-right-arrow-left me-2"></i>
+            <i class="fa fa-arrow-right-arrow-left me-2"></i>
             Transferir autoría
           </h5>
           <small class="opacity-75">Reasigna entradas a otro autor del sistema</small>
@@ -240,7 +240,7 @@ $usuarios = db()->query("SELECT id, nombre, apellido, username, foto_perfil
 
           <!-- Flecha -->
           <div class="col-md-2 transfer-arrow">
-            <i class="fa-solid fa-arrow-right"></i>
+            <i class="fa fa-arrow-right"></i>
           </div>
 
           <!-- Nuevo autor -->
@@ -310,7 +310,7 @@ $usuarios = db()->query("SELECT id, nombre, apellido, username, foto_perfil
           <i class="bi bi-x me-1"></i> Cancelar
         </button>
         <button type="button" id="btn-transfer-confirm" disabled>
-          <i class="fa-solid fa-arrow-right-arrow-left me-2"></i>
+          <i class="fa fa-arrow-right-arrow-left me-2"></i>
           Confirmar transferencia
         </button>
       </div>
@@ -563,7 +563,7 @@ $('#postsTable').on('click', '.btn-transfer-single', function (e) {
       $.post('transfer_author.php', { ids: ids, user_id: selectedUserId }, function (res) {
         bootstrap.Modal.getInstance(document.getElementById('modalTransfer')).hide();
         btn.prop('disabled', false)
-           .html('<i class="fa-solid fa-arrow-right-arrow-left me-2"></i> Confirmar transferencia');
+           .html('<i class="fa fa-arrow-right-arrow-left me-2"></i> Confirmar transferencia');
 
         if (res.success) {
           Swal.fire({
@@ -578,7 +578,7 @@ $('#postsTable').on('click', '.btn-transfer-single', function (e) {
         }
       }, 'json').fail(() => {
         btn.prop('disabled', false)
-           .html('<i class="fa-solid fa-arrow-right-arrow-left me-2"></i> Confirmar transferencia');
+           .html('<i class="fa fa-arrow-right-arrow-left me-2"></i> Confirmar transferencia');
         Swal.fire('Error', 'Error de conexión.', 'error');
       });
     });

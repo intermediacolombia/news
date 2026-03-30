@@ -61,7 +61,7 @@ require_once __DIR__ . '/../inc/flash_helpers.php';
   <div class="portada">
     <h1><i class="bi bi-building"></i> Información Institucional</h1>
     <a class="btn btn-success float-end" href="<?= $url ?>/admin/institutional/create.php">
-      <i class="fa-solid fa-plus"></i> Nueva Página
+      <i class="fa fa-plus"></i> Nueva Página
     </a>
   </div>
 </div>

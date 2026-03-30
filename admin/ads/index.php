@@ -280,7 +280,7 @@ if (!empty($sys['ads_zone_map'])) {
       <!-- Estado Publisher ID -->
       <?php if (empty($pubId)): ?>
       <div class="alert alert-warning mt-3">
-        <i class="fa-solid fa-triangle-exclamation me-2"></i>
+        <i class="fa fa-triangle-exclamation me-2"></i>
         No tienes configurado un <strong>Publisher ID</strong>.
         Ve a <a href="../configuraciones/index.php">Configuraciones → SEO</a> y agrégalo primero.
       </div>
