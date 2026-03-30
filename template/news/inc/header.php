@@ -125,10 +125,10 @@
     <!-- ═══ Fuentes y Librerías ═══════════════════════════════════════════ -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="<?= URLBASE ?>/template/news/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
     <link href="<?= URLBASE ?>/template/news/css/style.css?<?= time() ?>" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/332d1c4e86.js" crossorigin="anonymous"></script>
 
     <!-- ═══ Facebook SDK ══════════════════════════════════════════════════ -->
     <div id="fb-root"></div>

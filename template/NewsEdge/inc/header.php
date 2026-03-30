@@ -133,8 +133,9 @@
     <!-- IE Only -->
     <link rel="stylesheet" href="<?= URLBASE ?>/template/NewsEdge/css/ie-only.css">
 
-    <!-- Font Awesome Kit -->
-    <script src="https://kit.fontawesome.com/332d1c4e86.js" crossorigin="anonymous"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- Modernizr -->
     <script src="<?= URLBASE ?>/template/NewsEdge/js/modernizr-2.8.3.min.js"></script>
 

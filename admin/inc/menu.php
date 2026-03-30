@@ -102,6 +102,16 @@
         <i class="fa fa-user"></i> Perfil
     </a>
 
+    <!-- HERRAMIENTAS -->
+    <?php if (isset($_SESSION["user_permissions"]) && in_array('Editar Configuraciones', $_SESSION["user_permissions"])): ?>
+        <a href="#" class="has-submenu" onclick="toggleSubmenu(event)">
+            <i class="fa-solid fa-screwdriver-wrench"></i> Herramientas <i class="fa fa-chevron-down"></i>
+        </a>
+        <div class="submenu">
+            <a href="<?php echo URLBASE; ?>/admin/herramientas/migrar-wordpress.php" onclick="closeSubmenus()">- Migrar desde WordPress</a>
+        </div>
+    <?php endif; ?>
+
     <!-- SALIR -->
     <a href="<?php echo URLBASE; ?>/admin/login/logout.php" onclick="closeSubmenus()">
         <i class="fa fa-power-off"></i> Salir
