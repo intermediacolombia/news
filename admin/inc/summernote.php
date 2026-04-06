@@ -138,7 +138,7 @@ $('#insertImageBtn').on('click', function() {
   }
   
   if (imgTag && pendingImageEditor) {
-    pendingImageEditor.summernote('editor.insertNode', $(imgTag)[0]);
+    pendingImageEditor.summernote('editor.insertHTML', imgTag + '<p></p>');
   }
   
   bootstrap.Modal.getInstance($('#imageModal')).hide();
@@ -151,13 +151,11 @@ function createImageTag(url, alt, caption) {
     imgTag += ' alt="' + alt + '"';
   }
   
-  imgTag += ' class="img-fluid" style="max-width: 100%; height: auto;"';
-  
   if (caption) {
-    imgTag += '><figure class="mt-2 text-center"><figcaption class="text-muted small">' + caption + '</figcaption></figure>';
-  } else {
-    imgTag += '>';
+    imgTag += ' data-caption="' + caption + '"';
   }
+  
+  imgTag += ' class="img-fluid" style="max-width: 100%; height: auto;">';
   
   return imgTag;
 }
