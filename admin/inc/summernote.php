@@ -2,6 +2,11 @@
 
 <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+<style>
+  /* Sin margen por defecto en imágenes — el usuario lo controla desde el editor */
+  .ql-editor img { margin: 0; vertical-align: bottom; }
+  .ql-editor p:has(> img:only-child) { margin: 0; line-height: 0; }
+</style>
 
 <!-- Modal: Galería de medios para el editor de contenido -->
 <div class="modal fade" id="editorMediaModal" tabindex="-1" data-bs-backdrop="static">
