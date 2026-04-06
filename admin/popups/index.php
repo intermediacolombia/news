@@ -302,7 +302,6 @@ function editPopup(id) {
                 const p = data.popup;
                 document.getElementById('popupId').value = p.id;
                 document.getElementById('title').value = p.title;
-                document.getElementById('content').value = p.content || '';
                 document.getElementById('popup_type').value = p.popup_type;
                 document.getElementById('position').value = p.position;
                 document.getElementById('width').value = p.width;
@@ -321,10 +320,21 @@ function editPopup(id) {
                 document.getElementById('show_on_pages').value = p.show_on_all_pages == '1' ? 'all' : 'homepage';
                 document.getElementById('show_once_per_visit').value = p.show_once_per_visit;
                 document.getElementById('existing_image').value = p.image || '';
+                
                 if (p.image) {
-                    document.getElementById('previewImage').src = '<?= URLBASE ?>/public/uploads/popups/' + p.image.split('/').pop();
+                    const imgName = p.image.split('/').pop();
+                    document.getElementById('previewImage').src = '<?= URLBASE ?>/public/uploads/popups/' + imgName;
                     document.getElementById('previewImage').style.display = 'block';
+                } else {
+                    document.getElementById('previewImage').style.display = 'none';
                 }
+                
+                if (window.jQuery && jQuery.fn && jQuery.fn.summernote) {
+                    jQuery('#content').summernote('code', p.content || '');
+                } else {
+                    document.getElementById('content').value = p.content || '';
+                }
+                
                 new bootstrap.Modal(document.getElementById('popupModal')).show();
             }
         });
