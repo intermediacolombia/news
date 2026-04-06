@@ -146,7 +146,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
 <?php endif; ?>
                 <!-- Contenido del artículo -->
                 <div class="my-4 post-content">
-                    <?= $post['content'] ?>
+                    <?= render_post_content($post['content']) ?>
                 </div>
 
                 <?php if (!empty($post['excerpt'])): ?>

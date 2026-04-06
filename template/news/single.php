@@ -200,7 +200,7 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                         
                         <!-- Contenido del artículo -->
                         <div class="post-content">
-                            <?= $post['content'] ?>
+                            <?= render_post_content($post['content']) ?>
                         </div>
                     </div>
                 </div>

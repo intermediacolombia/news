@@ -78,7 +78,7 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                             
                             <!-- Contenido -->
                             <div class="content">
-                                <?= $page['content'] ?>
+                                <?= render_post_content($page['content']) ?>
                             </div>
                             
                             <!-- Fecha de actualización -->

@@ -230,6 +230,68 @@ if (!function_exists('renderAdsenseBlock')) {
 }
 
 
+/* ========= Helper: convierte clases Quill a estilos inline para compatibilidad con temas ========= */
+if (!function_exists('render_post_content')) {
+    function render_post_content(string $html): string {
+        if (empty(trim($html))) return $html;
+
+        // Clases de alineación que Quill guarda y los temas no entienden
+        $classToStyle = [
+            'ql-align-center'  => 'text-align:center',
+            'ql-align-right'   => 'text-align:right',
+            'ql-align-justify' => 'text-align:justify',
+        ];
+        // Indentaciones
+        for ($i = 1; $i <= 8; $i++) {
+            $classToStyle['ql-indent-' . $i] = 'padding-left:' . ($i * 3) . 'em';
+        }
+
+        $dom = new DOMDocument();
+        libxml_use_internal_errors(true);
+        $dom->loadHTML(
+            '<html><head><meta charset="UTF-8"></head><body><div id="_qcewrap_">' . $html . '</div></body></html>',
+            LIBXML_NOWARNING | LIBXML_NOERROR
+        );
+        libxml_clear_errors();
+
+        $xpath = new DOMXPath($dom);
+        foreach ($xpath->query('//*[@class]') as $node) {
+            $classes      = preg_split('/\s+/', trim($node->getAttribute('class')));
+            $newStyles    = [];
+            $keepClasses  = [];
+
+            foreach ($classes as $cls) {
+                if (isset($classToStyle[$cls])) {
+                    $newStyles[] = $classToStyle[$cls];
+                } elseif ($cls !== '') {
+                    $keepClasses[] = $cls;
+                }
+            }
+
+            if (empty($newStyles)) continue;
+
+            $existing = trim($node->getAttribute('style'));
+            $merged   = implode(';', $newStyles) . ($existing ? ';' . $existing : '');
+            $node->setAttribute('style', $merged);
+
+            if ($keepClasses) {
+                $node->setAttribute('class', implode(' ', $keepClasses));
+            } else {
+                $node->removeAttribute('class');
+            }
+        }
+
+        $wrap = $dom->getElementById('_qcewrap_');
+        if (!$wrap) return $html;
+
+        $out = '';
+        foreach ($wrap->childNodes as $child) {
+            $out .= $dom->saveHTML($child);
+        }
+        return $out;
+    }
+}
+
 /* ========= Helper para obtener alt_text de imagen ========= */
 function get_image_alt($imagePath, $fallbackTitle = '') {
     if (empty($imagePath)) {

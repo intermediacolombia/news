@@ -93,7 +93,7 @@ if (!function_exists('img_url')) {
                     <!-- Contenido de la página -->
                     <div class="institutional-content item-box-light-md p-30-r mb-30">
                         <div class="content-body">
-                            <?= $page['content'] ?>
+                            <?= render_post_content($page['content']) ?>
                         </div>
                     </div>
                     

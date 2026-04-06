@@ -111,7 +111,7 @@ $typeName = $typeNames[$page['page_type']] ?? 'Institucional';
                         
                         <!-- Contenido del artículo -->
                         <div class="post-content">
-                            <?= $page['content'] ?>
+                            <?= render_post_content($page['content']) ?>
                         </div>
                         
                         <!-- Fecha de actualización -->

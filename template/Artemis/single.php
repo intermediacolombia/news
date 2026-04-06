@@ -168,7 +168,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                         <?php endif; ?>
 
                         <div class="post-content" style="color: var(--text-color); font-size: 16px; line-height: 1.8;">
-                            <?= $post['content'] ?>
+                            <?= render_post_content($post['content']) ?>
                         </div>
 
                         <?php

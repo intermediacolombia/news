@@ -52,7 +52,7 @@ if (!function_exists('img_url')) {
                         </h1>
                         
                         <div class="institutional-content" style="color: var(--text-color); font-size: 16px; line-height: 1.8;">
-                            <?= $page['content'] ?>
+                            <?= render_post_content($page['content']) ?>
                         </div>
                         
                         <div class="mt-4 pt-4" style="border-top: 1px solid rgba(255,255,255,0.1);">
