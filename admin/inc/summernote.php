@@ -6,6 +6,8 @@
   /* Sin margen por defecto en imágenes — el usuario lo controla desde el editor */
   .ql-editor img { margin: 0; vertical-align: bottom; }
   .ql-editor p:has(> img:only-child) { margin: 0; line-height: 0; }
+  /* El pie de foto queda pegado a la imagen, sin espacio entre ambos */
+  .ql-editor p:has(> img:only-child) + p { margin-top: 0 !important; }
 </style>
 
 <!-- Modal: Galería de medios para el editor de contenido -->
@@ -475,21 +477,21 @@ function initImageResizer(quill) {
     // Usar la posición guardada antes de que el modal quitara el foco
     var idx = (emEditor._savedRange || { index: emEditor.quill.getLength() }).index;
     var imgClass = 'img-fluid' + (widthClass ? ' ' + widthClass : '');
-    var imgHtml = '<img src="' + url + '" alt="' + _esc(alt) + '" class="' + imgClass + '" style="max-width:100%;">';
 
-    // Insertar imagen en la posición correcta
-    emEditor.quill.clipboard.dangerouslyPasteHTML(idx, imgHtml);
-
+    // Una sola llamada con imagen + caption juntos:
+    // así Quill parsea el bloque completo y crea párrafos separados correctamente.
+    // Dos llamadas separadas insertan el caption dentro del mismo <p> de la imagen.
+    var insertHtml = '<img src="' + url + '" alt="' + _esc(alt) + '" class="' + imgClass + '" style="max-width:100%;">';
     if (caption) {
-      // Insertar caption como párrafo centrado justo debajo de la imagen
-      emEditor.quill.clipboard.dangerouslyPasteHTML(
-        idx + 1,
-        '<p style="text-align:center;font-style:italic;margin:0;">' + _escHtml(caption) + '</p>'
-      );
-      emEditor.quill.setSelection(idx + 2, 0);
-    } else {
-      emEditor.quill.setSelection(idx + 1, 0);
+      insertHtml += '<p style="text-align:center;font-style:italic;margin:0 0 0.5em;">' + _escHtml(caption) + '</p>';
     }
+
+    emEditor.quill.clipboard.dangerouslyPasteHTML(idx, insertHtml);
+
+    // Posicionar cursor después de lo insertado:
+    // imagen(1) + \n(1) + caption-texto + \n(1) si había caption
+    var after = idx + 1 + (caption ? caption.length + 2 : 0);
+    emEditor.quill.setSelection(after, 0);
 
     bootstrap.Modal.getInstance(document.getElementById('editorMediaModal')).hide();
   });
