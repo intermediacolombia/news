@@ -2,7 +2,7 @@
 
 <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/quill-resize-image@1.0.11/dist/quill-resize-image.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/quill-resize-module@2.1.3/dist/quill-resize-module.min.js"></script>
 
 <!-- Modal: Galería de medios para el editor de contenido -->
 <div class="modal fade" id="editorMediaModal" tabindex="-1" data-bs-backdrop="static">
@@ -137,9 +137,7 @@
             }
           }
         },
-        imageResize: {
-          modules: ['Resize', 'DisplaySize', 'Toolbar']
-        }
+        'resize-module': {}
       }
     });
 
@@ -236,11 +234,9 @@
       quillEditor.init(function () { quillEditor.openGallery(); });
       
       var initialContent = textarea.value;
-      console.log('Loading content for', textarea.id, ':', initialContent ? initialContent.substring(0, 100) + '...' : 'empty');
       if (initialContent) {
         setTimeout(function() {
           quillEditor.setContent(initialContent);
-          console.log('Content loaded');
         }, 100);
       }
       
@@ -365,7 +361,12 @@
     } else {
       html = '<img src="' + url + '" alt="' + _esc(alt) + '" class="' + imgClass + '" style="max-width:100%;">';
     }
+    
     emEditor.quill.clipboard.dangerouslyPasteHTML(range.index, html);
+    
+    var newIndex = range.index + 1;
+    if (caption) newIndex += 2;
+    emEditor.quill.setSelection(newIndex, 0);
 
     bootstrap.Modal.getInstance(document.getElementById('editorMediaModal')).hide();
   });
