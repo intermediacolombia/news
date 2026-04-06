@@ -95,6 +95,9 @@
         <a href="<?php echo URLBASE; ?>/admin/config/" onclick="closeSubmenus()">
             <i class="fa fa-cog"></i> Configuraciones
         </a>
+        <a href="<?php echo URLBASE; ?>/admin/popups/" onclick="closeSubmenus()">
+            <i class="fa fa-bullhorn"></i> Popups
+        </a>
     <?php endif; ?>
 
     <!-- PERFIL -->

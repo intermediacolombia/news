@@ -157,11 +157,12 @@
         --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     }
     </style>
-<?php if (!empty($pubId) && ADSENSE_AUTO_ADS !== '1'): ?>
+<?php if (!empty($pubId) && defined('ADSENSE_AUTO_ADS') && ADSENSE_AUTO_ADS !== '1'): ?>
 <script src="<?= URLBASE ?>/admin/publicidad/ads_config.php"></script>
 <script defer src="<?= URLBASE ?>/public/js/ads-injector.js"></script>
 <?php endif; ?>
 
+<?php if (function_exists('renderPopup')) echo renderPopup(); ?>
 </head>
 <body>
 

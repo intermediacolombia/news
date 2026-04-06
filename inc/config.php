@@ -244,10 +244,125 @@ function get_image_alt($imagePath, $fallbackTitle = '') {
             return $media['alt_text'];
         }
     } catch (Throwable $e) {
-        // Si falla la consulta, retorna el fallback
     }
     
     return $fallbackTitle;
+}
+
+/* ========= Helper: renderizar popup ========= */
+function renderPopup(): string {
+    $sys = $GLOBALS['SYS_SETTINGS'] ?? [];
+    
+    try {
+        $stmt = db()->query("SELECT * FROM popups WHERE status = 'active' LIMIT 1");
+        $popup = $stmt->fetch(PDO::FETCH_ASSOC);
+    } catch (Throwable $e) {
+        return '';
+    }
+    
+    if (!$popup) return '';
+    
+    $isHomepage = isset($_GET['path']) && ($_GET['path'] === '' || $_GET['path'] === '/');
+    if (!$popup['show_on_all_pages'] && !$isHomepage) return '';
+    
+    $cookieName = 'popup_shown_' . $popup['id'];
+    if ($popup['show_once_per_visit'] && isset($_COOKIE[$cookieName])) return '';
+    
+    $positionMap = [
+        'center' => 'top: 50%; left: 50%; transform: translate(-50%, -50%);',
+        'bottom-right' => 'bottom: 20px; right: 20px;',
+        'bottom-left' => 'bottom: 20px; left: 20px;',
+        'top-right' => 'top: 20px; right: 20px;',
+        'top-left' => 'top: 20px; left: 20px;'
+    ];
+    $positionStyle = $positionMap[$popup['position']] ?? $positionMap['center'];
+    
+    $isNotification = $popup['popup_type'] === 'notification';
+    if ($isNotification) {
+        $positionStyle = 'position: fixed; ' . $positionStyle;
+    }
+    
+    $imageHtml = '';
+    if (!empty($popup['image'])) {
+        $imageHtml = '<img src="' . URLBASE . '/' . htmlspecialchars($popup['image']) . '" alt="' . htmlspecialchars($popup['title']) . '" style="max-width: 100%; border-radius: 8px; margin-bottom: 15px;">';
+    }
+    
+    $onclickAction = '';
+    if ($popup['action_type'] !== 'none' && !empty($popup['action_url'])) {
+        $target = $popup['action_new_tab'] ? ' target="_blank"' : '';
+        $onclickAction = ' onclick="window.location.href=\'' . htmlspecialchars($popup['action_url']) . '\'" style="cursor: pointer;"' . $target;
+    }
+    
+    $overlayStyle = $popup['overlay_enabled'] ? 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999;' : 'display: none;';
+    
+    $autoClose = $popup['auto_close_seconds'] > 0 ? 'setTimeout(function(){ document.getElementById(\'globalPopup\').remove(); }, ' . ($popup['auto_close_seconds'] * 1000) . ');' : '';
+    
+    $btnStyle = 'background:' . htmlspecialchars($popup['button_color']) . '; color:' . htmlspecialchars($popup['button_text_color']) . '; border: none; padding: 8px 20px; border-radius: 5px; cursor: pointer; margin-top: 10px;';
+    
+    $html = '
+    <div id="globalPopupOverlay" style="' . $overlayStyle . '"></div>
+    <div id="globalPopup" class="global-popup ' . ($isNotification ? 'global-notification' : 'global-modal') . '" style="
+        position: fixed; ' . $positionStyle . '
+        background: ' . htmlspecialchars($popup['background_color']) . ';
+        color: ' . htmlspecialchars($popup['text_color']) . ';
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        z-index: 10000;
+        max-width: ' . htmlspecialchars($popup['width']) . ';
+        max-height: 90vh;
+        overflow-y: auto;
+        display: none;
+    ">
+        <div style="text-align: center;"' . $onclickAction . '>
+            <h3 style="margin: 0 0 10px 0; font-size: 1.5rem;">' . htmlspecialchars($popup['title']) . '</h3>
+            ' . $imageHtml . '
+            <div style="text-align: left;">' . $popup['content'] . '</div>
+        </div>
+        <button onclick="closeGlobalPopup()" style="' . $btnStyle . '">' . htmlspecialchars($popup['button_text']) . '</button>
+    </div>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        setTimeout(function() {
+            var popup = document.getElementById("globalPopup");
+            var overlay = document.getElementById("globalPopupOverlay");
+            if (popup && overlay) {
+                popup.style.display = "block";
+                ' . $autoClose . '
+            }
+        }, ' . (intval($popup['delay_seconds']) * 1000) . ');
+    });
+    function closeGlobalPopup() {
+        var popup = document.getElementById("globalPopup");
+        var overlay = document.getElementById("globalPopupOverlay");
+        if (popup) popup.remove();
+        if (overlay) overlay.remove();
+        document.cookie = "popup_shown_' . $popup['id'] . '=1; path=/; max-age=86400";
+    }
+    </script>
+    <style>
+    @media (max-width: 600px) {
+        .global-popup {
+            width: 90% !important;
+            left: 5% !important;
+            transform: none !important;
+        }
+        .global-popup.global-modal {
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+        }
+        .global-popup.global-notification {
+            top: auto !important;
+            bottom: 10px !important;
+            left: 5% !important;
+            right: 5% !important;
+            width: 90% !important;
+        }
+    }
+    </style>
+    ';
+    
+    return $html;
 }
 
 

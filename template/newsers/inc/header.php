@@ -130,10 +130,7 @@
             --color-hover-link: <?= htmlspecialchars($sys['color-hover-link'] ?? '#0056b3', ENT_QUOTES, 'UTF-8') ?>;
         }
     </style>
-<?php if (!empty($pubId) && ADSENSE_AUTO_ADS !== '1'): ?>
-<script src="<?= URLBASE ?>/admin/publicidad/ads_config.php"></script>
-<script defer src="<?= URLBASE ?>/public/js/ads-injector.js"></script>
-<?php endif; ?>
+<?php if (function_exists('renderPopup')) echo renderPopup(); ?>
 </head>
 
 <body>

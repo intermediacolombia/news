@@ -483,6 +483,7 @@
 <script defer src="<?= URLBASE ?>/public/js/ads-injector.js"></script>
 <?php endif; ?>
 
+<?php if (function_exists('renderPopup')) echo renderPopup(); ?>
 </head>
 
 <body>
