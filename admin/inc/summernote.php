@@ -88,7 +88,7 @@ $(document).ready(function() {
           if (file.size < 500 * 1024) {
             let reader = new FileReader();
             reader.onloadend = function() {
-              showImageModal(null, editor, reader.result);
+              showImageModal(null, editor, reader.result, false);
             };
             reader.readAsDataURL(file);
           } else {
@@ -107,11 +107,17 @@ $(document).ready(function() {
   });
 });
 
-function showImageModal(file, editor, dataUrl) {
+function showImageModal(file, editor, dataUrl, isServerUrl) {
   pendingImageFile = file;
   pendingImageEditor = editor;
-  pendingImageDataUrl = dataUrl;
-  pendingImageUrl = null;
+  
+  if (isServerUrl) {
+    pendingImageUrl = dataUrl;
+    pendingImageDataUrl = null;
+  } else {
+    pendingImageDataUrl = dataUrl;
+    pendingImageUrl = null;
+  }
   
   $('#imgAltText').val('');
   $('#imgCaptionText').val('');
@@ -123,36 +129,42 @@ $('#insertImageBtn').on('click', function() {
   var alt = $('#imgAltText').val().trim();
   var caption = $('#imgCaptionText').val().trim();
   
+  var imgTag = '';
+  
   if (pendingImageDataUrl) {
-    insertImageWithMetadata(pendingImageDataUrl, alt, caption);
+    imgTag = createImageTag(pendingImageDataUrl, alt, caption);
   } else if (pendingImageUrl) {
-    insertImageWithMetadata(pendingImageUrl, alt, caption);
+    imgTag = createImageTag(pendingImageUrl, alt, caption);
+  }
+  
+  if (imgTag && pendingImageEditor) {
+    pendingImageEditor.summernote('editor.insertNode', $(imgTag)[0]);
   }
   
   bootstrap.Modal.getInstance($('#imageModal')).hide();
 });
 
-$('#cancelImageBtn').on('click', function() {
-  bootstrap.Modal.getInstance($('#imageModal')).hide();
-});
-
-function insertImageWithMetadata(url, alt, caption) {
+function createImageTag(url, alt, caption) {
   var imgTag = '<img src="' + url + '"';
   
   if (alt) {
     imgTag += ' alt="' + alt + '"';
   }
   
-  imgTag += ' class="img-fluid"';
+  imgTag += ' class="img-fluid" style="max-width: 100%; height: auto;"';
   
   if (caption) {
-    imgTag += ' /><figure class="mt-2 text-center"><figcaption class="text-muted small">' + caption + '</figcaption></figure>';
+    imgTag += '><figure class="mt-2 text-center"><figcaption class="text-muted small">' + caption + '</figcaption></figure>';
   } else {
-    imgTag += ' />';
+    imgTag += '>';
   }
   
-  pendingImageEditor.summernote('insertHTML', imgTag);
+  return imgTag;
 }
+
+$('#cancelImageBtn').on('click', function() {
+  bootstrap.Modal.getInstance($('#imageModal')).hide();
+});
 
 function uploadSummernoteImage(file, editor) {
   if (file.size > 5 * 1024 * 1024) {
@@ -174,7 +186,7 @@ function uploadSummernoteImage(file, editor) {
     type: 'POST',
     success: function(response) {
       if (response.url) {
-        showImageModal(null, editor, response.url);
+        showImageModal(null, editor, response.url, true);
       } else if (response.error) {
         alert('Error: ' + response.error);
       }
