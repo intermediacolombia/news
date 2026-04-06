@@ -322,7 +322,7 @@ function editPopup(id) {
                 document.getElementById('show_once_per_visit').value = p.show_once_per_visit;
                 document.getElementById('existing_image').value = p.image || '';
                 if (p.image) {
-                    document.getElementById('previewImage').src = '<?= URLBASE ?>/' + p.image;
+                    document.getElementById('previewImage').src = '<?= URLBASE ?>/public/uploads/popups/' + p.image.split('/').pop();
                     document.getElementById('previewImage').style.display = 'block';
                 }
                 new bootstrap.Modal(document.getElementById('popupModal')).show();

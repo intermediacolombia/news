@@ -52,15 +52,32 @@ try {
         $show_once_per_visit = $_POST['show_once_per_visit'] ?? '1';
 
         $imagePath = $_POST['existing_image'] ?? '';
-        $uploadDir = __DIR__ . '/../uploads/popups/';
-        if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
-
-        if (!empty($_FILES['image']['name'])) {
-            $ext = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
+        $uploadDir = __DIR__ . '/../../public/uploads/popups/';
+        
+        if (!empty($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK && !empty($_FILES['image']['name'])) {
+            if (!is_dir($uploadDir)) {
+                if (!mkdir($uploadDir, 0755, true)) {
+                    throw new Exception('No se pudo crear la carpeta de uploads: ' . $uploadDir);
+                }
+            }
+            
+            $ext = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
+            $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+            if (!in_array($ext, $allowed)) {
+                throw new Exception('Tipo de archivo no permitido. Solo: jpg, jpeg, png, gif, webp');
+            }
+            
             $filename = 'popup_' . time() . '.' . $ext;
             $dest = $uploadDir . $filename;
+            
+            if (!is_writable($uploadDir)) {
+                throw new Exception('La carpeta uploads no tiene permisos de escritura');
+            }
+            
             if (move_uploaded_file($_FILES['image']['tmp_name'], $dest)) {
-                $imagePath = 'uploads/popups/' . $filename;
+                $imagePath = 'public/uploads/popups/' . $filename;
+            } else {
+                throw new Exception('Error al mover el archivo subido');
             }
         }
 

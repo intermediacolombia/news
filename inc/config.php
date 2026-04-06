@@ -284,7 +284,7 @@ function renderPopup(): string {
     
     $imageHtml = '';
     if (!empty($popup['image'])) {
-        $imageHtml = '<img src="' . URLBASE . '/' . htmlspecialchars($popup['image']) . '" alt="' . htmlspecialchars($popup['title']) . '" style="max-width: 100%; border-radius: 8px; margin-bottom: 15px;">';
+        $imageHtml = '<img src="' . URLBASE . '/public/' . htmlspecialchars($popup['image']) . '" alt="' . htmlspecialchars($popup['title']) . '" style="max-width: 100%; border-radius: 8px; margin-bottom: 15px;">';
     }
     
     $onclickAction = '';
