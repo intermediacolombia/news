@@ -328,7 +328,7 @@
     var caption = document.getElementById('em-caption').value.trim();
     var url = emSelected.url;
 
-    var range = emEditor.quill.getSelection();
+    var range = emEditor.quill.getSelection() || { index: emEditor.quill.getLength() };
     var html;
     if (caption) {
       html = '<figure class="figure d-block text-center">'
