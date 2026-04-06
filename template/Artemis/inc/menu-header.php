@@ -27,10 +27,10 @@
                                 <a class="nav-link" href="<?= URLBASE ?>/noticias">NOTICIAS</a>
                             </li>
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button" data-toggle="dropdown">
+                                <a class="nav-link" href="<?= URLBASE ?>/noticias">
                                     CATEGORÍAS
                                 </a>
-                                <div class="dropdown-menu" style="background: var(--bg-secondary); border: 1px solid var(--border-color);">
+                                <div class="dropdown-menu">
                                     <?php
                                     $st = db()->query("
                                         SELECT c.name, c.slug, COUNT(p.id) AS total
@@ -44,15 +44,15 @@
                                         ORDER BY c.name ASC
                                     ");
                                     $cats = $st->fetchAll(PDO::FETCH_ASSOC);
-                                    foreach ($cats as $cat): 
+                                    foreach ($cats as $cat):
                                     ?>
-                                        <a class="dropdown-item" href="<?= URLBASE ?>/noticias/<?= htmlspecialchars($cat['slug']) ?>/" style="color: var(--text-color);">
+                                        <a class="dropdown-item" href="<?= URLBASE ?>/noticias/<?= htmlspecialchars($cat['slug']) ?>/">
                                             <?= htmlspecialchars($cat['name']) ?>
                                         </a>
                                     <?php endforeach; ?>
                                 </div>
                             </li>
-                            
+
                             <?php
                             $stCols = db()->query("
                                 SELECT nombre, apellido, username
@@ -64,17 +64,23 @@
                             ");
                             $columnistasMenu = $stCols->fetchAll(PDO::FETCH_ASSOC);
                             ?>
-                            
-                            <?php if (!empty($columnistasMenu)): ?>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="columnistasDropdown" role="button" data-toggle="dropdown">
+
+                            <?php if (count($columnistasMenu) === 1): ?>
+                            <li class="nav-item">
+                                <a class="nav-link" href="<?= URLBASE ?>/columnista/<?= htmlspecialchars($columnistasMenu[0]['username']) ?>/">
                                     COLUMNISTAS
                                 </a>
-                                <div class="dropdown-menu" style="background: var(--bg-secondary); border: 1px solid var(--border-color);">
-                                    <?php foreach ($columnistasMenu as $col): 
+                            </li>
+                            <?php elseif (count($columnistasMenu) > 1): ?>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link" href="<?= URLBASE ?>/columnista">
+                                    COLUMNISTAS
+                                </a>
+                                <div class="dropdown-menu">
+                                    <?php foreach ($columnistasMenu as $col):
                                         $nombreCompleto = trim($col['nombre'] . ' ' . $col['apellido']);
                                     ?>
-                                        <a class="dropdown-item" href="<?= URLBASE ?>/columnista/<?= htmlspecialchars($col['username']) ?>/" style="color: var(--text-color);">
+                                        <a class="dropdown-item" href="<?= URLBASE ?>/columnista/<?= htmlspecialchars($col['username']) ?>/">
                                             <?= htmlspecialchars($nombreCompleto) ?>
                                         </a>
                                     <?php endforeach; ?>
@@ -83,30 +89,30 @@
                             <?php endif; ?>
 
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="nosotrosDropdown" role="button" data-toggle="dropdown">
+                                <a class="nav-link" href="<?= URLBASE ?>/institucional">
                                     NOSOTROS
                                 </a>
-                                <div class="dropdown-menu" style="background: var(--bg-secondary); border: 1px solid var(--border-color);">
+                                <div class="dropdown-menu">
                                     <?php
                                     $stInst = db()->query("
-                                        SELECT title, slug 
-                                        FROM institutional_pages 
-                                        WHERE status = 'published' 
+                                        SELECT title, slug
+                                        FROM institutional_pages
+                                        WHERE status = 'published'
                                         ORDER BY display_order ASC, title ASC
                                     ");
                                     $institucionalPages = $stInst->fetchAll(PDO::FETCH_ASSOC);
-                                    foreach ($institucionalPages as $instPage): 
+                                    foreach ($institucionalPages as $instPage):
                                     ?>
-                                        <a class="dropdown-item" href="<?= URLBASE ?>/institucional/<?= htmlspecialchars($instPage['slug']) ?>" style="color: var(--text-color);">
+                                        <a class="dropdown-item" href="<?= URLBASE ?>/institucional/<?= htmlspecialchars($instPage['slug']) ?>">
                                             <?= htmlspecialchars($instPage['title']) ?>
                                         </a>
                                     <?php endforeach; ?>
-                                    <a class="dropdown-item" href="<?= URLBASE ?>/institucional" style="color: var(--text-color);">
+                                    <a class="dropdown-item" href="<?= URLBASE ?>/institucional">
                                         <i class="fas fa-list mr-2"></i>Ver todas
                                     </a>
                                 </div>
                             </li>
-                            
+
                             <li class="nav-item">
                                 <a class="nav-link" href="<?= URLBASE ?>/contact">CONTACTO</a>
                             </li>

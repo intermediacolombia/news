@@ -211,7 +211,15 @@
             width: 80%;
         }
 
-        /* === Dropdown === */
+        /* === Dropdown: hover automático === */
+        /* Abrir con hover en desktop */
+        @media (min-width: 992px) {
+            .artemis-navbar .nav-item.dropdown:hover > .dropdown-menu {
+                display: block;
+                margin-top: 0;
+            }
+        }
+
         .dropdown-menu {
             background: var(--bg-secondary) !important;
             border: 1px solid var(--border-color) !important;
