@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/../../inc/config.php';
 
 $slug = $_GET['institutional_slug'] ?? '';
@@ -47,11 +47,11 @@ if (!function_exists('img_url')) {
                     <?php endif; ?>
                     
                     <div class="p-4">
-                        <h1 style="color: #fff; font-family: 'Playfair Display', serif; font-size: 2rem; margin-bottom: 20px;">
+                        <h1 style="color: var(--text-color); font-family: 'Playfair Display', serif; font-size: 2rem; margin-bottom: 20px;">
                             <?= htmlspecialchars($page['title']) ?>
                         </h1>
                         
-                        <div class="institutional-content" style="color: #e6edf3; font-size: 16px; line-height: 1.8;">
+                        <div class="institutional-content" style="color: var(--text-color); font-size: 16px; line-height: 1.8;">
                             <?= $page['content'] ?>
                         </div>
                         
@@ -74,16 +74,16 @@ if (!function_exists('img_url')) {
 
 <style>
     .institutional-content h2, .institutional-content h3, .institutional-content h4 {
-        color: #fff;
+        color: var(--text-color);
         font-weight: 600;
         margin-top: 25px;
         margin-bottom: 15px;
     }
     .institutional-content h2 { font-size: 24px; border-bottom: 2px solid var(--primary); padding-bottom: 10px; }
     .institutional-content h3 { font-size: 20px; }
-    .institutional-content p { margin-bottom: 20px; color: #e6edf3; }
+    .institutional-content p { margin-bottom: 20px; color: var(--text-color); }
     .institutional-content ul, .institutional-content ol { margin-bottom: 20px; padding-left: 30px; }
-    .institutional-content li { margin-bottom: 10px; color: #e6edf3; }
+    .institutional-content li { margin-bottom: 10px; color: var(--text-color); }
     .institutional-content img { max-width: 100%; height: auto; border-radius: 8px; margin: 20px 0; }
     .institutional-content blockquote { border-left: 4px solid var(--primary); padding-left: 20px; margin: 25px 0; font-style: italic; color: var(--text-muted); }
 </style>

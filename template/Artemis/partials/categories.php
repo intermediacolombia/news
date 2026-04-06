@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 $categories = db()->query("
     SELECT c.id, c.name, c.slug, COUNT(p.id) AS total
     FROM blog_categories c
@@ -24,7 +24,7 @@ if (!function_exists('img_url')) {
     <div class="container">
         <div class="row mb-4">
             <div class="col-12 text-center">
-                <h2 class="section-title" style="color: #fff;">CATEGORÍAS</h2>
+                <h2 class="section-title" style="color: var(--text-color);">CATEGORÍAS</h2>
             </div>
         </div>
         
@@ -42,7 +42,7 @@ if (!function_exists('img_url')) {
                     
                     <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(transparent, rgba(0,0,0,0.8)); display: flex; align-items: flex-end; padding: 20px;">
                         <div>
-                            <h4 style="color: #fff; font-size: 20px; font-weight: 600; margin: 0;">
+                            <h4 style="color: var(--text-color); font-size: 20px; font-weight: 600; margin: 0;">
                                 <?= htmlspecialchars($cat['name']) ?>
                             </h4>
                             <span style="color: var(--text-muted); font-size: 14px;">

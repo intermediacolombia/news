@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/../../inc/config.php';
 
 $sql = "SELECT id, title, slug, page_type, image, seo_description, display_order FROM institutional_pages WHERE status = 'published' ORDER BY display_order ASC, title ASC";
@@ -44,7 +44,7 @@ $typeIcons = [
     <div class="container">
         <div class="row mb-4">
             <div class="col-12">
-                <h1 class="section-title" style="color: #fff;">INFORMACIÓN INSTITUCIONAL</h1>
+                <h1 class="section-title" style="color: var(--text-color);">INFORMACIÓN INSTITUCIONAL</h1>
                 <p style="color: var(--text-muted); margin-top: 15px;">Conoce más sobre nuestra organización</p>
             </div>
         </div>
@@ -52,7 +52,7 @@ $typeIcons = [
         <?php if(empty($pages)): ?>
         <div class="text-center py-5">
             <i class="fas fa-building" style="font-size: 60px; color: var(--text-muted); opacity: 0.3;"></i>
-            <h3 style="color: #fff; margin-top: 20px;">No hay información disponible</h3>
+            <h3 style="color: var(--text-color); margin-top: 20px;">No hay información disponible</h3>
             <p style="color: var(--text-muted);">Próximamente tendremos más información institucional.</p>
         </div>
         <?php else: ?>
@@ -79,7 +79,7 @@ $typeIcons = [
                     </div>
                     <?php endif; ?>
                     <div class="p-4">
-                        <h4 style="color: #fff; font-size: 18px; font-weight: 600; margin-bottom: 10px;">
+                        <h4 style="color: var(--text-color); font-size: 18px; font-weight: 600; margin-bottom: 10px;">
                             <a href="<?= $pageUrl ?>" style="color: inherit; text-decoration: none;">
                                 <?= htmlspecialchars($page['title']) ?>
                             </a>

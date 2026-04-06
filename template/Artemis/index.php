@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 $page_title       = !empty($sys['seo_home_title']) 
     ? $sys['seo_home_title'] 
     : NOMBRE_SITIO;
@@ -86,7 +86,7 @@ $latestPosts = db()->query("
                                 <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.9)); padding: 40px 30px;">
                                     <span class="category-badge mb-3 d-inline-block"><?= htmlspecialchars($slide['category_name']) ?></span>
                                     <h2 class="hero-title mb-3" style="font-size: 1.8rem; color: #fff;">
-                                        <a href="<?= $postUrl ?>" style="color: #fff; text-decoration: none;">
+                                        <a href="<?= $postUrl ?>" style="color: var(--text-color); text-decoration: none;">
                                             <?= truncate_text($slide['title'], 80) ?>
                                         </a>
                                     </h2>
@@ -147,7 +147,7 @@ $latestPosts = db()->query("
     <div class="container">
         <div class="row mb-4">
             <div class="col-12">
-                <h2 class="section-title" style="color: #fff;">LO MÁS DESTACADO</h2>
+                <h2 class="section-title" style="color: var(--text-color);">LO MÁS DESTACADO</h2>
             </div>
         </div>
         
@@ -169,7 +169,7 @@ $latestPosts = db()->query("
                         </span>
                     </div>
                     <div class="p-4">
-                        <h4 style="color: #fff; font-size: 18px; font-weight: 600; margin-bottom: 10px; line-height: 1.4;">
+                        <h4 style="color: var(--text-color); font-size: 18px; font-weight: 600; margin-bottom: 10px; line-height: 1.4;">
                             <a href="<?= $postUrl ?>" style="color: inherit; text-decoration: none;">
                                 <?= truncate_text($post['title'], 60) ?>
                             </a>
@@ -198,7 +198,7 @@ $latestPosts = db()->query("
             <div class="col-lg-8">
                 <div class="row mb-4">
                     <div class="col-12">
-                        <h2 class="section-title" style="color: #fff;">ÚLTIMAS NOTICIAS</h2>
+                        <h2 class="section-title" style="color: var(--text-color);">ÚLTIMAS NOTICIAS</h2>
                     </div>
                 </div>
                 
@@ -220,7 +220,7 @@ $latestPosts = db()->query("
                                 </span>
                             </div>
                             <div class="p-3">
-                                <h5 style="color: #fff; font-size: 16px; font-weight: 600; margin-bottom: 8px; line-height: 1.4;">
+                                <h5 style="color: var(--text-color); font-size: 16px; font-weight: 600; margin-bottom: 8px; line-height: 1.4;">
                                     <a href="<?= $postUrl ?>" style="color: inherit; text-decoration: none;">
                                         <?= truncate_text($post['title'], 55) ?>
                                     </a>

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/../../inc/config.php';
 
 if (!function_exists('img_url')) {
@@ -64,7 +64,7 @@ $page_title = $categorySlug ? $category['name'] . " | " . NOMBRE_SITIO : "Notici
     <div class="container">
         <div class="row mb-4">
             <div class="col-12">
-                <h1 class="section-title" style="color: #fff;"><?= htmlspecialchars($category['name']) ?></h1>
+                <h1 class="section-title" style="color: var(--text-color);"><?= htmlspecialchars($category['name']) ?></h1>
                 <p style="color: var(--text-muted); margin-top: 10px;"><?= $totalPosts ?> <?= $totalPosts === 1 ? 'artículo' : 'artículos' ?></p>
             </div>
         </div>
@@ -73,7 +73,7 @@ $page_title = $categorySlug ? $category['name'] . " | " . NOMBRE_SITIO : "Notici
             <?php if (empty($posts)): ?>
             <div class="col-12 text-center py-5">
                 <i class="fas fa-newspaper" style="font-size: 60px; color: var(--text-muted); opacity: 0.3;"></i>
-                <h3 style="color: #fff; margin-top: 20px;">No hay noticias disponibles</h3>
+                <h3 style="color: var(--text-color); margin-top: 20px;">No hay noticias disponibles</h3>
                 <p style="color: var(--text-muted);">Pronto tendremos nuevo contenido para ti.</p>
                 <a href="<?= URLBASE ?>" class="btn-artemis mt-3">Volver al Inicio</a>
             </div>
@@ -95,7 +95,7 @@ $page_title = $categorySlug ? $category['name'] . " | " . NOMBRE_SITIO : "Notici
                         </span>
                     </div>
                     <div class="p-3">
-                        <h4 style="color: #fff; font-size: 16px; font-weight: 600; margin-bottom: 10px; line-height: 1.4;">
+                        <h4 style="color: var(--text-color); font-size: 16px; font-weight: 600; margin-bottom: 10px; line-height: 1.4;">
                             <a href="<?= $postUrl ?>" style="color: inherit; text-decoration: none;">
                                 <?= htmlspecialchars($p['title']) ?>
                             </a>
@@ -122,7 +122,7 @@ $page_title = $categorySlug ? $category['name'] . " | " . NOMBRE_SITIO : "Notici
                         <li>
                             <a href="<?= $pageBase . $i ?>/" 
                                class="<?= $i == $pageNum ? 'btn-artemis' : 'btn' ?>"
-                               style="<?= $i == $pageNum ? '' : 'background: var(--dark-secondary); color: #e6edf3; border: 1px solid rgba(255,255,255,0.1);' ?> padding: 10px 16px; border-radius: 8px; text-decoration: none; display: inline-block;">
+                               style="<?= $i == $pageNum ? '' : 'background: var(--dark-secondary); color: var(--text-color); border: 1px solid var(--border-color);' ?> padding: 10px 16px; border-radius: 8px; text-decoration: none; display: inline-block;">
                                 <?= $i ?>
                             </a>
                         </li>

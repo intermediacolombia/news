@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/../../inc/config.php';
 
 $sql = "SELECT id, nombre, apellido, username, foto_perfil FROM usuarios WHERE es_columnista = 1 AND estado = 0 AND borrado = 0 ORDER BY nombre ASC, apellido ASC";
@@ -27,7 +27,7 @@ if (!function_exists('img_url')) {
     <div class="container">
         <div class="row mb-5">
             <div class="col-12 text-center">
-                <h1 class="section-title" style="color: #fff;">NUESTROS COLUMNISTAS</h1>
+                <h1 class="section-title" style="color: var(--text-color);">NUESTROS COLUMNISTAS</h1>
                 <p style="color: var(--text-muted); margin-top: 15px; max-width: 600px; margin-left: auto; margin-right: auto;">
                     Voces expertas con perspectivas únicas sobre los temas que más importan
                 </p>
@@ -37,7 +37,7 @@ if (!function_exists('img_url')) {
         <?php if(empty($columnistas)): ?>
         <div class="text-center py-5">
             <i class="fas fa-users" style="font-size: 60px; color: var(--text-muted); opacity: 0.3;"></i>
-            <h3 style="color: #fff; margin-top: 20px;">No hay columnistas disponibles</h3>
+            <h3 style="color: var(--text-color); margin-top: 20px;">No hay columnistas disponibles</h3>
             <p style="color: var(--text-muted);">Próximamente agregaremos nuevos columnistas a nuestro equipo.</p>
         </div>
         <?php else: ?>
@@ -60,11 +60,11 @@ if (!function_exists('img_url')) {
                              style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 4px solid var(--primary); margin-bottom: 20px;">
                     <?php else: ?>
                         <div style="width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; border: 4px solid var(--primary);">
-                            <span style="color: #fff; font-size: 40px; font-weight: 700;"><?= $iniciales ?></span>
+                            <span style="color: var(--text-color); font-size: 40px; font-weight: 700;"><?= $iniciales ?></span>
                         </div>
                     <?php endif; ?>
                     
-                    <h4 style="color: #fff; font-size: 20px; font-weight: 600; margin-bottom: 5px;">
+                    <h4 style="color: var(--text-color); font-size: 20px; font-weight: 600; margin-bottom: 5px;">
                         <a href="<?= $profileUrl ?>" style="color: inherit; text-decoration: none;">
                             <?= htmlspecialchars($nombreCompleto) ?>
                         </a>

@@ -89,15 +89,15 @@ img {
 }
 
 .dropdown-menu {
-    background: var(--dark-secondary) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    background: var(--bg-secondary) !important;
+    border: 1px solid var(--border-color) !important;
     border-radius: 12px !important;
     padding: 10px !important;
     margin-top: 10px !important;
 }
 
 .dropdown-item {
-    color: #e6edf3 !important;
+    color: var(--text-color) !important;
     padding: 10px 15px !important;
     border-radius: 8px !important;
     transition: all 0.3s ease !important;
@@ -285,15 +285,15 @@ img {
 
 /* Search Modal */
 .search-modal .modal-content {
-    background: var(--dark-secondary);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
     border-radius: 20px;
 }
 
 .search-input {
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    color: #fff;
+    background: var(--bg-color);
+    border: 2px solid var(--border-color);
+    color: var(--text-color);
     padding: 15px 20px;
     border-radius: 12px;
     font-size: 16px;
@@ -410,7 +410,7 @@ img {
     top: 20px;
     right: 20px;
     cursor: pointer;
-    color: #fff;
+    color: var(--text-color);
     font-size: 24px;
 }
 
@@ -422,11 +422,11 @@ img {
 
 .offcanvas-nav li {
     padding: 15px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .offcanvas-nav a {
-    color: #e6edf3;
+    color: var(--text-color);
     text-decoration: none;
     font-size: 16px;
 }

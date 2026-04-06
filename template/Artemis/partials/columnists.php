@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 if (!function_exists('img_url')) {
     function img_url(?string $path): string {
         if (empty($path)) return URLBASE . '/template/Artemis/img/avatar.jpg';
@@ -23,7 +23,7 @@ $columnistas = db()->query("
     <div class="container">
         <div class="row mb-4">
             <div class="col-12 text-center">
-                <h2 class="section-title" style="color: #fff;">NUESTROS COLUMNISTAS</h2>
+                <h2 class="section-title" style="color: var(--text-color);">NUESTROS COLUMNISTAS</h2>
                 <p style="color: var(--text-muted); margin-top: 15px;">Voces expertas con perspectivas únicas</p>
             </div>
         </div>
@@ -50,12 +50,12 @@ $columnistas = db()->query("
                                  style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary);">
                         <?php else: ?>
                             <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); display: flex; align-items: center; justify-content: center; margin: 0 auto; border: 3px solid var(--primary);">
-                                <span style="color: #fff; font-size: 28px; font-weight: 700;"><?= $iniciales ?></span>
+                                <span style="color: var(--text-color); font-size: 28px; font-weight: 700;"><?= $iniciales ?></span>
                             </div>
                         <?php endif; ?>
                     </div>
                     
-                    <h5 style="color: #fff; font-size: 16px; font-weight: 600; margin-bottom: 5px;">
+                    <h5 style="color: var(--text-color); font-size: 16px; font-weight: 600; margin-bottom: 5px;">
                         <a href="<?= $profileUrl ?>" style="color: inherit; text-decoration: none;">
                             <?= htmlspecialchars($nombreCompleto) ?>
                         </a>

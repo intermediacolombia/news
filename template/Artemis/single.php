@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/../../inc/config.php';
 
 if (!function_exists('img_url')) {
@@ -105,7 +105,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                     <div class="p-4">
                         <span class="category-badge mb-3 d-inline-block"><?= htmlspecialchars($post['category_name']) ?></span>
                         
-                        <h1 class="mb-4" style="color: #fff; font-family: 'Playfair Display', serif; font-size: 2rem; line-height: 1.3;">
+                        <h1 class="mb-4" style="color: var(--text-color); font-family: 'Playfair Display', serif; font-size: 2rem; line-height: 1.3;">
                             <?= htmlspecialchars($post['title']) ?>
                         </h1>
                         
@@ -113,12 +113,12 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                             <?php if ($authorData): ?>
                             <span>
                                 <i class="fas fa-user mr-2"></i>
-                                Por <strong style="color: #fff;"><?= htmlspecialchars($authorData['nombre'] . ' ' . $authorData['apellido']) ?></strong>
+                                Por <strong style="color: var(--text-color);"><?= htmlspecialchars($authorData['nombre'] . ' ' . $authorData['apellido']) ?></strong>
                             </span>
                             <?php elseif (!empty($post['author'])): ?>
                             <span>
                                 <i class="fas fa-user mr-2"></i>
-                                Por <strong style="color: #fff;"><?= htmlspecialchars($post['author']) ?></strong>
+                                Por <strong style="color: var(--text-color);"><?= htmlspecialchars($post['author']) ?></strong>
                             </span>
                             <?php endif; ?>
                             <span>
@@ -139,7 +139,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                                 </button>
                                 <div class="flex-grow-1">
                                     <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <span style="color: #fff; font-weight: 600;">
+                                        <span style="color: var(--text-color); font-weight: 600;">
                                             <i class="fas fa-headphones mr-2"></i>Escuchar artículo
                                         </span>
                                         <span id="timeDisplay" style="color: rgba(255,255,255,0.9); font-size: 13px;">0:00</span>
@@ -152,7 +152,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                         </div>
                         <?php endif; ?>
 
-                        <div class="post-content" style="color: #e6edf3; font-size: 16px; line-height: 1.8;">
+                        <div class="post-content" style="color: var(--text-color); font-size: 16px; line-height: 1.8;">
                             <?= $post['content'] ?>
                         </div>
 
@@ -188,7 +188,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                                 <a href="<?= URLBASE ?>/<?= htmlspecialchars($prevPost['category_slug']) ?>/<?= htmlspecialchars($prevPost['slug']) ?>/" style="color: var(--primary); text-decoration: none;">
                                     <i class="fas fa-arrow-left mr-2"></i>Anterior
                                 </a>
-                                <p style="color: #e6edf3; margin-top: 5px; font-size: 14px;"><?= truncate_text($prevPost['title'], 50) ?></p>
+                                <p style="color: var(--text-color); margin-top: 5px; font-size: 14px;"><?= truncate_text($prevPost['title'], 50) ?></p>
                                 <?php endif; ?>
                             </div>
                             <div class="col-6 text-right">
@@ -196,7 +196,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                                 <a href="<?= URLBASE ?>/<?= htmlspecialchars($nextPost['category_slug']) ?>/<?= htmlspecialchars($nextPost['slug']) ?>/" style="color: var(--primary); text-decoration: none;">
                                     Siguiente<i class="fas fa-arrow-right ml-2"></i>
                                 </a>
-                                <p style="color: #e6edf3; margin-top: 5px; font-size: 14px;"><?= truncate_text($nextPost['title'], 50) ?></p>
+                                <p style="color: var(--text-color); margin-top: 5px; font-size: 14px;"><?= truncate_text($nextPost['title'], 50) ?></p>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -220,7 +220,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                                      class="mr-3"
                                      style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover;">
                                 <div>
-                                    <h5 style="color: #fff; margin: 0;"><?= htmlspecialchars($authorData['nombre'] . ' ' . $authorData['apellido']) ?></h5>
+                                    <h5 style="color: var(--text-color); margin: 0;"><?= htmlspecialchars($authorData['nombre'] . ' ' . $authorData['apellido']) ?></h5>
                                     <span style="color: var(--primary); font-size: 14px;">Autor</span>
                                 </div>
                             </div>
@@ -228,7 +228,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                         <?php endif; ?>
 
                         <div class="mt-4">
-                            <h4 style="color: #fff; margin-bottom: 20px;">Comentarios</h4>
+                            <h4 style="color: var(--text-color); margin-bottom: 20px;">Comentarios</h4>
                             <div class="fb-comments" data-href="<?= 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] ?>" data-width="100%" data-numposts="10" data-colorscheme="dark"></div>
                         </div>
                     </div>

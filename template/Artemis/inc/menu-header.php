@@ -30,7 +30,7 @@
                                 <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button" data-toggle="dropdown">
                                     CATEGORÍAS
                                 </a>
-                                <div class="dropdown-menu" style="background: var(--dark-secondary); border: 1px solid rgba(255,255,255,0.1);">
+                                <div class="dropdown-menu" style="background: var(--bg-secondary); border: 1px solid var(--border-color);">
                                     <?php
                                     $st = db()->query("
                                         SELECT c.name, c.slug, COUNT(p.id) AS total
@@ -70,7 +70,7 @@
                                 <a class="nav-link dropdown-toggle" href="#" id="columnistasDropdown" role="button" data-toggle="dropdown">
                                     COLUMNISTAS
                                 </a>
-                                <div class="dropdown-menu" style="background: var(--dark-secondary); border: 1px solid rgba(255,255,255,0.1);">
+                                <div class="dropdown-menu" style="background: var(--bg-secondary); border: 1px solid var(--border-color);">
                                     <?php foreach ($columnistasMenu as $col): 
                                         $nombreCompleto = trim($col['nombre'] . ' ' . $col['apellido']);
                                     ?>
@@ -86,7 +86,7 @@
                                 <a class="nav-link dropdown-toggle" href="#" id="nosotrosDropdown" role="button" data-toggle="dropdown">
                                     NOSOTROS
                                 </a>
-                                <div class="dropdown-menu" style="background: var(--dark-secondary); border: 1px solid rgba(255,255,255,0.1);">
+                                <div class="dropdown-menu" style="background: var(--bg-secondary); border: 1px solid var(--border-color);">
                                     <?php
                                     $stInst = db()->query("
                                         SELECT title, slug 

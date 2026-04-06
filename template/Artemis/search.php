@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/../../inc/config.php';
 
 if (!function_exists('truncate_text')) {
@@ -44,10 +44,10 @@ $page_description = !empty($q) ? "Resultados de búsqueda para: $q en " . NOMBRE
     <div class="container">
         <div class="row mb-4">
             <div class="col-12">
-                <h1 class="section-title" style="color: #fff;">Búsqueda</h1>
+                <h1 class="section-title" style="color: var(--text-color);">Búsqueda</h1>
                 <?php if (!empty($q)): ?>
                 <p style="color: var(--text-muted); margin-top: 10px;">
-                    Se <?= $totalResults === 1 ? 'encontró' : 'encontraron' ?> <strong style="color: #fff;"><?= $totalResults ?></strong> <?= $totalResults === 1 ? 'resultado' : 'resultados' ?> para "<?= htmlspecialchars($q) ?>"
+                    Se <?= $totalResults === 1 ? 'encontró' : 'encontraron' ?> <strong style="color: var(--text-color);"><?= $totalResults ?></strong> <?= $totalResults === 1 ? 'resultado' : 'resultados' ?> para "<?= htmlspecialchars($q) ?>"
                 </p>
                 <?php endif; ?>
             </div>
@@ -91,7 +91,7 @@ $page_description = !empty($q) ? "Resultados de búsqueda para: $q en " . NOMBRE
                                         </span>
                                     </div>
                                     <div class="p-3">
-                                        <h5 style="color: #fff; font-size: 16px; font-weight: 600; margin-bottom: 8px; line-height: 1.4;">
+                                        <h5 style="color: var(--text-color); font-size: 16px; font-weight: 600; margin-bottom: 8px; line-height: 1.4;">
                                             <a href="<?= $postUrl ?>" style="color: inherit; text-decoration: none;">
                                                 <?= htmlspecialchars($p['title']) ?>
                                             </a>
@@ -112,7 +112,7 @@ $page_description = !empty($q) ? "Resultados de búsqueda para: $q en " . NOMBRE
                 <?php else: ?>
                     <div class="col-12 text-center py-5">
                         <i class="fas fa-search" style="font-size: 60px; color: var(--text-muted); opacity: 0.3;"></i>
-                        <h3 style="color: #fff; margin-top: 20px;">No se encontraron resultados</h3>
+                        <h3 style="color: var(--text-color); margin-top: 20px;">No se encontraron resultados</h3>
                         <p style="color: var(--text-muted);">No pudimos encontrar ningún resultado para "<strong><?= htmlspecialchars($q) ?></strong>".</p>
                         <a href="<?= URLBASE ?>" class="btn-artemis mt-3"><i class="fas fa-home mr-2"></i>Volver al inicio</a>
                     </div>
@@ -120,7 +120,7 @@ $page_description = !empty($q) ? "Resultados de búsqueda para: $q en " . NOMBRE
             <?php else: ?>
                 <div class="col-12 text-center py-5">
                     <i class="fas fa-search" style="font-size: 60px; color: var(--text-muted); opacity: 0.3;"></i>
-                    <h3 style="color: #fff; margin-top: 20px;">¿Qué estás buscando?</h3>
+                    <h3 style="color: var(--text-color); margin-top: 20px;">¿Qué estás buscando?</h3>
                     <p style="color: var(--text-muted);">Utiliza el formulario de búsqueda para encontrar noticias y artículos.</p>
                 </div>
             <?php endif; ?>

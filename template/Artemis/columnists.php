@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/../../inc/config.php';
 
 if (!function_exists('img_url')) {
@@ -65,14 +65,14 @@ $page_title = "Perfil de $authorName | " . NOMBRE_SITIO;
                  alt="<?= htmlspecialchars($authorName) ?>" 
                  style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 4px solid var(--primary); margin-bottom: 20px;">
             
-            <h1 style="color: #fff; font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 10px;">
+            <h1 style="color: var(--text-color); font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 10px;">
                 <?= htmlspecialchars($authorName) ?>
             </h1>
             <p style="color: var(--primary); font-size: 16px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px;">
                 Columnista
             </p>
             <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto;">
-                Bienvenido al espacio de opinión de <strong style="color: #fff;"><?= htmlspecialchars($authorName) ?></strong>. Aquí encontrarás sus análisis y perspectivas más recientes.
+                Bienvenido al espacio de opinión de <strong style="color: var(--text-color);"><?= htmlspecialchars($authorName) ?></strong>. Aquí encontrarás sus análisis y perspectivas más recientes.
             </p>
             <span style="background: var(--primary); color: #fff; padding: 8px 20px; border-radius: 20px; font-size: 14px; display: inline-block; margin-top: 20px;">
                 <i class="fas fa-file-alt mr-2"></i><?= count($posts) ?> Columnas publicadas
@@ -81,7 +81,7 @@ $page_title = "Perfil de $authorName | " . NOMBRE_SITIO;
 
         <div class="row mt-5">
             <div class="col-12 mb-4">
-                <h2 class="section-title" style="color: #fff;">COLUMNAS DE OPINIÓN</h2>
+                <h2 class="section-title" style="color: var(--text-color);">COLUMNAS DE OPINIÓN</h2>
             </div>
         </div>
 
@@ -104,7 +104,7 @@ $page_title = "Perfil de $authorName | " . NOMBRE_SITIO;
                         </span>
                     </div>
                     <div class="p-4">
-                        <h4 style="color: #fff; font-size: 18px; font-weight: 600; margin-bottom: 10px; line-height: 1.4;">
+                        <h4 style="color: var(--text-color); font-size: 18px; font-weight: 600; margin-bottom: 10px; line-height: 1.4;">
                             <a href="<?= $postUrl ?>" style="color: inherit; text-decoration: none;">
                                 <?= htmlspecialchars($post['title']) ?>
                             </a>

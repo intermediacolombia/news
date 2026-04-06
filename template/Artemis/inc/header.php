@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html class="no-js" lang="es" data-theme="light">
 
 <head>
@@ -440,6 +440,23 @@
         .post-content h1, .post-content h2, .post-content h3,
         .post-content h4, .post-content h5, .post-content h6 {
             color: var(--text-color);
+        }
+
+        /* === Hero overlay (siempre blanco, sobre imagen oscura) === */
+        .hero-card .hero-title,
+        .hero-card .hero-title a {
+            color: #fff !important;
+        }
+
+        /* === Audio player (sobre fondo primary) === */
+        .audio-player-modern span {
+            color: #fff;
+        }
+
+        /* === Paginación activa === */
+        .pagination-active {
+            background: var(--primary);
+            color: #fff !important;
         }
 
         /* === Responsive === */
