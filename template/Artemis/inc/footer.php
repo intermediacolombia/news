@@ -368,10 +368,10 @@ global $sys;
 
 </div>
 
-<script src="<?= URLBASE ?>/template/Artemis/js/jquery-3.6.0.min.js"></script>
-<script src="<?= URLBASE ?>/template/Artemis/js/bootstrap.bundle.min.js"></script>
-<script src="<?= URLBASE ?>/template/Artemis/js/wow.min.js"></script>
-<script src="<?= URLBASE ?>/template/Artemis/js/jquery.meanmenu.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meanmenu@2.0.12/jquery.meanmenu.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script src="<?= URLBASE ?>/template/Artemis/js/main.js?<?= time() ?>"></script>
 

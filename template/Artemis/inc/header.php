@@ -99,13 +99,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    <link rel="stylesheet" href="<?= URLBASE ?>/template/Artemis/css/bootstrap.min.css">
-    <link rel="stylesheet" href="<?= URLBASE ?>/template/Artemis/css/animate.min.css">
-    <link rel="stylesheet" href="<?= URLBASE ?>/template/Artemis/css/meanmenu.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/meanmenu@2.0.12/meanmenu.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
     <link rel="stylesheet" href="<?= URLBASE ?>/template/Artemis/style.css?<?= time() ?>">
-
-    <script src="<?= URLBASE ?>/template/Artemis/js/modernizr-2.8.3.min.js"></script>
 
     <div id="fb-root"></div>
     <script async defer crossorigin="anonymous"
@@ -373,7 +371,7 @@
         }
     </style>
 
-<?php if (!empty($pubId) && ADSENSE_AUTO_ADS !== '1'): ?>
+<?php if (!empty($pubId) && defined('ADSENSE_AUTO_ADS') && ADSENSE_AUTO_ADS !== '1'): ?>
 <script src="<?= URLBASE ?>/admin/publicidad/ads_config.php"></script>
 <script defer src="<?= URLBASE ?>/public/js/ads-injector.js"></script>
 <?php endif; ?>
