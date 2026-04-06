@@ -45,8 +45,34 @@ arsort($freq);
 $tags = array_slice(array_keys($freq), 0, 9);
 ?>
 
-<div class="sidebar-section p-4" style="background: var(--dark-secondary); border-radius: 16px;">
-    <h5 class="mb-4" style="color: #fff; font-family: 'Playfair Display', serif;">Síguenos</h5>
+<style>
+    .sidebar-section h5 {
+        color: var(--text-color) !important;
+    }
+    .sidebar-category-link {
+        background: var(--bg-secondary) !important;
+    }
+    .sidebar-category-link span:first-child {
+        color: var(--text-color) !important;
+    }
+    .sidebar-popular-title {
+        color: var(--text-color) !important;
+    }
+    .sidebar-tag-link {
+        background: var(--bg-secondary) !important;
+        color: var(--text-muted-color) !important;
+    }
+    .sidebar-tag-link:hover {
+        background: var(--primary) !important;
+        color: #fff !important;
+    }
+    .sidebar-section .post-date-dark {
+        color: var(--text-muted-color) !important;
+    }
+</style>
+
+<div class="sidebar-section p-4" style="background: var(--bg-secondary); border-radius: 16px;">
+    <h5 class="mb-4" style="font-family: 'Playfair Display', serif;">Síguenos</h5>
     <div class="row">
         <?php if(!empty($sys['facebook'])): ?>
         <div class="col-6 mb-3">
@@ -92,13 +118,13 @@ $tags = array_slice(array_keys($freq), 0, 9);
 
 <?php include __DIR__ . '/ads5.php'; ?>
 
-<div class="sidebar-section p-4 mt-4" style="background: var(--dark-secondary); border-radius: 16px;">
-    <h5 class="mb-4" style="color: #fff; font-family: 'Playfair Display', serif;">Categorías</h5>
+<div class="sidebar-section p-4 mt-4" style="background: var(--bg-secondary); border-radius: 16px;">
+    <h5 class="mb-4" style="font-family: 'Playfair Display', serif;">Categorías</h5>
     <?php foreach ($categories as $cat): ?>
     <a href="<?= URLBASE ?>/noticias/<?= htmlspecialchars($cat['slug']) ?>/" 
-       class="d-flex justify-content-between align-items-center p-2 mb-2"
-       style="background: rgba(255,255,255,0.05); border-radius: 8px; text-decoration: none; transition: all 0.3s;">
-        <span style="color: #e6edf3; font-size: 14px;"><?= htmlspecialchars($cat['name']) ?></span>
+       class="d-flex justify-content-between align-items-center p-2 mb-2 sidebar-category-link"
+       style="border-radius: 8px; text-decoration: none; transition: all 0.3s;">
+        <span style="font-size: 14px;"><?= htmlspecialchars($cat['name']) ?></span>
         <span style="background: var(--primary); color: #fff; padding: 2px 10px; border-radius: 12px; font-size: 12px;">
             <?= $cat['total'] ?>
         </span>
@@ -106,8 +132,8 @@ $tags = array_slice(array_keys($freq), 0, 9);
     <?php endforeach; ?>
 </div>
 
-<div class="sidebar-section p-4 mt-4" style="background: var(--dark-secondary); border-radius: 16px;">
-    <h5 class="mb-4" style="color: #fff; font-family: 'Playfair Display', serif;">Populares</h5>
+<div class="sidebar-section p-4 mt-4" style="background: var(--bg-secondary); border-radius: 16px;">
+    <h5 class="mb-4" style="font-family: 'Playfair Display', serif;">Populares</h5>
     <?php foreach ($popular as $p): 
         $postUrl = URLBASE . "/" . htmlspecialchars($p['category_slug']) . "/" . htmlspecialchars($p['slug']) . "/";
     ?>
@@ -117,12 +143,12 @@ $tags = array_slice(array_keys($freq), 0, 9);
              class="mr-3"
              style="width: 80px; height: 60px; object-fit: cover; border-radius: 8px;">
         <div class="media-body">
-            <h6 style="font-size: 14px; color: #e6edf3; margin-bottom: 5px; line-height: 1.4;">
+            <h6 class="sidebar-popular-title" style="font-size: 14px; margin-bottom: 5px; line-height: 1.4;">
                 <a href="<?= $postUrl ?>" style="color: inherit; text-decoration: none;">
                     <?= truncate_text($p['title'], 45) ?>
                 </a>
             </h6>
-            <span style="color: var(--text-muted); font-size: 12px;">
+            <span style="color: var(--text-muted-color); font-size: 12px;">
                 <i class="far fa-calendar mr-1"></i>
                 <?= date('d M, Y', strtotime($p['created_at'])) ?>
             </span>
@@ -131,12 +157,13 @@ $tags = array_slice(array_keys($freq), 0, 9);
     <?php endforeach; ?>
 </div>
 
-<div class="sidebar-section p-4 mt-4" style="background: var(--dark-secondary); border-radius: 16px;">
-    <h5 class="mb-4" style="color: #fff; font-family: 'Playfair Display', serif;">Tags</h5>
+<div class="sidebar-section p-4 mt-4" style="background: var(--bg-secondary); border-radius: 16px;">
+    <h5 class="mb-4" style="font-family: 'Playfair Display', serif;">Tags</h5>
     <div class="d-flex flex-wrap gap-2">
         <?php foreach ($tags as $t): ?>
         <a href="<?= URLBASE ?>/buscar/<?= urlencode($t) ?>/" 
-           style="background: rgba(255,255,255,0.1); color: var(--text-muted); padding: 6px 14px; border-radius: 20px; font-size: 13px; text-decoration: none; transition: all 0.3s;">
+           class="sidebar-tag-link"
+           style="padding: 6px 14px; border-radius: 20px; font-size: 13px; text-decoration: none; transition: all 0.3s;">
             #<?= htmlspecialchars(ucfirst($t)) ?>
         </a>
         <?php endforeach; ?>

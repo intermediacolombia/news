@@ -172,30 +172,24 @@ document.addEventListener('DOMContentLoaded', function() {
     const themeIcon = document.getElementById('theme-icon');
     
     if (themeToggle) {
-        // Check for saved theme preference
-        const savedTheme = localStorage.getItem('artemis-theme');
-        if (savedTheme) {
-            document.documentElement.setAttribute('data-theme', savedTheme);
-            updateThemeIcon(savedTheme);
-        }
+        // Default to light theme
+        document.documentElement.setAttribute('data-theme', 'light');
+        localStorage.setItem('artemis-theme', 'light');
+        if (themeIcon) themeIcon.className = 'fas fa-sun';
         
         themeToggle.addEventListener('click', function() {
             const currentTheme = document.documentElement.getAttribute('data-theme');
             const newTheme = currentTheme === 'light' ? 'dark' : 'light';
             
-            document.documentElement.setAttribute('data-theme', newTheme === 'dark' ? '' : 'light');
-            localStorage.setItem('artemis-theme', newTheme === 'dark' ? '' : newTheme);
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('artemis-theme', newTheme);
             updateThemeIcon(newTheme);
         });
     }
     
     function updateThemeIcon(theme) {
         if (themeIcon) {
-            if (theme === 'light') {
-                themeIcon.className = 'fas fa-sun';
-            } else {
-                themeIcon.className = 'fas fa-moon';
-            }
+            themeIcon.className = theme === 'light' ? 'fas fa-sun' : 'fas fa-moon';
         }
     }
 });

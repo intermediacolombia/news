@@ -120,7 +120,7 @@ $latestPosts = db()->query("
                             <span style="font-size: 11px; color: var(--primary); font-weight: 600; text-transform: uppercase;">
                                 <?= htmlspecialchars($side['category_name']) ?>
                             </span>
-                            <h5 style="font-size: 14px; color: #e6edf3; margin: 5px 0; line-height: 1.4;">
+                            <h5 style="font-size: 14px; color: var(--text-color); margin: 5px 0; line-height: 1.4;">
                                 <a href="<?= $postUrl ?>" style="color: inherit; text-decoration: none;">
                                     <?= truncate_text($side['title'], 50) ?>
                                 </a>

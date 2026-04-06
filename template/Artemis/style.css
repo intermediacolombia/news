@@ -195,7 +195,7 @@ img {
 
 .ticker-content {
     overflow: hidden;
-    width: 100%;
+    flex: 1;
 }
 
 .ticker-track {
@@ -240,10 +240,9 @@ img {
     text-transform: uppercase;
     font-size: 12px;
     letter-spacing: 1px;
-    margin-left: 20px;
+    margin-right: 20px;
     border-radius: 4px;
     flex-shrink: 0;
-    z-index: 1;
 }
 
 /* Buttons */

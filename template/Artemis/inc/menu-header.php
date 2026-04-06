@@ -165,12 +165,12 @@
     </div>
 
     <div class="ticker-wrapper">
-        <div class="container-fluid px-0">
-            <div class="row align-items-center no-gutters">
+        <div class="container">
+            <div class="row align-items-center">
                 <div class="col-auto">
                     <span class="ticker-label">ÚLTIMAS</span>
                 </div>
-                <div class="col">
+                <div class="col-auto">
                     <div class="ticker-content">
                         <div class="ticker-track">
                             <?php
