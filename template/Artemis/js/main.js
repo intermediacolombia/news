@@ -1,6 +1,24 @@
 /* Artemis Theme - Main JavaScript */
 
-// Theme Toggle - Combined with main initialization
+// Global theme toggle function
+function toggleTheme() {
+    const htmlEl = document.documentElement;
+    const themeIcon = document.getElementById('theme-icon');
+    
+    const currentTheme = htmlEl.getAttribute('data-theme') || 'light';
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    
+    htmlEl.setAttribute('data-theme', newTheme);
+    localStorage.setItem('artemis-theme', newTheme);
+    
+    if (themeIcon) {
+        themeIcon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+    }
+    
+    console.log('Theme changed to:', newTheme);
+}
+
+// Initialize on DOM ready
 document.addEventListener('DOMContentLoaded', function() {
     // Navbar scroll effect
     const navbar = document.querySelector('.artemis-navbar');
@@ -59,8 +77,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Ticker animation - handled by CSS now
-
     // Search modal handling
     const searchModal = document.getElementById('searchModal');
     if (searchModal) {
@@ -70,59 +86,23 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Theme Toggle - FIXED
-    const themeToggle = document.getElementById('theme-toggle');
-    const themeIcon = document.getElementById('theme-icon');
-    
-    // Check saved preference or use default
+    // Theme initialization - ensure it matches localStorage
     const savedTheme = localStorage.getItem('artemis-theme');
     const htmlEl = document.documentElement;
+    const themeIcon = document.getElementById('theme-icon');
     
+    // If there's a saved theme, apply it
     if (savedTheme) {
         htmlEl.setAttribute('data-theme', savedTheme);
-    } else {
-        // Default is light, already set in HTML
     }
     
-    // Update icon based on current theme
+    // Set correct icon
     const currentTheme = htmlEl.getAttribute('data-theme') || 'light';
     if (themeIcon) {
-        themeIcon.className = currentTheme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
-    }
-    
-    if (themeToggle) {
-        themeToggle.addEventListener('click', function(e) {
-            e.preventDefault();
-            const currentTheme = htmlEl.getAttribute('data-theme') || 'light';
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            
-            htmlEl.setAttribute('data-theme', newTheme);
-            localStorage.setItem('artemis-theme', newTheme);
-            
-            if (themeIcon) {
-                themeIcon.className = newTheme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
-            }
-            
-            console.log('Theme changed to:', newTheme);
-        });
+        themeIcon.className = currentTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
     }
 
-    // Fade-in animations
-    const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
-    const observer = new IntersectionObserver(function(entries) {
-        entries.forEach(function(entry) {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('fade-in');
-                observer.unobserve(entry.target);
-            }
-        });
-    }, observerOptions);
-
-    document.querySelectorAll('.news-card, .columnist-card, .category-card').forEach(function(card) {
-        observer.observe(card);
-    });
-
-    console.log('Artemis Theme loaded successfully');
+    console.log('Artemis Theme loaded - Theme:', currentTheme);
 });
 
 // Global functions for audio player

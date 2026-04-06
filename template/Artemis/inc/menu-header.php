@@ -126,6 +126,7 @@
 
                     <button id="theme-toggle" 
                             type="button"
+                            onclick="toggleTheme()"
                             style="background: transparent; border: none; color: var(--text-color); font-size: 18px; cursor: pointer; margin: 0 10px;"
                             aria-label="Cambiar tema">
                         <i class="fas fa-moon" id="theme-icon"></i>
