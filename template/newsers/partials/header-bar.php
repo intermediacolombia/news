@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../../../inc/config.php';
+require_once __DIR__ . '/../../../inc/translations.php';
 setlocale(LC_TIME, 'es_ES.UTF-8', 'es_ES', 'spanish');
 date_default_timezone_set('America/Bogota');
 
@@ -30,7 +31,7 @@ $fechaHoy = ucfirst(strftime('%A, %d de %B de %Y'));
                     <i class="fas fa-bolt text-white"></i>
                 </span>
                 <div class="pe-2 me-3 border-end border-white d-flex align-items-center">
-                    <p class="mb-0 text-white fs-6 fw-normal">Tendencias</p>
+                    <p class="mb-0 text-white fs-6 fw-normal"><?= t_theme('theme_tendencias') ?></p>
                 </div>
 
                 <!-- Bloque de noticias dinámicas -->
@@ -45,7 +46,7 @@ $fechaHoy = ucfirst(strftime('%A, %d de %B de %Y'));
                     <span class="text-body ms-1"><?= $fechaHoy ?></span>
                 </i>
                 <div class="d-flex align-items-center">
-                    <p class="mb-0 text-white me-2">Síguenos:</p>
+                    <p class="mb-0 text-white me-2"><?= t_theme('theme_seguinos') ?></p>
                     <?php
                     $redes = ['facebook','twitter','instagram','youtube','linkedin','tiktok'];
                     $icons = [

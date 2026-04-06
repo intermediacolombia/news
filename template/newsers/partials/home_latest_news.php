@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/../../../inc/config.php';
+require_once __DIR__ . '/../../../inc/translations.php';
+
 /* ===== Helper para truncar texto ===== */
 function truncate_text(string $text, int $maxLength = 80): string {
     $text = htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
@@ -26,7 +29,7 @@ $latestNews = db()->query($sqlLatest)->fetchAll();
 <!-- Latest News Start -->
 <div class="container-fluid latest-news py-5">
     <div class="container py-5">
-        <h2 class="mb-4">Últimas Noticias</h2>
+        <h2 class="mb-4"><?= t_theme('theme_ultimas_noticias') ?></h2>
         <div class="latest-news-carousel owl-carousel">
             <?php foreach ($latestNews as $news): ?>
             <div class="latest-news-item">
@@ -47,9 +50,9 @@ $latestNews = db()->query($sqlLatest)->fetchAll();
                         </a>
                         <div class="d-flex justify-content-between">
                             <?php if (!empty($news['author'])): ?>
-                            <span class="small text-body">por <?= htmlspecialchars($news['author']) ?></span>
+                            <span class="small text-body"><?= t_theme('theme_por') ?> <?= htmlspecialchars($news['author']) ?></span>
                             <?php else: ?>
-                            <span class="small text-body">por <?= htmlspecialchars($sys['site_name'] ?? 'Admin') ?></span>
+                            <span class="small text-body"><?= t_theme('theme_por') ?> <?= htmlspecialchars($sys['site_name'] ?? 'Admin') ?></span>
                             <?php endif; ?>
                             
                             <small class="text-body d-block">

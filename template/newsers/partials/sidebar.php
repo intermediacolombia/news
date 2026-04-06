@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../../../inc/config.php';
+require_once __DIR__ . '/../../../inc/translations.php';
 // === Datos dinámicos previos ===
 
 // Categorías populares (6 con más posts publicados)
@@ -69,7 +71,7 @@ try {
                 </div-->
 
                 <!-- Popular Categories -->
-                <h4 class="mb-4">Categorias</h4>
+                <h4 class="mb-4"><?= t_theme('theme_categorias') ?></h4>
                 <div class="row g-2">
                     <?php foreach ($categories as $cat): ?>
                         <div class="col-12">
@@ -81,48 +83,48 @@ try {
                 </div>
 
                 <!-- Stay Connected -->
-                <h4 class="my-4">Síguenos</h4>
+                <h4 class="my-4"><?= t_theme('theme_seguinos') ?></h4>
                 <div class="row g-4">
                     <div class="col-12">
                         <?php if (!empty($sys['facebook'])): ?>
                         <a href="<?= htmlspecialchars($sys['facebook']) ?>" target="_blank" class="w-100 rounded btn btn-primary d-flex align-items-center p-3 mb-2">
                             <i class="fab fa-facebook-f btn btn-light btn-square rounded-circle me-3"></i>
-                            <span class="text-white">Facebook</span>
+                            <span class="text-white"><?= t_theme('theme_facebook') ?></span>
                         </a>
                         <?php endif; ?>
 
                         <?php if (!empty($sys['twitter'])): ?>
                         <a href="<?= htmlspecialchars($sys['twitter']) ?>" target="_blank" class="w-100 rounded btn btn-danger d-flex align-items-center p-3 mb-2">
                             <i class="fab fa-twitter btn btn-light btn-square rounded-circle me-3"></i>
-                            <span class="text-white">X (Twitter)</span>
+                            <span class="text-white"><?= t_theme('theme_twitter') ?></span>
                         </a>
                         <?php endif; ?>
 
                         <?php if (!empty($sys['youtube'])): ?>
                         <a href="<?= htmlspecialchars($sys['youtube']) ?>" target="_blank" class="w-100 rounded btn btn-warning d-flex align-items-center p-3 mb-2">
                             <i class="fab fa-youtube btn btn-light btn-square rounded-circle me-3"></i>
-                            <span class="text-white">YouTube</span>
+                            <span class="text-white"><?= t_theme('theme_youtube') ?></span>
                         </a>
                         <?php endif; ?>
 
                         <?php if (!empty($sys['instagram'])): ?>
                         <a href="<?= htmlspecialchars($sys['instagram']) ?>" target="_blank" class="w-100 rounded btn btn-dark d-flex align-items-center p-3 mb-2">
                             <i class="fab fa-instagram btn btn-light btn-square rounded-circle me-3"></i>
-                            <span class="text-white">Instagram</span>
+                            <span class="text-white"><?= t_theme('theme_instagram') ?></span>
                         </a>
                         <?php endif; ?>
 
                         <?php if (!empty($sys['tiktok'])): ?>
                         <a href="<?= htmlspecialchars($sys['tiktok']) ?>" target="_blank" class="w-100 rounded btn btn-secondary d-flex align-items-center p-3 mb-2">
                             <i class="fab fa-tiktok btn btn-light btn-square rounded-circle me-3"></i>
-                            <span class="text-white">TikTok</span>
+                            <span class="text-white"><?= t_theme('theme_tiktok') ?></span>
                         </a>
                         <?php endif; ?>
                     </div>
                 </div>
 
                 <!-- Popular News -->
-                <h4 class="my-4">Las Más Leídas</h4>
+                <h4 class="my-4"><?= t_theme('theme_las_mas_leidas') ?></h4>
                 <div class="row g-4">
                     <?php foreach ($popular as $idx => $p): ?>
                         <div class="col-12">
@@ -154,12 +156,12 @@ try {
                     <?php endforeach; ?>
 
                     <div class="col-lg-12">
-                        <a href="<?= URLBASE ?>/noticias/" class="link-hover btn border border-primary rounded-pill text-dark w-100 py-3 mb-4">Ver Más</a>
+                        <a href="<?= URLBASE ?>/noticias/" class="link-hover btn border border-primary rounded-pill text-dark w-100 py-3 mb-4"><?= t_theme('theme_ver_mas') ?></a>
                     </div>
 
                     <div class="col-lg-12">
                         <div class="border-bottom my-3 pb-3">
-                            <h4 class="mb-0">Tags Tendencias</h4>
+                            <h4 class="mb-0"><?= t_theme('theme_tags_tendencias') ?></h4>
                         </div>
                         <ul class="nav nav-pills d-inline-flex text-center mb-4">
                             <?php foreach ($tags as $t): ?>

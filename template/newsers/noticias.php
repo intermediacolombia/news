@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../../inc/config.php';
+require_once __DIR__ . '/../../inc/translations.php';
 
 $categorySlug = $_GET['slug'] ?? null;
 $pageNum = isset($_GET['page_num']) ? max(1, (int)$_GET['page_num']) : 1;
@@ -144,7 +145,7 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                         <?php endforeach; ?>
                     <?php else: ?>
                         <div class="col-12">
-                            <p>No hay noticias en esta categoría.</p>
+                            <p><?= t_theme('theme_no_hay_noticias') ?></p>
                         </div>
                     <?php endif; ?>
                 </div>

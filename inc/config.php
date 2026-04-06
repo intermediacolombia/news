@@ -125,6 +125,8 @@ define('TEXT_TO_SPEECH', $sys['enable_text_to_speech'] ?? '');
 
 define('ENABLE_STOP_PLAYER', $sys['enable_stop_player'] ?? '');
 
+define('SITE_LANGUAGE', $sys['site_language'] ?? 'es');
+
 
 /* =========Fin Apariencia ========= */
 

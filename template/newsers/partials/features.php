@@ -1,3 +1,8 @@
+<?php
+require_once __DIR__ . '/../../../inc/config.php';
+require_once __DIR__ . '/../../../inc/translations.php';
+?>
+
 <!-- Features Start -->
 <div class="container-fluid features mb-5">
   <div class="container py-5">
@@ -54,7 +59,7 @@
           </div>
         <?php endforeach; ?>
       <?php else: ?>
-        <p class="text-center">No hay noticias recientes.</p>
+        <p class="text-center"><?= t_theme('theme_no_hay_noticias_recientes') ?></p>
       <?php endif; ?>
     </div>
   </div>

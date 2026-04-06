@@ -4,6 +4,9 @@
  * Ubicación: /template/TU_TEMA/institucional-list.php
  */
 
+require_once __DIR__ . '/../../inc/config.php';
+require_once __DIR__ . '/../../inc/translations.php';
+
 // Cargar todas las páginas institucionales publicadas
 $sql = "SELECT id, title, slug, page_type, image, seo_description, display_order 
         FROM institutional_pages 
@@ -27,15 +30,15 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
 
 // Nombres de tipos
 $typeNames = [
-    'general' => 'General',
-    'about' => 'Quiénes Somos',
-    'mission' => 'Misión y Visión',
-    'history' => 'Historia',
-    'organization' => 'Organigrama',
-    'board' => 'Junta Directiva',
-    'team' => 'Equipo',
-    'values' => 'Valores',
-    'policies' => 'Políticas'
+    'general' => t_theme('theme_general'),
+    'about' => t_theme('theme_quienes_somos'),
+    'mission' => t_theme('theme_mision_vision'),
+    'history' => t_theme('theme_historia'),
+    'organization' => t_theme('theme_organigrama'),
+    'board' => t_theme('theme_junta_directiva'),
+    'team' => t_theme('theme_equipo'),
+    'values' => t_theme('theme_valores'),
+    'policies' => t_theme('theme_politicas')
 ];
 
 $typeIcons = [
@@ -60,15 +63,15 @@ $typeIcons = [
                         <div class="bg-light" style="padding: 50px;">
                             
                             <!-- Título principal -->
-                            <h1 class="mb-4">Información Institucional</h1>
+                            <h1 class="mb-4"><?= t_theme('theme_informacion_institucional') ?></h1>
                             <p class="lead mb-5">
-                                Conoce más sobre nuestra organización, nuestra historia y nuestros valores.
+                                <?= t_theme('theme_conoce_mas_nuestra_org') ?>
                             </p>
                             
                             <?php if(empty($pages)): ?>
                                 <div class="alert alert-info">
                                     <i class="fa fa-info-circle"></i>
-                                    No hay información institucional disponible en este momento.
+                                    <?= t_theme('theme_no_hay_info_institucional') ?>
                                 </div>
                             <?php else: ?>
                                 
@@ -105,7 +108,7 @@ $typeIcons = [
                                                 
                                                 <a href="<?= URLBASE ?>/institucional/<?= urlencode($page['slug']) ?>" 
                                                    class="btn btn-primary">
-                                                    Leer más <i class="fa fa-arrow-right"></i>
+                                                    <?= t_theme('theme_leer_mas') ?> <i class="fa fa-arrow-right"></i>
                                                 </a>
                                             </div>
                                         </div>

@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../../inc/config.php';
+require_once __DIR__ . '/../../inc/translations.php';
 
 $q = trim($_GET['q'] ?? '');
 $results = [];
@@ -52,11 +53,11 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
           <div class="col-12">
             <div class="d-flex align-items-center justify-content-between bg-light py-2 px-4 mb-4 title-widgets rounded shadow-sm">
               <h3 class="m-0">
-                <i class="fa fa-search text-primary me-2"></i> Resultados para:
+                <i class="fa fa-search text-primary me-2"></i> <?= t_theme('theme_resultados_para') ?>
                 <span class="text-dark">"<?= htmlspecialchars($q) ?>"</span>
               </h3>
               <a class="text-secondary text-decoration-none small fw-semibold" href="<?= URLBASE ?>/noticias/">
-                <i class="fa fa-newspaper me-1"></i> Ver todas las noticias
+                <i class="fa fa-newspaper me-1"></i> <?= t_theme('theme_ver_todas_las_noticias') ?>
               </a>
             </div>
           </div>
@@ -104,10 +105,10 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
           <?php else: ?>
             <div class="col-12 text-center py-5">
               <i class="fa fa-search fa-3x text-muted mb-3"></i>
-              <h4>No se encontraron resultados</h4>
-              <p class="text-muted">No hay publicaciones que coincidan con "<strong><?= htmlspecialchars($q) ?></strong>".</p>
+              <h4><?= t_theme('theme_no_se_encontraron') ?></h4>
+              <p class="text-muted"><?= t_theme('theme_no_hay_publicaciones') ?> "<strong><?= htmlspecialchars($q) ?></strong>".</p>
               <a href="<?= URLBASE ?>/noticias/" class="btn btn-primary mt-2">
-                <i class="fa fa-arrow-left me-2"></i> Volver a Noticias
+                <i class="fa fa-arrow-left me-2"></i> <?= t_theme('theme_volver_noticias') ?>
               </a>
             </div>
           <?php endif; ?>

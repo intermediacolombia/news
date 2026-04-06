@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/../../../inc/config.php';
+require_once __DIR__ . '/../../../inc/translations.php';
+
 /* ===== Consulta: Obtener las 5 categorías con más posts ===== */
 /* ===== Consulta: Obtener las 5 categorías con más posts ===== */
 $sqlCategories = "
@@ -93,7 +96,7 @@ function getFeaturedPostsByCategory($categoryId, $limit = 2) {
             <div class="row g-4">
                 <div class="col-lg-8 col-xl-9">
                     <div class="d-flex flex-column flex-md-row justify-content-md-between border-bottom mb-4">
-                        <h1 class="mb-4">¿Que hay de nuevo?</h1>
+                        <h1 class="mb-4"><?= t_theme('theme_que_hay_de_nuevo') ?></h1>
                         <ul class="nav nav-pills d-inline-flex text-center">
                             <?php foreach ($topCategories as $index => $cat): ?>
                             <li class="nav-item mb-3">
@@ -139,11 +142,11 @@ function getFeaturedPostsByCategory($categoryId, $limit = 2) {
                                         <div class="d-flex justify-content-between">
                                             <span class="text-dark me-3">
                                                 <i class="fa fa-clock"></i> 
-                                                <?= str_pad(read_time_minutes($mainPost['content']), 2, '0', STR_PAD_LEFT) ?> Minutos
+                                                <?= str_pad(read_time_minutes($mainPost['content']), 2, '0', STR_PAD_LEFT) ?> <?= t_theme('theme_minutos') ?>
                                             </span>
                                             <span class="text-dark me-3">
                                                 <i class="fa fa-eye"></i> 
-                                                <?= number_format((int)$mainPost['views'], 0, ',', '.') ?> Vistas
+                                                <?= number_format((int)$mainPost['views'], 0, ',', '.') ?> <?= t_theme('theme_vistas') ?>
                                             </span>
                                         </div>
                                         <p class="my-4">
@@ -193,7 +196,7 @@ function getFeaturedPostsByCategory($categoryId, $limit = 2) {
                     
                     <!-- Most Views News -->
                     <div class="border-bottom mb-4">
-                        <h2 class="my-4">Las Más Leídas</h2>
+                        <h2 class="my-4"><?= t_theme('theme_las_mas_leidas_2') ?></h2>
                     </div>
                     <div class="whats-carousel owl-carousel">
                         <?php foreach ($mostViewedNews as $newsItem): ?>
@@ -215,9 +218,9 @@ function getFeaturedPostsByCategory($categoryId, $limit = 2) {
                                     </a>
                                     <div class="d-flex justify-content-between">
                                         <?php if (!empty($newsItem['author'])): ?>
-                                        <span class="small text-body">Por <?= htmlspecialchars($newsItem['author']) ?></span>
+                                        <span class="small text-body"><?= t_theme('theme_por') ?> <?= htmlspecialchars($newsItem['author']) ?></span>
                                         <?php else: ?>
-                                        <span class="small text-body">Por <?= htmlspecialchars($sys['site_name'] ?? 'Admin') ?></span>
+                                        <span class="small text-body"><?= t_theme('theme_por') ?> <?= htmlspecialchars($sys['site_name'] ?? 'Admin') ?></span>
                                         <?php endif; ?>
                                         
                                         <small class="text-body d-block">

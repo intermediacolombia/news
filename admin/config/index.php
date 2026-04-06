@@ -44,7 +44,7 @@ $defaults = [
     'feature4_icon'=>'fa-undo','feature4_text'=>'30 days return',
     'special_menu_text'=>'','special_menu_link'=>'#',
     'primary'=>'#5fca00','color-hover-link'=>'#214A82','site_theme'=>'',
-    'admin_language'=>'es',
+    'admin_language'=>'es','site_language'=>'es',
 ];
 foreach ($defaults as $k => $v) {
     if (!isset($configs[$k]))         $configs[$k]         = $v;

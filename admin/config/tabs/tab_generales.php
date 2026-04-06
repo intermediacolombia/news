@@ -105,6 +105,15 @@
     </div>
 
     <div class="mb-3">
+      <label class="form-label"><i class="fas fa-globe me-2"></i>Idioma del Sitio</label>
+      <select name="site_language" class="form-select">
+        <option value="es" <?= ($configs['site_language'] ?? 'es') === 'es' ? 'selected' : '' ?>>Español</option>
+        <option value="en" <?= ($configs['site_language'] ?? 'es') === 'en' ? 'selected' : '' ?>>English</option>
+      </select>
+      <small class="text-muted">Idioma del sitio público (tema)</small>
+    </div>
+
+    <div class="mb-3">
       <div class="form-check form-switch">
         <input type="hidden" name="enable_text_to_speech" value="0">
         <input class="form-check-input" type="checkbox" id="enable_text_to_speech"

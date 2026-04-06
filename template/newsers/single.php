@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../../inc/config.php';
+require_once __DIR__ . '/../../inc/translations.php';
 
 function get_post_image_alt($post) {
     $alt = $post['title'] ?? '';
@@ -95,7 +96,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                             <span><i class="fa fa-user-edit me-1 text-primary"></i> <?= htmlspecialchars($post['author']) ?></span>
                         <?php endif; ?>
                     </div>
-                    <span><i class="fa fa-eye me-1 text-primary"></i> <?= number_format($totalViews) ?> vistas</span>
+                    <span><i class="fa fa-eye me-1 text-primary"></i> <?= number_format($totalViews) ?> <?= t_theme('theme_vistas') ?></span>
                 </div>
 
                 <!-- 🎵 REPRODUCTOR DE AUDIO MODERNO -->
@@ -112,9 +113,9 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
             <!-- Info y Progreso -->
             <div class="audio-info">
                 <div class="d-flex justify-content-between align-items-center mb-2">
-                    <span class="audio-label">
-                        <i class="fas fa-headphones me-2"></i>Escuchar artículo
-                    </span>
+<span class="audio-label">
+                            <i class="fas fa-headphones me-2"></i><?= t_theme('theme_escuchar_articulo') ?>
+                        </span>
                     <div class="d-flex align-items-center gap-2">
                         <!-- Control de Velocidad -->
                         <select id="speedControl" class="form-select form-select-sm" style="width: auto; font-size: 12px; padding: 2px 8px; background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3);" onchange="changeSpeed(this.value)">
@@ -158,7 +159,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                 <!-- Bloque compartir -->
                 <div class="d-flex justify-content-between align-items-center border-top pt-3 mb-4">
                     <div>
-                        <strong class="text-dark me-2">Compartir:</strong>
+                        <strong class="text-dark me-2"><?= t_theme('theme_compartir') ?></strong>
                         <a href="https://facebook.com/sharer/sharer.php?u=<?= urlencode($page_canonical) ?>" target="_blank" class="btn btn-light btn-sm rounded-circle me-1"><i class="fab fa-facebook-f"></i></a>
                         <a href="https://twitter.com/intent/tweet?url=<?= urlencode($page_canonical) ?>" target="_blank" class="btn btn-light btn-sm rounded-circle me-1"><i class="fab fa-twitter"></i></a>
                         <a href="https://api.whatsapp.com/send?text=<?= urlencode($page_canonical) ?>" target="_blank" class="btn btn-light btn-sm rounded-circle me-1"><i class="fab fa-whatsapp"></i></a>
@@ -175,7 +176,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                 ?>
                 <?php if ($tags): ?>
                     <div class="border-top pt-3 mb-4">
-                        <h6 class="fw-bold mb-3">Tags:</h6>
+                        <h6 class="fw-bold mb-3"><?= t_theme('theme_tags') ?></h6>
                         <?php foreach ($tags as $tag): ?>
                             <a href="<?= URLBASE ?>/buscar.php?tag=<?= urlencode($tag) ?>" class="btn btn-light btn-sm rounded-pill me-2 mb-2"><?= htmlspecialchars($tag) ?></a>
                         <?php endforeach; ?>
@@ -184,7 +185,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
 
                 <!-- Comentarios -->
                 <div class="bg-light rounded p-4 mb-4">
-                    <h4 class="mb-3">Comentarios</h4>
+                    <h4 class="mb-3"><?= t_theme('theme_comentarios') ?></h4>
                     <div class="fb-comments" data-href="<?= 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] ?>" data-width="100%" data-numposts="10"></div>
                 </div>
 
@@ -206,7 +207,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
 
                 <?php if ($relatedPosts): ?>
                     <div class="bg-light rounded my-4 p-4">
-                        <h4 class="mb-4">También te puede interesar</h4>
+                        <h4 class="mb-4"><?= t_theme('theme_tambien_interesar') ?></h4>
                         <div class="row g-4">
                             <?php foreach ($relatedPosts as $rel): ?>
                                 <div class="col-lg-6">
