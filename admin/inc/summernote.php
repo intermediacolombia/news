@@ -138,7 +138,8 @@ $('#insertImageBtn').on('click', function() {
   }
   
   if (imgTag && pendingImageEditor) {
-    pendingImageEditor.summernote('editor.insertHTML', imgTag + '<p></p>');
+    pendingImageEditor.summernote('editor.insertNode', $(imgTag)[0]);
+    pendingImageEditor.summernote('editor.insertNode', $('<p></p>')[0]);
   }
   
   bootstrap.Modal.getInstance($('#imageModal')).hide();
