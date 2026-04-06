@@ -280,6 +280,8 @@ function initImageResizer(quill) {
   };
 
   QuillEditor.prototype.openGallery = function () {
+    // Guardar el cursor ANTES de que el modal quite el foco al editor
+    this._savedRange = this.quill.getSelection() || { index: this.quill.getLength(), length: 0 };
     emSelected = null;
     emEditor = this;
     document.getElementById('em-detail-empty').classList.remove('d-none');
@@ -470,23 +472,24 @@ function initImageResizer(quill) {
     var widthClass = document.getElementById('em-width').value;
     var url = emSelected.url;
 
-    var range = emEditor.quill.getSelection() || { index: emEditor.quill.getLength() };
-    var html;
-    var imgClass = 'img-fluid ' + (widthClass || '');
+    // Usar la posición guardada antes de que el modal quitara el foco
+    var idx = (emEditor._savedRange || { index: emEditor.quill.getLength() }).index;
+    var imgClass = 'img-fluid' + (widthClass ? ' ' + widthClass : '');
+    var imgHtml = '<img src="' + url + '" alt="' + _esc(alt) + '" class="' + imgClass + '" style="max-width:100%;">';
+
+    // Insertar imagen en la posición correcta
+    emEditor.quill.clipboard.dangerouslyPasteHTML(idx, imgHtml);
+
     if (caption) {
-      html = '<figure class="figure d-block text-center">'
-           + '<img src="' + url + '" alt="' + _esc(alt) + '" class="' + imgClass + ' figure-img" style="max-width:100%;">'
-           + '<figcaption class="figure-caption">' + _escHtml(caption) + '</figcaption>'
-           + '</figure>';
+      // Insertar caption como párrafo centrado justo debajo de la imagen
+      emEditor.quill.clipboard.dangerouslyPasteHTML(
+        idx + 1,
+        '<p style="text-align:center;font-style:italic;margin:0;">' + _escHtml(caption) + '</p>'
+      );
+      emEditor.quill.setSelection(idx + 2, 0);
     } else {
-      html = '<img src="' + url + '" alt="' + _esc(alt) + '" class="' + imgClass + '" style="max-width:100%;">';
+      emEditor.quill.setSelection(idx + 1, 0);
     }
-    
-    emEditor.quill.clipboard.dangerouslyPasteHTML(range.index, html);
-    
-    var newIndex = range.index + 1;
-    if (caption) newIndex += 2;
-    emEditor.quill.setSelection(newIndex, 0);
 
     bootstrap.Modal.getInstance(document.getElementById('editorMediaModal')).hide();
   });
