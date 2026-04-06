@@ -14,7 +14,18 @@ if (!function_exists('img_url')) {
 }
 
 function get_post_image_alt($post) {
-    return !empty($post['image_alt']) ? $post['image_alt'] : ($post['title'] ?? '');
+    $alt = $post['title'] ?? '';
+    
+    if (!empty($post['image'])) {
+        $stmt = db()->prepare("SELECT alt_text FROM multimedia WHERE file_path = ? AND deleted = 0 LIMIT 1");
+        $stmt->execute([$post['image']]);
+        $media = $stmt->fetch();
+        if (!empty($media['alt_text'])) {
+            $alt = $media['alt_text'];
+        }
+    }
+    
+    return $alt;
 }
 
 if (!function_exists('truncate_text')) {

@@ -35,6 +35,16 @@ if (!$post) {
   die("Entrada no encontrada.");
 }
 
+/* ========= Cargar alt_text desde multimedia si existe ========= */
+if (!empty($post['image'])) {
+    $stmtAlt = db()->prepare("SELECT alt_text FROM multimedia WHERE file_path = ? AND deleted = 0 LIMIT 1");
+    $stmtAlt->execute([$post['image']]);
+    $media = $stmtAlt->fetch();
+    if (!empty($media['alt_text'])) {
+        $post['image_alt'] = $media['alt_text'];
+    }
+}
+
 /* ========= Categorías del post (normalizadas a int) ========= */
 $stc = db()->prepare("SELECT category_id FROM blog_post_category WHERE post_id=?");
 $stc->execute([$id]);

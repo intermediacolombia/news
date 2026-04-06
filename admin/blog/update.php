@@ -149,7 +149,7 @@ if ($hasNewFile) {
 
 /* ========= Actualizar blog_posts ========= */
 $sql = "UPDATE blog_posts 
-        SET title=?, slug=?, content=?, image=?, image_alt=?, status=?,
+        SET title=?, slug=?, content=?, image=?, status=?,
             seo_title=?, seo_description=?, seo_keywords=?,
             updated_at=NOW()
         WHERE id=?";
@@ -158,13 +158,18 @@ db()->prepare($sql)->execute([
     $slug,
     $content,
     $imagePath,
-    $imageAlt,
     $status,
     $seoTitle,
     $seoDescription,
     $seoKeywords,
     $id,
 ]);
+
+/* ========= Actualizar alt_text en multimedia ========= */
+if (!empty($imagePath)) {
+    db()->prepare("UPDATE multimedia SET alt_text = ? WHERE file_path = ? AND deleted = 0")
+        ->execute([$imageAlt, $imagePath]);
+}
 
 /* ========= Actualizar categorías ========= */
 db()->prepare("DELETE FROM blog_post_category WHERE post_id=?")->execute([$id]);

@@ -100,11 +100,11 @@ $imageAlt       = trim($_POST['image_alt']       ?? '');
     /* ========= Guardar entrada ========= */
     try {
         $sql = "INSERT INTO blog_posts 
-                (title, slug, content, image, image_alt, author, author_user, status,
+                (title, slug, content, image, author, author_user, status,
                  seo_title, seo_description, seo_keywords, deleted)
-                VALUES (?,?,?,?,?,?,?,?,?,?,?,0)";
+                VALUES (?,?,?,?,?,?,?,?,?,?,0)";
         db()->prepare($sql)->execute([
-            $title, $slug, $content, $imagePath, $imageAlt,
+            $title, $slug, $content, $imagePath,
             $author, $authorUser, $status,
             $seoTitle, $seoDescription, $seoKeywords,
         ]);
@@ -124,8 +124,8 @@ $imageAlt       = trim($_POST['image_alt']       ?? '');
                 $dest = __DIR__ . '/../../' . $imagePath;
                 $info = @getimagesize($dest);
                 db()->prepare("INSERT INTO multimedia
-                    (file_name, file_path, file_type, mime_type, file_size, width, height, uploaded_by, origin, origin_id)
-                    VALUES (?,?,'image',?,?,?,?,?,'blog',?)")
+                    (file_name, file_path, file_type, mime_type, file_size, width, height, alt_text, uploaded_by, origin, origin_id)
+                    VALUES (?,?,'image',?,?,?,?,?,?,'blog',?)")
                     ->execute([
                         basename($imagePath),
                         $imagePath,
@@ -133,6 +133,7 @@ $imageAlt       = trim($_POST['image_alt']       ?? '');
                         $_FILES['image']['size'],
                         $info[0] ?? null,
                         $info[1] ?? null,
+                        $imageAlt,
                         $_SESSION['user']['id'],
                         $postId,
                     ]);
