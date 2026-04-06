@@ -167,39 +167,35 @@
 
     <div class="ticker-wrapper">
         <div class="container">
-            <div class="row align-items-center">
-                <div class="col-auto">
-                    <span class="ticker-label">ÚLTIMAS</span>
-                </div>
-                <div class="col-auto">
-                    <div class="ticker-content">
-                        <div class="ticker-track">
-                            <?php
-                            $stTicker = db()->query("
-                                SELECT p.title, p.slug, c.slug AS category_slug
-                                FROM blog_posts p
-                                LEFT JOIN blog_post_category pc ON pc.post_id = p.id
-                                LEFT JOIN blog_categories c ON c.id = pc.category_id
-                                WHERE p.status = 'published' AND p.deleted = 0 
-                                GROUP BY p.id
-                                ORDER BY p.created_at DESC 
-                                LIMIT 10
-                            ");
-                            $tickerNews = $stTicker->fetchAll(PDO::FETCH_ASSOC);
-                            
-                            // Duplicate for seamless loop
-                            $allNews = array_merge($tickerNews, $tickerNews);
-                            
-                            foreach ($allNews as $news): 
-                            ?>
-                                <span class="ticker-item">
-                                    <a href="<?= URLBASE ?>/<?= htmlspecialchars($news['category_slug']) ?>/<?= htmlspecialchars($news['slug']) ?>/" 
-                                       style="color: var(--text-color); text-decoration: none;">
-                                        <?= htmlspecialchars($news['title']) ?>
-                                    </a>
-                                </span>
-                            <?php endforeach; ?>
-                        </div>
+            <div style="display: flex; align-items: center; overflow: hidden;">
+                <span class="ticker-label" style="flex-shrink: 0;">ÚLTIMAS</span>
+                <div class="ticker-content" style="flex: 1; overflow: hidden; min-width: 0;">
+                    <div class="ticker-track">
+                        <?php
+                        $stTicker = db()->query("
+                            SELECT p.title, p.slug, c.slug AS category_slug
+                            FROM blog_posts p
+                            LEFT JOIN blog_post_category pc ON pc.post_id = p.id
+                            LEFT JOIN blog_categories c ON c.id = pc.category_id
+                            WHERE p.status = 'published' AND p.deleted = 0
+                            GROUP BY p.id
+                            ORDER BY p.created_at DESC
+                            LIMIT 10
+                        ");
+                        $tickerNews = $stTicker->fetchAll(PDO::FETCH_ASSOC);
+
+                        // Duplicate for seamless loop
+                        $allNews = array_merge($tickerNews, $tickerNews);
+
+                        foreach ($allNews as $news):
+                        ?>
+                            <span class="ticker-item">
+                                <a href="<?= URLBASE ?>/<?= htmlspecialchars($news['category_slug']) ?>/<?= htmlspecialchars($news['slug']) ?>/"
+                                   style="color: #fff; text-decoration: none;">
+                                    <?= htmlspecialchars($news['title']) ?>
+                                </a>
+                            </span>
+                        <?php endforeach; ?>
                     </div>
                 </div>
             </div>
