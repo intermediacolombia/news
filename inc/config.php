@@ -284,10 +284,7 @@ function renderPopup(): string {
     
     $imageHtml = '';
     if (!empty($popup['image'])) {
-        $imagePath = $popup['image'];
-        if (strpos($imagePath, 'public/') === 0) {
-            $imagePath = substr($imagePath, 7);
-        }
+        $imagePath = str_replace('public/', '', $popup['image']);
         $imageHtml = '<img src="' . URLBASE . '/' . htmlspecialchars($imagePath) . '" alt="' . htmlspecialchars($popup['title']) . '" style="max-width: 100%; border-radius: 8px; margin-bottom: 15px;">';
     }
     
