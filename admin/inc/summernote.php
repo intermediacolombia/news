@@ -110,7 +110,10 @@ $(document).ready(function() {
 function showImageModal(file, editor, dataUrl, isServerUrl) {
   pendingImageFile = file;
   pendingImageEditor = editor;
-  
+
+  // Guardar posición del cursor ANTES de que el modal robe el foco
+  editor.summernote('editor.saveRange');
+
   if (isServerUrl) {
     pendingImageUrl = dataUrl;
     pendingImageDataUrl = null;
@@ -118,47 +121,44 @@ function showImageModal(file, editor, dataUrl, isServerUrl) {
     pendingImageDataUrl = dataUrl;
     pendingImageUrl = null;
   }
-  
+
   $('#imgAltText').val('');
   $('#imgCaptionText').val('');
-  
+
   new bootstrap.Modal($('#imageModal')).show();
 }
 
 $('#insertImageBtn').on('click', function() {
-  var alt = $('#imgAltText').val().trim();
+  var alt     = $('#imgAltText').val().trim();
   var caption = $('#imgCaptionText').val().trim();
-  
-  var imgTag = '';
-  
-  if (pendingImageDataUrl) {
-    imgTag = createImageTag(pendingImageDataUrl, alt, caption);
-  } else if (pendingImageUrl) {
-    imgTag = createImageTag(pendingImageUrl, alt, caption);
+  var url     = pendingImageDataUrl || pendingImageUrl;
+
+  if (url && pendingImageEditor) {
+    // Restaurar el cursor antes de insertar
+    pendingImageEditor.summernote('editor.restoreRange');
+    pendingImageEditor.summernote('editor.focus');
+
+    var $node;
+    if (caption) {
+      var figHtml = '<figure class="figure d-block">'
+        + '<img src="' + url + '"' + (alt ? ' alt="' + escAttr(alt) + '"' : '') + ' class="img-fluid figure-img" style="max-width:100%;height:auto;">'
+        + '<figcaption class="figure-caption">' + $('<span>').text(caption).html() + '</figcaption>'
+        + '</figure>';
+      $node = $(figHtml);
+    } else {
+      var imgHtml = '<img src="' + url + '"' + (alt ? ' alt="' + escAttr(alt) + '"' : '') + ' class="img-fluid" style="max-width:100%;height:auto;">';
+      $node = $(imgHtml);
+    }
+
+    pendingImageEditor.summernote('editor.insertNode', $node[0]);
+    pendingImageEditor.summernote('editor.insertNode', $('<p><br></p>')[0]);
   }
-  
-  if (imgTag && pendingImageEditor) {
-    pendingImageEditor.summernote('editor.insertNode', $(imgTag)[0]);
-    pendingImageEditor.summernote('editor.insertNode', $('<p></p>')[0]);
-  }
-  
+
   bootstrap.Modal.getInstance($('#imageModal')).hide();
 });
 
-function createImageTag(url, alt, caption) {
-  var imgTag = '<img src="' + url + '"';
-  
-  if (alt) {
-    imgTag += ' alt="' + alt + '"';
-  }
-  
-  if (caption) {
-    imgTag += ' data-caption="' + caption + '"';
-  }
-  
-  imgTag += ' class="img-fluid" style="max-width: 100%; height: auto;">';
-  
-  return imgTag;
+function escAttr(str) {
+  return str.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
 $('#cancelImageBtn').on('click', function() {
