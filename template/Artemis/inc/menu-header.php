@@ -120,12 +120,19 @@
                             data-toggle="modal"
                             data-target="#searchModal"
                             aria-label="Abrir buscador"
-                            style="background: transparent; border: none; color: #fff; font-size: 18px; cursor: pointer;">
+                            style="background: transparent; border: none; color: var(--text-color); font-size: 18px; cursor: pointer;">
                         <i class="fas fa-search"></i>
+                    </button>
+
+                    <button id="theme-toggle" 
+                            type="button"
+                            style="background: transparent; border: none; color: var(--text-color); font-size: 18px; cursor: pointer; margin: 0 10px;"
+                            aria-label="Cambiar tema">
+                        <i class="fas fa-moon" id="theme-icon"></i>
                     </button>
                     
                     <div id="side-menu-trigger" class="offcanvas-menu-btn offcanvas-btn-repoint d-inline-block d-lg-none ml-3" style="cursor: pointer;">
-                        <i class="fas fa-bars" style="color: #fff; font-size: 18px;"></i>
+                        <i class="fas fa-bars" style="color: var(--text-color); font-size: 18px;"></i>
                     </div>
                 </div>
             </div>
@@ -158,14 +165,14 @@
     </div>
 
     <div class="ticker-wrapper">
-        <div class="container">
-            <div class="row align-items-center">
+        <div class="container-fluid px-0">
+            <div class="row align-items-center no-gutters">
                 <div class="col-auto">
                     <span class="ticker-label">ÚLTIMAS</span>
                 </div>
                 <div class="col">
-                    <div class="feeding-text-light2">
-                        <ol id="ticker" class="ticker" style="list-style: none; padding: 0; margin: 0; display: flex; gap: 30px;">
+                    <div class="ticker-content">
+                        <div class="ticker-track">
                             <?php
                             $stTicker = db()->query("
                                 SELECT p.title, p.slug, c.slug AS category_slug
@@ -175,19 +182,23 @@
                                 WHERE p.status = 'published' AND p.deleted = 0 
                                 GROUP BY p.id
                                 ORDER BY p.created_at DESC 
-                                LIMIT 5
+                                LIMIT 10
                             ");
                             $tickerNews = $stTicker->fetchAll(PDO::FETCH_ASSOC);
-                            foreach ($tickerNews as $news): 
+                            
+                            // Duplicate for seamless loop
+                            $allNews = array_merge($tickerNews, $tickerNews);
+                            
+                            foreach ($allNews as $news): 
                             ?>
-                                <li>
+                                <span class="ticker-item">
                                     <a href="<?= URLBASE ?>/<?= htmlspecialchars($news['category_slug']) ?>/<?= htmlspecialchars($news['slug']) ?>/" 
-                                       style="color: #fff; text-decoration: none; white-space: nowrap;">
+                                       style="color: #fff; text-decoration: none;">
                                         <?= htmlspecialchars($news['title']) ?>
                                     </a>
-                                </li>
+                                </span>
                             <?php endforeach; ?>
-                        </ol>
+                        </div>
                     </div>
                 </div>
             </div>
