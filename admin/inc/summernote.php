@@ -2,7 +2,6 @@
 
 <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/quill-resize-module@2.1.3/dist/quill-resize-module.min.js"></script>
 
 <!-- Modal: Galería de medios para el editor de contenido -->
 <div class="modal fade" id="editorMediaModal" tabindex="-1" data-bs-backdrop="static">
@@ -136,8 +135,7 @@
               self.openGallery();
             }
           }
-        },
-        'resize-module': {}
+        }
       }
     });
 
