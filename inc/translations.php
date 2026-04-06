@@ -8,6 +8,9 @@ function get_translations(string $lang = 'es'): array {
     }
     
     try {
+        if (!function_exists('db') || !db()) {
+            return [];
+        }
         $stmt = db()->prepare("SELECT trans_key, trans_value FROM system_translations WHERE lang_code = ?");
         $stmt->execute([$lang]);
         $translations = [];
@@ -25,7 +28,10 @@ function t(string $key, string $lang = null): string {
     global $sys;
     
     if ($lang === null) {
-        $lang = $sys['admin_language'] ?? 'es';
+        $lang = 'es';
+        if (isset($sys['admin_language']) && !empty($sys['admin_language'])) {
+            $lang = $sys['admin_language'];
+        }
     }
     
     $translations = get_translations($lang);
@@ -87,6 +93,9 @@ function get_admin_language(): string {
 
 function save_translation(string $lang, string $key, string $value): bool {
     try {
+        if (!function_exists('db') || !db()) {
+            return false;
+        }
         $stmt = db()->prepare("
             INSERT INTO system_translations (lang_code, trans_key, trans_value)
             VALUES (:lang, :key, :value)
@@ -105,6 +114,9 @@ function save_translation(string $lang, string $key, string $value): bool {
 
 function get_all_translation_keys(): array {
     try {
+        if (!function_exists('db') || !db()) {
+            return [];
+        }
         $stmt = db()->query("SELECT DISTINCT trans_key FROM system_translations ORDER BY trans_key");
         return array_column($stmt->fetchAll(PDO::FETCH_ASSOC), 'trans_key');
     } catch (Throwable $e) {
@@ -114,6 +126,9 @@ function get_all_translation_keys(): array {
 
 function get_translations_by_key(string $key): array {
     try {
+        if (!function_exists('db') || !db()) {
+            return [];
+        }
         $stmt = db()->prepare("SELECT lang_code, trans_value FROM system_translations WHERE trans_key = ?");
         $stmt->execute([$key]);
         $result = [];

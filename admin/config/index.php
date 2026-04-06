@@ -83,7 +83,7 @@ foreach ($defaults as $k => $v) {
         accept-charset="UTF-8" enctype="multipart/form-data">
     <div class="tab-content p-3 border border-top-0 rounded-bottom">
 
-      <div class="tab-pane fade show active" id="generales">
+      <div class="tab-pane fade <?= $activeTab === 'generales' ? 'show active' : '' ?>" id="generales">
         <?php require_once __DIR__ . '/tabs/tab_generales.php'; ?>
       </div>
 
@@ -105,7 +105,7 @@ foreach ($defaults as $k => $v) {
         <?php require_once __DIR__ . '/tabs/tab_apariencia.php'; ?>
       </div>
 
-      <div class="tab-pane fade" id="idioma">
+      <div class="tab-pane fade <?= $activeTab === 'idioma' ? 'show active' : '' ?>" id="idioma">
         <?php require_once __DIR__ . '/tabs/tab_idioma.php'; ?>
       </div>
 
