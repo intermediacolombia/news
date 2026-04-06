@@ -12,9 +12,58 @@
   border: 1px solid #dee2e6;
   border-radius: 6px;
 }
+
+.summernote-image-modal .modal-body {
+  padding: 20px;
+}
+
+.summernote-image-modal .form-label {
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.summernote-image-modal .preview-image {
+  max-width: 100%;
+  max-height: 200px;
+  margin-top: 10px;
+  border-radius: 8px;
+  display: none;
+}
 </style>
 
+<!-- Modal para alt y caption de imagen -->
+<div class="modal fade summernote-image-modal" id="imageModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Configurar Imagen</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">Texto Alternativo (alt)</label>
+          <input type="text" class="form-control" id="imgAltText" placeholder="Descripción de la imagen">
+          <small class="text-muted">Importante para accesibilidad y SEO</small>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Pie de foto (caption)</label>
+          <input type="text" class="form-control" id="imgCaptionText" placeholder="Texto debajo de la imagen">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="cancelImageBtn">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="insertImageBtn">Insertar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
+var pendingImageFile = null;
+var pendingImageEditor = null;
+var pendingImageUrl = null;
+var pendingImageDataUrl = null;
+
 $(document).ready(function() {
   $('.summernote').summernote({
     height: 400,
@@ -34,27 +83,78 @@ $(document).ready(function() {
       onImageUpload: function(files) {
         for (let i = 0; i < files.length; i++) {
           let file = files[i];
-          let editor = $(this); // FIX: Guardar referencia correcta
+          let editor = $(this);
           
-          // Si la imagen es pequeña (<500KB), usar Base64
           if (file.size < 500 * 1024) {
             let reader = new FileReader();
             reader.onloadend = function() {
-              editor.summernote('insertImage', reader.result); // FIX: Usar editor guardado
+              showImageModal(null, editor, reader.result);
             };
             reader.readAsDataURL(file);
           } else {
-            // Si es grande, subir al servidor
             uploadSummernoteImage(file, editor);
           }
         }
       }
     }
   });
+  
+  $('#imageModal').on('hidden.bs.modal', function() {
+    pendingImageFile = null;
+    pendingImageEditor = null;
+    pendingImageUrl = null;
+    pendingImageDataUrl = null;
+  });
 });
 
+function showImageModal(file, editor, dataUrl) {
+  pendingImageFile = file;
+  pendingImageEditor = editor;
+  pendingImageDataUrl = dataUrl;
+  pendingImageUrl = null;
+  
+  $('#imgAltText').val('');
+  $('#imgCaptionText').val('');
+  
+  new bootstrap.Modal($('#imageModal')).show();
+}
+
+$('#insertImageBtn').on('click', function() {
+  var alt = $('#imgAltText').val().trim();
+  var caption = $('#imgCaptionText').val().trim();
+  
+  if (pendingImageDataUrl) {
+    insertImageWithMetadata(pendingImageDataUrl, alt, caption);
+  } else if (pendingImageUrl) {
+    insertImageWithMetadata(pendingImageUrl, alt, caption);
+  }
+  
+  bootstrap.Modal.getInstance($('#imageModal')).hide();
+});
+
+$('#cancelImageBtn').on('click', function() {
+  bootstrap.Modal.getInstance($('#imageModal')).hide();
+});
+
+function insertImageWithMetadata(url, alt, caption) {
+  var imgTag = '<img src="' + url + '"';
+  
+  if (alt) {
+    imgTag += ' alt="' + alt + '"';
+  }
+  
+  imgTag += ' class="img-fluid"';
+  
+  if (caption) {
+    imgTag += ' /><figure class="mt-2 text-center"><figcaption class="text-muted small">' + caption + '</figcaption></figure>';
+  } else {
+    imgTag += ' />';
+  }
+  
+  pendingImageEditor.summernote('insertHTML', imgTag);
+}
+
 function uploadSummernoteImage(file, editor) {
-  // Validar tamaño
   if (file.size > 5 * 1024 * 1024) {
     alert('La imagen supera los 5MB permitidos.');
     return;
@@ -63,7 +163,6 @@ function uploadSummernoteImage(file, editor) {
   var data = new FormData();
   data.append("file", file);
   
-  // Mostrar indicador de carga
   editor.summernote('disable');
   
   $.ajax({
@@ -75,7 +174,7 @@ function uploadSummernoteImage(file, editor) {
     type: 'POST',
     success: function(response) {
       if (response.url) {
-        editor.summernote('insertImage', response.url);
+        showImageModal(null, editor, response.url);
       } else if (response.error) {
         alert('Error: ' + response.error);
       }
