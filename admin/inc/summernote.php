@@ -1,7 +1,7 @@
 <!-- /admin/inc/summernote.php  — usa Quill (reemplaza TinyMCE) -->
 
-<link href="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
 
 <!-- Modal: Galería de medios para el editor de contenido -->
 <div class="modal fade" id="editorMediaModal" tabindex="-1" data-bs-backdrop="static">
@@ -216,6 +216,9 @@
 
   function initEditors() {
     document.querySelectorAll('textarea.summernote').forEach(function (textarea) {
+      if (!textarea.id) {
+        textarea.id = 'editor-' + Math.random().toString(36).substr(2, 9);
+      }
       var quillEditor = new QuillEditor('#' + textarea.id);
       quillEditor.init(function () { quillEditor.openGallery(); });
       editors.push(quillEditor);

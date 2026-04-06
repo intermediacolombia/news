@@ -114,6 +114,7 @@ $oldType   = $old['page_type'] ?? $page['page_type'] ?? 'general';
               <label class="form-label">Contenido *</label>
               <textarea class="form-control<?= isset($errors['content'])?' is-invalid':'' ?> summernote" 
                         name="content" 
+                        id="content"
                         rows="10"><?= $old['content'] ?? $page['content'] ?? '' ?></textarea>
               <?php if(isset($errors['content'])): ?>
                 <div class="invalid-feedback"><?= htmlspecialchars($errors['content']) ?></div>

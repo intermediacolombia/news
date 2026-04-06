@@ -77,11 +77,11 @@ $oldStatus = $old['status'] ?? 'draft';
             </div>
 
             <div class="mb-3">
-  <label class="form-label">Contenido *</label>
-  <textarea class="form-control<?= isset($errors['content'])?' is-invalid':'' ?> summernote" 
-            name="content" 
-             
-            rows="10"><?= oldv('content') ?></textarea>
+              <label class="form-label">Contenido *</label>
+              <textarea class="form-control<?= isset($errors['content'])?' is-invalid':'' ?> summernote" 
+                        name="content" 
+                        id="content"
+                        rows="10"><?= oldv('content') ?></textarea>
   <?php if(isset($errors['content'])): ?>
     <div class="invalid-feedback"><?= htmlspecialchars($errors['content']) ?></div>
   <?php endif; ?>
