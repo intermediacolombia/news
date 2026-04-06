@@ -56,6 +56,15 @@
                     <input type="text" id="em-caption" class="form-control form-control-sm"
                            placeholder="Opcional">
                   </div>
+                  <div class="mb-2">
+                    <label class="form-label small fw-semibold mb-1">Tamaño</label>
+                    <select id="em-width" class="form-select form-select-sm">
+                      <option value="">Grande (100%)</option>
+                      <option value="img-medium" selected>Mediano (75%)</option>
+                      <option value="img-small">Pequeño (50%)</option>
+                      <option value="img-thumbnail">Miniatura (25%)</option>
+                    </select>
+                  </div>
                 </div>
               </div>
             </div>
@@ -189,14 +198,14 @@
   };
 
   QuillEditor.prototype.setContent = function (html) {
-    if (this.quill) {
-      this.quill.root.innerHTML = html || '';
+    if (this.quill && html) {
+      this.quill.root.innerHTML = html;
     }
   };
 
   QuillEditor.prototype.getContent = function () {
     if (this.quill) {
-      return this.quill.root.innerHTML;
+      return this.quill.getSemanticHTML() || this.quill.root.innerHTML;
     }
     return '';
   };
@@ -221,6 +230,14 @@
       }
       var quillEditor = new QuillEditor('#' + textarea.id);
       quillEditor.init(function () { quillEditor.openGallery(); });
+      
+      var initialContent = textarea.value;
+      if (initialContent) {
+        setTimeout(function() {
+          quillEditor.setContent(initialContent);
+        }, 100);
+      }
+      
       editors.push(quillEditor);
 
       window[textarea.id + '_quill'] = quillEditor;
@@ -281,6 +298,7 @@
               url: this.dataset.url,
               alt: this.dataset.alt,
               caption: this.dataset.caption,
+              widthClass: ''
             };
 
             document.getElementById('em-detail-empty').classList.add('d-none');
@@ -288,6 +306,7 @@
             document.getElementById('em-detail-img').src = emSelected.url;
             document.getElementById('em-alt').value = emSelected.alt;
             document.getElementById('em-caption').value = emSelected.caption;
+            document.getElementById('em-width').value = 'img-medium';
             document.getElementById('btn-em-insert').disabled = false;
             document.getElementById('em-selected-info').textContent = this.dataset.name;
           });
@@ -326,17 +345,19 @@
 
     var alt = document.getElementById('em-alt').value.trim();
     var caption = document.getElementById('em-caption').value.trim();
+    var widthClass = document.getElementById('em-width').value;
     var url = emSelected.url;
 
     var range = emEditor.quill.getSelection() || { index: emEditor.quill.getLength() };
     var html;
+    var imgClass = 'img-fluid ' + (widthClass || '');
     if (caption) {
       html = '<figure class="figure d-block text-center">'
-           + '<img src="' + url + '" alt="' + _esc(alt) + '" class="img-fluid figure-img" style="max-width:100%;">'
+           + '<img src="' + url + '" alt="' + _esc(alt) + '" class="' + imgClass + ' figure-img" style="max-width:100%;">'
            + '<figcaption class="figure-caption">' + _escHtml(caption) + '</figcaption>'
            + '</figure>';
     } else {
-      html = '<img src="' + url + '" alt="' + _esc(alt) + '" class="img-fluid" style="max-width:100%;">';
+      html = '<img src="' + url + '" alt="' + _esc(alt) + '" class="' + imgClass + '" style="max-width:100%;">';
     }
     emEditor.quill.clipboard.dangerouslyPasteHTML(range.index, html);
 
