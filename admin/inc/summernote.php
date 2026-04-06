@@ -2,6 +2,7 @@
 
 <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/quill-resize-image@1.0.11/dist/quill-resize-image.min.js"></script>
 
 <!-- Modal: Galería de medios para el editor de contenido -->
 <div class="modal fade" id="editorMediaModal" tabindex="-1" data-bs-backdrop="static">
@@ -135,6 +136,9 @@
               self.openGallery();
             }
           }
+        },
+        imageResize: {
+          modules: ['Resize', 'DisplaySize', 'Toolbar']
         }
       }
     });
@@ -232,9 +236,11 @@
       quillEditor.init(function () { quillEditor.openGallery(); });
       
       var initialContent = textarea.value;
+      console.log('Loading content for', textarea.id, ':', initialContent ? initialContent.substring(0, 100) + '...' : 'empty');
       if (initialContent) {
         setTimeout(function() {
           quillEditor.setContent(initialContent);
+          console.log('Content loaded');
         }, 100);
       }
       
