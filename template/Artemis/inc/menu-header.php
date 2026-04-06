@@ -1,4 +1,4 @@
-<div id="wrapper">
+﻿<div id="wrapper">
     <header class="artemis-navbar navbar-expand-lg fixed-top">
         <div class="container">
             <div class="row align-items-center">
@@ -13,7 +13,7 @@
                 
                 <div class="col-lg-8 col-md-6">
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#artemisNav">
-                        <i class="fas fa-bars" style="color: #fff;"></i>
+                        <i class="fas fa-bars" style="color: var(--text-color);"></i>
                     </button>
                     
                     <nav class="collapse navbar-collapse justify-content-center" id="artemisNav">
@@ -46,7 +46,7 @@
                                     $cats = $st->fetchAll(PDO::FETCH_ASSOC);
                                     foreach ($cats as $cat): 
                                     ?>
-                                        <a class="dropdown-item" href="<?= URLBASE ?>/noticias/<?= htmlspecialchars($cat['slug']) ?>/" style="color: #e6edf3;">
+                                        <a class="dropdown-item" href="<?= URLBASE ?>/noticias/<?= htmlspecialchars($cat['slug']) ?>/" style="color: var(--text-color);">
                                             <?= htmlspecialchars($cat['name']) ?>
                                         </a>
                                     <?php endforeach; ?>
@@ -74,7 +74,7 @@
                                     <?php foreach ($columnistasMenu as $col): 
                                         $nombreCompleto = trim($col['nombre'] . ' ' . $col['apellido']);
                                     ?>
-                                        <a class="dropdown-item" href="<?= URLBASE ?>/columnista/<?= htmlspecialchars($col['username']) ?>/" style="color: #e6edf3;">
+                                        <a class="dropdown-item" href="<?= URLBASE ?>/columnista/<?= htmlspecialchars($col['username']) ?>/" style="color: var(--text-color);">
                                             <?= htmlspecialchars($nombreCompleto) ?>
                                         </a>
                                     <?php endforeach; ?>
@@ -97,11 +97,11 @@
                                     $institucionalPages = $stInst->fetchAll(PDO::FETCH_ASSOC);
                                     foreach ($institucionalPages as $instPage): 
                                     ?>
-                                        <a class="dropdown-item" href="<?= URLBASE ?>/institucional/<?= htmlspecialchars($instPage['slug']) ?>" style="color: #e6edf3;">
+                                        <a class="dropdown-item" href="<?= URLBASE ?>/institucional/<?= htmlspecialchars($instPage['slug']) ?>" style="color: var(--text-color);">
                                             <?= htmlspecialchars($instPage['title']) ?>
                                         </a>
                                     <?php endforeach; ?>
-                                    <a class="dropdown-item" href="<?= URLBASE ?>/institucional" style="color: #e6edf3;">
+                                    <a class="dropdown-item" href="<?= URLBASE ?>/institucional" style="color: var(--text-color);">
                                         <i class="fas fa-list mr-2"></i>Ver todas
                                     </a>
                                 </div>
@@ -194,7 +194,7 @@
                             ?>
                                 <span class="ticker-item">
                                     <a href="<?= URLBASE ?>/<?= htmlspecialchars($news['category_slug']) ?>/<?= htmlspecialchars($news['slug']) ?>/" 
-                                       style="color: #fff; text-decoration: none;">
+                                       style="color: var(--text-color); text-decoration: none;">
                                         <?= htmlspecialchars($news['title']) ?>
                                     </a>
                                 </span>

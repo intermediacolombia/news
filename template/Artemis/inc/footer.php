@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 if (!function_exists('truncate_text')) {
     function truncate_text(string $text, int $limit = 100): string {
         $text = strip_tags($text);
@@ -42,7 +42,7 @@ global $sys;
     <div class="container">
         <div class="row">
             <div class="col-lg-4 col-md-6 mb-4">
-                <h5 class="mb-4" style="color: #fff; font-family: 'Playfair Display', serif;">Contáctanos</h5>
+                <h5 class="mb-4" style="color: var(--text-color); font-family: 'Playfair Display', serif;">Contáctanos</h5>
                 <?php if (!empty($sys['info_footer'])): ?>
                     <p class="mb-3" style="color: var(--text-muted);"><?= htmlspecialchars($sys['info_footer']) ?></p>
                 <?php endif; ?>
@@ -84,7 +84,7 @@ global $sys;
             </div>
 
             <div class="col-lg-4 col-md-6 mb-4">
-                <h5 class="mb-4" style="color: #fff; font-family: 'Playfair Display', serif;">Últimas Noticias</h5>
+                <h5 class="mb-4" style="color: var(--text-color); font-family: 'Playfair Display', serif;">Últimas Noticias</h5>
                 <ul class="list-unstyled">
                     <?php
                     $latestNews = db()->query("
@@ -111,7 +111,7 @@ global $sys;
             </div>
 
             <div class="col-lg-4 col-md-12 mb-4">
-                <h5 class="mb-4" style="color: #fff; font-family: 'Playfair Display', serif;">Categorías</h5>
+                <h5 class="mb-4" style="color: var(--text-color); font-family: 'Playfair Display', serif;">Categorías</h5>
                 <ul class="list-unstyled">
                     <?php
                     $cats = db()->query("
@@ -177,7 +177,7 @@ global $sys;
                 </ul>
 
                 <p class="mb-1" style="color: var(--text-muted); font-size: 14px;">
-                    © <?= date('Y') ?> <strong style="color: #fff;"><?= htmlspecialchars($sys['site_name']) ?></strong>. Todos los derechos reservados.
+                    © <?= date('Y') ?> <strong style="color: var(--text-color);"><?= htmlspecialchars($sys['site_name']) ?></strong>. Todos los derechos reservados.
                 </p>
                 <p style="color: var(--text-muted); font-size: 13px;">
                     Diseño por <a href="https://www.intermediahost.co" target="_blank" style="color: var(--primary); text-decoration: none;">Intermedia Host</a>
