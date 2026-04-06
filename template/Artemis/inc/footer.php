@@ -11,14 +11,14 @@ global $sys;
 
 <div class="modal fade search-modal" id="searchModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
+        <div class="modal-content" style="background: var(--bg-secondary); border: 1px solid var(--border-color);">
             <div class="modal-body p-4">
-                <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Cerrar" style="right: 20px; top: 20px; color: #fff; opacity: 0.7;">
+                <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Cerrar" style="right: 20px; top: 20px; color: var(--text-color); opacity: 0.7;">
                     <i class="fas fa-times fa-lg"></i>
                 </button>
 
-                <h3 class="mb-3" style="color: #fff; font-family: 'Playfair Display', serif;">Buscar</h3>
-                <p class="mb-4" style="color: var(--text-muted);">Escribe lo que necesitas y presiona "Buscar".</p>
+                <h3 class="mb-3" style="color: var(--text-color); font-family: 'Playfair Display', serif;">Buscar</h3>
+                <p class="mb-4" style="color: var(--text-muted-color);">Escribe lo que necesitas y presiona "Buscar".</p>
 
                 <form action="<?= URLBASE ?>/buscar/" method="get">
                     <div class="input-group">

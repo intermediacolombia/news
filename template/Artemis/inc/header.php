@@ -285,9 +285,16 @@
         }
 
         .artemis-navbar {
-            background: rgba(13, 17, 23, 0.95);
+            background: var(--bg-secondary);
             backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255,255,255,0.08);
+            border-bottom: 1px solid var(--border-color);
+            padding: 15px 0;
+            transition: all 0.3s ease;
+        }
+
+        .artemis-navbar.scrolled {
+            padding: 10px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
 
         .artemis-navbar .navbar-brand img {
@@ -295,7 +302,7 @@
         }
 
         .artemis-navbar .nav-link {
-            color: #e6edf3 !important;
+            color: var(--text-color) !important;
             font-weight: 500;
             font-size: 14px;
             text-transform: uppercase;
@@ -361,10 +368,7 @@
             font-size: 3.5rem;
             font-weight: 700;
             line-height: 1.1;
-            background: linear-gradient(135deg, #fff 0%, #e6edf3 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--text-color);
         }
 
         .news-card {
@@ -408,6 +412,7 @@
             font-weight: 700;
             position: relative;
             display: inline-block;
+            color: var(--text-color);
         }
 
         .section-title::after {
