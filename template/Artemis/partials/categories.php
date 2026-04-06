@@ -1,6 +1,6 @@
 <?php
 $categories = db()->query("
-    SELECT c.id, c.name, c.slug, c.image, COUNT(p.id) AS total
+    SELECT c.id, c.name, c.slug, COUNT(p.id) AS total
     FROM blog_categories c
     LEFT JOIN blog_post_category pc ON c.id = pc.category_id
     LEFT JOIN blog_posts p ON p.id = pc.post_id AND p.status='published' AND p.deleted=0
@@ -36,15 +36,9 @@ if (!function_exists('img_url')) {
                 <a href="<?= $catUrl ?>" 
                    class="category-card d-block"
                    style="position: relative; border-radius: 16px; overflow: hidden; height: 150px; text-decoration: none;">
-                    <?php if (!empty($cat['image'])): ?>
-                        <img src="<?= img_url($cat['image']) ?>" 
-                             alt="<?= htmlspecialchars($cat['name']) ?>" 
-                             style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease;">
-                    <?php else: ?>
-                        <div style="width: 100%; height: 100%; background: linear-gradient(135deg, var(--secondary), var(--dark)); display: flex; align-items: center; justify-content: center;">
-                            <i class="fas fa-folder" style="font-size: 40px; color: rgba(255,255,255,0.3);"></i>
-                        </div>
-                    <?php endif; ?>
+                    <div style="width: 100%; height: 100%; background: linear-gradient(135deg, var(--secondary), var(--dark)); display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-folder" style="font-size: 40px; color: rgba(255,255,255,0.3);"></i>
+                    </div>
                     
                     <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(transparent, rgba(0,0,0,0.8)); display: flex; align-items: flex-end; padding: 20px;">
                         <div>
