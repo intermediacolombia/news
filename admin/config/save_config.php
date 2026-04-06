@@ -33,8 +33,24 @@ try {
         ON DUPLICATE KEY UPDATE value = VALUES(value), updated_at = CURRENT_TIMESTAMP
     ");
 
+    // === GUARDAR TRADUCCIONES ===
+    if (!empty($_POST['translations']) && is_array($_POST['translations'])) {
+        if (function_exists('save_translation')) {
+            foreach ($_POST['translations'] as $transKey => $langValues) {
+                if (is_array($langValues)) {
+                    foreach ($langValues as $lang => $value) {
+                        save_translation($lang, $transKey, $value);
+                    }
+                }
+            }
+        }
+    }
+
     foreach ($_POST as $key => $value) {
-        $stmt->execute([':name' => $key, ':value' => $value]);
+        if ($key === 'translations') continue;
+        if (!is_array($value)) {
+            $stmt->execute([':name' => $key, ':value' => $value]);
+        }
     }
 
     // Log opcional
