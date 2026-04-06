@@ -230,4 +230,25 @@ if (!function_exists('renderAdsenseBlock')) {
 }
 
 
+/* ========= Helper para obtener alt_text de imagen ========= */
+function get_image_alt($imagePath, $fallbackTitle = '') {
+    if (empty($imagePath)) {
+        return $fallbackTitle;
+    }
+    
+    try {
+        $stmt = db()->prepare("SELECT alt_text FROM multimedia WHERE file_path = ? AND deleted = 0 LIMIT 1");
+        $stmt->execute([$imagePath]);
+        $media = $stmt->fetch();
+        if (!empty($media['alt_text'])) {
+            return $media['alt_text'];
+        }
+    } catch (Throwable $e) {
+        // Si falla la consulta, retorna el fallback
+    }
+    
+    return $fallbackTitle;
+}
+
+
 

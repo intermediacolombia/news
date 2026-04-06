@@ -139,7 +139,7 @@ $tags = array_slice(array_keys($freq), 0, 9);
     ?>
     <div class="media mb-3" style="align-items: start;">
         <img src="<?= img_url($p['image']) ?>" 
-             alt="<?= htmlspecialchars($p['title']) ?>" 
+             alt="<?= htmlspecialchars(get_image_alt($p['image'], $p['title'])) ?>" 
              class="mr-3"
              style="width: 80px; height: 60px; object-fit: cover; border-radius: 8px;">
         <div class="media-body">

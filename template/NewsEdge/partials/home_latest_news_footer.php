@@ -162,7 +162,7 @@ function getFeaturedPostsByCategory($categoryId, $limit = 2) {
                                                             <a href="<?= URLBASE ?>/<?= htmlspecialchars($post['category_slug']) ?>/<?= htmlspecialchars($post['slug']) ?>/">
                                                                 <img src="<?= img_url($post['image']) ?>" 
                                                                      class="img-zoomin img-fluid rounded w-100" 
-                                                                     alt="<?= htmlspecialchars($post['title']) ?>">
+                                                                     alt="<?= htmlspecialchars(get_image_alt($post['image'], $post['title'])) ?>">
                                                             </a>
                                                         </div>
                                                     </div>

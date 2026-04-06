@@ -71,7 +71,7 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                     <a href="<?= URLBASE ?>/<?= htmlspecialchars($p['category_slug']) ?>/<?= htmlspecialchars($p['slug']) ?>/">
                       <img class="img-fluid w-100"
                         src="<?= $p['image'] ? URLBASE . '/' . htmlspecialchars($p['image']) : URLBASE . '/template/news/img/news-500x280-1.jpg' ?>"
-                        alt="<?= htmlspecialchars($p['title']) ?>"
+                        alt="<?= htmlspecialchars(get_image_alt($p['image'], $p['title'])) ?>"
                         style="height: 220px; object-fit: cover; transition: transform .3s;">
                     </a>
                   </div>
@@ -142,7 +142,7 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
             <div class="col-md-6 mb-3">
               <div class="d-flex bg-light rounded overflow-hidden shadow-sm">
                 <img src="<?= URLBASE . '/' . htmlspecialchars($p['image']) ?>"
-                     alt="<?= htmlspecialchars($p['title']) ?>"
+                     alt="<?= htmlspecialchars(get_image_alt($p['image'], $p['title'])) ?>"
                      style="width: 100px; height: 100px; object-fit: cover;">
                 <div class="px-3 py-2">
                   <div class="small text-muted mb-1">

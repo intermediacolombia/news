@@ -82,7 +82,7 @@ $page_description = !empty($q) ? "Resultados de búsqueda para: $q en " . NOMBRE
                                     <div class="position-relative" style="overflow: hidden;">
                                         <a href="<?= $postUrl ?>">
                                             <img src="<?= img_url($p['image']) ?>" 
-                                                 alt="<?= htmlspecialchars($p['title']) ?>" 
+                                                 alt="<?= htmlspecialchars(get_image_alt($p['image'], $p['title'])) ?>" 
                                                  class="card-img"
                                                  style="width: 100%; height: 180px; object-fit: cover;">
                                         </a>

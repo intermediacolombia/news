@@ -140,7 +140,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                                         <div class="img-wrapper">
                                             <a href="<?= $postUrl ?>">
                                                 <img src="<?= img_url($p['image']) ?>" 
-                                                     alt="<?= htmlspecialchars($p['title']) ?>" 
+                                                     alt="<?= htmlspecialchars(get_image_alt($p['image'], $p['title'])) ?>" 
                                                      class="img-fluid search-result-img">
                                             </a>
                                             <div class="category-badge">

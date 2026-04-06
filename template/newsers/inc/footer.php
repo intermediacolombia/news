@@ -90,7 +90,7 @@
             <div class="d-flex align-items-center">
               <div class="rounded-circle overflow-hidden border border-2 border-primary flex-shrink-0"
                    style="width: 65px; height: 65px;">
-                <img src="<?= $img ?>" class="img-fluid w-100 h-100" alt="<?= htmlspecialchars($post['title']) ?>" style="object-fit: cover;">
+                <img src="<?= $img ?>" class="img-fluid w-100 h-100" alt="<?= htmlspecialchars(get_image_alt($post['image'], $post['title'])) ?>" style="object-fit: cover;">
               </div>
               <div class="ps-3">
                 <p class="text-uppercase small mb-1 text-primary"><?= htmlspecialchars($post['category_name']) ?></p>

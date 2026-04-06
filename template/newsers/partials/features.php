@@ -28,7 +28,7 @@
                   <div class="overflow-hidden rounded-circle">
                     <img src="<?= $p['image'] ? URLBASE . '/' . htmlspecialchars($p['image']) : URLBASE . '/template/news/img/features-default.jpg' ?>"
                          class="img-zoomin img-fluid rounded-circle w-100"
-                         alt="<?= htmlspecialchars($p['title']) ?>">
+                         alt="<?= htmlspecialchars(get_image_alt($p['image'], $p['title'])) ?>">
                   </div>
                   <span class="rounded-circle border border-2 border-white bg-primary btn-sm-square text-white position-absolute"
                         style="top: 10%; right: -10px;">

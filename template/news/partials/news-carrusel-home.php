@@ -25,7 +25,7 @@ $latestPosts = $stmt->fetchAll();
                         <div class="position-relative overflow-hidden" style="height: 435px;">
                             <img class="img-fluid h-100"
                                  src="<?= URLBASE . '/' . htmlspecialchars($post['image']) ?>"
-                                 alt="<?= htmlspecialchars($post['title']) ?>"
+                                 alt="<?= htmlspecialchars(get_image_alt($post['image'], $post['title'])) ?>"
                                  style="object-fit: cover;">
                             <div class="overlay d-flex flex-column justify-content-end p-3" 
      style="position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.5);">

@@ -30,7 +30,7 @@ $mostRead = $stmt->fetchAll();
                 <div class="position-relative overflow-hidden" style="height: 300px;">
                     <img class="img-fluid w-100 h-100"
                          src="<?= $post['image'] ? URLBASE . '/' . htmlspecialchars($post['image']) : URLBASE . '/template/news/img/news-300x300-1.jpg' ?>"
-                         alt="<?= htmlspecialchars($post['title']) ?>"
+                         alt="<?= htmlspecialchars(get_image_alt($post['image'], $post['title'])) ?>"
                          style="object-fit: cover;">
                     <div class="overlay">
                         <div class="mb-1" style="font-size: 13px;">

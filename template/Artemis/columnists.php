@@ -95,7 +95,7 @@ $page_title = "Perfil de $authorName | " . NOMBRE_SITIO;
                     <div class="position-relative" style="overflow: hidden;">
                         <a href="<?= $postUrl ?>">
                             <img src="<?= img_url($post['image']) ?>" 
-                                 alt="<?= htmlspecialchars($post['title']) ?>" 
+                                 alt="<?= htmlspecialchars(get_image_alt($post['image'], $post['title'])) ?>" 
                                  class="card-img"
                                  style="width: 100%; height: 200px; object-fit: cover;">
                         </a>

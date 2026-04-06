@@ -101,7 +101,7 @@ $totalPages = max(1, ceil($totalPosts / $perPage));
                             <a class="img-opacity-hover news-thumb"
    href="<?= URLBASE ?>/<?= $p['category_slug'] ?>/<?= $p['slug'] ?>/">
     <img src="<?= URLBASE . '/' . ltrim($p['image'], '/') ?>"
-         alt="<?= htmlspecialchars($p['title']) ?>">
+         alt="<?= htmlspecialchars(get_image_alt($p['image'], $p['title'])) ?>">
 </a>
 
                             <div class="topic-box-top-xs">

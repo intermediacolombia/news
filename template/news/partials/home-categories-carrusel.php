@@ -50,7 +50,7 @@ $categories = db()->query("
                                     <div class="image-container">
                                         <img class="img-fluid w-100"
                                              src="<?= !empty($post['image']) ? htmlspecialchars(URLBASE . '/' . $post['image']) : URLBASE . '/template/news/img/news-500x280-1.jpg' ?>"
-                                             alt="<?= htmlspecialchars($post['title']) ?>">
+                                             alt="<?= htmlspecialchars(get_image_alt($post['image'], $post['title'])) ?>">
                                     </div>
                                     <div class="p-3">
                                         <div class="small text-muted mb-2">

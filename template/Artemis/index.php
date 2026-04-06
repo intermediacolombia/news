@@ -81,7 +81,7 @@ $latestPosts = db()->query("
                         <div class="swiper-slide">
                             <div class="hero-card" style="position: relative; border-radius: 20px; overflow: hidden; height: 450px;">
                                 <img src="<?= img_url($slide['image']) ?>" 
-                                     alt="<?= htmlspecialchars($slide['title']) ?>" 
+                                     alt="<?= htmlspecialchars(get_image_alt($slide['image'], $slide['title'])) ?>" 
                                      style="width: 100%; height: 100%; object-fit: cover;">
                                 <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.9)); padding: 40px 30px;">
                                     <span class="category-badge mb-3 d-inline-block"><?= htmlspecialchars($slide['category_name']) ?></span>
@@ -160,7 +160,7 @@ $latestPosts = db()->query("
                     <div class="position-relative" style="overflow: hidden;">
                         <a href="<?= $postUrl ?>">
                             <img src="<?= img_url($post['image']) ?>" 
-                                 alt="<?= htmlspecialchars($post['title']) ?>" 
+                                 alt="<?= htmlspecialchars(get_image_alt($post['image'], $post['title'])) ?>" 
                                  class="card-img"
                                  style="width: 100%; height: 220px; object-fit: cover;">
                         </a>
@@ -211,7 +211,7 @@ $latestPosts = db()->query("
                             <div class="position-relative" style="overflow: hidden;">
                                 <a href="<?= $postUrl ?>">
                                     <img src="<?= img_url($post['image']) ?>" 
-                                         alt="<?= htmlspecialchars($post['title']) ?>" 
+                                         alt="<?= htmlspecialchars(get_image_alt($post['image'], $post['title'])) ?>" 
                                          class="card-img"
                                          style="width: 100%; height: 180px; object-fit: cover;">
                                 </a>

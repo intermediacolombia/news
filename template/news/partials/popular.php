@@ -72,7 +72,7 @@ function safe_excerpt($html, $limit = 30) {
         <?php foreach (array_slice($popularPosts, 2, 2) as $post): ?>
             <div class="d-flex mb-3">
                 <img src="<?= $post['image'] ? URLBASE . '/' . htmlspecialchars($post['image']) : URLBASE . '/template/news/img/news-100x100-1.jpg' ?>"
-                     alt="<?= htmlspecialchars($post['title']) ?>"
+                     alt="<?= htmlspecialchars(get_image_alt($post['image'], $post['title'])) ?>"
                      style="width: 100px; height: 100px; object-fit: cover;">
                 <div class="w-100 d-flex flex-column justify-content-center bg-light px-3" style="height: 100px;">
                     <div class="mb-1" style="font-size: 13px;">
@@ -117,7 +117,7 @@ function safe_excerpt($html, $limit = 30) {
         <?php foreach (array_slice($popularPosts, 4, 2) as $post): ?>
             <div class="d-flex mb-3">
                 <img src="<?= $post['image'] ? URLBASE . '/' . htmlspecialchars($post['image']) : URLBASE . '/template/news/img/news-100x100-2.jpg' ?>"
-                     alt="<?= htmlspecialchars($post['title']) ?>"
+                     alt="<?= htmlspecialchars(get_image_alt($post['image'], $post['title'])) ?>"
                      style="width: 100px; height: 100px; object-fit: cover;">
                 <div class="w-100 d-flex flex-column justify-content-center bg-light px-3" style="height: 100px;">
                     <div class="mb-1" style="font-size: 13px;">

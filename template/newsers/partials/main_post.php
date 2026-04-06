@@ -59,7 +59,7 @@ $rightList = array_slice($posts, 3);    // items pequeños de la derecha
         <?php if ($main): ?>
         <div class="position-relative overflow-hidden rounded">
           <a href="<?= post_url($main) ?>">
-            <img src="<?= img_url($main['image']) ?>" class="img-fluid rounded img-zoomin w-100" alt="<?= htmlspecialchars($main['title']) ?>">
+            <img src="<?= img_url($main['image']) ?>" class="img-fluid rounded img-zoomin w-100" alt="<?= htmlspecialchars(get_image_alt($main['image'], $main['title'])) ?>">
           </a>
           <div class="d-flex justify-content-center px-4 position-absolute flex-wrap" style="bottom: 10px; left: 0;">
             <a href="<?= post_url($main) ?>" class="text-white me-3 link-hover">
@@ -105,7 +105,7 @@ $rightList = array_slice($posts, 3);    // items pequeños de la derecha
             <div class="col-md-6">
               <div class="rounded overflow-hidden">
                 <a href="<?= post_url($top) ?>">
-                  <img src="<?= img_url($top['image']) ?>" class="img-fluid rounded img-zoomin w-100" alt="<?= htmlspecialchars($top['title']) ?>">
+                  <img src="<?= img_url($top['image']) ?>" class="img-fluid rounded img-zoomin w-100" alt="<?= htmlspecialchars(get_image_alt($top['image'], $top['title'])) ?>">
                 </a>
               </div>
             </div>
@@ -149,7 +149,7 @@ $rightList = array_slice($posts, 3);    // items pequeños de la derecha
             <div class="col-12">
               <div class="rounded overflow-hidden">
                 <a href="<?= post_url($right1) ?>">
-                  <img src="<?= img_url($right1['image']) ?>" class="img-fluid rounded img-zoomin w-100" alt="<?= htmlspecialchars($right1['title']) ?>">
+                  <img src="<?= img_url($right1['image']) ?>" class="img-fluid rounded img-zoomin w-100" alt="<?= htmlspecialchars(get_image_alt($right1['image'], $right1['title'])) ?>">
                 </a>
               </div>
             </div>
@@ -187,7 +187,7 @@ $rightList = array_slice($posts, 3);    // items pequeños de la derecha
                 <div class="col-5">
                   <div class="overflow-hidden rounded">
                     <a href="<?= post_url($p) ?>">
-                      <img src="<?= img_url($p['image']) ?>" class="img-zoomin img-fluid rounded w-100" alt="<?= htmlspecialchars($p['title']) ?>">
+                      <img src="<?= img_url($p['image']) ?>" class="img-zoomin img-fluid rounded w-100" alt="<?= htmlspecialchars(get_image_alt($p['image'], $p['title'])) ?>">
                     </a>
                   </div>
                 </div>

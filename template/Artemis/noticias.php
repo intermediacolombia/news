@@ -86,7 +86,7 @@ $page_title = $categorySlug ? $category['name'] . " | " . NOMBRE_SITIO : "Notici
                     <div class="position-relative" style="overflow: hidden;">
                         <a href="<?= $postUrl ?>">
                             <img src="<?= img_url($p['image']) ?>" 
-                                 alt="<?= htmlspecialchars($p['title']) ?>" 
+                                 alt="<?= htmlspecialchars(get_image_alt($p['image'], $p['title'])) ?>" 
                                  class="card-img"
                                  style="width: 100%; height: 200px; object-fit: cover;">
                         </a>

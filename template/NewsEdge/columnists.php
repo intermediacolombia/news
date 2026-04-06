@@ -155,7 +155,7 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <div class="position-relative width-40 width-100-xs">
                             <a href="<?= $postUrl ?>" class="img-opacity-hover img-scale-animate">
                                 <img src="<?= img_url($post['image']) ?>" 
-                                     alt="<?= htmlspecialchars($post['title']) ?>" 
+                                     alt="<?= htmlspecialchars(get_image_alt($post['image'], $post['title'])) ?>" 
                                      class="img-fluid" 
                                      style="height: 220px; width: 100%; object-fit: cover;">
                             </a>

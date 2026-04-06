@@ -180,7 +180,7 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                         <div class="col-lg-6">
                             <div class="d-flex mb-3">
                                 <img src="<?= URLBASE . '/' . htmlspecialchars($p['image']) ?>"
-                                     alt="<?= htmlspecialchars($p['title']) ?>"
+                                     alt="<?= htmlspecialchars(get_image_alt($p['image'], $p['title'])) ?>"
                                      style="width: 100px; height: 100px; object-fit: cover;">
                                 <div class="w-100 d-flex flex-column justify-content-center bg-light px-3" style="height: 100px;">
                                     <div class="mb-1" style="font-size: 13px;">

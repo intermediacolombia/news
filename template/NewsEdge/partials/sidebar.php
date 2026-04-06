@@ -231,7 +231,7 @@ $tags = array_slice(array_keys($freq), 0, 9);
         <div class="position-relative width-40">
             <a href="<?= $postUrl ?>" class="img-opacity-hover">
                 <img src="<?= img_url($p['image']) ?>" 
-                     alt="<?= htmlspecialchars($p['title']) ?>" 
+                     alt="<?= htmlspecialchars(get_image_alt($p['image'], $p['title'])) ?>" 
                      class="img-fluid width-100 sidebar-popular-img">
             </a>
         </div>

@@ -56,7 +56,7 @@ $isotopePosts = db()->query($sqlIsotope)->fetchAll();
                     ?>
                         <div class="col-lg-4 col-md-6 col-sm-6 col-12 <?= $itemClass ?>">
                             <div class="img-overlay-70 img-scale-animate mb-10">
-                                <img src="<?= img_url($post['image']) ?>" alt="<?= htmlspecialchars($post['title']) ?>" class="img-fluid width-100" style="height: 250px; object-fit: cover;">
+                                <img src="<?= img_url($post['image']) ?>" alt="<?= htmlspecialchars(get_image_alt($post['image'], $post['title'])) ?>" class="img-fluid width-100" style="height: 250px; object-fit: cover;">
                                 
                                 <div class="topic-box-top-sm">
                                     <div class="topic-box-sm color-cod-gray mb-20">
