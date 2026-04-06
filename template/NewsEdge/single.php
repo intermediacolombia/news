@@ -13,6 +13,10 @@ if (!function_exists('img_url')) {
     }
 }
 
+function get_post_image_alt($post) {
+    return !empty($post['image_alt']) ? $post['image_alt'] : ($post['title'] ?? '');
+}
+
 if (!function_exists('truncate_text')) {
     function truncate_text(string $text, int $limit = 100): string {
         $text = strip_tags($text);
@@ -124,7 +128,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
 <div class="position-relative mb-30">
     <?php if (!empty($post['image'])): ?>
     <img src="<?= img_url($post['image']) ?>" 
-         alt="<?= htmlspecialchars($post['title']) ?>" 
+         alt="<?= htmlspecialchars(get_post_image_alt($post)) ?>" 
          class="img-fluid"
          style="width: 100%; height: 450px; object-fit: cover; display: block;">
     <?php endif; ?>

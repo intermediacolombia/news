@@ -1,6 +1,10 @@
 <?php
 require_once __DIR__ . '/../../inc/config.php';
 
+function get_post_image_alt($post) {
+    return !empty($post['image_alt']) ? $post['image_alt'] : ($post['title'] ?? '');
+}
+
 $categorySlug = $_GET['category'] ?? null;
 $postSlug     = $_GET['post'] ?? null;
 
@@ -117,7 +121,7 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                         <img class="img-fluid w-100"
                              src="<?= URLBASE . '/' . htmlspecialchars($post['image']) ?>"
                              style="object-fit: cover;"
-                             alt="<?= htmlspecialchars($post['title']) ?>">
+                             alt="<?= htmlspecialchars(get_post_image_alt($post)) ?>">
                     <?php endif; ?>
                     <div class="overlay position-relative bg-light">
                         <!-- Categoría, fecha y vistas -->

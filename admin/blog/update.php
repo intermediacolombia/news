@@ -31,6 +31,7 @@ $cats           = $_POST['categories']          ?? [];
 $seoTitle       = $_POST['seo_title']           ?? '';
 $seoDescription = $_POST['seo_description']     ?? '';
 $seoKeywords    = $_POST['seo_keywords']        ?? '';
+$imageAlt       = trim($_POST['image_alt']       ?? '');
 $imageFromLib   = trim($_POST['image_path']     ?? ''); // ← ruta desde biblioteca
 
 /* ========= Validaciones ========= */
@@ -148,7 +149,7 @@ if ($hasNewFile) {
 
 /* ========= Actualizar blog_posts ========= */
 $sql = "UPDATE blog_posts 
-        SET title=?, slug=?, content=?, image=?, status=?,
+        SET title=?, slug=?, content=?, image=?, image_alt=?, status=?,
             seo_title=?, seo_description=?, seo_keywords=?,
             updated_at=NOW()
         WHERE id=?";
@@ -157,6 +158,7 @@ db()->prepare($sql)->execute([
     $slug,
     $content,
     $imagePath,
+    $imageAlt,
     $status,
     $seoTitle,
     $seoDescription,

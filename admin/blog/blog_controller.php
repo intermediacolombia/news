@@ -19,6 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $seoDescription = trim($_POST['seo_description'] ?? '');
     $seoKeywords    = trim($_POST['seo_keywords']   ?? '');
     $imageFromLib   = trim($_POST['image_path']     ?? ''); // ← desde biblioteca
+$imageAlt       = trim($_POST['image_alt']       ?? '');
 
     // Autor
     $author     = ($_SESSION['user']['nombre'] ?? 'Admin') . ' ' . ($_SESSION['user']['apellido'] ?? '');
@@ -99,11 +100,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     /* ========= Guardar entrada ========= */
     try {
         $sql = "INSERT INTO blog_posts 
-                (title, slug, content, image, author, author_user, status,
+                (title, slug, content, image, image_alt, author, author_user, status,
                  seo_title, seo_description, seo_keywords, deleted)
-                VALUES (?,?,?,?,?,?,?,?,?,?,0)";
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,0)";
         db()->prepare($sql)->execute([
-            $title, $slug, $content, $imagePath,
+            $title, $slug, $content, $imagePath, $imageAlt,
             $author, $authorUser, $status,
             $seoTitle, $seoDescription, $seoKeywords,
         ]);

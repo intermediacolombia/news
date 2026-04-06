@@ -9,6 +9,10 @@ if (!function_exists('img_url')) {
     }
 }
 
+function get_post_image_alt($post) {
+    return !empty($post['image_alt']) ? $post['image_alt'] : ($post['title'] ?? '');
+}
+
 if (!function_exists('truncate_text')) {
     function truncate_text(string $text, int $limit = 100): string {
         $text = strip_tags($text);
@@ -99,7 +103,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
             <div class="col-lg-8">
                 <div style="background: var(--dark-secondary); border-radius: 20px; overflow: hidden;">
                     <img src="<?= img_url($post['image']) ?>" 
-                         alt="<?= htmlspecialchars($post['title']) ?>" 
+                         alt="<?= htmlspecialchars(get_post_image_alt($post)) ?>" 
                          style="width: 100%; height: 400px; object-fit: cover;">
                     
                     <div class="p-4">

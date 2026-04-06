@@ -215,6 +215,13 @@ function oldv_raw($key, $default = ''){
   <!-- File para subir nueva -->
   <input type="file" id="media-upload-input" name="image" accept="image/*" class="d-none">
 
+  <div class="mb-2">
+    <label class="form-label small">Texto alternativo (alt)</label>
+    <input type="text" name="image_alt" id="image_alt" class="form-control form-control-sm"
+           placeholder="Descripción de la imagen para accesibilidad"
+           value="<?= htmlspecialchars($post['image_alt'] ?? '') ?>">
+  </div>
+
   <div class="d-flex gap-2">
     <button type="button" class="btn btn-outline-primary btn-sm" id="btn-open-media">
       <i class="bi bi-images me-1"></i> <?= empty($post['image']) ? 'Seleccionar imagen' : 'Cambiar imagen' ?>

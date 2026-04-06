@@ -1,6 +1,10 @@
 <?php
 require_once __DIR__ . '/../../inc/config.php';
 
+function get_post_image_alt($post) {
+    return !empty($post['image_alt']) ? $post['image_alt'] : ($post['title'] ?? '');
+}
+
 $categorySlug = $_GET['category'] ?? null;
 $postSlug     = $_GET['post'] ?? null;
 
@@ -65,7 +69,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
 
                 <?php if (!empty($post['image'])): ?>
                 <div class="position-relative rounded overflow-hidden mb-3">
-                    <img src="<?= URLBASE . '/' . htmlspecialchars($post['image']) ?>" class="img-zoomin img-fluid rounded w-100" alt="<?= htmlspecialchars($post['title']) ?>">
+                    <img src="<?= URLBASE . '/' . htmlspecialchars($post['image']) ?>" class="img-zoomin img-fluid rounded w-100" alt="<?= htmlspecialchars(get_post_image_alt($post)) ?>">
                     <div class="position-absolute text-white px-4 py-2 bg-primary rounded" style="top: 20px; right: 20px;">
                         <?= htmlspecialchars($post['category_name']) ?>
                     </div>
