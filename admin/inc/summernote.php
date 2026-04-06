@@ -2,7 +2,6 @@
 
 <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/quill-resize-module@2.1.3/dist/resize.js"></script>
 
 <!-- Modal: Galería de medios para el editor de contenido -->
 <div class="modal fade" id="editorMediaModal" tabindex="-1" data-bs-backdrop="static">
@@ -84,6 +83,121 @@
 </div>
 
 <script>
+/* ── Image Resizer: drag corners to resize images inside Quill 2 ── */
+function initImageResizer(quill) {
+  var quillRoot = quill.root;                   // .ql-editor
+  var container = quillRoot.parentElement;      // .ql-container (position:relative)
+
+  var overlay   = null;
+  var activeImg = null;
+
+  function removeOverlay() {
+    if (overlay) { overlay.remove(); overlay = null; }
+    activeImg = null;
+  }
+
+  function positionOverlay() {
+    if (!overlay || !activeImg) return;
+    var ir = activeImg.getBoundingClientRect();
+    var cr = container.getBoundingClientRect();
+    overlay.style.left   = (ir.left - cr.left) + 'px';
+    overlay.style.top    = (ir.top  - cr.top)  + 'px';
+    overlay.style.width  = ir.width  + 'px';
+    overlay.style.height = ir.height + 'px';
+  }
+
+  function showOverlay(img) {
+    removeOverlay();
+    activeImg = img;
+
+    overlay = document.createElement('div');
+    overlay.style.cssText = [
+      'position:absolute',
+      'pointer-events:none',
+      'z-index:99',
+      'border:2px dashed #0d6efd',
+      'box-sizing:border-box'
+    ].join(';');
+    container.appendChild(overlay);
+
+    ['nw','ne','sw','se'].forEach(function(corner) {
+      var h = document.createElement('span');
+      h.style.cssText = [
+        'position:absolute',
+        'display:block',
+        'width:12px',
+        'height:12px',
+        'background:#0d6efd',
+        'border:2px solid #fff',
+        'border-radius:2px',
+        'pointer-events:all'
+      ].join(';');
+      if (corner === 'nw') { h.style.top = '-6px';    h.style.left  = '-6px';  h.style.cursor = 'nw-resize'; }
+      if (corner === 'ne') { h.style.top = '-6px';    h.style.right = '-6px';  h.style.cursor = 'ne-resize'; }
+      if (corner === 'sw') { h.style.bottom = '-6px'; h.style.left  = '-6px';  h.style.cursor = 'sw-resize'; }
+      if (corner === 'se') { h.style.bottom = '-6px'; h.style.right = '-6px';  h.style.cursor = 'se-resize'; }
+
+      h.addEventListener('mousedown', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        var startX = e.clientX;
+        var imgRect = activeImg.getBoundingClientRect();
+        var startW  = imgRect.width;
+        var startH  = imgRect.height;
+        var ratio   = startH / startW;
+        var isLeft  = corner === 'nw' || corner === 'sw';
+
+        function onMove(e) {
+          var dx  = e.clientX - startX;
+          var newW = Math.max(40, isLeft ? startW - dx : startW + dx);
+          activeImg.style.width  = newW + 'px';
+          activeImg.style.height = (newW * ratio) + 'px';
+          positionOverlay();
+        }
+        function onUp() {
+          document.removeEventListener('mousemove', onMove);
+          document.removeEventListener('mouseup', onUp);
+        }
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
+      });
+
+      overlay.appendChild(h);
+    });
+
+    positionOverlay();
+  }
+
+  /* Click en una imagen → mostrar handles */
+  quillRoot.addEventListener('click', function(e) {
+    if (e.target.tagName === 'IMG') {
+      showOverlay(e.target);
+    } else {
+      removeOverlay();
+    }
+  });
+
+  /* Click fuera del editor → quitar handles */
+  document.addEventListener('click', function(e) {
+    if (activeImg && !container.contains(e.target)) {
+      removeOverlay();
+    }
+  });
+
+  /* Scroll del editor → reposicionar overlay */
+  quillRoot.addEventListener('scroll', positionOverlay);
+
+  /* Cambio de contenido → reposicionar o quitar overlay */
+  quill.on('text-change', function() {
+    if (activeImg && activeImg.isConnected) {
+      positionOverlay();
+    } else {
+      removeOverlay();
+    }
+  });
+}
+
 (function () {
   var UPLOAD_URL = '<?= $url ?>/admin/multimedia/upload_ajax.php';
   var PICKER_URL = '<?= $url ?>/admin/multimedia/media_picker.php';
@@ -137,9 +251,10 @@
             }
           }
         },
-        resizeModule: {}
       }
     });
+
+    initImageResizer(this.quill);
 
     this.quill.root.addEventListener('paste', function (e) {
       var clipboardData = e.clipboardData || window.clipboardData;
