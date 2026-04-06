@@ -329,8 +329,8 @@ function editPopup(id) {
                     document.getElementById('previewImage').style.display = 'none';
                 }
                 
-                if (window.jQuery && jQuery.fn && jQuery.fn.summernote) {
-                    jQuery('#content').summernote('code', p.content || '');
+                if (window.editorGetContent) {
+                    editorSetContent('content', p.content || '');
                 } else {
                     document.getElementById('content').value = p.content || '';
                 }
@@ -385,12 +385,5 @@ document.getElementById('popupForm').addEventListener('submit', async function(e
 </script>
 
 <?php require_once __DIR__ . '/../inc/summernote.php'; ?>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    if (window.jQuery && jQuery.fn && jQuery.fn.summernote) {
-        jQuery('.summernote').summernote({ height: 150 });
-    }
-});
-</script>
 </body>
 </html>
