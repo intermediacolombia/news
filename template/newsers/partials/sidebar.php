@@ -130,7 +130,7 @@ try {
                                 <div class="col-4">
                                     <div class="rounded-circle position-relative">
                                         <div class="overflow-hidden rounded-circle">
-                                            <img src="<?= $p['image'] ? URLBASE . '/' . htmlspecialchars($p['image']) : URLBASE . '/template/news/img/features-sports-1.jpg' ?>" class="img-zoomin img-fluid rounded-circle w-100" alt="">
+                                            <img src="<?= $p['image'] ? URLBASE . '/' . htmlspecialchars($p['image']) : URLBASE . '/template/news/img/features-sports-1.jpg' ?>" class="img-zoomin img-fluid rounded-circle w-100" alt="<?= htmlspecialchars($p['title']) ?>">
                                         </div>
                                         <span class="rounded-circle border border-2 border-white bg-primary btn-sm-square text-white position-absolute" style="top: 10%; right: -10px;">
                                             <?= $idx + 1 ?>

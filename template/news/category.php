@@ -49,7 +49,7 @@
                 </a>
             </div>
             <div class="col-lg-8 text-center text-lg-right">
-                <img class="img-fluid" src="img/ads-700x70.jpg" alt="">
+                <img class="img-fluid" src="img/ads-700x70.jpg" alt="Anuncio">
             </div>
         </div>
     </div>
@@ -177,7 +177,7 @@
                     </div>
                     
                     <div class="mb-3">
-                        <a href=""><img class="img-fluid w-100" src="img/ads-700x70.jpg" alt=""></a>
+                        <a href=""><img class="img-fluid w-100" src="img/ads-700x70.jpg" alt="Anuncio"></a>
                     </div>
                     
                     <div class="row">
@@ -390,7 +390,7 @@
 
                     <!-- Ads Start -->
                     <div class="mb-3 pb-3">
-                        <a href=""><img class="img-fluid" src="img/news-500x280-4.jpg" alt=""></a>
+                        <a href=""><img class="img-fluid" src="img/news-500x280-4.jpg" alt="Anuncio"></a>
                     </div>
                     <!-- Ads End -->
 

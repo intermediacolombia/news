@@ -62,7 +62,7 @@
                     </div>
                     <div class="col-lg-5">
                         <div class="rounded">
-                            <img src="img/banner-img.jpg" class="img-fluid rounded w-100 rounded" alt="">
+                            <img src="img/banner-img.jpg" class="img-fluid rounded w-100 rounded" alt="Banner">
                         </div>
                     </div>
                 </div>

@@ -87,7 +87,7 @@ window.URLBASE = '<?= URLBASE ?>';
         ticker.innerHTML = `
             <div class="d-flex align-items-center fadein">
                 <img src="${img}" class="img-fluid rounded-circle border border-3 border-primary me-2"
-                     style="width:30px; height:30px; object-fit:cover;" alt="">
+                     style="width:30px; height:30px; object-fit:cover;" alt="Imagen de <?= htmlspecialchars($post['title']) ?>">
                 <a href="${link}" class="text-white mb-0 link-hover text-nowrap">${post.title}</a>
             </div>
         `;
