@@ -10,6 +10,8 @@ ini_set('default_charset', 'UTF-8');
 mb_internal_encoding('UTF-8');
 db()->exec("SET NAMES utf8mb4");
 
+$activeTab = $_GET['tab'] ?? 'generales';
+
 $stmt = db()->query("SELECT setting_name, value, enabled FROM system_settings ORDER BY setting_name ASC");
 $configs = []; $configs_enabled = [];
 foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -42,6 +44,7 @@ $defaults = [
     'feature4_icon'=>'fa-undo','feature4_text'=>'30 days return',
     'special_menu_text'=>'','special_menu_link'=>'#',
     'primary'=>'#5fca00','color-hover-link'=>'#214A82','site_theme'=>'',
+    'admin_language'=>'es',
 ];
 foreach ($defaults as $k => $v) {
     if (!isset($configs[$k]))         $configs[$k]         = $v;
@@ -67,12 +70,13 @@ foreach ($defaults as $k => $v) {
   <?php require_once __DIR__ . '/../inc/flash_simple.php'; ?>
 
   <ul class="nav nav-tabs" id="configTabs" role="tablist">
-    <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#generales"><i class="fa fa-cog"></i> Generales</a></li>
-    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#identidad"><i class="fa fa-user"></i> Identidad</a></li>
-    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#code"><i class="fa fa-code"></i> Codigo HTML</a></li>
-    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#seo"><i class="fa fa-google"></i> SEO</a></li>
-    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#email"><i class="fa fa-envelope"></i> Email</a></li>
-    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#apariencia"><i class="fas fa-brush"></i> Apariencia</a></li>
+    <li class="nav-item"><a class="nav-link <?= $activeTab === 'generales' ? 'active' : '' ?>" data-bs-toggle="tab" href="#generales"><i class="fa fa-cog"></i> Generales</a></li>
+    <li class="nav-item"><a class="nav-link <?= $activeTab === 'identidad' ? 'active' : '' ?>" data-bs-toggle="tab" href="#identidad"><i class="fa fa-user"></i> Identidad</a></li>
+    <li class="nav-item"><a class="nav-link <?= $activeTab === 'code' ? 'active' : '' ?>" data-bs-toggle="tab" href="#code"><i class="fa fa-code"></i> Codigo HTML</a></li>
+    <li class="nav-item"><a class="nav-link <?= $activeTab === 'seo' ? 'active' : '' ?>" data-bs-toggle="tab" href="#seo"><i class="fa fa-google"></i> SEO</a></li>
+    <li class="nav-item"><a class="nav-link <?= $activeTab === 'email' ? 'active' : '' ?>" data-bs-toggle="tab" href="#email"><i class="fa fa-envelope"></i> Email</a></li>
+    <li class="nav-item"><a class="nav-link <?= $activeTab === 'apariencia' ? 'active' : '' ?>" data-bs-toggle="tab" href="#apariencia"><i class="fas fa-brush"></i> Apariencia</a></li>
+    <li class="nav-item"><a class="nav-link <?= $activeTab === 'idioma' ? 'active' : '' ?>" data-bs-toggle="tab" href="#idioma"><i class="fas fa-language"></i> Editor de Idioma</a></li>
   </ul>
 
   <form id="configForm" method="post" action="save_config.php"
@@ -101,6 +105,10 @@ foreach ($defaults as $k => $v) {
         <?php require_once __DIR__ . '/tabs/tab_apariencia.php'; ?>
       </div>
 
+      <div class="tab-pane fade" id="idioma">
+        <?php require_once __DIR__ . '/tabs/tab_idioma.php'; ?>
+      </div>
+
     </div>
 
     <div class="text-end mt-3">
@@ -126,6 +134,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+  const urlParams = new URLSearchParams(window.location.search);
+  const tab = urlParams.get('tab');
+  if (tab) {
+    const triggerEl = document.querySelector(`[href="#${tab}"]`);
+    if (triggerEl) {
+      bootstrap.Tab.getOrCreateInstance(triggerEl).show();
+    }
+  }
 
   /* Eliminar banner */
   const btnDel = document.getElementById('deleteBannerBtn');

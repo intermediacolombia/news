@@ -96,6 +96,15 @@
     </div>
 
     <div class="mb-3">
+      <label class="form-label"><i class="fas fa-language me-2"></i>Idioma del Administrador</label>
+      <select name="admin_language" class="form-select">
+        <option value="es" <?= ($configs['admin_language'] ?? 'es') === 'es' ? 'selected' : '' ?>>Español</option>
+        <option value="en" <?= ($configs['admin_language'] ?? 'es') === 'en' ? 'selected' : '' ?>>English</option>
+      </select>
+      <small class="text-muted">Idioma de la interfaz del panel de administración</small>
+    </div>
+
+    <div class="mb-3">
       <div class="form-check form-switch">
         <input type="hidden" name="enable_text_to_speech" value="0">
         <input class="form-check-input" type="checkbox" id="enable_text_to_speech"

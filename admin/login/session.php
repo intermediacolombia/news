@@ -1,6 +1,12 @@
 <?php
 // session.php
 require_once __DIR__ . '/../../inc/config.php';
+
+// Cargar funciones de traducción para el admin
+if (file_exists(__DIR__ . '/../../inc/translations.php')) {
+    require_once __DIR__ . '/../../inc/translations.php';
+}
+
 $cookieDomain = str_replace(['https://','http://'], '', $url);
 // Configurar los parámetros de la cookie de sesión
 $tiempoUnAno = 365 * 24 * 60 * 60;

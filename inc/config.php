@@ -49,6 +49,11 @@ function db() {
 // Inicializar la base de datos para cargar las variables
 db();
 
+// Cargar funciones de traducción
+if (file_exists(__DIR__ . '/translations.php')) {
+    require_once __DIR__ . '/translations.php';
+}
+
 // AHORA DEFINIR LAS CONSTANTES USANDO EL GLOBALS
 if (!defined('URLBASE')) {
     // Si por alguna razón db() no cargó la variable, usamos un fallback
