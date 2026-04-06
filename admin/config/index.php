@@ -187,12 +187,9 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 <?php require_once __DIR__ . '/../inc/summernote.php'; ?>
+<?php require_once __DIR__ . '/../inc/menu-footer.php'; ?>
 </body>
 </html>
-
-
-
-
 
 
 
