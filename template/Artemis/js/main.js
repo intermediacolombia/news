@@ -4,6 +4,7 @@
 function toggleTheme() {
     const htmlEl = document.documentElement;
     const themeIcon = document.getElementById('theme-icon');
+    const themeIconDesktop = document.getElementById('theme-icon-desktop');
     
     const currentTheme = htmlEl.getAttribute('data-theme') || 'light';
     const newTheme = currentTheme === 'light' ? 'dark' : 'light';
@@ -11,12 +12,53 @@ function toggleTheme() {
     htmlEl.setAttribute('data-theme', newTheme);
     localStorage.setItem('artemis-theme', newTheme);
     
+    const iconClass = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+    
     if (themeIcon) {
-        themeIcon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        themeIcon.className = iconClass;
+    }
+    if (themeIconDesktop) {
+        themeIconDesktop.className = iconClass;
     }
     
     console.log('Theme changed to:', newTheme);
 }
+
+// Mobile menu
+var mobileMenuOpen = false;
+function toggleMobileMenu() {
+    var mobileMenu = document.getElementById('artemis-mobile-menu');
+    var mobileOverlay = document.getElementById('artemis-mobile-overlay');
+    
+    if (!mobileMenu) return;
+    
+    mobileMenuOpen = !mobileMenuOpen;
+    
+    if (mobileMenuOpen) {
+        mobileMenu.classList.add('active');
+        if (mobileOverlay) mobileOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    } else {
+        mobileMenu.classList.remove('active');
+        if (mobileOverlay) mobileOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+}
+
+// Mobile dropdowns - initialize after DOM ready
+document.addEventListener('DOMContentLoaded', function() {
+    // Mobile dropdown toggle
+    var dropdownToggles = document.querySelectorAll('.artemis-dropdown-toggle');
+    dropdownToggles.forEach(function(toggle) {
+        toggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            var parent = this.closest('.artemis-mobile-dropdown');
+            if (parent) {
+                parent.classList.toggle('active');
+            }
+        });
+    });
+});
 
 // Initialize on DOM ready
 document.addEventListener('DOMContentLoaded', function() {
@@ -90,16 +132,22 @@ document.addEventListener('DOMContentLoaded', function() {
     const savedTheme = localStorage.getItem('artemis-theme');
     const htmlEl = document.documentElement;
     const themeIcon = document.getElementById('theme-icon');
+    const themeIconDesktop = document.getElementById('theme-icon-desktop');
     
     // If there's a saved theme, apply it
     if (savedTheme) {
         htmlEl.setAttribute('data-theme', savedTheme);
     }
     
-    // Set correct icon
+    // Set correct icon for both mobile and desktop
     const currentTheme = htmlEl.getAttribute('data-theme') || 'light';
+    const iconClass = currentTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+    
     if (themeIcon) {
-        themeIcon.className = currentTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        themeIcon.className = iconClass;
+    }
+    if (themeIconDesktop) {
+        themeIconDesktop.className = iconClass;
     }
 
     console.log('Artemis Theme loaded - Theme:', currentTheme);

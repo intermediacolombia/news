@@ -4,127 +4,49 @@ require_once __DIR__ . '/../../../inc/config.php';
 require_once __DIR__ . '/../../../inc/translations.php';
 ?>
     <header class="artemis-navbar navbar-expand-lg fixed-top">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-2 col-md-3">
+        <div class="container-fluid px-3">
+            <div class="row align-items-center justify-content-between w-100 mx-0">
+                
+                <div class="col-auto d-lg-none">
+                    <button type="button" 
+                            class="artemis-menu-toggle"
+                            onclick="toggleMobileMenu()"
+                            aria-label="Abrir menú"
+                            style="background: transparent; border: none; color: var(--text-color); cursor: pointer; padding: 8px;">
+                        <i class="fas fa-bars" style="font-size: 20px;"></i>
+                    </button>
+                </div>
+                
+                <div class="col text-center">
                     <a href="<?= URLBASE ?>" class="navbar-brand">
                         <img src="<?= URLBASE . SITE_LOGO ?>?<?= time() ?>" 
                              alt="Logo" 
-                             class="img-fluid"
-                             style="max-height: 50px;">
+                             class="img-fluid artemis-logo"
+                             style="max-height: 45px;">
                     </a>
                 </div>
                 
-                <div class="col-lg-8 col-md-6">
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#artemisNav">
-                        <i class="fas fa-bars" style="color: var(--text-color);"></i>
+                <div class="col-auto d-lg-none">
+                    <button type="button"
+                            class="header-search-trigger artemis-icon-btn"
+                            data-toggle="modal"
+                            data-target="#searchModal"
+                            aria-label="Buscar"
+                            style="background: transparent; border: none; color: var(--text-color); font-size: 18px; cursor: pointer; padding: 8px;">
+                        <i class="fas fa-search"></i>
                     </button>
-                    
-                    <nav class="collapse navbar-collapse justify-content-center" id="artemisNav">
-                        <ul class="navbar-nav">
-                            <li class="nav-item">
-                                <a class="nav-link <?= ($_GET['page'] ?? '') === 'index' ? 'active' : '' ?>" href="<?= URLBASE ?>">
-                                    <?= strtoupper(t_theme('theme_inicio')) ?>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="<?= URLBASE ?>/noticias"><?= strtoupper(t_theme('theme_noticias')) ?></a>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link" href="<?= URLBASE ?>/noticias">
-                                    <?= strtoupper(t_theme('theme_categorias')) ?>
-                                </a>
-                                <div class="dropdown-menu">
-                                    <?php
-                                    $st = db()->query("
-                                        SELECT c.name, c.slug, COUNT(p.id) AS total
-                                        FROM blog_categories c
-                                        INNER JOIN blog_post_category pc ON pc.category_id = c.id
-                                        INNER JOIN blog_posts p ON p.id = pc.post_id
-                                        WHERE c.status='active' AND c.deleted=0
-                                          AND p.status='published' AND p.deleted=0
-                                        GROUP BY c.id, c.name, c.slug
-                                        HAVING total > 0
-                                        ORDER BY c.name ASC
-                                    ");
-                                    $cats = $st->fetchAll(PDO::FETCH_ASSOC);
-                                    foreach ($cats as $cat):
-                                    ?>
-                                        <a class="dropdown-item" href="<?= URLBASE ?>/noticias/<?= htmlspecialchars($cat['slug']) ?>/">
-                                            <?= htmlspecialchars($cat['name']) ?>
-                                        </a>
-                                    <?php endforeach; ?>
-                                </div>
-                            </li>
 
-                            <?php
-                            $stCols = db()->query("
-                                SELECT nombre, apellido, username
-                                FROM usuarios
-                                WHERE es_columnista = 1
-                                  AND estado = 0
-                                  AND borrado = 0
-                                ORDER BY nombre ASC, apellido ASC
-                            ");
-                            $columnistasMenu = $stCols->fetchAll(PDO::FETCH_ASSOC);
-                            ?>
-
-                            <?php if (count($columnistasMenu) === 1): ?>
-                            <li class="nav-item">
-                                <a class="nav-link" href="<?= URLBASE ?>/columnista/<?= htmlspecialchars($columnistasMenu[0]['username']) ?>/">
-                                    <?= strtoupper(t_theme('theme_columnistas')) ?>
-                                </a>
-                            </li>
-                            <?php elseif (count($columnistasMenu) > 1): ?>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link" href="<?= URLBASE ?>/columnista">
-                                    <?= strtoupper(t_theme('theme_columnistas')) ?>
-                                </a>
-                                <div class="dropdown-menu">
-                                    <?php foreach ($columnistasMenu as $col):
-                                        $nombreCompleto = trim($col['nombre'] . ' ' . $col['apellido']);
-                                    ?>
-                                        <a class="dropdown-item" href="<?= URLBASE ?>/columnista/<?= htmlspecialchars($col['username']) ?>/">
-                                            <?= htmlspecialchars($nombreCompleto) ?>
-                                        </a>
-                                    <?php endforeach; ?>
-                                </div>
-                            </li>
-                            <?php endif; ?>
-
-                            <li class="nav-item dropdown">
-                                <a class="nav-link" href="<?= URLBASE ?>/institucional">
-                                    <?= strtoupper(t_theme('theme_nosotros')) ?>
-                                </a>
-                                <div class="dropdown-menu">
-                                    <?php
-                                    $stInst = db()->query("
-                                        SELECT title, slug
-                                        FROM institutional_pages
-                                        WHERE status = 'published'
-                                        ORDER BY display_order ASC, title ASC
-                                    ");
-                                    $institucionalPages = $stInst->fetchAll(PDO::FETCH_ASSOC);
-                                    foreach ($institucionalPages as $instPage):
-                                    ?>
-                                        <a class="dropdown-item" href="<?= URLBASE ?>/institucional/<?= htmlspecialchars($instPage['slug']) ?>">
-                                            <?= htmlspecialchars($instPage['title']) ?>
-                                        </a>
-                                    <?php endforeach; ?>
-                                    <a class="dropdown-item" href="<?= URLBASE ?>/institucional">
-                                        <i class="fas fa-list mr-2"></i><?= t_theme('theme_ver_todas') ?>
-                                    </a>
-                                </div>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link" href="<?= URLBASE ?>/contact"><?= strtoupper(t_theme('theme_contacto')) ?></a>
-                            </li>
-                        </ul>
-                    </nav>
+                    <button id="theme-toggle" 
+                            type="button"
+                            onclick="toggleTheme()"
+                            class="artemis-icon-btn"
+                            style="background: transparent; border: none; color: var(--text-color); font-size: 18px; cursor: pointer; padding: 8px;"
+                            aria-label="Cambiar tema">
+                        <i class="fas fa-moon" id="theme-icon"></i>
+                    </button>
                 </div>
                 
-                <div class="col-lg-2 col-md-3 text-right">
+                <div class="col-lg-2 col-md-3 d-none d-lg-block text-right">
                     <button type="button"
                             class="header-search-trigger"
                             data-toggle="modal"
@@ -134,21 +56,208 @@ require_once __DIR__ . '/../../../inc/translations.php';
                         <i class="fas fa-search"></i>
                     </button>
 
-                    <button id="theme-toggle" 
+                    <button id="theme-toggle-desktop" 
                             type="button"
                             onclick="toggleTheme()"
                             style="background: transparent; border: none; color: var(--text-color); font-size: 18px; cursor: pointer; margin: 0 10px;"
                             aria-label="Cambiar tema">
-                        <i class="fas fa-moon" id="theme-icon"></i>
+                        <i class="fas fa-moon" id="theme-icon-desktop"></i>
                     </button>
-                    
-                    <div id="side-menu-trigger" class="offcanvas-menu-btn offcanvas-btn-repoint d-inline-block d-lg-none ml-3" style="cursor: pointer;">
-                        <i class="fas fa-bars" style="color: var(--text-color); font-size: 18px;"></i>
-                    </div>
                 </div>
             </div>
+            
+            <nav class="collapse navbar-collapse d-none d-lg-block" id="artemisNav">
+                <ul class="navbar-nav justify-content-center">
+                    <li class="nav-item">
+                        <a class="nav-link <?= ($_GET['page'] ?? '') === 'index' ? 'active' : '' ?>" href="<?= URLBASE ?>">
+                            <?= strtoupper(t_theme('theme_inicio')) ?>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= URLBASE ?>/noticias"><?= strtoupper(t_theme('theme_noticias')) ?></a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link" href="<?= URLBASE ?>/noticias">
+                            <?= strtoupper(t_theme('theme_categorias')) ?>
+                        </a>
+                        <div class="dropdown-menu">
+                            <?php
+                            $st = db()->query("
+                                SELECT c.name, c.slug, COUNT(p.id) AS total
+                                FROM blog_categories c
+                                INNER JOIN blog_post_category pc ON pc.category_id = c.id
+                                INNER JOIN blog_posts p ON p.id = pc.post_id
+                                WHERE c.status='active' AND c.deleted=0
+                                  AND p.status='published' AND p.deleted=0
+                                GROUP BY c.id, c.name, c.slug
+                                HAVING total > 0
+                                ORDER BY c.name ASC
+                            ");
+                            $cats = $st->fetchAll(PDO::FETCH_ASSOC);
+                            foreach ($cats as $cat):
+                            ?>
+                                <a class="dropdown-item" href="<?= URLBASE ?>/noticias/<?= htmlspecialchars($cat['slug']) ?>/">
+                                    <?= htmlspecialchars($cat['name']) ?>
+                                </a>
+                            <?php endforeach; ?>
+                        </div>
+                    </li>
+
+                    <?php
+                    $stCols = db()->query("
+                        SELECT nombre, apellido, username
+                        FROM usuarios
+                        WHERE es_columnista = 1
+                          AND estado = 0
+                          AND borrado = 0
+                        ORDER BY nombre ASC, apellido ASC
+                    ");
+                    $columnistasMenu = $stCols->fetchAll(PDO::FETCH_ASSOC);
+                    ?>
+
+                    <?php if (count($columnistasMenu) === 1): ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= URLBASE ?>/columnista/<?= htmlspecialchars($columnistasMenu[0]['username']) ?>/">
+                            <?= strtoupper(t_theme('theme_columnistas')) ?>
+                        </a>
+                    </li>
+                    <?php elseif (count($columnistasMenu) > 1): ?>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link" href="<?= URLBASE ?>/columnista">
+                            <?= strtoupper(t_theme('theme_columnistas')) ?>
+                        </a>
+                        <div class="dropdown-menu">
+                            <?php foreach ($columnistasMenu as $col):
+                                $nombreCompleto = trim($col['nombre'] . ' ' . $col['apellido']);
+                            ?>
+                                <a class="dropdown-item" href="<?= URLBASE ?>/columnista/<?= htmlspecialchars($col['username']) ?>/">
+                                    <?= htmlspecialchars($nombreCompleto) ?>
+                                </a>
+                            <?php endforeach; ?>
+                        </div>
+                    </li>
+                    <?php endif; ?>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link" href="<?= URLBASE ?>/institucional">
+                            <?= strtoupper(t_theme('theme_nosotros')) ?>
+                        </a>
+                        <div class="dropdown-menu">
+                            <?php
+                            $stInst = db()->query("
+                                SELECT title, slug
+                                FROM institutional_pages
+                                WHERE status = 'published'
+                                ORDER BY display_order ASC, title ASC
+                            ");
+                            $institucionalPages = $stInst->fetchAll(PDO::FETCH_ASSOC);
+                            foreach ($institucionalPages as $instPage):
+                            ?>
+                                <a class="dropdown-item" href="<?= URLBASE ?>/institucional/<?= htmlspecialchars($instPage['slug']) ?>">
+                                    <?= htmlspecialchars($instPage['title']) ?>
+                                </a>
+                            <?php endforeach; ?>
+                            <a class="dropdown-item" href="<?= URLBASE ?>/institucional">
+                                <i class="fas fa-list mr-2"></i><?= t_theme('theme_ver_todas') ?>
+                            </a>
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= URLBASE ?>/contact"><?= strtoupper(t_theme('theme_contacto')) ?></a>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </header>
+    
+    <div id="artemis-mobile-menu" class="artemis-mobile-menu">
+        <div class="artemis-mobile-menu-header">
+            <span class="artemis-menu-title"><?= NOMBRE_SITIO ?></span>
+            <button type="button" class="artemis-menu-close" onclick="toggleMobileMenu()" aria-label="Cerrar menú">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <ul class="artemis-mobile-nav">
+            <li>
+                <a href="<?= URLBASE ?>">
+                    <i class="fas fa-home"></i><?= t_theme('theme_inicio') ?>
+                </a>
+            </li>
+            <li>
+                <a href="<?= URLBASE ?>/noticias">
+                    <i class="fas fa-newspaper"></i><?= t_theme('theme_noticias') ?>
+                </a>
+            </li>
+            <li class="artemis-mobile-dropdown">
+                <a href="javascript:void(0)" class="artemis-dropdown-toggle">
+                    <span><i class="fas fa-folder"></i><?= t_theme('theme_categorias') ?></span>
+                    <i class="fas fa-chevron-down"></i>
+                </a>
+                <ul class="artemis-mobile-submenu">
+                    <?php foreach ($cats as $cat): ?>
+                    <li>
+                        <a href="<?= URLBASE ?>/noticias/<?= htmlspecialchars($cat['slug']) ?>/">
+                            <?= htmlspecialchars($cat['name']) ?>
+                        </a>
+                    </li>
+                    <?php endforeach; ?>
+                </ul>
+            </li>
+            <?php if (count($columnistasMenu) === 1): ?>
+            <li>
+                <a href="<?= URLBASE ?>/columnista/<?= htmlspecialchars($columnistasMenu[0]['username']) ?>/">
+                    <i class="fas fa-pen"></i><?= t_theme('theme_columnistas') ?>
+                </a>
+            </li>
+            <?php elseif (count($columnistasMenu) > 1): ?>
+            <li class="artemis-mobile-dropdown">
+                <a href="javascript:void(0)" class="artemis-dropdown-toggle">
+                    <span><i class="fas fa-pen"></i><?= t_theme('theme_columnistas') ?></span>
+                    <i class="fas fa-chevron-down"></i>
+                </a>
+                <ul class="artemis-mobile-submenu">
+                    <?php foreach ($columnistasMenu as $col):
+                        $nombreCompleto = trim($col['nombre'] . ' ' . $col['apellido']);
+                    ?>
+                    <li>
+                        <a href="<?= URLBASE ?>/columnista/<?= htmlspecialchars($col['username']) ?>/">
+                            <?= htmlspecialchars($nombreCompleto) ?>
+                        </a>
+                    </li>
+                    <?php endforeach; ?>
+                </ul>
+            </li>
+            <?php endif; ?>
+            <li class="artemis-mobile-dropdown">
+                <a href="javascript:void(0)" class="artemis-dropdown-toggle">
+                    <span><i class="fas fa-info-circle"></i><?= t_theme('theme_nosotros') ?></span>
+                    <i class="fas fa-chevron-down"></i>
+                </a>
+                <ul class="artemis-mobile-submenu">
+                    <?php foreach ($institucionalPages as $instPage): ?>
+                    <li>
+                        <a href="<?= URLBASE ?>/institucional/<?= htmlspecialchars($instPage['slug']) ?>">
+                            <?= htmlspecialchars($instPage['title']) ?>
+                        </a>
+                    </li>
+                    <?php endforeach; ?>
+                    <li>
+                        <a href="<?= URLBASE ?>/institucional">
+                            <i class="fas fa-list"></i><?= t_theme('theme_ver_todas') ?>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="<?= URLBASE ?>/contact">
+                    <i class="fas fa-envelope"></i><?= t_theme('theme_contacto') ?>
+                </a>
+            </li>
+        </ul>
+    </div>
+    
+    <div id="artemis-mobile-overlay" class="artemis-mobile-overlay" onclick="toggleMobileMenu()"></div>
 
     <div style="height: 80px;"></div>
 
