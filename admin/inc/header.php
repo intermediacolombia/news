@@ -134,37 +134,43 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     };
     
+    function doUpdate() {
+        showUpdatingNotification();
+        
+        fetch('<?= $url ?>/admin/inc/auto-update.php?action=update&key=autoupdate', {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        })
+        .then(res => res.json())
+        .then(updateResult => {
+            hideUpdatingNotification();
+            if (updateResult.success) {
+                alert('✅ Actualización aplicada!\n\nNuevo hash: ' + updateResult.new_hash + '\n\nEl sistema se recargará...');
+                location.reload();
+            } else {
+                alert('❌ Error: ' + (updateResult.message || updateResult.output || 'No se pudo actualizar'));
+            }
+        })
+        .catch(err => {
+            hideUpdatingNotification();
+            alert('Error al actualizar: ' + err);
+        });
+    }
+    
     fetch('<?= $url ?>/admin/inc/auto-update.php?action=check', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
     })
     .then(response => response.json())
     .then(data => {
+        console.log('Update check result:', data);
+        
         if (data.update_available) {
-            console.log('Nueva versión disponible: ' + data.latest + ' - Iniciando actualización...');
-            showUpdatingNotification();
-            
-            fetch('<?= $url ?>/admin/inc/auto-update.php?action=update&key=autoupdate', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' }
-            })
-            .then(res => res.json())
-            .then(updateResult => {
-                hideUpdatingNotification();
-                if (updateResult.success) {
-                    showToast('Sistema actualizado a la versión ' + data.latest, 'success');
-                    setTimeout(() => location.reload(), 2000);
-                } else {
-                    showToast('Error: ' + (updateResult.message || 'No se pudo actualizar'), 'error');
-                }
-            })
-            .catch(err => {
-                hideUpdatingNotification();
-                showToast('Error al actualizar', 'error');
-            });
+            if (confirm('🔄 Hay actualizaciones pendientes!\n\nHash actual: ' + data.current_hash + '\nHash guardado: ' + data.saved_hash + '\n\n¿Deseas actualizar ahora?')) {
+                doUpdate();
+            }
         } else {
-            console.log('Sistema actualizado. Versión actual: ' + data.current);
-            showToast('Sistema actualizado. Versión: ' + data.current, 'success');
+            console.log('Sistema actualizado. Hash: ' + data.current_hash);
         }
     })
     .catch(error => {

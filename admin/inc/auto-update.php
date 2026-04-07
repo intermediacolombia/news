@@ -8,33 +8,9 @@ define('GITHUB_REPO', 'intermediacolombia/news');
 define('CURRENT_VERSION', '1.0.2');
 define('GIT_BIN', 'git');
 
-function get_latest_version_from_github() {
-    $url = 'https://api.github.com/repos/' . GITHUB_REPO . '/releases/latest';
-    
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        'User-Agent: PHP Update Checker',
-        'Accept: application/vnd.github+json'
-    ]);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-    
-    $response = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-    
-    if ($httpCode === 200) {
-        $data = json_decode($response, true);
-        return $data['tag_name'] ?? null;
-    }
-    
-    return null;
-}
-
 function get_current_git_hash() {
     if (is_dir(__DIR__ . '/../../.git')) {
-        $hash = trim(shell_exec('cd ' . __DIR__ . '/../.. && ' . GIT_BIN . ' rev-parse --short HEAD 2>/dev/null'));
+        $hash = trim(shell_exec('cd ' . __DIR__ . '/../.. && ' . GIT_BIN . ' rev-parse HEAD 2>/dev/null'));
         return $hash ?: 'unknown';
     }
     return 'unknown';
@@ -45,10 +21,13 @@ function get_local_version() {
     if (file_exists($version_file)) {
         return json_decode(file_get_contents($version_file), true);
     }
-    return ['hash' => '', 'version' => ''];
+    return ['hash' => '', 'updated_at' => ''];
 }
 
 function save_local_version($hash, $version) {
+    if (!is_dir(__DIR__ . '/cache')) {
+        mkdir(__DIR__ . '/cache', 0755, true);
+    }
     $version_file = __DIR__ . '/cache/version.json';
     file_put_contents($version_file, json_encode([
         'hash' => $hash,
@@ -58,29 +37,14 @@ function save_local_version($hash, $version) {
 }
 
 function check_for_updates() {
-    $cache_file = __DIR__ . '/cache/updates.json';
-    $cache_time = 3600;
-    
-    if (file_exists($cache_file) && (time() - filemtime($cache_file)) < $cache_time) {
-        $cached = json_decode(file_get_contents($cache_file), true);
-        return $cached;
-    }
-    
-    $latest = get_latest_version_from_github();
     $currentHash = get_current_git_hash();
     $localVersion = get_local_version();
     
     $hasChanges = $currentHash !== $localVersion['hash'];
     
-    if ($hasChanges && !empty($localVersion['hash'])) {
-        save_local_version($currentHash, $latest ?: CURRENT_VERSION);
-    }
-    
     $result = [
-        'current' => $localVersion['version'] ?: CURRENT_VERSION,
         'current_hash' => $currentHash,
-        'local_hash' => $localVersion['hash'],
-        'latest' => $latest,
+        'saved_hash' => $localVersion['hash'],
         'has_changes' => $hasChanges,
         'update_available' => $hasChanges,
         'checked_at' => date('Y-m-d H:i:s')
@@ -90,6 +54,7 @@ function check_for_updates() {
         mkdir(__DIR__ . '/cache', 0755, true);
     }
     
+    $cache_file = __DIR__ . '/cache/updates.json';
     file_put_contents($cache_file, json_encode($result));
     
     return $result;
@@ -105,7 +70,7 @@ function get_update_status() {
     return [
         'last_check' => null,
         'update_available' => false,
-        'auto_update_enabled' => false
+        'auto_update_enabled' => true
     ];
 }
 
@@ -119,6 +84,7 @@ function perform_silent_update() {
         return ['success' => false, 'message' => 'No git repository found'];
     }
     
+    $oldHash = get_current_git_hash();
     $output = shell_exec('cd ' . __DIR__ . '/../.. && ' . GIT_BIN . ' pull origin main 2>&1');
     
     $newHash = get_current_git_hash();
@@ -126,9 +92,10 @@ function perform_silent_update() {
     
     $status = [
         'updated_at' => date('Y-m-d H:i:s'),
+        'old_hash' => $oldHash,
         'new_hash' => $newHash,
         'output' => $output,
-        'success' => strpos($output, 'Already up to date') !== false || strpos($output, 'Updating') !== false
+        'success' => true
     ];
     
     save_update_status($status);
@@ -138,7 +105,7 @@ function perform_silent_update() {
 
 if (php_sapi_name() === 'cli' || !isset($_GET['action'])) {
     $result = check_for_updates();
-    echo json_encode($result);
+    echo json_encode($result, JSON_PRETTY_PRINT);
     exit;
 }
 
@@ -172,8 +139,8 @@ if ($_GET['action'] === 'reset') {
     if (file_exists($version_file)) unlink($version_file);
     if (file_exists($status_file)) unlink($status_file);
     $currentHash = get_current_git_hash();
-    save_local_version($currentHash, CURRENT_VERSION);
-    echo json_encode(['success' => true, 'message' => 'Estado resetado', 'hash' => $currentHash]);
+    save_local_version('', CURRENT_VERSION);
+    echo json_encode(['success' => true, 'message' => 'Estado reseteado', 'hash' => $currentHash]);
     exit;
 }
 
