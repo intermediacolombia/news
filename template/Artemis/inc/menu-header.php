@@ -7,24 +7,14 @@ require_once __DIR__ . '/../../../inc/translations.php';
         <div class="container">
             <div class="row align-items-center">
                 
-                <!-- Mobile: iconos izquierda -->
+                <!-- Mobile: hamburguesa izquierda -->
                 <div class="col-4 d-lg-none d-flex align-items-center">
                     <button type="button"
-                            class="header-search-trigger artemis-icon-btn"
-                            data-toggle="modal"
-                            data-target="#searchModal"
-                            aria-label="Buscar"
-                            style="background: transparent; border: none; color: var(--text-color); font-size: 18px; cursor: pointer; padding: 8px;">
-                        <i class="fas fa-search"></i>
-                    </button>
-
-                    <button id="theme-toggle-mobile"
-                            type="button"
-                            onclick="toggleTheme()"
-                            class="artemis-icon-btn"
-                            style="background: transparent; border: none; color: var(--text-color); font-size: 18px; cursor: pointer; padding: 8px;"
-                            aria-label="Cambiar tema">
-                        <i class="fas fa-moon" id="theme-icon-mobile"></i>
+                            class="artemis-menu-toggle"
+                            onclick="toggleMobileMenu()"
+                            aria-label="Abrir menú"
+                            style="background: transparent; border: none; color: var(--text-color); cursor: pointer; padding: 8px;">
+                        <i class="fas fa-bars" style="font-size: 20px;"></i>
                     </button>
                 </div>
 
@@ -48,14 +38,24 @@ require_once __DIR__ . '/../../../inc/translations.php';
                     </a>
                 </div>
 
-                <!-- Mobile: hamburguesa derecha -->
+                <!-- Mobile: iconos derecha -->
                 <div class="col-4 d-lg-none d-flex align-items-center justify-content-end">
                     <button type="button"
-                            class="artemis-menu-toggle"
-                            onclick="toggleMobileMenu()"
-                            aria-label="Abrir menú"
-                            style="background: transparent; border: none; color: var(--text-color); cursor: pointer; padding: 8px;">
-                        <i class="fas fa-bars" style="font-size: 20px;"></i>
+                            class="header-search-trigger artemis-icon-btn"
+                            data-toggle="modal"
+                            data-target="#searchModal"
+                            aria-label="Buscar"
+                            style="background: transparent; border: none; color: var(--text-color); font-size: 18px; cursor: pointer; padding: 8px;">
+                        <i class="fas fa-search"></i>
+                    </button>
+
+                    <button id="theme-toggle-mobile"
+                            type="button"
+                            onclick="toggleTheme()"
+                            class="artemis-icon-btn"
+                            style="background: transparent; border: none; color: var(--text-color); font-size: 18px; cursor: pointer; padding: 8px;"
+                            aria-label="Cambiar tema">
+                        <i class="fas fa-moon" id="theme-icon-mobile"></i>
                     </button>
                 </div>
                 
