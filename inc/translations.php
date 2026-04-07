@@ -242,6 +242,9 @@ function t(string $key, string $lang = null): string {
         'theme_verifica_palabras' => 'Verifica que todas las palabras estén escritas correctamente',
         'theme_olvidaste_contrasena' => '¿Olvidaste tu contraseña?',
         'theme_todos' => 'Todos',
+        'theme_logo' => 'Logo',
+        'theme_publicidad' => 'Publicidad',
+        'theme_pagina_no_encontrada' => 'Página no encontrada',
     ];
 
     return $spanishDefaults[$key] ?? $key;
@@ -547,6 +550,9 @@ function init_default_theme_translations(): void {
         'theme_verifica_palabras' => 'Make sure all words are spelled correctly',
         'theme_olvidaste_contrasena' => 'Forgot your password?',
         'theme_todos' => 'All',
+        'theme_logo' => 'Logo',
+        'theme_publicidad' => 'Advertising',
+        'theme_pagina_no_encontrada' => 'Page not found',
     ];
 
     try {

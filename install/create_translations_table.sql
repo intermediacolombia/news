@@ -352,7 +352,10 @@ INSERT INTO system_translations (lang_code, trans_key, trans_value) VALUES
 ('es', 'theme_sugerencias', 'Sugerencias:'),
 ('es', 'theme_verifica_palabras', 'Verifica que todas las palabras estén escritas correctamente'),
 ('es', 'theme_olvidaste_contrasena', '¿Olvidaste tu contraseña?'),
-('es', 'theme_todos', 'Todos')
+('es', 'theme_todos', 'Todos'),
+('es', 'theme_logo', 'Logo'),
+('es', 'theme_publicidad', 'Publicidad'),
+('es', 'theme_pagina_no_encontrada', 'Página no encontrada')
 ON DUPLICATE KEY UPDATE trans_value = VALUES(trans_value);
 
 -- Insertar traducciones del tema en INGLÉS
@@ -514,5 +517,8 @@ INSERT INTO system_translations (lang_code, trans_key, trans_value) VALUES
 ('en', 'theme_sugerencias', 'Suggestions:'),
 ('en', 'theme_verifica_palabras', 'Make sure all words are spelled correctly'),
 ('en', 'theme_olvidaste_contrasena', 'Forgot your password?'),
-('en', 'theme_todos', 'All')
+('en', 'theme_todos', 'All'),
+('en', 'theme_logo', 'Logo'),
+('en', 'theme_publicidad', 'Advertising'),
+('en', 'theme_pagina_no_encontrada', 'Page not found')
 ON DUPLICATE KEY UPDATE trans_value = VALUES(trans_value);
