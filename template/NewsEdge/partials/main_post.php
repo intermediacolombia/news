@@ -203,11 +203,11 @@ $rightList = array_slice($posts, 3);    // items pequeños de la derecha
                     
                     <small>
                       <i class="fa fa-clock"></i>
-                      <?= str_pad(read_time_minutes($p['content']), 2, '0', STR_PAD_LEFT) ?> minute read
+                      <?= str_pad(read_time_minutes($p['content']), 2, '0', STR_PAD_LEFT) ?> <?= t_theme('theme_minute_read') ?>
                     </small>
                     <small>
                       <i class="fa fa-eye"></i>
-                      <?= number_format((int)$p['views'], 0, ',', '.') ?> Views
+                      <?= number_format((int)$p['views'], 0, ',', '.') ?> <?= t_theme('theme_views') ?>
                     </small>
                     <small class="text-body">
                       <i class="fas fa-calendar-alt me-1"></i>

@@ -74,7 +74,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                     <h1>Resultados de Búsqueda</h1>
                     <ul>
                         <li>
-                            <a href="<?= URLBASE ?>">Inicio</a>
+                            <a href="<?= URLBASE ?>"><?= t_theme('theme_inicio') ?></a>
                         </li>
                         <li>Búsqueda</li>
                     </ul>

@@ -32,8 +32,8 @@ if (!function_exists('safe_excerpt')) {
 <div class="row">
     <div class="col-12">
         <div class="d-flex align-items-center justify-content-between bg-light py-2 px-4 mb-3 title-widgets">
-            <h3 class="m-0">Últimas</h3>
-            <a class="text-secondary font-weight-medium text-decoration-none" href="<?= URLBASE ?>/noticias/">Ver Todas</a>
+            <h3 class="m-0"><?= t_theme('theme_ultimas') ?></h3>
+            <a class="text-secondary font-weight-medium text-decoration-none" href="<?= URLBASE ?>/noticias/"><?= t_theme('theme_ver_todas') ?></a>
         </div>
     </div>
 

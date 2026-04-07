@@ -93,8 +93,8 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <div class="breadcrumbs-content">
             <h1>Perfil del Columnista</h1>
             <ul>
-                <li><a href="<?= URLBASE ?>">Inicio</a></li>
-                <li>Columnistas</li>
+                <li><a href="<?= URLBASE ?>"><?= t_theme('theme_inicio') ?></a></li>
+                <li><?= t_theme('theme_columnistas') ?></li>
                 <li><?= htmlspecialchars($authorName) ?></li>
             </ul>
         </div>

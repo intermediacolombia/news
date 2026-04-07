@@ -340,14 +340,14 @@ global $sys;
             <!-- INICIO -->
             <li>
                 <a href="<?= URLBASE ?>">
-                    <i class="fa fa-home" aria-hidden="true"></i>Inicio
+                    <i class="fa fa-home" aria-hidden="true"></i><?= t_theme('theme_inicio') ?>
                 </a>
             </li>
 
             <!-- NOTICIAS -->
             <li>
                 <a href="<?= URLBASE ?>/noticias">
-                    <i class="fa fa-newspaper-o" aria-hidden="true"></i>Noticias
+                    <i class="fa fa-newspaper-o" aria-hidden="true"></i><?= t_theme('theme_noticias') ?>
                 </a>
             </li>
 
@@ -374,7 +374,7 @@ global $sys;
                            data-toggle="collapse" 
                            data-parent="#accordion" 
                            href="#collapseCategories">
-                            <i class="fa fa-folder" aria-hidden="true"></i>Categorías
+                            <i class="fa fa-folder" aria-hidden="true"></i><?= t_theme('theme_categorias') ?>
                         </a>
                     </div>
                     <div aria-expanded="false" 
@@ -416,7 +416,7 @@ global $sys;
                            data-toggle="collapse" 
                            data-parent="#accordion" 
                            href="#collapseColumnistas">
-                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>Columnistas
+                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i><?= t_theme('theme_columnistas') ?>
                         </a>
                     </div>
                     <div aria-expanded="false" 
@@ -458,7 +458,7 @@ global $sys;
                            data-toggle="collapse" 
                            data-parent="#accordion" 
                            href="#collapseInstitucional">
-                            <i class="fa fa-building-o" aria-hidden="true"></i>Nosotros
+                            <i class="fa fa-building-o" aria-hidden="true"></i><?= t_theme('theme_nosotros') ?>
                         </a>
                     </div>
                     <div aria-expanded="false" 
@@ -476,7 +476,7 @@ global $sys;
                                 <?php endforeach; ?>
                                 <li>
                                     <a href="<?= URLBASE ?>/institucional">
-                                        <i class="fa fa-list mr-2"></i>Ver todas
+                                        <i class="fa fa-list mr-2"></i><?= t_theme('theme_ver_todas') ?>
                                     </a>
                                 </li>
                             </ul>
@@ -488,7 +488,7 @@ global $sys;
             <!-- CONTACTO -->
             <li>
                 <a href="<?= URLBASE ?>/contact">
-                    <i class="fa fa-phone" aria-hidden="true"></i>Contacto
+                    <i class="fa fa-phone" aria-hidden="true"></i><?= t_theme('theme_contacto') ?>
                 </a>
             </li>
 

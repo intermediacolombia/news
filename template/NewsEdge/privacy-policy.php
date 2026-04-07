@@ -27,7 +27,7 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
             <h1>Política de Privacidad</h1>
             <ul>
                 <li>
-                    <a href="<?= URLBASE ?>">Inicio</a>
+                    <a href="<?= URLBASE ?>"><?= t_theme('theme_inicio') ?></a>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
                 </li>
                 <li>Política de Privacidad</li>

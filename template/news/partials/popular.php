@@ -41,7 +41,7 @@ function safe_excerpt($html, $limit = 30) {
 <div class="row mb-3">
     <div class="col-12">
         <div class="d-flex align-items-center justify-content-between bg-light py-2 px-4 mb-3 title-widgets">
-            <h3 class="m-0">Más Populares</h3>
+            <h3 class="m-0"><?= t_theme('theme_las_mas_leidas') ?></h3>
         </div>
     </div>
 
