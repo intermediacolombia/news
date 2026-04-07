@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Guarda el token en la tabla password_resets
         $stmtReset = db()->prepare("INSERT INTO password_resets (user_id, token, expires_at) VALUES (:user_id, :token, :expires_at)
-                                    ON DUPLICATE KEY UPDATE token = :token, expires_at = :expires_at");
+                                    ON DUPLICATE KEY UPDATE token = VALUES(token), expires_at = VALUES(expires_at)");
         $stmtReset->execute([
             ':user_id'    => $user['id'],
             ':token'      => $token,
