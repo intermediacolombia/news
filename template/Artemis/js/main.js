@@ -4,7 +4,7 @@
 function toggleTheme() {
     const htmlEl = document.documentElement;
     const themeIcon = document.getElementById('theme-icon');
-    const themeIconDesktop = document.getElementById('theme-icon-desktop');
+    const themeIconMobile = document.getElementById('theme-icon-mobile');
     
     const currentTheme = htmlEl.getAttribute('data-theme') || 'light';
     const newTheme = currentTheme === 'light' ? 'dark' : 'light';
@@ -17,8 +17,8 @@ function toggleTheme() {
     if (themeIcon) {
         themeIcon.className = iconClass;
     }
-    if (themeIconDesktop) {
-        themeIconDesktop.className = iconClass;
+    if (themeIconMobile) {
+        themeIconMobile.className = iconClass;
     }
     
     console.log('Theme changed to:', newTheme);
@@ -132,22 +132,22 @@ document.addEventListener('DOMContentLoaded', function() {
     const savedTheme = localStorage.getItem('artemis-theme');
     const htmlEl = document.documentElement;
     const themeIcon = document.getElementById('theme-icon');
-    const themeIconDesktop = document.getElementById('theme-icon-desktop');
+    const themeIconMobile = document.getElementById('theme-icon-mobile');
     
     // If there's a saved theme, apply it
     if (savedTheme) {
         htmlEl.setAttribute('data-theme', savedTheme);
     }
     
-    // Set correct icon for both mobile and desktop
+    // Set correct icon for both desktop and mobile
     const currentTheme = htmlEl.getAttribute('data-theme') || 'light';
     const iconClass = currentTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
     
     if (themeIcon) {
         themeIcon.className = iconClass;
     }
-    if (themeIconDesktop) {
-        themeIconDesktop.className = iconClass;
+    if (themeIconMobile) {
+        themeIconMobile.className = iconClass;
     }
 
     console.log('Artemis Theme loaded - Theme:', currentTheme);

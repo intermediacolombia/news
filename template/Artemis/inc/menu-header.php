@@ -4,10 +4,10 @@ require_once __DIR__ . '/../../../inc/config.php';
 require_once __DIR__ . '/../../../inc/translations.php';
 ?>
     <header class="artemis-navbar navbar-expand-lg fixed-top">
-        <div class="container-fluid px-3">
-            <div class="row align-items-center justify-content-between w-100 mx-0">
+        <div class="container">
+            <div class="row align-items-center">
                 
-                <div class="col-auto d-lg-none">
+                <div class="col-lg-2 col-md-3 d-lg-none">
                     <button type="button" 
                             class="artemis-menu-toggle"
                             onclick="toggleMobileMenu()"
@@ -17,16 +17,25 @@ require_once __DIR__ . '/../../../inc/translations.php';
                     </button>
                 </div>
                 
-                <div class="col text-center">
+                <div class="col-lg-2 col-md-3 d-none d-lg-block">
+                    <a href="<?= URLBASE ?>" class="navbar-brand">
+                        <img src="<?= URLBASE . SITE_LOGO ?>?<?= time() ?>" 
+                             alt="Logo" 
+                             class="img-fluid"
+                             style="max-height: 50px;">
+                    </a>
+                </div>
+                
+                <div class="col-lg-2 col-md-3 d-lg-none text-center">
                     <a href="<?= URLBASE ?>" class="navbar-brand">
                         <img src="<?= URLBASE . SITE_LOGO ?>?<?= time() ?>" 
                              alt="Logo" 
                              class="img-fluid artemis-logo"
-                             style="max-height: 45px;">
+                             style="max-height: 42px;">
                     </a>
                 </div>
                 
-                <div class="col-auto d-lg-none">
+                <div class="col-lg-2 col-md-3 d-lg-none">
                     <button type="button"
                             class="header-search-trigger artemis-icon-btn"
                             data-toggle="modal"
@@ -36,38 +45,23 @@ require_once __DIR__ . '/../../../inc/translations.php';
                         <i class="fas fa-search"></i>
                     </button>
 
-                    <button id="theme-toggle" 
+                    <button id="theme-toggle-mobile" 
                             type="button"
                             onclick="toggleTheme()"
                             class="artemis-icon-btn"
                             style="background: transparent; border: none; color: var(--text-color); font-size: 18px; cursor: pointer; padding: 8px;"
                             aria-label="Cambiar tema">
-                        <i class="fas fa-moon" id="theme-icon"></i>
+                        <i class="fas fa-moon" id="theme-icon-mobile"></i>
                     </button>
                 </div>
                 
-                <div class="col-lg-2 col-md-3 d-none d-lg-block text-right">
-                    <button type="button"
-                            class="header-search-trigger"
-                            data-toggle="modal"
-                            data-target="#searchModal"
-                            aria-label="Abrir buscador"
-                            style="background: transparent; border: none; color: var(--text-color); font-size: 18px; cursor: pointer;">
-                        <i class="fas fa-search"></i>
+                <div class="col-lg-8 col-md-6 d-none d-lg-block">
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#artemisNav">
+                        <i class="fas fa-bars" style="color: var(--text-color);"></i>
                     </button>
-
-                    <button id="theme-toggle-desktop" 
-                            type="button"
-                            onclick="toggleTheme()"
-                            style="background: transparent; border: none; color: var(--text-color); font-size: 18px; cursor: pointer; margin: 0 10px;"
-                            aria-label="Cambiar tema">
-                        <i class="fas fa-moon" id="theme-icon-desktop"></i>
-                    </button>
-                </div>
-            </div>
-            
-            <nav class="collapse navbar-collapse d-none d-lg-block" id="artemisNav">
-                <ul class="navbar-nav justify-content-center">
+                    
+                    <nav class="collapse navbar-collapse justify-content-center" id="artemisNav">
+                        <ul class="navbar-nav justify-content-center">
                     <li class="nav-item">
                         <a class="nav-link <?= ($_GET['page'] ?? '') === 'index' ? 'active' : '' ?>" href="<?= URLBASE ?>">
                             <?= strtoupper(t_theme('theme_inicio')) ?>
@@ -166,8 +160,29 @@ require_once __DIR__ . '/../../../inc/translations.php';
                     <li class="nav-item">
                         <a class="nav-link" href="<?= URLBASE ?>/contact"><?= strtoupper(t_theme('theme_contacto')) ?></a>
                     </li>
-                </ul>
-            </nav>
+                        </ul>
+                    </nav>
+                </div>
+                
+                <div class="col-lg-2 col-md-3 d-none d-lg-block text-right">
+                    <button type="button"
+                            class="header-search-trigger"
+                            data-toggle="modal"
+                            data-target="#searchModal"
+                            aria-label="Buscar"
+                            style="background: transparent; border: none; color: var(--text-color); font-size: 18px; cursor: pointer;">
+                        <i class="fas fa-search"></i>
+                    </button>
+
+                    <button id="theme-toggle" 
+                            type="button"
+                            onclick="toggleTheme()"
+                            style="background: transparent; border: none; color: var(--text-color); font-size: 18px; cursor: pointer; margin: 0 10px;"
+                            aria-label="Cambiar tema">
+                        <i class="fas fa-moon" id="theme-icon"></i>
+                    </button>
+                </div>
+            </div>
         </div>
     </header>
     
