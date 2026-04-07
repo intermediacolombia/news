@@ -24,6 +24,10 @@ function get_translations(string $lang = 'es'): array {
     }
 }
 
+function clear_translations_cache(): void {
+    $cache = [];
+}
+
 function t(string $key, string $lang = null): string {
     global $sys;
     

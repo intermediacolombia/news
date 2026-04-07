@@ -44,6 +44,10 @@ try {
                 }
             }
         }
+        // Limpiar cache de traducciones después de guardar
+        if (function_exists('clear_translations_cache')) {
+            clear_translations_cache();
+        }
     }
 
     foreach ($_POST as $key => $value) {
