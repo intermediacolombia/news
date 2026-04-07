@@ -41,6 +41,26 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    function showToast(message, type = 'success') {
+        const toast = document.createElement('div');
+        toast.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: ${type === 'success' ? '#28a745' : '#dc3545'};
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 10000;
+            font-size: 14px;
+            animation: slideIn 0.3s ease;
+        `;
+        toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'info-circle'} mr-2"></i>${message}`;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 4000);
+    }
+    
     function showUpdatingNotification() {
         const existingNotification = document.getElementById('updating-notification');
         if (existingNotification) return;
@@ -84,16 +104,19 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(updateResult => {
                 hideUpdatingNotification();
                 if (updateResult.success) {
-                    console.log('Actualización aplicada: ' + updateResult.updated_at);
-                    location.reload();
+                    showToast('Sistema actualizado a la versión ' + data.latest, 'success');
+                    setTimeout(() => location.reload(), 2000);
                 } else {
-                    console.log('Error en actualización:', updateResult.message);
+                    showToast('Error: ' + (updateResult.message || 'No se pudo actualizar'), 'error');
                 }
             })
             .catch(err => {
                 hideUpdatingNotification();
-                console.log('Error al actualizar:', err);
+                showToast('Error al actualizar', 'error');
             });
+        } else {
+            console.log('Sistema actualizado. Versión actual: ' + data.current);
+            showToast('Sistema actualizado. Versión: ' + data.current, 'success');
         }
     })
     .catch(error => {
