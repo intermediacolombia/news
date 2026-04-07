@@ -17,9 +17,9 @@
 
         <div class="col-lg-9">
           <form class="d-flex position-relative rounded-pill overflow-hidden shadow-sm">
-            <input class="form-control border-0 w-100 py-3 ps-4 rounded-pill" type="email" placeholder="Tu correo electrónico...">
+            <input class="form-control border-0 w-100 py-3 ps-4 rounded-pill" type="email" placeholder="<?= t_theme('theme_tu_email') ?>...">
             <button type="submit" class="btn btn-primary border-0 py-3 px-5 rounded-pill position-absolute end-0 top-0 text-white">
-              Suscribirse
+              <?= t_theme('theme_suscribete') ?>
             </button>
           </form>
         </div>
@@ -32,7 +32,7 @@
       <!-- Contacto -->
       <div class="col-lg-4">
         <div class="footer-item">
-          <h4 class="text-white mb-4 fw-semibold">Contáctanos</h4>
+          <h4 class="text-white mb-4 fw-semibold"><?= t_theme('theme_contactanos') ?></h4>
           <p><?= htmlspecialchars($sys['info_footer']) ?></p>
           <p class="text-secondary mb-1"><i class="fa fa-map-marker-alt text-primary me-2"></i><?= htmlspecialchars($sys['business_address'] ?? '') ?></p>
           <p class="text-secondary mb-1"><i class="fa fa-envelope text-primary me-2"></i><?= htmlspecialchars($sys['site_email'] ?? '') ?></p>
@@ -67,7 +67,7 @@
       <!-- Últimas noticias -->
       <div class="col-lg-4">
         <div class="footer-item">
-          <h4 class="text-white mb-4 fw-semibold">Últimas Noticias</h4>
+          <h4 class="text-white mb-4 fw-semibold"><?= t_theme('theme_ultimas_noticias') ?></h4>
           <?php
           $stmt = db()->query("
             SELECT p.title, p.slug AS post_slug, p.image, p.created_at,
@@ -106,7 +106,7 @@
       <!-- Categorías -->
       <div class="col-lg-4">
         <div class="footer-item">
-          <h4 class="text-white mb-4 fw-semibold">Categorías</h4>
+          <h4 class="text-white mb-4 fw-semibold"><?= t_theme('theme_categorias') ?></h4>
           <?php
           $cats = db()->query("
               SELECT c.name, c.slug, COUNT(p.id) AS total

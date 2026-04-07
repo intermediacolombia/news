@@ -42,13 +42,13 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
     <div class="container-fluid py-3">
         <div class="container-bk">
             <div class="bg-light py-2 px-4 mb-3">
-                <h3 class="m-0">Contact Us For Any Queries</h3>
+                <h3 class="m-0"><?= t_theme('theme_contactanos') ?></h3>
             </div>
             <div class="row">
                 <div class="col-md-5">
                     <div class="bg-light mb-3" style="padding: 30px;">
                         <h6 class="font-weight-bold"><?= t_theme('theme_contactanos') ?></h6>
-                        <p>Si necesitas publicidad, saber más sobre nosotros o simplemente quieres contactarnos, déjanos un mensaje y nos pondremos en contacto contigo lo antes posible.</p>
+                        <p><?= t_theme('theme_contactanos_descripcion') ?></p>
 
 						<?php if (!empty($sys['business_address'])): ?>
                         <div class="d-flex align-items-center mb-3">

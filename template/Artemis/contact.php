@@ -17,19 +17,23 @@ $page_description = "Contáctanos para cualquier consulta o sugerencia";
                 <div style="background: var(--dark-secondary); border-radius: 20px; padding: 40px;">
                     <form>
                         <div class="form-group mb-4">
-                            <label style="color: var(--text-color); margin-bottom: 8px; display: block;">Nombre</label>
-                            <input type="text" class="search-input" style="width: 100%;" placeholder="Tu nombre">
+<label style="color: var(--text-color); margin-bottom: 8px; display: block;"><?= t_theme('theme_tu_nombre') ?></label>
+                            <input type="text" class="search-input" style="width: 100%;" placeholder="<?= t_theme('theme_tu_nombre') ?>" required>
                         </div>
-                        <div class="form-group mb-4">
-                            <label style="color: var(--text-color); margin-bottom: 8px; display: block;">Email</label>
-                            <input type="email" class="search-input" style="width: 100%;" placeholder="tu@email.com">
+                        <div class="mb-3">
+                            <label style="color: var(--text-color); margin-bottom: 8px; display: block;"><?= t_theme('theme_tu_correo') ?></label>
+                            <input type="email" class="search-input" style="width: 100%;" placeholder="<?= t_theme('theme_tu_correo') ?>" required>
                         </div>
-                        <div class="form-group mb-4">
-                            <label style="color: var(--text-color); margin-bottom: 8px; display: block;">Mensaje</label>
-                            <textarea class="search-input" style="width: 100%; min-height: 150px;" placeholder="Escribe tu mensaje..."></textarea>
+                        <div class="mb-3">
+                            <label style="color: var(--text-color); margin-bottom: 8px; display: block;"><?= t_theme('theme_asunto') ?></label>
+                            <input type="text" class="search-input" style="width: 100%;" placeholder="<?= t_theme('theme_asunto') ?>" required>
+                        </div>
+                        <div class="mb-3">
+                            <label style="color: var(--text-color); margin-bottom: 8px; display: block;"><?= t_theme('theme_tu_mensaje') ?></label>
+                            <textarea class="search-input" style="width: 100%; min-height: 150px;" placeholder="<?= t_theme('theme_tu_mensaje') ?>..."></textarea>
                         </div>
                         <button type="submit" class="btn-artemis w-100">
-                            <i class="fas fa-paper-plane mr-2"></i>Enviar Mensaje
+                            <i class="fas fa-paper-plane mr-2"></i><?= t_theme('theme_enviar_mensaje') ?>
                         </button>
                     </form>
                 </div>

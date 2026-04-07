@@ -202,6 +202,8 @@ function t(string $key, string $lang = null): string {
         'theme_whatsapp' => 'WhatsApp',
         'theme_sugerencias' => 'Sugerencias:',
         'theme_verifica_palabras' => 'Verifica que todas las palabras estén escritas correctamente',
+        'theme_cerrar' => 'Cerrar',
+        'theme_contactanos_descripcion' => 'Si necesitas publicidad, saber más sobre nosotros o simplemente quieres contactarnos, déjanos un mensaje y nos pondremos en contacto contigo lo antes posible.',
     ];
 
     return $spanishDefaults[$key] ?? $key;
@@ -467,6 +469,8 @@ function init_default_theme_translations(): void {
         'theme_whatsapp' => 'WhatsApp',
         'theme_sugerencias' => 'Suggestions:',
         'theme_verifica_palabras' => 'Make sure all words are spelled correctly',
+        'theme_cerrar' => 'Close',
+        'theme_contactanos_descripcion' => 'If you need advertising, information about our services or simply want to contact us, leave us a message and we will respond as soon as possible.',
     ];
 
     try {

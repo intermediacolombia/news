@@ -495,12 +495,12 @@ global $sys;
             <!-- POLÍTICAS -->
             <li>
                 <a href="<?= URLBASE ?>/privacy-policy">
-                    <i class="fa fa-shield" aria-hidden="true"></i>Política de Privacidad
+                    <i class="fa fa-shield" aria-hidden="true"></i><?= t_theme('theme_privacidad') ?>
                 </a>
             </li>
             <li>
                 <a href="<?= URLBASE ?>/terms-and-conditions">
-                    <i class="fa fa-file-text" aria-hidden="true"></i>Términos y Condiciones
+                    <i class="fa fa-file-text" aria-hidden="true"></i><?= t_theme('theme_terminos') ?>
                 </a>
             </li>
             

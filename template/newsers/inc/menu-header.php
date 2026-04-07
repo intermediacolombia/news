@@ -135,7 +135,7 @@ $columnistasMenu = $stCol->fetchAll(PDO::FETCH_ASSOC);
         <div class="modal-content rounded-0">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel"><?= t_theme('theme_buscar_noticias') ?></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<?= t_theme('theme_cerrar') ?>"></button>
             </div>
 
             <div class="modal-body d-flex align-items-center">

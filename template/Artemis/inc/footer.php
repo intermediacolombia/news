@@ -16,7 +16,7 @@ global $sys;
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content" style="background: var(--bg-secondary); border: 1px solid var(--border-color);">
             <div class="modal-body p-4">
-                <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Cerrar" style="right: 20px; top: 20px; color: var(--text-color); opacity: 0.7;">
+                <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="<?= t_theme('theme_cerrar') ?>" style="right: 20px; top: 20px; color: var(--text-color); opacity: 0.7;">
                     <i class="fas fa-times fa-lg"></i>
                 </button>
 
@@ -33,7 +33,7 @@ global $sys;
                                style="width: 100%;">
                     </div>
                     <button type="submit" class="btn-artemis w-100 mt-3">
-                        <i class="fas fa-search mr-2"></i> Buscar
+                        <i class="fas fa-search mr-2"></i> <?= t_theme('theme_buscar') ?>
                     </button>
                 </form>
             </div>
@@ -45,7 +45,7 @@ global $sys;
     <div class="container">
         <div class="row">
             <div class="col-lg-4 col-md-6 mb-4">
-                <h5 class="mb-4" style="color: var(--text-color); font-family: 'Playfair Display', serif;">Contáctanos</h5>
+                <h5 class="mb-4" style="color: var(--text-color); font-family: 'Playfair Display', serif;"><?= t_theme('theme_contactanos') ?></h5>
                 <?php if (!empty($sys['info_footer'])): ?>
                     <p class="mb-3" style="color: var(--text-muted);"><?= htmlspecialchars($sys['info_footer']) ?></p>
                 <?php endif; ?>
@@ -80,7 +80,7 @@ global $sys;
                         <i class="fab fa-whatsapp mr-2" style="color: var(--primary);"></i>
                         <a href="https://wa.me/<?= preg_replace('/[^0-9]/', '', $sys['whatsapp']) ?>" 
                            target="_blank" style="color: var(--text-muted); text-decoration: none;">
-                            WhatsApp
+                            <?= t_theme('theme_whatsapp') ?>
                         </a>
                     </p>
                 <?php endif; ?>
@@ -207,13 +207,13 @@ global $sys;
         <ul id="accordion" class="offcanvas-nav panel-group">
             <li>
                 <a href="<?= URLBASE ?>">
-                    <i class="fas fa-home" aria-hidden="true"></i>Inicio
+                    <i class="fas fa-home" aria-hidden="true"></i><?= t_theme('theme_inicio') ?>
                 </a>
             </li>
 
             <li>
                 <a href="<?= URLBASE ?>/noticias">
-                    <i class="fas fa-newspaper" aria-hidden="true"></i>Noticias
+                    <i class="fas fa-newspaper" aria-hidden="true"></i><?= t_theme('theme_noticias') ?>
                 </a>
             </li>
 
@@ -239,7 +239,7 @@ global $sys;
                            data-toggle="collapse" 
                            data-parent="#accordion" 
                            href="#collapseCategories">
-                            <i class="fas fa-folder" aria-hidden="true"></i>Categorías
+                            <i class="fas fa-folder" aria-hidden="true"></i><?= t_theme('theme_categorias') ?>
                         </a>
                     </div>
                     <div aria-expanded="false" 
@@ -280,7 +280,7 @@ global $sys;
                            data-toggle="collapse" 
                            data-parent="#accordion" 
                            href="#collapseColumnistas">
-                            <i class="fas fa-pen-nib" aria-hidden="true"></i>Columnistas
+                            <i class="fas fa-pen-nib" aria-hidden="true"></i><?= t_theme('theme_columnistas') ?>
                         </a>
                     </div>
                     <div aria-expanded="false" 
@@ -321,7 +321,7 @@ global $sys;
                            data-toggle="collapse" 
                            data-parent="#accordion" 
                            href="#collapseInstitucional">
-                            <i class="fas fa-building" aria-hidden="true"></i>Nosotros
+                            <i class="fas fa-building" aria-hidden="true"></i><?= t_theme('theme_nosotros') ?>
                         </a>
                     </div>
                     <div aria-expanded="false" 
@@ -339,7 +339,7 @@ global $sys;
                                 <?php endforeach; ?>
                                 <li>
                                     <a href="<?= URLBASE ?>/institucional">
-                                        <i class="fas fa-list mr-2"></i>Ver todas
+                                        <i class="fas fa-list mr-2"></i><?= t_theme('theme_ver_todas') ?>
                                     </a>
                                 </li>
                             </ul>
