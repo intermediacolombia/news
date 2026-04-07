@@ -179,8 +179,9 @@ exit();
   <input type="checkbox" class="form-check-input" id="remember_me" name="remember_me" value="1">
   <label class="form-check-label" for="remember_me">Mantener la sesión iniciada</label>
 </div>
-		  <!-- En tu página de login, justo debajo del formulario -->
-<p><a href="forgot_password.php">¿Olvidaste tu contraseña?</a></p>
+		  <?php if (!empty(SMTP_HOST) && !empty(SMTP_USER)): ?>
+		  <p><a href="forgot_password.php">¿Olvidaste tu contraseña?</a></p>
+		  <?php endif; ?>
 
 
 		  
