@@ -1,77 +1,4 @@
-<?php
-function repair_database() {
-    $results = [
-        'permissions' => [],
-        'tables' => [],
-        'errors' => []
-    ];
-    
-    try {
-        $newPermissions = [
-            [23, 'Ver Logs', 'Sistema'],
-        ];
-        
-        foreach ($newPermissions as $perm) {
-            list($id, $name, $category) = $perm;
-            $stmt = db()->prepare("SELECT id FROM permissions WHERE id = ?");
-            $stmt->execute([$id]);
-            
-            if (!$stmt->fetch()) {
-                $insert = db()->prepare("INSERT INTO permissions (id, name, category, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW())");
-                $insert->execute([$id, $name, $category]);
-                $results['permissions'][] = "Agregado: $name";
-            } else {
-                $results['permissions'][] = "Ya existe: $name";
-            }
-        }
-        
-        $tables = [
-            'system_logs' => "
-                CREATE TABLE IF NOT EXISTS `system_logs` (
-                  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
-                  `user_id` int DEFAULT NULL,
-                  `username` varchar(50) DEFAULT NULL,
-                  `action` varchar(100) NOT NULL,
-                  `description` text,
-                  `entity_type` varchar(50) DEFAULT NULL,
-                  `entity_id` bigint DEFAULT NULL,
-                  `ip_address` varchar(45) DEFAULT NULL,
-                  `user_agent` text,
-                  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-                  PRIMARY KEY (`id`),
-                  KEY `idx_user_id` (`user_id`),
-                  KEY `idx_action` (`action`),
-                  KEY `idx_entity` (`entity_type`, `entity_id`),
-                  KEY `idx_created_at` (`created_at`)
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-            "
-        ];
-        
-        foreach ($tables as $tableName => $createSQL) {
-            $stmt = db()->query("SHOW TABLES LIKE '$tableName'");
-            if (!$stmt->fetch()) {
-                db()->exec($createSQL);
-                $results['tables'][] = "Creada tabla: $tableName";
-            } else {
-                $results['tables'][] = "Ya existe tabla: $tableName";
-            }
-        }
-        
-    } catch (Exception $e) {
-        $results['errors'][] = $e->getMessage();
-    }
-    
-    return $results;
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'repair') {
-    header('Content-Type: application/json');
-    $results = repair_database();
-    echo json_encode($results);
-    exit;
-}
-?>
-
+<?php /* La lógica de reparación está en admin/config/repair_db.php */ ?>
 <div class="row">
     <div class="col-12">
         <div class="alert alert-info">
@@ -113,7 +40,7 @@ function runRepair() {
             btn.disabled = true;
             btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Reparando...';
             
-            fetch('index.php?tab=sistema', {
+            fetch('/admin/config/repair_db.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: 'action=repair'

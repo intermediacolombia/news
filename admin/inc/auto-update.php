@@ -190,6 +190,22 @@ if ($action === 'stream_update') {
     echo "\n";
     if ($exitCode === 0) {
         echo "DONE:success\n";
+
+        // Ejecutar reparación automática de BD tras cada actualización
+        $dbRepairFile = REPO_PATH . '/admin/inc/db_repair.php';
+        if (file_exists($dbRepairFile)) {
+            echo "Aplicando cambios de base de datos...\n";
+            ob_flush(); flush();
+            require_once $dbRepairFile;
+            $repairResults = repair_database();
+            foreach (array_merge($repairResults['tables'], $repairResults['columns'], $repairResults['permissions']) as $msg) {
+                echo "  BD: $msg\n";
+            }
+            foreach ($repairResults['errors'] as $err) {
+                echo "  ERROR BD: $err\n";
+            }
+            ob_flush(); flush();
+        }
     } else {
         echo "DONE:error\n";
     }

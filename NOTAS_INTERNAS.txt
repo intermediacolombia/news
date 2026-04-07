@@ -1,0 +1,93 @@
+=========================================================
+NOTAS INTERNAS DEL SISTEMA - NEWS CMS
+Para desarrolladores e IAs que trabajen en este proyecto
+=========================================================
+
+SISTEMA DE MIGRACIÓN AUTOMÁTICA DE BASE DE DATOS
+-------------------------------------------------
+Archivo clave: admin/inc/db_repair.php
+
+Este archivo contiene la función repair_database() que se ejecuta en
+DOS momentos:
+
+  1. AUTOMÁTICAMENTE tras cada git pull (auto-update del panel admin)
+     → admin/inc/auto-update.php llama repair_database() luego del reset --hard
+
+  2. MANUALMENTE desde el panel de administración
+     → Admin > Configuraciones > tab "Sistema" > botón "Ejecutar Reparación"
+     → El botón hace fetch POST a /admin/config/repair_db.php
+
+REGLA IMPORTANTE:
+  Cada vez que se agregue una funcionalidad que requiera cambios en la BD
+  (nueva tabla, nueva columna, nuevo permiso), SE DEBE agregar en
+  admin/inc/db_repair.php en la sección correspondiente.
+
+  De esta manera, los miles de sitios que usan este sistema actualizarán
+  su BD automáticamente al hacer git pull, sin ninguna intervención manual.
+
+SECCIONES EN db_repair.php:
+  - SECCIÓN 1: PERMISOS     → nuevos permisos del panel admin
+  - SECCIÓN 2: TABLAS       → CREATE TABLE IF NOT EXISTS (nunca borra datos)
+  - SECCIÓN 3: COLUMNAS     → ALTER TABLE ... ADD COLUMN IF NOT EXISTS
+
+=========================================================
+SISTEMA DE LOGS
+=========================================================
+Tabla: system_logs (creada por db_repair.php)
+Función de registro: admin/inc/log_action.php → log_action()
+
+Uso en cualquier archivo PHP del admin:
+  require_once __DIR__ . '/../inc/log_action.php';
+  log_action('Nombre acción', 'Descripción detallada', 'tipo_entidad', $id);
+
+Vista de logs: admin/logs/index.php
+Permiso requerido: 'Ver Logs' (id=23, categoría='Sistema')
+
+=========================================================
+SISTEMA DE ACTUALIZACIÓN AUTOMÁTICA (GIT)
+=========================================================
+Archivo: admin/inc/auto-update.php
+  - Detecta nuevos commits en origin/main comparando hashes
+  - Usa git fetch + git reset --hard origin/main (no git pull)
+  - Tras actualizar exitosamente, llama repair_database() automáticamente
+
+Endpoint stream: ?action=stream_update (responde text/plain en tiempo real)
+Endpoint check:  ?action=check        (responde JSON con estado)
+
+Usuario git configurado: intermediacolombia / intermediacolombia@gmail.com
+
+=========================================================
+SMTP / CORREO
+=========================================================
+Constantes definidas en inc/config.php desde la tabla system_settings:
+  SMTP_HOST, SMTP_USER, SMTP_PASS, SMTP_PORT, MAIL_SENDER
+
+Test de SMTP: actions/test_smtp.php (endpoint AJAX POST)
+  - Requiere vendor/autoload.php (PHPMailer via Composer)
+
+El link "¿Olvidaste tu contraseña?" en el login solo aparece si
+SMTP_HOST y SMTP_USER están configurados (admin/login/index.php).
+
+=========================================================
+ESTRUCTURA DE RUTAS IMPORTANTE
+=========================================================
+Raíz del proyecto: /home/intermed/news.intermediacolombia.com/
+  inc/config.php        → configuración global, constantes, DB
+  admin/                → panel de administración
+  admin/inc/            → includes compartidos del admin
+  admin/login/          → autenticación
+  admin/config/         → configuraciones del sistema
+  admin/config/tabs/    → tabs del formulario de configuración
+  admin/logs/           → visualización de logs
+  actions/              → endpoints AJAX públicos
+  template/Artemis/     → tema principal activo
+
+Desde admin/logs/index.php las rutas correctas son:
+  ../../inc/config.php   → inc/config.php
+  ../inc/header.php      → admin/inc/header.php
+  ../inc/menu.php        → admin/inc/menu.php
+  ../inc/menu-footer.php → admin/inc/menu-footer.php
+
+=========================================================
+Última actualización: 2026-04-07
+=========================================================
