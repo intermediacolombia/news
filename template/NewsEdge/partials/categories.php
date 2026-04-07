@@ -40,7 +40,7 @@ $themeColors = ['color-apple', 'color-pomegranate', 'color-java', 'color-mandy',
 	 
     <div class="container">
 		<div class="topic-border color-cinnabar mb-30">
-        <div class="topic-box-lg color-cinnabar">Explorar por Categorías</div>
+        <div class="topic-box-lg color-cinnabar"><?= t_theme('theme_categorias') ?></div>
     </div>
         <div class="row tab-space5">
             <?php foreach ($exploreCats as $index => $cat): 
@@ -70,7 +70,7 @@ $themeColors = ['color-apple', 'color-pomegranate', 'color-java', 'color-mandy',
                             <div class="post-date-light d-block d-sm-none d-md-block">
                                 <ul>
                                     <li>
-                                        <span>por</span>
+                                        <span><?= t_theme('theme_por') ?></span>
                                         <a href="#"><?= htmlspecialchars($cat['last_post_author']) ?></a>
                                     </li>
                                     <li>

@@ -54,8 +54,8 @@
             </button>
             <div class="collapse navbar-collapse justify-content-between px-0 px-lg-3" id="navbarCollapse">
                 <div class="navbar-nav mr-auto py-0">
-                    <a href="<?= URLBASE ?>" class="nav-item nav-link active">INICIO</a>
-                    <a href="<?= URLBASE ?>/noticias" class="nav-item nav-link">NOTICIAS</a>
+                    <a href="<?= URLBASE ?>" class="nav-item nav-link active"><?= strtoupper(t_theme('theme_inicio')) ?></a>
+                    <a href="<?= URLBASE ?>/noticias" class="nav-item nav-link"><?= strtoupper(t_theme('theme_noticias')) ?></a>
                     
                     
 					
@@ -78,7 +78,7 @@ $cats = $st->fetchAll(PDO::FETCH_ASSOC);
 <div class="nav-item dropdown">
   <!-- Bootstrap 4: data-toggle | Bootstrap 5: data-bs-toggle -->
   <a href="<?= URLBASE ?>/noticias/" class="nav-link dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown">
-    CATEGORIAS
+    <?= strtoupper(t_theme('theme_categorias')) ?>
   </a>
   <div class="dropdown-menu rounded-0 m-0">
     
@@ -104,7 +104,7 @@ $cats = $st->fetchAll(PDO::FETCH_ASSOC);
 
                     <div class="nav-item dropdown">
                         <a href="<?= URLBASE ?>/institucional" class="nav-link dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown">
-                            NOSOTROS
+                            <?= strtoupper(t_theme('theme_nosotros')) ?>
                         </a>
                         <div class="dropdown-menu rounded-0 m-0">
                             <?php if(!empty($institucionalPages)): ?>
@@ -116,19 +116,19 @@ $cats = $st->fetchAll(PDO::FETCH_ASSOC);
                                 <div class="dropdown-divider"></div>
                             <?php endif; ?>
                             <a href="<?= URLBASE ?>/institucional" class="dropdown-item">
-                                <i class="fa fa-list mr-2"></i>Ver todas
+                                <i class="fa fa-list mr-2"></i><?= t_theme('theme_ver_todas') ?>
                             </a>
                         </div>
                     </div>
-					
-					
-					
-                    <a href="<?= URLBASE ?>/contact" class="nav-item nav-link">CONTACTO</a>
+
+
+
+                    <a href="<?= URLBASE ?>/contact" class="nav-item nav-link"><?= strtoupper(t_theme('theme_contacto')) ?></a>
                 </div>
 				
 				
                 <form action="/buscar/" method="get" class="input-group ml-auto" style="width: 100%; max-width: 300px;">
-					<input type="text" name="q" class="form-control" placeholder="Buscar...">
+					<input type="text" name="q" class="form-control" placeholder="<?= t_theme('theme_buscar_placeholder') ?>">
 					<div class="input-group-append">
 						<button type="submit" class="input-group-text text-secondary">
 							<i class="fa fa-search"></i>

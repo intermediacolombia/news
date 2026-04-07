@@ -25,7 +25,7 @@ $fechaHoy = strftime('%A, %d de %B de %Y');
     <div class="col-12 col-md-8">
         <div class="d-flex justify-content-between">
             <div class="bg-primary text-white text-center px-3 py-2 d-inline-flex align-items-center rounded">
-  <i class="fas fa-bolt me-2"></i> Tendencias
+  <i class="fas fa-bolt me-2"></i> <?= t_theme('theme_tendencias') ?>
 </div>
 
             <div class="owl-carousel owl-carousel-1 tranding-carousel position-relative d-inline-flex align-items-center ml-3" 

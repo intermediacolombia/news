@@ -45,14 +45,14 @@
 			
 			
             <div class="col-lg-3 col-md-6 mb-5">
-                <h4 class="font-weight-bold mb-4">Links Rápidos</h4>
+                <h4 class="font-weight-bold mb-4"><?= t_theme('theme_siguenos') ?></h4>
 
                 <div class="d-flex flex-column justify-content-start">
-                    <a class="text-secondary mb-2" href="<?= URLBASE ?>/about-us"><i class="fa fa-angle-right text-dark mr-2"></i>Nosotros</a>
+                    <a class="text-secondary mb-2" href="<?= URLBASE ?>/about-us"><i class="fa fa-angle-right text-dark mr-2"></i><?= t_theme('theme_nosotros') ?></a>
                     <a class="text-secondary mb-2" href="<?= URLBASE ?>/privacy-policy"><i class="fa fa-angle-right text-dark mr-2"></i>Politica de Privacidad</a>
-                   
+
                     <a class="text-secondary mb-2" href="<?= URLBASE ?>/terms-and-conditions"><i class="fa fa-angle-right text-dark mr-2"></i>Términos y Condiciones</a>
-                    <a class="text-secondary" href="<?= URLBASE ?>/contact"><i class="fa fa-angle-right text-dark mr-2"></i>Contacto</a>
+                    <a class="text-secondary" href="<?= URLBASE ?>/contact"><i class="fa fa-angle-right text-dark mr-2"></i><?= t_theme('theme_contacto') ?></a>
                 </div>
             </div>
         </div>

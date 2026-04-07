@@ -146,7 +146,7 @@ $tags = array_slice(array_keys($freq), 0, 9);
 <!-- REDES SOCIALES -->
 <div class="sidebar-box item-box-light-md">
     <div class="topic-border color-cinnabar mb-30">
-        <div class="topic-box-lg color-cinnabar">Síguenos</div>
+        <div class="topic-box-lg color-cinnabar"><?= t_theme('theme_siguenos') ?></div>
     </div>
     <ul class="stay-connected overflow-hidden">
         <?php if(!empty($sys['facebook'])): ?>
@@ -154,7 +154,7 @@ $tags = array_slice(array_keys($freq), 0, 9);
             <a href="<?= htmlspecialchars($sys['facebook']) ?>" target="_blank" rel="noopener">
                 <i class="fa fa-facebook" aria-hidden="true"></i>
                 <div class="connection-quantity">Facebook</div>
-                <p>Síguenos</p>
+                <p><?= t_theme('theme_seguinos') ?></p>
             </a>
         </li>
         <?php endif; ?>
@@ -164,7 +164,7 @@ $tags = array_slice(array_keys($freq), 0, 9);
             <a href="<?= htmlspecialchars($sys['twitter']) ?>" target="_blank" rel="noopener">
                 <i class="fa fa-twitter" aria-hidden="true"></i>
                 <div class="connection-quantity">Twitter / X</div>
-                <p>Síguenos</p>
+                <p><?= t_theme('theme_seguinos') ?></p>
             </a>
         </li>
         <?php endif; ?>
@@ -174,7 +174,7 @@ $tags = array_slice(array_keys($freq), 0, 9);
             <a href="<?= htmlspecialchars($sys['instagram']) ?>" target="_blank" rel="noopener">
                 <i class="fa fa-instagram" aria-hidden="true"></i>
                 <div class="connection-quantity">Instagram</div>
-                <p>Síguenos</p>
+                <p><?= t_theme('theme_seguinos') ?></p>
             </a>
         </li>
         <?php endif; ?>
@@ -199,7 +199,7 @@ $tags = array_slice(array_keys($freq), 0, 9);
 <!-- CATEGORÍAS -->
 
     <div class="topic-border color-cinnabar mb-30">
-        <div class="topic-box-lg color-cinnabar">Categorías</div>
+        <div class="topic-box-lg color-cinnabar"><?= t_theme('theme_categorias') ?></div>
     </div>
     <div class="row">
         <?php foreach ($categories as $cat): ?>
@@ -222,7 +222,7 @@ $tags = array_slice(array_keys($freq), 0, 9);
 <!-- LAS MÁS LEÍDAS -->
 
     <div class="topic-border color-cinnabar mb-30">
-        <div class="topic-box-lg color-cinnabar">Populares</div>
+        <div class="topic-box-lg color-cinnabar"><?= t_theme('theme_las_mas_leidas') ?></div>
     </div>
     <?php foreach ($popular as $p): 
         $postUrl = URLBASE . "/" . htmlspecialchars($p['category_slug']) . "/" . htmlspecialchars($p['slug']) . "/";
@@ -257,7 +257,7 @@ $tags = array_slice(array_keys($freq), 0, 9);
 <!-- TAGS -->
 
     <div class="topic-border color-cinnabar mb-25">
-        <div class="topic-box-lg color-cinnabar">Tags Tendencias</div>
+        <div class="topic-box-lg color-cinnabar"><?= t_theme('theme_tags_tendencias') ?></div>
     </div>
     <ul class="sidebar-tags">
         <?php foreach ($tags as $t): ?>

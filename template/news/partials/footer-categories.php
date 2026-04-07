@@ -17,7 +17,7 @@ $categories = $stmt->fetchAll();
 ?>
 
 <div class="col-lg-3 col-md-6 mb-5">
-    <h4 class="font-weight-bold mb-4">Categorías</h4>
+    <h4 class="font-weight-bold mb-4"><?= t_theme('theme_categorias') ?></h4>
     <div class="d-flex flex-wrap m-n1">
         <?php foreach ($categories as $cat): ?>
             <a href="<?= URLBASE ?>/noticias/<?= htmlspecialchars($cat['slug']) ?>/"

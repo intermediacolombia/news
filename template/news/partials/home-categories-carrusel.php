@@ -25,7 +25,7 @@ $categories = db()->query("
                 <div class="col-lg-6 py-3">
                     <div class="d-flex justify-content-between align-items-center mb-3 bg-light px-4 py-2 rounded-top shadow-sm">
                         <h3 class="m-0 text-primary fw-bold"><?= htmlspecialchars($cat['name']) ?></h3>
-                        <a href="<?= URLBASE ?>/noticias/<?= htmlspecialchars($cat['slug']) ?>/" class="btn btn-sm btn-outline-primary rounded-pill">Ver más</a>
+                        <a href="<?= URLBASE ?>/noticias/<?= htmlspecialchars($cat['slug']) ?>/" class="btn btn-sm btn-outline-primary rounded-pill"><?= t_theme('theme_ver_mas') ?></a>
                     </div>
 
                     <div class="row g-3">

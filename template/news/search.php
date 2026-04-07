@@ -57,7 +57,7 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                 <div class="row">
                     <div class="col-12">
                         <div class="d-flex align-items-center justify-content-between bg-light py-2 px-4 mb-3 title-widgets">
-                            <h3 class="m-0">Resultados para: "<?= htmlspecialchars($q) ?>"</h3>
+                            <h3 class="m-0"><?= t_theme('theme_resultados_para') ?> "<?= htmlspecialchars($q) ?>"</h3>
                             <!--a class="text-secondary font-weight-medium text-decoration-none" href="<?= URLBASE ?>/noticias/">
                                 View All
                             </a-->
@@ -91,7 +91,7 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                         <?php endforeach; ?>
                     <?php else: ?>
                         <div class="col-12">
-                            <p>No se encontraron resultados para "<strong><?= htmlspecialchars($q) ?></strong>".</p>
+                            <p><?= t_theme('theme_no_se_encontraron') ?> "<strong><?= htmlspecialchars($q) ?></strong>".</p>
                         </div>
                     <?php endif; ?>
                 </div>

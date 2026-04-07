@@ -96,9 +96,9 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                     <div class="topic-border color-cinnabar mb-20">
                         <div class="topic-box-lg color-cinnabar">
                             <?php if (!empty($q)): ?>
-                                Resultados para: "<?= htmlspecialchars($q) ?>"
+                                <?= t_theme('theme_resultados_para') ?> "<?= htmlspecialchars($q) ?>"
                             <?php else: ?>
-                                Búsqueda
+                                <?= t_theme('theme_buscar') ?>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -114,14 +114,14 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                     <!-- Search Form -->
                     <form action="<?= URLBASE ?>/buscar/" method="get" class="search-page-form">
                         <div class="search-form-wrapper">
-                            <input type="text" 
-                                   name="q" 
-                                   class="search-page-input" 
-                                   placeholder="Buscar noticias, artículos..." 
+                            <input type="text"
+                                   name="q"
+                                   class="search-page-input"
+                                   placeholder="<?= t_theme('theme_buscar_placeholder') ?>"
                                    value="<?= htmlspecialchars($q) ?>"
                                    required>
                             <button type="submit" class="search-page-btn">
-                                <i class="fa fa-search"></i> Buscar
+                                <i class="fa fa-search"></i> <?= t_theme('theme_buscar') ?>
                             </button>
                         </div>
                     </form>
@@ -171,7 +171,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                                                 <?= truncate_text($p['seo_description'] ?: $p['content'], 120) ?>
                                             </p>
                                             <a href="<?= $postUrl ?>" class="read-more-link">
-                                                Leer más <i class="fa fa-long-arrow-right"></i>
+                                                <?= t_theme('theme_leer_mas') ?> <i class="fa fa-long-arrow-right"></i>
                                             </a>
                                         </div>
                                     </div>
@@ -184,7 +184,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                             <div class="no-results-icon">
                                 <i class="fa fa-search"></i>
                             </div>
-                            <h3 class="no-results-title">No se encontraron resultados</h3>
+                            <h3 class="no-results-title"><?= t_theme('theme_no_se_encontraron') ?></h3>
                             <p class="no-results-text">
                                 No pudimos encontrar ningún resultado para "<strong><?= htmlspecialchars($q) ?></strong>".
                             </p>
@@ -198,7 +198,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                                 </ul>
                             </div>
                             <a href="<?= URLBASE ?>" class="btn-back-home">
-                                <i class="fa fa-home"></i> Volver al inicio
+                                <i class="fa fa-home"></i> <?= t_theme('theme_volver_inicio') ?>
                             </a>
                         </div>
                     <?php endif; ?>

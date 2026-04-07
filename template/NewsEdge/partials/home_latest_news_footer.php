@@ -193,7 +193,7 @@ function getFeaturedPostsByCategory($categoryId, $limit = 2) {
                     
                     <!-- Most Views News -->
                     <div class="border-bottom mb-4">
-                        <h2 class="my-4">Las Más Leídas</h2>
+                        <h2 class="my-4"><?= t_theme('theme_las_mas_leidas_2') ?></h2>
                     </div>
                     <div class="whats-carousel owl-carousel">
                         <?php foreach ($mostViewedNews as $newsItem): ?>

@@ -17,7 +17,7 @@ $latestNews = db()->query($sqlLatest)->fetchAll();
 <div class="col-xl-8 col-lg-12 mb-30">
     <div class="item-box-light-md-less30 ie-full-width">
         <div class="topic-border color-cinnabar mb-30">
-            <div class="topic-box-lg color-cinnabar">ÚLTIMAS NOTICIAS</div>
+            <div class="topic-box-lg color-cinnabar"><?= strtoupper(t_theme('theme_ultimas_noticias')) ?></div>
         </div>
         <div class="row">
             <?php foreach ($latestNews as $news): 
@@ -46,7 +46,7 @@ $latestNews = db()->query($sqlLatest)->fetchAll();
                         <div class="post-date-dark">
                             <ul>
                                 <li>
-                                    <span>por</span>
+                                    <span><?= t_theme('theme_por') ?></span>
                                     <a href="<?= $postUrl ?>">
                                         <?= htmlspecialchars($news['author'] ?? 'Admin') ?>
                                     </a>

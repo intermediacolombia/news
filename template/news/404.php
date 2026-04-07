@@ -35,21 +35,20 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
 
             <!-- Código de error -->
             <h1 class="display-3 fw-bold text-danger">404</h1>
-            <h2 class="mb-3">¡Ups! Página no encontrada</h2>
+            <h2 class="mb-3"><?= t_theme('theme_pagina_no_encontrada') ?></h2>
 
             <!-- Mensaje -->
             <p class="text-muted mb-4" style="font-size: 1.1rem;">
-                Lo sentimos, la página que buscas no existe o fue movida.<br>
-                Te invitamos a volver al inicio o explorar las últimas noticias.
+                <?= t_theme('theme_pagina_no_existe') ?>
             </p>
 
             <!-- Botones -->
             <div class="d-flex justify-content-center gap-3">
                 <a href="<?= URLBASE ?>/" class="btn btn-primary btn-lg">
-                    <i class="fa fa-home me-2"></i> Ir al inicio
+                    <i class="fa fa-home me-2"></i> <?= t_theme('theme_volver_inicio') ?>
                 </a>
                 <a href="<?= URLBASE ?>/noticias/" class="btn btn-outline-secondary btn-lg">
-                    <i class="fa fa-newspaper me-2"></i> Ver noticias
+                    <i class="fa fa-newspaper me-2"></i> <?= t_theme('theme_noticias') ?>
                 </a>
             </div>
         </div>

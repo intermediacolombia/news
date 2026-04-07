@@ -25,15 +25,15 @@ global $sys;
                     <span aria-hidden="true">&times;</span>
                 </button>
 
-                <h3 class="ne-search-title">Buscar</h3>
-                <p class="ne-search-subtitle">Escribe lo que necesitas y presiona “Buscar”.</p>
+                <h3 class=”ne-search-title”><?= t_theme('theme_buscar') ?></h3>
+                <p class=”ne-search-subtitle”><?= t_theme('theme_buscar_descripcion') ?></p>
 
                 <form action="<?= URLBASE ?>/buscar/" method="get" class="ne-search-form" id="searchModalForm">
                     <input type="text"
                            name="q"
                            id="searchModalInput"
                            class="ne-search-input"
-                           placeholder="Buscar…"
+                           placeholder="<?= t_theme('theme_buscar_placeholder') ?>"
                            required>
 
                     <!-- Campos extra (opcional) para compatibilidad, mismos valores -->
@@ -41,7 +41,7 @@ global $sys;
                     <input type="hidden" name="search" id="searchHiddenSearch" value="">
 
                     <button type="submit" class="ne-search-btn">
-                        Buscar
+                        <?= t_theme('theme_buscar') ?>
                     </button>
                 </form>
             </div>
@@ -57,7 +57,7 @@ global $sys;
                 <!-- Columna 1: Contáctanos -->
                 <div class="col-lg-4 col-md-6 col-sm-12">
                     <div class="footer-box">
-                        <h2 class="title-bold-light title-bar-left text-uppercase">Contáctanos</h2>
+                        <h2 class="title-bold-light title-bar-left text-uppercase"><?= t_theme('theme_contactanos') ?></h2>
                         <div class="footer-contact">
                             <?php if (!empty($sys['info_footer'])): ?>
                                 <p class="footer-text mb-3"><?= htmlspecialchars($sys['info_footer']) ?></p>
@@ -111,7 +111,7 @@ global $sys;
                 <!-- Columna 2: Últimas Noticias -->
                 <div class="col-xl-4 col-lg-3 col-md-6 col-sm-12">
                     <div class="footer-box">
-                        <h2 class="title-bold-light title-bar-left text-uppercase">Últimas Noticias</h2>
+                        <h2 class="title-bold-light title-bar-left text-uppercase"><?= t_theme('theme_ultimas_noticias') ?></h2>
                         <ul class="popular-categories">
                             <?php
                             $latestNews = db()->query("
@@ -141,7 +141,7 @@ global $sys;
                 <!-- Columna 3: Categorías -->
                 <div class="col-xl-4 col-lg-5 col-md-12 col-sm-12">
                     <div class="footer-box">
-                        <h2 class="title-bold-light title-bar-left text-uppercase">Categorías</h2>
+                        <h2 class="title-bold-light title-bar-left text-uppercase"><?= t_theme('theme_categorias') ?></h2>
                         <ul class="popular-categories">
                             <?php
                             $cats = db()->query("

@@ -30,8 +30,8 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
     <div class="container-fluid">
         <div class="container-bk">
             <nav class="breadcrumb bg-transparent m-0 p-0">
-                <a class="breadcrumb-item" href="/">Home</a>
-                <span class="breadcrumb-item active">Contacto</span>
+                <a class="breadcrumb-item" href="/"><?= t_theme('theme_inicio') ?></a>
+                <span class="breadcrumb-item active"><?= t_theme('theme_contacto') ?></span>
             </nav>
         </div>
     </div>
@@ -47,14 +47,14 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
             <div class="row">
                 <div class="col-md-5">
                     <div class="bg-light mb-3" style="padding: 30px;">
-                        <h6 class="font-weight-bold">Contactanos</h6>
+                        <h6 class="font-weight-bold"><?= t_theme('theme_contactanos') ?></h6>
                         <p>Si necesitas publicidad, saber más sobre nosotros o simplemente quieres contactarnos, déjanos un mensaje y nos pondremos en contacto contigo lo antes posible.</p>
-						
+
 						<?php if (!empty($sys['business_address'])): ?>
                         <div class="d-flex align-items-center mb-3">
                             <i class="fa fa-2x fa-map-marker-alt text-primary mr-3"></i>
                             <div class="d-flex flex-column">
-                                <h6 class="font-weight-bold">Nuestras Oficinas</h6>
+                                <h6 class="font-weight-bold"><?= t_theme('theme_direccion') ?></h6>
                                 <p class="m-0"><?= htmlspecialchars($sys['business_address']) ?></p>
                             </div>
                         </div>
@@ -63,7 +63,7 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                         <div class="d-flex align-items-center mb-3">
                             <i class="fa fa-2x fa-envelope-open text-primary mr-3"></i>
                             <div class="d-flex flex-column">
-                                <h6 class="font-weight-bold">Email</h6>
+                                <h6 class="font-weight-bold"><?= t_theme('theme_correo') ?></h6>
                                 <p class="m-0"><?= htmlspecialchars($sys['site_email']) ?></p>
                             </div>
                         </div>
@@ -72,7 +72,7 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                         <div class="d-flex align-items-center">
                             <i class="fas fa-2x fa-phone-alt text-primary mr-3"></i>
                             <div class="d-flex flex-column">
-                                <h6 class="font-weight-bold">Llamanos</h6>
+                                <h6 class="font-weight-bold"><?= t_theme('theme_telefono') ?></h6>
                                 <p class="m-0"><?= htmlspecialchars($sys['business_phone']) ?></p>
                             </div>
                         </div>
@@ -93,27 +93,27 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                             <div class="form-row">
                                 <div class="col-md-6">
                                     <div class="control-group">
-                                        <input type="text" class="form-control p-4" id="name" placeholder="Your Name" required="required" data-validation-required-message="Please enter your name" />
+                                        <input type="text" class="form-control p-4" id="name" placeholder="<?= t_theme('theme_tu_nombre') ?>" required="required" data-validation-required-message="Please enter your name" />
                                         <p class="help-block text-danger"></p>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="control-group">
-                                        <input type="email" class="form-control p-4" id="email" placeholder="Your Email" required="required" data-validation-required-message="Please enter your email" />
+                                        <input type="email" class="form-control p-4" id="email" placeholder="<?= t_theme('theme_tu_correo') ?>" required="required" data-validation-required-message="Please enter your email" />
                                         <p class="help-block text-danger"></p>
                                     </div>
                                 </div>
                             </div>
                             <div class="control-group">
-                                <input type="text" class="form-control p-4" id="subject" placeholder="Subject" required="required" data-validation-required-message="Please enter a subject" />
+                                <input type="text" class="form-control p-4" id="subject" placeholder="<?= t_theme('theme_asunto') ?>" required="required" data-validation-required-message="Please enter a subject" />
                                 <p class="help-block text-danger"></p>
                             </div>
                             <div class="control-group">
-                                <textarea class="form-control" rows="4" id="message" placeholder="Message" required="required" data-validation-required-message="Please enter your message"></textarea>
+                                <textarea class="form-control" rows="4" id="message" placeholder="<?= t_theme('theme_tu_mensaje') ?>" required="required" data-validation-required-message="Please enter your message"></textarea>
                                 <p class="help-block text-danger"></p>
                             </div>
                             <div>
-                                <button class="btn btn-primary font-weight-semi-bold px-4" style="height: 50px;" type="submit" id="sendMessageButton">Send Message</button>
+                                <button class="btn btn-primary font-weight-semi-bold px-4" style="height: 50px;" type="submit" id="sendMessageButton"><?= t_theme('theme_enviar_mensaje') ?></button>
                             </div>
                         </form>
                     </div>

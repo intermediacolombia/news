@@ -21,7 +21,7 @@ $mostRead = $stmt->fetchAll();
 <div class="container-fluid py-3" style="width: 100%!important">
     <div class="container-bk">
         <div class="d-flex align-items-center justify-content-between bg-light py-2 px-4 mb-3 title-widgets">
-            <h3 class="m-0">Más Leídas</h3>
+            <h3 class="m-0"><?= t_theme('theme_las_mas_leidas') ?></h3>
             <!-- ðŸ”¹ Puedes quitar este enlace si no lo quieres -->
             <!-- <a class="text-secondary font-weight-medium text-decoration-none" href="<?= URLBASE ?>/noticias/">Ver Todas</a> -->
         </div>

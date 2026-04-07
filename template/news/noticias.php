@@ -106,7 +106,7 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
             <h3 class="m-0"><?= htmlspecialchars($category['name']) ?></h3>
                             <a class="text-secondary font-weight-medium text-decoration-none" href="<?= URLBASE ?>/noticias/">
                               <?php if (!empty($categorySlug)): ?>
-    							Ver Todas
+    							<?= t_theme('theme_ver_todas') ?>
 								<?php endif; ?>
 
 
@@ -141,7 +141,7 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                         <?php endforeach; ?>
                     <?php else: ?>
                         <div class="col-12">
-                            <p>No hay noticias en esta categoría.</p>
+                            <p><?= t_theme('theme_no_hay_noticias') ?></p>
                         </div>
                     <?php endif; ?>
                 </div>

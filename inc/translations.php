@@ -1,12 +1,17 @@
 <?php
 
-function get_translations(string $lang = 'es'): array {
+function get_translations(string $lang = 'es', bool $reset = false): array {
     static $cache = [];
-    
+
+    if ($reset) {
+        $cache = [];
+        return [];
+    }
+
     if (isset($cache[$lang])) {
         return $cache[$lang];
     }
-    
+
     try {
         if (!function_exists('db') || !db()) {
             return [];
@@ -25,7 +30,7 @@ function get_translations(string $lang = 'es'): array {
 }
 
 function clear_translations_cache(): void {
-    $cache = [];
+    get_translations('es', true);
 }
 
 function t(string $key, string $lang = null): string {
@@ -270,21 +275,101 @@ function init_default_theme_translations(): void {
         'theme_buscar_descripcion' => 'Escribe lo que necesitas y presiona "Buscar".',
     ];
 
+    $defaultEnKeys = [
+        'theme_tendencias'              => 'Trending',
+        'theme_seguinos'                => 'Follow us:',
+        'theme_ultimas_noticias'        => 'Latest News',
+        'theme_por'                     => 'by',
+        'theme_categorias'              => 'Categories',
+        'theme_las_mas_leidas'          => 'Most Read',
+        'theme_ver_mas'                 => 'View More',
+        'theme_tags_tendencias'         => 'Trending Tags',
+        'theme_resultados_para'         => 'Results for:',
+        'theme_ver_todas_las_noticias'  => 'View all news',
+        'theme_no_se_encontraron'       => 'No results found',
+        'theme_no_hay_publicaciones'    => 'No posts matching',
+        'theme_volver_noticias'         => 'Back to News',
+        'theme_no_hay_noticias'         => 'No news in this category.',
+        'theme_vistas'                  => 'views',
+        'theme_compartir'               => 'Share:',
+        'theme_tags'                    => 'Tags:',
+        'theme_comentarios'             => 'Comments',
+        'theme_tambien_interesar'       => 'You might also like',
+        'theme_facebook'                => 'Facebook',
+        'theme_twitter'                 => 'X (Twitter)',
+        'theme_youtube'                 => 'YouTube',
+        'theme_instagram'               => 'Instagram',
+        'theme_tiktok'                  => 'TikTok',
+        'theme_buscar'                  => 'Search',
+        'theme_leer_mas'                => 'Read more',
+        'theme_escuchar_articulo'       => 'Listen to article',
+        'theme_que_hay_de_nuevo'        => "What's new?",
+        'theme_minutos'                 => 'Minutes',
+        'theme_las_mas_leidas_2'        => 'Most Read',
+        'theme_no_hay_noticias_recientes' => 'No recent news.',
+        'theme_informacion_institucional' => 'Institutional Information',
+        'theme_conoce_mas_nuestra_org'  => 'Learn more about our organization, our history and our values.',
+        'theme_no_hay_info_institucional' => 'No institutional information available at this time.',
+        'theme_general'                 => 'General',
+        'theme_quienes_somos'           => 'Who We Are',
+        'theme_mision_vision'           => 'Mission & Vision',
+        'theme_historia'                => 'History',
+        'theme_organigrama'             => 'Organization Chart',
+        'theme_junta_directiva'         => 'Board of Directors',
+        'theme_equipo'                  => 'Team',
+        'theme_valores'                 => 'Values',
+        'theme_politicas'               => 'Policies',
+        'theme_inicio'                  => 'Home',
+        'theme_paginas'                 => 'Pages',
+        'theme_pagina_no_encontrada'    => 'Page Not Found',
+        'theme_pagina_no_existe'        => 'Sorry, the page you are looking for does not exist on our website. You can return to the homepage or try using the search bar.',
+        'theme_volver_inicio'           => 'Back to Home',
+        'theme_contactanos'             => 'Contact Us',
+        'theme_tu_nombre'               => 'Your name',
+        'theme_tu_correo'               => 'Your email',
+        'theme_tu_telefono'             => 'Your phone',
+        'theme_asunto'                  => 'Subject',
+        'theme_tu_mensaje'              => 'Your message',
+        'theme_enviar_mensaje'          => 'Send message',
+        'theme_direccion'               => 'Address',
+        'theme_correo'                  => 'Email',
+        'theme_telefono'                => 'Phone',
+        'theme_siguenos'                => 'Follow us',
+        'theme_destacados'              => 'Featured',
+        'theme_minutos_de_lectura'      => 'Minutes to Read',
+        'theme_minute_read'             => 'minute read',
+        'theme_views'                   => 'Views',
+        'theme_noticias'                => 'News',
+        'theme_columnistas'             => 'Columnists',
+        'theme_nosotros'                => 'About Us',
+        'theme_ver_todas'               => 'View all',
+        'theme_contacto'                => 'Contact',
+        'theme_buscar_noticias'         => 'Search News',
+        'theme_buscar_placeholder'      => 'Type a keyword...',
+        'theme_ultimas'                 => 'Latest',
+        'theme_buscar_descripcion'      => 'Type what you need and press "Search".',
+    ];
+
     try {
+        $insertStmt = db()->prepare("
+            INSERT IGNORE INTO system_translations (lang_code, trans_key, trans_value)
+            VALUES (:lang, :key, :value)
+        ");
+
         foreach ($defaultKeys as $key => $value) {
-            // Verificar si ya existe una traducción EN ESPAÑOL antes de insertar
+            // Solo insertar español si no existe o está vacío
             $checkStmt = db()->prepare("SELECT trans_value FROM system_translations WHERE lang_code = 'es' AND trans_key = ?");
             $checkStmt->execute([$key]);
             $existing = $checkStmt->fetch(PDO::FETCH_ASSOC);
-            
-            // Solo insertar si no existe o si está vacía
+
             if (!$existing || empty($existing['trans_value'])) {
-                $stmt = db()->prepare("
-                    INSERT IGNORE INTO system_translations (lang_code, trans_key, trans_value)
-                    VALUES ('es', :key, :value)
-                ");
-                $stmt->execute([':key' => $key, ':value' => $value]);
+                $insertStmt->execute([':lang' => 'es', ':key' => $key, ':value' => $value]);
             }
+        }
+
+        // Insertar inglés solo si no existe (no sobreescribir traducciones personalizadas)
+        foreach ($defaultEnKeys as $key => $value) {
+            $insertStmt->execute([':lang' => 'en', ':key' => $key, ':value' => $value]);
         }
     } catch (Throwable $e) {
         // Silently fail if table doesn't exist or other error

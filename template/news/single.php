@@ -112,7 +112,7 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
 <div class="container-fluid">
     <div class="container-bk">
         <nav class="breadcrumb bg-transparent m-0 p-0">
-            <a class="breadcrumb-item" href="<?= URLBASE ?>">Home</a>
+            <a class="breadcrumb-item" href="<?= URLBASE ?>"><?= t_theme('theme_inicio') ?></a>
             <a class="breadcrumb-item" href="<?= URLBASE ?>/noticias/<?= htmlspecialchars($post['category_slug']) ?>/">
                 <?= htmlspecialchars($post['category_name']) ?>
             </a>
@@ -166,7 +166,7 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                                     <div class="audio-info flex-grow-1">
                                         <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap">
                                             <span class="audio-label">
-                                                <i class="fas fa-headphones me-2"></i>Escuchar artículo
+                                                <i class="fas fa-headphones me-2"></i><?= t_theme('theme_escuchar_articulo') ?>
                                             </span>
                                             <div class="d-flex align-items-center gap-2">
                                                 <!-- Control de Velocidad -->
@@ -206,7 +206,7 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                 </div>
                 
                 <div class="d-flex align-items-center justify-content-between bg-light py-2 px-4 mb-3 title-widgets">
-                    <h3 class="m-0">Comentarios</h3>
+                    <h3 class="m-0"><?= t_theme('theme_comentarios') ?></h3>
                 </div>
                 <div class="bg-light">
                     <div class="fb-comments" data-href="<?php echo 'https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];?>" data-width="100%" data-numposts="10" data-order-by="reverse_time"></div>
@@ -232,7 +232,7 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                 <?php if ($relatedPosts): ?>
                     <div class="mt-5">
                         <div class="d-flex align-items-center justify-content-between bg-light py-2 px-4 mb-3 title-widgets">
-                            <h3 class="m-0">Te Puede Interesar</h3>
+                            <h3 class="m-0"><?= t_theme('theme_tambien_interesar') ?></h3>
                         </div>
                         <div class="row">
                             <?php foreach ($relatedPosts as $rel): ?>

@@ -36,15 +36,15 @@ if (!function_exists('img_url')) {
 
 // Nombres de tipos
 $typeNames = [
-    'general' => 'General',
-    'about' => 'Quiénes Somos',
-    'mission' => 'Misión y Visión',
-    'history' => 'Historia',
-    'organization' => 'Organigrama',
-    'board' => 'Junta Directiva',
-    'team' => 'Equipo',
-    'values' => 'Valores',
-    'policies' => 'Políticas'
+    'general' => t_theme('theme_general'),
+    'about' => t_theme('theme_quienes_somos'),
+    'mission' => t_theme('theme_mision_vision'),
+    'history' => t_theme('theme_historia'),
+    'organization' => t_theme('theme_organigrama'),
+    'board' => t_theme('theme_junta_directiva'),
+    'team' => t_theme('theme_equipo'),
+    'values' => t_theme('theme_valores'),
+    'policies' => t_theme('theme_politicas'),
 ];
 
 $typeIcons = [
@@ -70,20 +70,20 @@ $typeIcons = [
                     
                     <!-- Cabecera -->
                     <div class="topic-border color-cinnabar mb-40">
-                        <div class="topic-box-lg color-cinnabar">Información Institucional</div>
+                        <div class="topic-box-lg color-cinnabar"><?= t_theme('theme_informacion_institucional') ?></div>
                     </div>
-                    
+
                     <div class="institutional-intro mb-40">
                         <p class="size-lg description-body-dark">
-                            Conoce más sobre nuestra organización, nuestra historia y nuestros valores.
+                            <?= t_theme('theme_conoce_mas_nuestra_org') ?>
                         </p>
                     </div>
-                    
+
                     <?php if(empty($pages)): ?>
                         <div class="item-box-light-md item-shadow-1 p-30 mb-30">
                             <div class="alert-info-custom">
                                 <i class="fa fa-info-circle" aria-hidden="true"></i>
-                                <span>No hay información institucional disponible en este momento.</span>
+                                <span><?= t_theme('theme_no_hay_info_institucional') ?></span>
                             </div>
                         </div>
                     <?php else: ?>
@@ -140,7 +140,7 @@ $typeIcons = [
                                         
                                         <div class="more-info-link">
                                             <a href="<?= $pageUrl ?>" class="btn-text-dark">
-                                                Leer más
+                                                <?= t_theme('theme_leer_mas') ?>
                                                 <i class="fa fa-angle-right" aria-hidden="true"></i>
                                             </a>
                                         </div>

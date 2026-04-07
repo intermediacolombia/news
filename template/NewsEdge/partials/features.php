@@ -41,7 +41,7 @@ $isotopePosts = db()->query($sqlIsotope)->fetchAll();
                         <?php endforeach; ?>
                     </div>
                     <div class="more-info-link">
-                        <a href="<?= URLBASE ?>/noticias/">Ver más
+                        <a href="<?= URLBASE ?>/noticias/"><?= t_theme('theme_ver_mas') ?>
                             <i class="fa fa-angle-right" aria-hidden="true"></i>
                         </a>
                     </div>
@@ -68,7 +68,7 @@ $isotopePosts = db()->query($sqlIsotope)->fetchAll();
                                     <div class="post-date-light d-none d-md-block">
                                         <ul>
                                             <li>
-                                                <span>por</span>
+                                                <span><?= t_theme('theme_por') ?></span>
                                                 <a href="<?= $postUrl ?>"><?= htmlspecialchars($post['author'] ?? 'Admin') ?></a>
                                             </li>
                                             <li>

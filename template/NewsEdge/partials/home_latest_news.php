@@ -106,7 +106,7 @@ $sidebarNews = db()->query($sqlSidebar)->fetchAll();
                                             <ul>
                                                 <?php if (!empty($slide['author'])): ?>
                                                 <li>
-                                                    <span>por</span>
+                                                    <span><?= t_theme('theme_por') ?></span>
                                                     <a href="<?= URLBASE ?>/<?= htmlspecialchars($slide['category_slug']) ?>/<?= htmlspecialchars($slide['slug']) ?>/">
                                                         <?= htmlspecialchars($slide['author']) ?>
                                                     </a>

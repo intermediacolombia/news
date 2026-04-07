@@ -104,17 +104,17 @@
                                         
                                         <!-- INICIO -->
                                         <li class="active">
-                                            <a href="<?= URLBASE ?>">INICIO</a>
+                                            <a href="<?= URLBASE ?>"><?= strtoupper(t_theme('theme_inicio')) ?></a>
                                         </li>
-                                        
+
                                         <!-- NOTICIAS -->
                                         <li>
-                                            <a href="<?= URLBASE ?>/noticias">NOTICIAS</a>
+                                            <a href="<?= URLBASE ?>/noticias"><?= strtoupper(t_theme('theme_noticias')) ?></a>
                                         </li>
-                                        
+
                                         <!-- Categorías Dinámicas -->
                                         <li>
-                                            <a href="#">CATEGORÍAS</a>
+                                            <a href="#"><?= strtoupper(t_theme('theme_categorias')) ?></a>
                                             <ul class="ne-dropdown-menu">
                                                 <?php
                                                 $st = db()->query("
@@ -155,7 +155,7 @@
                                         
                                         <?php if (!empty($columnistasMenu)): ?>
                                             <li>
-                                                <a href="<?= URLBASE ?>/columnista">COLUMNISTAS</a>
+                                                <a href="<?= URLBASE ?>/columnista"><?= strtoupper(t_theme('theme_columnistas')) ?></a>
                                                 <ul class="ne-dropdown-menu">
                                                     <?php foreach ($columnistasMenu as $col): 
                                                         $nombreCompleto = trim($col['nombre'] . ' ' . $col['apellido']);
@@ -172,17 +172,17 @@
 
                                         <!-- Nosotros / Institucional Dinámico -->
                                         <li>
-                                            <a href="<?= URLBASE ?>/institucional">NOSOTROS</a>
+                                            <a href="<?= URLBASE ?>/institucional"><?= strtoupper(t_theme('theme_nosotros')) ?></a>
                                             <ul class="ne-dropdown-menu">
                                                 <?php
                                                 $stInst = db()->query("
-                                                    SELECT title, slug 
-                                                    FROM institutional_pages 
-                                                    WHERE status = 'published' 
+                                                    SELECT title, slug
+                                                    FROM institutional_pages
+                                                    WHERE status = 'published'
                                                     ORDER BY display_order ASC, title ASC
                                                 ");
                                                 $institucionalPages = $stInst->fetchAll(PDO::FETCH_ASSOC);
-                                                foreach ($institucionalPages as $instPage): 
+                                                foreach ($institucionalPages as $instPage):
                                                 ?>
                                                     <li>
                                                         <a href="<?= URLBASE ?>/institucional/<?= htmlspecialchars($instPage['slug']) ?>">
@@ -192,15 +192,15 @@
                                                 <?php endforeach; ?>
                                                 <li>
                                                     <a href="<?= URLBASE ?>/institucional">
-                                                        <i class="fa fa-list mr-2"></i>Ver todas
+                                                        <i class="fa fa-list mr-2"></i><?= t_theme('theme_ver_todas') ?>
                                                     </a>
                                                 </li>
                                             </ul>
                                         </li>
-                                        
+
                                         <!-- CONTACTO -->
                                         <li>
-                                            <a href="<?= URLBASE ?>/contact">CONTACTO</a>
+                                            <a href="<?= URLBASE ?>/contact"><?= strtoupper(t_theme('theme_contacto')) ?></a>
                                         </li>
                                         
                                     </ul>

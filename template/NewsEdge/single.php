@@ -160,13 +160,13 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                         <?php if ($authorData): ?>
                         <li>
                             <a href="#">
-                                <span>Por</span> <?= htmlspecialchars($authorData['nombre'] . ' ' . $authorData['apellido']) ?>
+                                <span><?= t_theme('theme_por') ?></span> <?= htmlspecialchars($authorData['nombre'] . ' ' . $authorData['apellido']) ?>
                             </a>
                         </li>
                         <?php elseif (!empty($post['author'])): ?>
                         <li>
                             <a href="#">
-                                <span>Por</span> <?= htmlspecialchars($post['author']) ?>
+                                <span><?= t_theme('theme_por') ?></span> <?= htmlspecialchars($post['author']) ?>
                             </a>
                         </li>
                         <?php endif; ?>
@@ -198,7 +198,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                                 <div class="audio-info">
                                     <div class="d-flex justify-content-between align-items-center mb-2">
                                         <span class="audio-label">
-                                            <i class="fas fa-headphones me-2"></i>Escuchar artículo
+                                            <i class="fas fa-headphones me-2"></i><?= t_theme('theme_escuchar_articulo') ?>
                                         </span>
                                         <div class="d-flex align-items-center gap-2">
                                             <!-- Control de Velocidad -->
@@ -244,7 +244,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                     ?>
                     <?php if ($tags): ?>
                     <ul class="blog-tags item-inline mb-30">
-                        <li>Tags</li>
+                        <li><?= t_theme('theme_tags') ?></li>
                         <?php foreach ($tags as $tag): ?>
                         <li>
                             <a href="<?= URLBASE ?>/buscar/<?= urlencode($tag) ?>/">
@@ -257,7 +257,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
 
                     <!-- COMPARTIR -->
                     <div class="post-share-area mb-40 item-shadow-1">
-                        <p>¡Puedes compartir este artículo!</p>
+                        <p><?= t_theme('theme_compartir') ?></p>
                         <ul class="social-default item-inline">
                             <li>
                                 <a href="https://facebook.com/sharer/sharer.php?u=<?= urlencode($page_canonical) ?>" target="_blank" class="facebook">

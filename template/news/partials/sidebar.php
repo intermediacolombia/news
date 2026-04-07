@@ -2,7 +2,7 @@
                     <!-- Social Follow Start -->
                     <div class="pb-3">
                         <div class="bg-light py-2 px-4 mb-3 title-widgets">
-                            <h3 class="m-0">Síguenos</h3>
+                            <h3 class="m-0"><?= t_theme('theme_siguenos') ?></h3>
                         </div>
                         <div class="d-flex mb-3">
 							<?php if (!empty($sys['facebook'])): ?>
@@ -91,7 +91,7 @@ $trendingPosts = $stmt->fetchAll();
 <?php if ($trendingPosts): ?>
 <div class="pb-3">
     <div class="bg-light py-2 px-4 mb-3 title-widgets">
-        <h3 class="m-0">Tendencias</h3>
+        <h3 class="m-0"><?= t_theme('theme_tendencias') ?></h3>
     </div>
 
     <?php foreach ($trendingPosts as $post): ?>

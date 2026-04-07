@@ -7,7 +7,7 @@
                 <div class="col-lg-5 col-md-12 mb-30">
                     <div class="contact-info-box">
                         <div class="topic-border color-cinnabar mb-30">
-                            <div class="topic-box-lg color-cinnabar">Contáctanos</div>
+                            <div class="topic-box-lg color-cinnabar"><?= t_theme('theme_contactanos') ?></div>
                         </div>
                         
                         <p class="description-body-dark mb-30">
@@ -34,45 +34,45 @@
                 <div class="col-lg-7 col-md-12 mb-30">
                     <!-- Formulario de Contacto -->
                     <div class="contact-form-box item-box-light-md item-shadow-1 p-30 mb-30">
-                        <h3 class="title-semibold-dark size-xl mb-30">Envíanos un mensaje</h3>
-                        
+                        <h3 class="title-semibold-dark size-xl mb-30"><?= t_theme('theme_enviar_mensaje') ?></h3>
+
                         <form id="contactForm" method="post" action="enviar_contacto.php">
                             <div class="row">
                                 <div class="col-lg-6 col-md-6 col-12 mb-20">
-                                    <input type="text" 
-                                           name="name" 
-                                           class="form-control contact-input" 
-                                           placeholder="Tu nombre" 
+                                    <input type="text"
+                                           name="name"
+                                           class="form-control contact-input"
+                                           placeholder="<?= t_theme('theme_tu_nombre') ?>"
                                            required>
                                 </div>
                                 <div class="col-lg-6 col-md-6 col-12 mb-20">
-                                    <input type="email" 
-                                           name="email" 
-                                           class="form-control contact-input" 
-                                           placeholder="Tu correo electrónico" 
+                                    <input type="email"
+                                           name="email"
+                                           class="form-control contact-input"
+                                           placeholder="<?= t_theme('theme_tu_correo') ?>"
                                            required>
                                 </div>
                                 <div class="col-lg-6 col-md-6 col-12 mb-20">
-                                    <input type="text" 
-                                           name="phone" 
-                                           class="form-control contact-input" 
-                                           placeholder="Tu teléfono">
+                                    <input type="text"
+                                           name="phone"
+                                           class="form-control contact-input"
+                                           placeholder="<?= t_theme('theme_tu_telefono') ?>">
                                 </div>
                                 <div class="col-lg-6 col-md-6 col-12 mb-20">
-                                    <input type="text" 
-                                           name="subject" 
-                                           class="form-control contact-input" 
-                                           placeholder="Asunto">
+                                    <input type="text"
+                                           name="subject"
+                                           class="form-control contact-input"
+                                           placeholder="<?= t_theme('theme_asunto') ?>">
                                 </div>
                                 <div class="col-12 mb-20">
-                                    <textarea name="message" 
-                                              class="form-control contact-textarea" 
-                                              rows="6" 
-                                              placeholder="Tu mensaje"></textarea>
+                                    <textarea name="message"
+                                              class="form-control contact-textarea"
+                                              rows="6"
+                                              placeholder="<?= t_theme('theme_tu_mensaje') ?>"></textarea>
                                 </div>
                                 <div class="col-12">
                                     <button type="submit" class="contact-submit-btn">
-                                        Enviar mensaje
+                                        <?= t_theme('theme_enviar_mensaje') ?>
                                     </button>
                                 </div>
                             </div>
@@ -87,7 +87,7 @@
                                 <div class="contact-info-content">
                                     <i class="fa fa-map-marker contact-icon" aria-hidden="true"></i>
                                     <div class="contact-info-text">
-                                        <h4 class="title-semibold-dark size-md mb-10">Dirección</h4>
+                                        <h4 class="title-semibold-dark size-md mb-10"><?= t_theme('theme_direccion') ?></h4>
                                         <p class="description-body-light mb-0">
                                             <?= htmlspecialchars($sys['business_address']) ?>
                                         </p>
@@ -103,7 +103,7 @@
                                 <div class="contact-info-content">
                                     <i class="fa fa-envelope contact-icon" aria-hidden="true"></i>
                                     <div class="contact-info-text">
-                                        <h4 class="title-semibold-dark size-md mb-10">Correo</h4>
+                                        <h4 class="title-semibold-dark size-md mb-10"><?= t_theme('theme_correo') ?></h4>
                                         <p class="description-body-light mb-0">
                                             <?= htmlspecialchars($sys['site_email']) ?>
                                         </p>
@@ -119,7 +119,7 @@
                                 <div class="contact-info-content">
                                     <i class="fa fa-phone contact-icon" aria-hidden="true"></i>
                                     <div class="contact-info-text">
-                                        <h4 class="title-semibold-dark size-md mb-10">Teléfono</h4>
+                                        <h4 class="title-semibold-dark size-md mb-10"><?= t_theme('theme_telefono') ?></h4>
                                         <p class="description-body-light mb-0">
                                             <?= htmlspecialchars($sys['business_phone']) ?>
                                         </p>
@@ -134,7 +134,7 @@
                                 <div class="contact-info-content">
                                     <i class="fa fa-share-alt contact-icon" aria-hidden="true"></i>
                                     <div class="contact-info-text">
-                                        <h4 class="title-semibold-dark size-md mb-10">Síguenos</h4>
+                                        <h4 class="title-semibold-dark size-md mb-10"><?= t_theme('theme_siguenos') ?></h4>
                                         <ul class="contact-social-list">
                                             <?php if (!empty($sys['facebook'])): ?>
                                             <li>

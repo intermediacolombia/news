@@ -27,15 +27,15 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
 
 // Nombres de tipos
 $typeNames = [
-    'general' => 'General',
-    'about' => 'Quiénes Somos',
-    'mission' => 'Misión y Visión',
-    'history' => 'Historia',
-    'organization' => 'Organigrama',
-    'board' => 'Junta Directiva',
-    'team' => 'Equipo',
-    'values' => 'Valores',
-    'policies' => 'Políticas'
+    'general' => t_theme('theme_general'),
+    'about' => t_theme('theme_quienes_somos'),
+    'mission' => t_theme('theme_mision_vision'),
+    'history' => t_theme('theme_historia'),
+    'organization' => t_theme('theme_organigrama'),
+    'board' => t_theme('theme_junta_directiva'),
+    'team' => t_theme('theme_equipo'),
+    'values' => t_theme('theme_valores'),
+    'policies' => t_theme('theme_politicas'),
 ];
 
 $typeIcons = [
@@ -55,8 +55,8 @@ $typeIcons = [
 <div class="container-fluid">
     <div class="container-bk">
         <nav class="breadcrumb bg-transparent m-0 p-0">
-            <a class="breadcrumb-item" href="<?= URLBASE ?>">Home</a>
-            <span class="breadcrumb-item active">Información Institucional</span>
+            <a class="breadcrumb-item" href="<?= URLBASE ?>"><?= t_theme('theme_inicio') ?></a>
+            <span class="breadcrumb-item active"><?= t_theme('theme_informacion_institucional') ?></span>
         </nav>
     </div>
 </div>
@@ -70,18 +70,18 @@ $typeIcons = [
                 
                 <!-- Título principal -->
                 <div class="d-flex align-items-center justify-content-between bg-light py-2 px-4 mb-3 title-widgets">
-                    <h3 class="m-0">Información Institucional</h3>
+                    <h3 class="m-0"><?= t_theme('theme_informacion_institucional') ?></h3>
                 </div>
                 
                 <div class="bg-light p-4 mb-3">
                     <p class="lead mb-4">
-                        Conoce más sobre nuestra organización, nuestra historia y nuestros valores.
+                        <?= t_theme('theme_conoce_mas_nuestra_org') ?>
                     </p>
-                    
+
                     <?php if(empty($pages)): ?>
                         <div class="alert alert-info">
                             <i class="fa fa-info-circle"></i>
-                            No hay información institucional disponible en este momento.
+                            <?= t_theme('theme_no_hay_info_institucional') ?>
                         </div>
                     <?php else: ?>
                         
@@ -128,7 +128,7 @@ $typeIcons = [
                                         <div class="mt-3">
                                             <a href="<?= URLBASE ?>/institucional/<?= urlencode($page['slug']) ?>" 
                                                class="btn btn-sm btn-primary">
-                                                Leer más <i class="fa fa-arrow-right ml-1"></i>
+                                                <?= t_theme('theme_leer_mas') ?> <i class="fa fa-arrow-right ml-1"></i>
                                             </a>
                                         </div>
                                     </div>
