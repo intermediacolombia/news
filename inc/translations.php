@@ -232,6 +232,16 @@ function t(string $key, string $lang = null): string {
         'theme_perfil_columnista' => 'Perfil del Columnista',
         'theme_categorias' => 'Categorías',
         'theme_quick_links' => 'Quick Links',
+        'theme_iniciar_sesion' => 'Iniciar Sesión',
+        'theme_usuario_correo' => 'Usuario o correo electrónico',
+        'theme_contrasena' => 'Contraseña',
+        'theme_recordarme' => 'Recordarme',
+        'theme_cancelar' => 'Cancelar',
+        'theme_escuchar_articulo' => 'Escuchar artículo',
+        'theme_sugerencias' => 'Sugerencias:',
+        'theme_verifica_palabras' => 'Verifica que todas las palabras estén escritas correctamente',
+        'theme_olvidaste_contrasena' => '¿Olvidaste tu contraseña?',
+        'theme_todos' => 'Todos',
     ];
 
     return $spanishDefaults[$key] ?? $key;
@@ -527,6 +537,16 @@ function init_default_theme_translations(): void {
         'theme_perfil_columnista' => 'Columnist Profile',
         'theme_categorias' => 'Categories',
         'theme_quick_links' => 'Quick Links',
+        'theme_iniciar_sesion' => 'Login',
+        'theme_usuario_correo' => 'Username or email',
+        'theme_contrasena' => 'Password',
+        'theme_recordarme' => 'Remember me',
+        'theme_cancelar' => 'Cancel',
+        'theme_escuchar_articulo' => 'Listen to article',
+        'theme_sugerencias' => 'Suggestions:',
+        'theme_verifica_palabras' => 'Make sure all words are spelled correctly',
+        'theme_olvidaste_contrasena' => 'Forgot your password?',
+        'theme_todos' => 'All',
     ];
 
     try {

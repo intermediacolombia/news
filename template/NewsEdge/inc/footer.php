@@ -300,23 +300,23 @@ global $sys;
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <div class="title-login-form">Iniciar Sesión</div>
+                <div class="title-login-form"><?= t_theme('theme_iniciar_sesion') ?></div>
             </div>
             <div class="modal-body">
                 <div class="login-form">
                     <form>
-                        <label>Usuario o correo electrónico *</label>
-                        <input type="text" placeholder="Nombre o E-mail" />
-                        <label>Contraseña *</label>
-                        <input type="password" placeholder="Contraseña" />
+                        <label><?= t_theme('theme_usuario_correo') ?> *</label>
+                        <input type="text" placeholder="<?= t_theme('theme_usuario_correo') ?>" />
+                        <label><?= t_theme('theme_contrasena') ?> *</label>
+                        <input type="password" placeholder="<?= t_theme('theme_contrasena') ?>" />
                         <div class="checkbox checkbox-primary">
                             <input id="checkbox" type="checkbox" checked>
-                            <label for="checkbox">Recordarme</label>
+                            <label for="checkbox"><?= t_theme('theme_recordarme') ?></label>
                         </div>
-                        <button type="submit" value="Login">Iniciar Sesión</button>
-                        <button class="form-cancel" type="button" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" value="Login"><?= t_theme('theme_iniciar_sesion') ?></button>
+                        <button class="form-cancel" type="button" data-dismiss="modal"><?= t_theme('theme_cancelar') ?></button>
                         <label class="lost-password">
-                            <a href="#">¿Olvidaste tu contraseña?</a>
+                            <a href="#"><?= t_theme('theme_olvidaste_contrasena') ?></a>
                         </label>
                     </form>
                 </div>

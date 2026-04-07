@@ -33,7 +33,7 @@ $isotopePosts = db()->query($sqlIsotope)->fetchAll();
                 <div class="topic-border color-cinnabar mb-30">
                     <div class="topic-box-lg color-cinnabar"><?= t_theme('theme_destacados') ?></div>
                     <div class="isotope-classes-tab isotop-btn">
-                        <a href="#" data-filter="*" class="current">Todos</a>
+                        <a href="#" data-filter="*" class="current"><?= t_theme('theme_todos') ?></a>
                         <?php foreach ($filterCategories as $fCat): ?>
                             <a href="#" data-filter=".<?= htmlspecialchars($fCat['slug']) ?>">
                                 <?= htmlspecialchars($fCat['name']) ?>

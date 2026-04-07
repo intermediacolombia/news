@@ -342,7 +342,17 @@ INSERT INTO system_translations (lang_code, trans_key, trans_value) VALUES
 ('es', 'theme_comentarios', 'Comentarios'),
 ('es', 'theme_perfil_columnista', 'Perfil del Columnista'),
 ('es', 'theme_categorias', 'Categorías'),
-('es', 'theme_quick_links', 'Quick Links')
+('es', 'theme_quick_links', 'Quick Links'),
+('es', 'theme_iniciar_sesion', 'Iniciar Sesión'),
+('es', 'theme_usuario_correo', 'Usuario o correo electrónico'),
+('es', 'theme_contrasena', 'Contraseña'),
+('es', 'theme_recordarme', 'Recordarme'),
+('es', 'theme_cancelar', 'Cancelar'),
+('es', 'theme_escuchar_articulo', 'Escuchar artículo'),
+('es', 'theme_sugerencias', 'Sugerencias:'),
+('es', 'theme_verifica_palabras', 'Verifica que todas las palabras estén escritas correctamente'),
+('es', 'theme_olvidaste_contrasena', '¿Olvidaste tu contraseña?'),
+('es', 'theme_todos', 'Todos')
 ON DUPLICATE KEY UPDATE trans_value = VALUES(trans_value);
 
 -- Insertar traducciones del tema en INGLÉS
@@ -494,5 +504,15 @@ INSERT INTO system_translations (lang_code, trans_key, trans_value) VALUES
 ('en', 'theme_comentarios', 'Comments'),
 ('en', 'theme_perfil_columnista', 'Columnist Profile'),
 ('en', 'theme_categorias', 'Categories'),
-('en', 'theme_quick_links', 'Quick Links')
+('en', 'theme_quick_links', 'Quick Links'),
+('en', 'theme_iniciar_sesion', 'Login'),
+('en', 'theme_usuario_correo', 'Username or email'),
+('en', 'theme_contrasena', 'Password'),
+('en', 'theme_recordarme', 'Remember me'),
+('en', 'theme_cancelar', 'Cancel'),
+('en', 'theme_escuchar_articulo', 'Listen to article'),
+('en', 'theme_sugerencias', 'Suggestions:'),
+('en', 'theme_verifica_palabras', 'Make sure all words are spelled correctly'),
+('en', 'theme_olvidaste_contrasena', 'Forgot your password?'),
+('en', 'theme_todos', 'All')
 ON DUPLICATE KEY UPDATE trans_value = VALUES(trans_value);
