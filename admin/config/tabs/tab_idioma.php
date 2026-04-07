@@ -1,20 +1,44 @@
 <?php
 $currentLang = $_GET['lang'] ?? $configs['admin_language'] ?? 'es';
 $availableLangs = ['es' => 'Español', 'en' => 'English'];
+$currentSection = $_GET['section'] ?? 'tema';
 
-$keys = get_all_translation_keys();
+$allKeys = get_all_translation_keys();
 $translationsByKey = [];
-foreach ($keys as $key) {
+foreach ($allKeys as $key) {
     $translationsByKey[$key] = get_translations_by_key($key);
 }
+
+// Separar claves por prefijo
+$adminKeys = [];
+$themeKeys = [];
+foreach ($allKeys as $key) {
+    if (strpos($key, 'theme_') === 0) {
+        $themeKeys[] = $key;
+    } else {
+        $adminKeys[] = $key;
+    }
+}
+
+$keys = $currentSection === 'admin' ? $adminKeys : $themeKeys;
 ?>
 
 <div class="card mb-3">
     <div class="card-header bg-light d-flex justify-content-between align-items-center">
         <strong><i class="fas fa-language me-2"></i>Editor de Traducciones</strong>
         <div>
+            <div class="btn-group me-2">
+                <a href="?tab=idioma&section=tema" 
+                   class="btn btn-sm <?= $currentSection === 'tema' ? 'btn-primary' : 'btn-outline-secondary' ?>">
+                    Temas
+                </a>
+                <a href="?tab=idioma&section=admin" 
+                   class="btn btn-sm <?= $currentSection === 'admin' ? 'btn-primary' : 'btn-outline-secondary' ?>">
+                    Interfaz
+                </a>
+            </div>
             <?php foreach ($availableLangs as $code => $name): ?>
-                <a href="?tab=idioma&lang=<?= $code ?>" 
+                <a href="?tab=idioma&section=<?= $currentSection ?>&lang=<?= $code ?>" 
                    class="btn btn-sm <?= $currentLang === $code ? 'btn-primary' : 'btn-outline-secondary' ?>">
                     <?= $name ?>
                 </a>
@@ -37,7 +61,8 @@ foreach ($keys as $key) {
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($translationsByKey as $key => $values): ?>
+                        <?php foreach ($keys as $key): ?>
+                            <?php $values = $translationsByKey[$key] ?? []; ?>
                             <tr data-key="<?= htmlspecialchars($key) ?>">
                                 <td>
                                     <code class="small"><?= htmlspecialchars($key) ?></code>
