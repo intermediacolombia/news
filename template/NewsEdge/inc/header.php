@@ -241,7 +241,6 @@
     .header-search-trigger:hover { color: var(--primary, #c41e3a); }
     </style>
 
-<?php if (!empty($pubId) && ADSENSE_AUTO_ADS !== '1'): ?>
 <?php if (!empty($pubId) && defined('ADSENSE_AUTO_ADS') && ADSENSE_AUTO_ADS !== '1'): ?>
 <script src="<?= URLBASE ?>/admin/publicidad/ads_config.php"></script>
 <script defer src="<?= URLBASE ?>/public/js/ads-injector.js"></script>
