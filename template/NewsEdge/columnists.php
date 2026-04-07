@@ -120,15 +120,15 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </div>
                 <div class="col-lg-9 col-md-8 text-center--sm">
                     <div class="pl-30 pl-none-xs">
-                        <span class="text-uppercase text-danger font-weight-bold mb-10 d-block" style="letter-spacing: 2px; font-size: 12px;">NUESTROS COLUMNISTAS</span>
+                        <span class="text-uppercase text-danger font-weight-bold mb-10 d-block" style="letter-spacing: 2px; font-size: 12px;"><?= t_theme('theme_nuestros_columnistas') ?></span>
                         <h2 class="size-c40 mb-15 title-medium-dark"><?= htmlspecialchars($authorName) ?></h2>
                         <p class="description-body-dark size-lg">
-                            Bienvenido al espacio de opinión de <strong><?= htmlspecialchars($authorName) ?></strong>. 
-                            Aquí encontrarás sus análisis y perspectivas más recientes.
+                            <?= t_theme('theme_bienvenido_espacio') ?> <strong><?= htmlspecialchars($authorName) ?></strong>. 
+                            <?= t_theme('theme_aqui_encontraras') ?>
                         </p>
                         <div class="post-date-dark">
                             <ul>
-                                <li><span><i class="fa fa-file-text-o"></i></span> <?= count($posts) ?> Columnas publicadas</li>
+                                <li><span><i class="fa fa-file-text-o"></i></span> <?= count($posts) ?> <?= t_theme('theme_columnas_publicadas') ?></li>
                             </ul>
                         </div>
                     </div>
@@ -140,7 +140,7 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <div class="row">
             <div class="col-12">
                 <div class="topic-border color-cinnabar mb-30 width-100">
-                    <div class="topic-box-lg color-cinnabar">COLUMNAS DE OPINIÓN</div>
+                    <div class="topic-box-lg color-cinnabar"><?= t_theme('theme_columnas_opinion') ?></div>
                 </div>
             </div>
         </div>

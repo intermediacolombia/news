@@ -31,7 +31,7 @@ $isotopePosts = db()->query($sqlIsotope)->fetchAll();
             <div class="ne-isotope-all">
                 <!-- Cabecera con Filtros -->
                 <div class="topic-border color-cinnabar mb-30">
-                    <div class="topic-box-lg color-cinnabar">LO MÁS DESTACADO</div>
+                    <div class="topic-box-lg color-cinnabar"><?= t_theme('theme_destacados') ?></div>
                     <div class="isotope-classes-tab isotop-btn">
                         <a href="#" data-filter="*" class="current">Todos</a>
                         <?php foreach ($filterCategories as $fCat): ?>

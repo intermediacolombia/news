@@ -147,7 +147,7 @@ $latestPosts = db()->query("
     <div class="container">
         <div class="row mb-4">
             <div class="col-12">
-                <h2 class="section-title" style="color: var(--text-color);">LO MÁS DESTACADO</h2>
+                <h2 class="section-title" style="color: var(--text-color);"><?= t_theme('theme_destacados') ?></h2>
             </div>
         </div>
         
@@ -198,7 +198,7 @@ $latestPosts = db()->query("
             <div class="col-lg-8">
                 <div class="row mb-4">
                     <div class="col-12">
-                        <h2 class="section-title" style="color: var(--text-color);">ÚLTIMAS NOTICIAS</h2>
+                        <h2 class="section-title" style="color: var(--text-color);"><?= t_theme('theme_ultimas_noticias') ?></h2>
                     </div>
                 </div>
                 

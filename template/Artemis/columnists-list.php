@@ -27,9 +27,9 @@ if (!function_exists('img_url')) {
     <div class="container">
         <div class="row mb-5">
             <div class="col-12 text-center">
-                <h1 class="section-title" style="color: var(--text-color);">NUESTROS COLUMNISTAS</h1>
+                <h1 class="section-title" style="color: var(--text-color);"><?= t_theme('theme_nuestros_columnistas') ?></h1>
                 <p style="color: var(--text-muted); margin-top: 15px; max-width: 600px; margin-left: auto; margin-right: auto;">
-                    Voces expertas con perspectivas únicas sobre los temas que más importan
+                    <?= t_theme('theme_columnistas_descripcion') ?>
                 </p>
             </div>
         </div>

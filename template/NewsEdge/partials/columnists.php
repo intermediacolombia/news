@@ -29,7 +29,7 @@ if (!empty($columnistas)):
         <div class="row">
             <div class="col-12">
                 <div class="topic-border color-cinnabar mb-30 width-100">
-                    <div class="topic-box-lg color-cinnabar">NUESTROS COLUMNISTAS</div>
+                    <div class="topic-box-lg color-cinnabar"><?= t_theme('theme_nuestros_columnistas') ?></div>
                 </div>
             </div>
         </div>

@@ -314,7 +314,9 @@ INSERT INTO system_translations (lang_code, trans_key, trans_value) VALUES
 ('es', 'theme_sugerencias', 'Sugerencias:'),
 ('es', 'theme_verifica_palabras', 'Verifica que todas las palabras estén escritas correctamente'),
 ('es', 'theme_cerrar', 'Cerrar'),
-('es', 'theme_contactanos_descripcion', 'Si necesitas publicidad, saber más sobre nosotros o simplemente quieres contactarnos, déjanos un mensaje y nos pondremos en contacto contigo lo antes posible.')
+('es', 'theme_contactanos_descripcion', 'Si necesitas publicidad, saber más sobre nosotros o simplemente quieres contactarnos, déjanos un mensaje y nos pondremos en contacto contigo lo antes posible.'),
+('es', 'theme_columnas_publicadas', 'Columnas publicadas'),
+('es', 'theme_columnas_opinion', 'Columnas de Opinión')
 ON DUPLICATE KEY UPDATE trans_value = VALUES(trans_value);
 
 -- Insertar traducciones del tema en INGLÉS
@@ -438,5 +440,7 @@ INSERT INTO system_translations (lang_code, trans_key, trans_value) VALUES
 ('en', 'theme_sugerencias', 'Suggestions:'),
 ('en', 'theme_verifica_palabras', 'Make sure all words are spelled correctly'),
 ('en', 'theme_cerrar', 'Close'),
-('en', 'theme_contactanos_descripcion', 'If you need advertising, information about our services or simply want to contact us, leave us a message and we will respond as soon as possible.')
+('en', 'theme_contactanos_descripcion', 'If you need advertising, information about our services or simply want to contact us, leave us a message and we will respond as soon as possible.'),
+('en', 'theme_columnas_publicadas', 'Published columns'),
+('en', 'theme_columnas_opinion', 'Opinion Columns')
 ON DUPLICATE KEY UPDATE trans_value = VALUES(trans_value);

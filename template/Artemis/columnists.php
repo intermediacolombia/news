@@ -72,16 +72,16 @@ $page_title = "Perfil de $authorName | " . NOMBRE_SITIO;
                 Columnista
             </p>
             <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto;">
-                Bienvenido al espacio de opinión de <strong style="color: var(--text-color);"><?= htmlspecialchars($authorName) ?></strong>. Aquí encontrarás sus análisis y perspectivas más recientes.
+                <?= t_theme('theme_bienvenido_espacio') ?> <strong style="color: var(--text-color);"><?= htmlspecialchars($authorName) ?></strong>. <?= t_theme('theme_aqui_encontraras') ?>
             </p>
             <span style="background: var(--primary); color: #fff; padding: 8px 20px; border-radius: 20px; font-size: 14px; display: inline-block; margin-top: 20px;">
-                <i class="fas fa-file-alt mr-2"></i><?= count($posts) ?> Columnas publicadas
+                <i class="fas fa-file-alt mr-2"></i><?= count($posts) ?> <?= t_theme('theme_columnas_publicadas') ?>
             </span>
         </div>
 
         <div class="row mt-5">
             <div class="col-12 mb-4">
-                <h2 class="section-title" style="color: var(--text-color);">COLUMNAS DE OPINIÓN</h2>
+                <h2 class="section-title" style="color: var(--text-color);"><?= t_theme('theme_columnas_opinion') ?></h2>
             </div>
         </div>
 

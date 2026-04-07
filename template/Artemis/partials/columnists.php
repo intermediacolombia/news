@@ -23,8 +23,8 @@ $columnistas = db()->query("
     <div class="container">
         <div class="row mb-4">
             <div class="col-12 text-center">
-                <h2 class="section-title" style="color: var(--text-color);">NUESTROS COLUMNISTAS</h2>
-                <p style="color: var(--text-muted); margin-top: 15px;">Voces expertas con perspectivas únicas</p>
+                <h2 class="section-title" style="color: var(--text-color);"><?= t_theme('theme_nuestros_columnistas') ?></h2>
+                <p style="color: var(--text-muted); margin-top: 15px;"><?= t_theme('theme_columnistas_descripcion') ?></p>
             </div>
         </div>
         
