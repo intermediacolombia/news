@@ -122,7 +122,7 @@ $trendingPosts = $stmt->fetchAll();
                     <!-- Tags Start -
                     <div class="pb-3">
                         <div class="bg-light py-2 px-4 mb-3">
-                            <h3 class="m-0">Tags</h3>
+                            <h3 class="m-0"><?= t_theme('theme_tags') ?></h3>
                         </div>
                         <div class="d-flex flex-wrap m-n1">
                             <a href="" class="btn btn-sm btn-outline-secondary m-1">Politics</a>

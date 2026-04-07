@@ -218,6 +218,20 @@ function t(string $key, string $lang = null): string {
         'theme_no_hay_noticias_disponibles' => 'No hay noticias disponibles',
         'theme_pronto_tendremos' => 'Pronto tendremos nuevo contenido para ti.',
         'theme_tienes_pregunta' => '¿Tienes alguna pregunta? Escríbenos',
+        'theme_siguenos' => 'Síguenos',
+        'theme_populares' => 'Populares',
+        'theme_tags' => 'Tags',
+        'theme_resultados_busqueda' => 'Resultados de Búsqueda',
+        'theme_resultado' => 'resultado',
+        'theme_resultados' => 'resultados',
+        'theme_no_encontramos' => 'No pudimos encontrar ningún resultado para',
+        'theme_que_buscas' => '¿Qué estás buscando?',
+        'theme_admin' => 'Admin',
+        'theme_noticia' => 'Noticia',
+        'theme_comentarios' => 'Comentarios',
+        'theme_perfil_columnista' => 'Perfil del Columnista',
+        'theme_categorias' => 'Categorías',
+        'theme_quick_links' => 'Quick Links',
     ];
 
     return $spanishDefaults[$key] ?? $key;
@@ -499,6 +513,20 @@ function init_default_theme_translations(): void {
         'theme_no_hay_noticias_disponibles' => 'No news available',
         'theme_pronto_tendremos' => 'We will soon have new content for you.',
         'theme_tienes_pregunta' => 'Have a question? Write to us',
+        'theme_siguenos' => 'Follow us',
+        'theme_populares' => 'Popular',
+        'theme_tags' => 'Tags',
+        'theme_resultados_busqueda' => 'Search Results',
+        'theme_resultado' => 'result',
+        'theme_resultados' => 'results',
+        'theme_no_encontramos' => 'We could not find any results for',
+        'theme_que_buscas' => 'What are you looking for?',
+        'theme_admin' => 'Admin',
+        'theme_noticia' => 'News',
+        'theme_comentarios' => 'Comments',
+        'theme_perfil_columnista' => 'Columnist Profile',
+        'theme_categorias' => 'Categories',
+        'theme_quick_links' => 'Quick Links',
     ];
 
     try {

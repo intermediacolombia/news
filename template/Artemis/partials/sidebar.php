@@ -75,7 +75,7 @@ $tags = array_slice(array_keys($freq), 0, 9);
 </style>
 
 <div class="sidebar-section p-4" style="background: var(--bg-secondary); border-radius: 16px;">
-    <h5 class="mb-4" style="font-family: 'Playfair Display', serif;">Síguenos</h5>
+    <h5 class="mb-4" style="font-family: 'Playfair Display', serif;"><?= t_theme('theme_siguenos') ?></h5>
     <div class="row">
         <?php if(!empty($sys['facebook'])): ?>
         <div class="col-6 mb-3">
@@ -136,7 +136,7 @@ $tags = array_slice(array_keys($freq), 0, 9);
 </div>
 
 <div class="sidebar-section p-4 mt-4" style="background: var(--bg-secondary); border-radius: 16px;">
-    <h5 class="mb-4" style="font-family: 'Playfair Display', serif;">Populares</h5>
+    <h5 class="mb-4" style="font-family: 'Playfair Display', serif;"><?= t_theme('theme_populares') ?></h5>
     <?php foreach ($popular as $p): 
         $postUrl = URLBASE . "/" . htmlspecialchars($p['category_slug']) . "/" . htmlspecialchars($p['slug']) . "/";
     ?>
@@ -161,7 +161,7 @@ $tags = array_slice(array_keys($freq), 0, 9);
 </div>
 
 <div class="sidebar-section p-4 mt-4" style="background: var(--bg-secondary); border-radius: 16px;">
-    <h5 class="mb-4" style="font-family: 'Playfair Display', serif;">Tags</h5>
+    <h5 class="mb-4" style="font-family: 'Playfair Display', serif;"><?= t_theme('theme_tags') ?></h5>
     <div class="d-flex flex-wrap gap-2">
         <?php foreach ($tags as $t): ?>
         <a href="<?= URLBASE ?>/buscar/<?= urlencode($t) ?>/" 

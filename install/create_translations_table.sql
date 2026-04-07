@@ -328,7 +328,21 @@ INSERT INTO system_translations (lang_code, trans_key, trans_value) VALUES
 ('es', 'theme_volver_inicio', 'Volver al inicio'),
 ('es', 'theme_no_hay_noticias_disponibles', 'No hay noticias disponibles'),
 ('es', 'theme_pronto_tendremos', 'Pronto tendremos nuevo contenido para ti.'),
-('es', 'theme_tienes_pregunta', '¿Tienes alguna pregunta? Escríbenos')
+('es', 'theme_tienes_pregunta', '¿Tienes alguna pregunta? Escríbenos'),
+('es', 'theme_siguenos', 'Síguenos'),
+('es', 'theme_populares', 'Populares'),
+('es', 'theme_tags', 'Tags'),
+('es', 'theme_resultados_busqueda', 'Resultados de Búsqueda'),
+('es', 'theme_resultado', 'resultado'),
+('es', 'theme_resultados', 'resultados'),
+('es', 'theme_no_encontramos', 'No pudimos encontrar ningún resultado para'),
+('es', 'theme_que_buscas', '¿Qué estás buscando?'),
+('es', 'theme_admin', 'Admin'),
+('es', 'theme_noticia', 'Noticia'),
+('es', 'theme_comentarios', 'Comentarios'),
+('es', 'theme_perfil_columnista', 'Perfil del Columnista'),
+('es', 'theme_categorias', 'Categorías'),
+('es', 'theme_quick_links', 'Quick Links')
 ON DUPLICATE KEY UPDATE trans_value = VALUES(trans_value);
 
 -- Insertar traducciones del tema en INGLÉS
@@ -466,5 +480,19 @@ INSERT INTO system_translations (lang_code, trans_key, trans_value) VALUES
 ('en', 'theme_volver_inicio', 'Back to home'),
 ('en', 'theme_no_hay_noticias_disponibles', 'No news available'),
 ('en', 'theme_pronto_tendremos', 'We will soon have new content for you.'),
-('en', 'theme_tienes_pregunta', 'Have a question? Write to us')
+('en', 'theme_tienes_pregunta', 'Have a question? Write to us'),
+('en', 'theme_siguenos', 'Follow us'),
+('en', 'theme_populares', 'Popular'),
+('en', 'theme_tags', 'Tags'),
+('en', 'theme_resultados_busqueda', 'Search Results'),
+('en', 'theme_resultado', 'result'),
+('en', 'theme_resultados', 'results'),
+('en', 'theme_no_encontramos', 'We could not find any results for'),
+('en', 'theme_que_buscas', 'What are you looking for?'),
+('en', 'theme_admin', 'Admin'),
+('en', 'theme_noticia', 'News'),
+('en', 'theme_comentarios', 'Comments'),
+('en', 'theme_perfil_columnista', 'Columnist Profile'),
+('en', 'theme_categorias', 'Categories'),
+('en', 'theme_quick_links', 'Quick Links')
 ON DUPLICATE KEY UPDATE trans_value = VALUES(trans_value);
