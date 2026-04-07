@@ -50,9 +50,15 @@ try {
         }
     }
 
+    // Campos de imagen — siempre con / inicial para evitar rutas relativas
+    $imageFields = ['site_logo', 'site_favicon', 'banner_inferior'];
+
     foreach ($_POST as $key => $value) {
         if ($key === 'translations') continue;
         if (!is_array($value)) {
+            if (in_array($key, $imageFields) && $value !== '' && $value[0] !== '/') {
+                $value = '/' . $value;
+            }
             $stmt->execute([':name' => $key, ':value' => $value]);
         }
     }
