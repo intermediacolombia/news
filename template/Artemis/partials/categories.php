@@ -24,7 +24,7 @@ if (!function_exists('img_url')) {
     <div class="container">
         <div class="row mb-4">
             <div class="col-12 text-center">
-                <h2 class="section-title" style="color: var(--text-color);">CATEGORÍAS</h2>
+                <h2 class="section-title" style="color: var(--text-color);"><?= strtoupper(t_theme('theme_categorias')) ?></h2>
             </div>
         </div>
         
