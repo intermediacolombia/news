@@ -42,6 +42,13 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     function showToast(message, type = 'success') {
+        const lastShown = localStorage.getItem('update_toast_shown');
+        const now = Date.now();
+        if (lastShown && (now - parseInt(lastShown)) < 86400000) {
+            return;
+        }
+        localStorage.setItem('update_toast_shown', now);
+        
         const toast = document.createElement('div');
         toast.style.cssText = `
             position: fixed;

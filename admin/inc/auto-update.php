@@ -40,6 +40,23 @@ function get_current_git_hash() {
     return 'unknown';
 }
 
+function get_local_version() {
+    $version_file = __DIR__ . '/cache/version.json';
+    if (file_exists($version_file)) {
+        return json_decode(file_get_contents($version_file), true);
+    }
+    return ['hash' => '', 'version' => ''];
+}
+
+function save_local_version($hash, $version) {
+    $version_file = __DIR__ . '/cache/version.json';
+    file_put_contents($version_file, json_encode([
+        'hash' => $hash,
+        'version' => $version,
+        'updated_at' => date('Y-m-d H:i:s')
+    ]));
+}
+
 function check_for_updates() {
     $cache_file = __DIR__ . '/cache/updates.json';
     $cache_time = 3600;
@@ -51,12 +68,21 @@ function check_for_updates() {
     
     $latest = get_latest_version_from_github();
     $currentHash = get_current_git_hash();
+    $localVersion = get_local_version();
+    
+    $hasChanges = $currentHash !== $localVersion['hash'];
+    
+    if ($hasChanges && !empty($localVersion['hash'])) {
+        save_local_version($currentHash, $latest ?: CURRENT_VERSION);
+    }
     
     $result = [
-        'current' => CURRENT_VERSION,
+        'current' => $localVersion['version'] ?: CURRENT_VERSION,
         'current_hash' => $currentHash,
+        'local_hash' => $localVersion['hash'],
         'latest' => $latest,
-        'update_available' => version_compare($latest, CURRENT_VERSION) > 0,
+        'has_changes' => $hasChanges,
+        'update_available' => $hasChanges,
         'checked_at' => date('Y-m-d H:i:s')
     ];
     
@@ -95,8 +121,12 @@ function perform_silent_update() {
     
     $output = shell_exec('cd ' . __DIR__ . '/../.. && ' . GIT_BIN . ' pull origin main 2>&1');
     
+    $newHash = get_current_git_hash();
+    save_local_version($newHash, CURRENT_VERSION);
+    
     $status = [
         'updated_at' => date('Y-m-d H:i:s'),
+        'new_hash' => $newHash,
         'output' => $output,
         'success' => strpos($output, 'Already up to date') !== false || strpos($output, 'Updating') !== false
     ];
