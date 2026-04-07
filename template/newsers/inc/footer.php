@@ -133,9 +133,9 @@
     <!-- Línea inferior -->
     <div class="border-top border-secondary mt-5 pt-4 text-center">
       <small class="text-white-50">
-        © <?= date('Y') ?> <?= htmlspecialchars($sys['site_name']) ?>. Todos los derechos reservados. |
-        <a href="<?= URLBASE ?>/privacy-policy" class="text-white-50 text-decoration-none hover-link">Política de Privacidad</a> |
-        <a href="<?= URLBASE ?>/terms-and-conditions" class="text-white-50 text-decoration-none hover-link">Términos y Condiciones</a>
+        © <?= date('Y') ?> <?= htmlspecialchars($sys['site_name']) ?>. <?= t_theme('theme_todos_derechos') ?>. |
+        <a href="<?= URLBASE ?>/privacy-policy" class="text-white-50 text-decoration-none hover-link"><?= t_theme('theme_privacidad') ?></a> |
+        <a href="<?= URLBASE ?>/terms-and-conditions" class="text-white-50 text-decoration-none hover-link"><?= t_theme('theme_terminos') ?></a>
       </small>
     </div>
 
@@ -211,10 +211,10 @@
 
     <div class="container text-center text-white small">
         <p class="mb-1">
-            &copy; <?= date('Y') ?> <strong><?= NOMBRE_SITIO ?></strong>. Todos los derechos reservados.
+            &copy; <?= date('Y') ?> <strong><?= NOMBRE_SITIO ?></strong>. <?= t_theme('theme_todos_derechos') ?>.
         </p>
         <p class="mb-0">
-            Hosting & Diseño por <a class="text-white border-bottom" href="https://www.intermediahost.co" target="_blank">Intermedia Host</a>
+            <?= t_theme('theme_hosting_disenno') ?> <a class="text-white border-bottom" href="https://www.intermediahost.co" target="_blank">Intermedia Host</a>
         </p>
     </div>
 </div>

@@ -180,10 +180,10 @@ global $sys;
                 </ul>
 
                 <p class="mb-1" style="color: var(--text-muted); font-size: 14px;">
-                    © <?= date('Y') ?> <strong style="color: var(--text-color);"><?= htmlspecialchars($sys['site_name']) ?></strong>. Todos los derechos reservados.
+                    © <?= date('Y') ?> <strong style="color: var(--text-color);"><?= htmlspecialchars($sys['site_name']) ?></strong>. <?= t_theme('theme_todos_derechos') ?>.
                 </p>
                 <p style="color: var(--text-muted); font-size: 13px;">
-                    Diseño por <a href="https://www.intermediahost.co" target="_blank" style="color: var(--primary); text-decoration: none;">Intermedia Host</a>
+                    <?= t_theme('theme_diseno_por') ?> <a href="https://www.intermediahost.co" target="_blank" style="color: var(--primary); text-decoration: none;">Intermedia Host</a>
                 </p>
             </div>
         </div>
@@ -350,18 +350,18 @@ global $sys;
 
             <li>
                 <a href="<?= URLBASE ?>/contact">
-                    <i class="fas fa-phone" aria-hidden="true"></i>Contacto
+                    <i class="fas fa-phone" aria-hidden="true"></i><?= t_theme('theme_contacto') ?>
                 </a>
             </li>
 
             <li>
                 <a href="<?= URLBASE ?>/privacy-policy">
-                    <i class="fas fa-shield-alt" aria-hidden="true"></i>Política de Privacidad
+                    <i class="fas fa-shield-alt" aria-hidden="true"></i><?= t_theme('theme_privacidad') ?>
                 </a>
             </li>
             <li>
                 <a href="<?= URLBASE ?>/terms-and-conditions">
-                    <i class="fas fa-file-alt" aria-hidden="true"></i>Términos y Condiciones
+                    <i class="fas fa-file-alt" aria-hidden="true"></i><?= t_theme('theme_terminos') ?>
                 </a>
             </li>
             

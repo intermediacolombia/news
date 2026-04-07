@@ -201,7 +201,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                             <div class="col-6">
                                 <?php if ($prevPost): ?>
                                 <a href="<?= URLBASE ?>/<?= htmlspecialchars($prevPost['category_slug']) ?>/<?= htmlspecialchars($prevPost['slug']) ?>/" style="color: var(--primary); text-decoration: none;">
-                                    <i class="fas fa-arrow-left mr-2"></i>Anterior
+                                    <i class="fas fa-arrow-left mr-2"></i><?= t_theme('theme_anterior') ?>
                                 </a>
                                 <p style="color: var(--text-color); margin-top: 5px; font-size: 14px;"><?= truncate_text($prevPost['title'], 50) ?></p>
                                 <?php endif; ?>
@@ -209,7 +209,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                             <div class="col-6 text-right">
                                 <?php if ($nextPost): ?>
                                 <a href="<?= URLBASE ?>/<?= htmlspecialchars($nextPost['category_slug']) ?>/<?= htmlspecialchars($nextPost['slug']) ?>/" style="color: var(--primary); text-decoration: none;">
-                                    Siguiente<i class="fas fa-arrow-right ml-2"></i>
+                                    <?= t_theme('theme_siguiente') ?><i class="fas fa-arrow-right ml-2"></i>
                                 </a>
                                 <p style="color: var(--text-color); margin-top: 5px; font-size: 14px;"><?= truncate_text($nextPost['title'], 50) ?></p>
                                 <?php endif; ?>
@@ -236,7 +236,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                                      style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover;">
                                 <div>
                                     <h5 style="color: var(--text-color); margin: 0;"><?= htmlspecialchars($authorData['nombre'] . ' ' . $authorData['apellido']) ?></h5>
-                                    <span style="color: var(--primary); font-size: 14px;">Autor</span>
+                                    <span style="color: var(--primary); font-size: 14px;"><?= t_theme('theme_autor') ?></span>
                                 </div>
                             </div>
                         </div>

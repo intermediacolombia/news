@@ -49,9 +49,9 @@
 
                 <div class="d-flex flex-column justify-content-start">
                     <a class="text-secondary mb-2" href="<?= URLBASE ?>/about-us"><i class="fa fa-angle-right text-dark mr-2"></i><?= t_theme('theme_nosotros') ?></a>
-                    <a class="text-secondary mb-2" href="<?= URLBASE ?>/privacy-policy"><i class="fa fa-angle-right text-dark mr-2"></i>Politica de Privacidad</a>
+                    <a class="text-secondary mb-2" href="<?= URLBASE ?>/privacy-policy"><i class="fa fa-angle-right text-dark mr-2"></i><?= t_theme('theme_privacidad') ?></a>
 
-                    <a class="text-secondary mb-2" href="<?= URLBASE ?>/terms-and-conditions"><i class="fa fa-angle-right text-dark mr-2"></i>Términos y Condiciones</a>
+                    <a class="text-secondary mb-2" href="<?= URLBASE ?>/terms-and-conditions"><i class="fa fa-angle-right text-dark mr-2"></i><?= t_theme('theme_terminos') ?></a>
                     <a class="text-secondary" href="<?= URLBASE ?>/contact"><i class="fa fa-angle-right text-dark mr-2"></i><?= t_theme('theme_contacto') ?></a>
                 </div>
             </div>
@@ -59,10 +59,10 @@
     </div>
     <div class="container-fluid py-4 px-sm-3 px-md-5">
         <p class="m-0 text-center">
-            &copy;<?php echo date('Y');?> <a class="font-weight-bold" href="#"><?= NOMBRE_SITIO; ?></a>. Todos los derechos reservados. <br>
+            &copy;<?php echo date('Y');?> <a class="font-weight-bold" href="#"><?= NOMBRE_SITIO; ?></a>. <?= t_theme('theme_todos_derechos') ?>. <br>
 			
-			<!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
-			Hosting & Diseño <a class="font-weight-bold" href="https://www.intermediahost.co">Intermedia Host</a>
+			<!--/*** This template is free as long as you keep the footer author's credit link/attribution link/backlink. If you'd like to use the template without the footer author's credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
+			<?= t_theme('theme_hosting_disenno') ?> <a class="font-weight-bold" href="https://www.intermediahost.co">Intermedia Host</a>
         </p>
     </div>
     <!-- Footer End -->

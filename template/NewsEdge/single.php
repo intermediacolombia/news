@@ -292,7 +292,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                         <div class="col-lg-6 col-md-6 col-sm-6 col-6">
                             <?php if ($prevPost): ?>
                             <a href="<?= URLBASE ?>/<?= htmlspecialchars($prevPost['category_slug']) ?>/<?= htmlspecialchars($prevPost['slug']) ?>/" class="prev-article">
-                                <i class="fa fa-angle-left" aria-hidden="true"></i>Artículo anterior
+                                <i class="fa fa-angle-left" aria-hidden="true"></i><?= t_theme('theme_anterior') ?>
                             </a>
                             <h3 class="title-medium-dark pr-50">
                                 <?= truncate_text($prevPost['title'], 60) ?>
@@ -302,7 +302,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                         <div class="col-lg-6 col-md-6 col-sm-6 col-6 text-right">
                             <?php if ($nextPost): ?>
                             <a href="<?= URLBASE ?>/<?= htmlspecialchars($nextPost['category_slug']) ?>/<?= htmlspecialchars($nextPost['slug']) ?>/" class="next-article">
-                                Siguiente artículo
+                                <?= t_theme('theme_siguiente_articulo') ?>
                                 <i class="fa fa-angle-right" aria-hidden="true"></i>
                             </a>
                             <h3 class="title-medium-dark pl-50">
@@ -335,7 +335,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                                 <h3 class="size-lg mb-5">
                                     <?= htmlspecialchars($authorData['nombre'] . ' ' . $authorData['apellido']) ?>
                                 </h3>
-                                <div class="post-by mb-5">Autor</div>
+                                <div class="post-by mb-5"><?= t_theme('theme_autor') ?></div>
                                 <p class="mb-15">
     <?php if (!empty($authorData['bio'])): // Por si la agregas en el futuro ?>
         <?= truncate_text($authorData['bio'], 150) ?>

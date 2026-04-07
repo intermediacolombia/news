@@ -212,10 +212,10 @@ global $sys;
                     <p class="footer-copyright">
                         © <?= date('Y') ?> 
                         <strong><?= htmlspecialchars($sys['site_name']) ?></strong>. 
-                        Todos los derechos reservados.
+                        <?= t_theme('theme_todos_derechos') ?>.
                     </p>
                     <p class="footer-credits">
-                        Hosting & Diseño por 
+                        <?= t_theme('theme_hosting_disenno') ?> 
                         <a href="https://www.intermediahost.co" target="_blank" class="footer-credits-link">
                             Intermedia Host
                         </a>

@@ -237,7 +237,7 @@ $latestPosts = db()->query("
                 
                 <div class="text-center mt-4">
                     <a href="<?= URLBASE ?>/noticias/" class="btn-artemis">
-                        Ver Todas las Noticias <i class="fas fa-arrow-right ml-2"></i>
+                        <?= t_theme('theme_ver_todas_noticias') ?> <i class="fas fa-arrow-right ml-2"></i>
                     </a>
                 </div>
             </div>

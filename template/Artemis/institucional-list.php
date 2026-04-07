@@ -45,15 +45,15 @@ $typeIcons = [
         <div class="row mb-4">
             <div class="col-12">
                 <h1 class="section-title" style="color: var(--text-color);">INFORMACIÓN INSTITUCIONAL</h1>
-                <p style="color: var(--text-muted); margin-top: 15px;">Conoce más sobre nuestra organización</p>
+                <p style="color: var(--text-muted); margin-top: 15px;"><?= t_theme('theme_conoce_mas_organizacion') ?></p>
             </div>
         </div>
         
         <?php if(empty($pages)): ?>
         <div class="text-center py-5">
             <i class="fas fa-building" style="font-size: 60px; color: var(--text-muted); opacity: 0.3;"></i>
-            <h3 style="color: var(--text-color); margin-top: 20px;">No hay información disponible</h3>
-            <p style="color: var(--text-muted);">Próximamente tendremos más información institucional.</p>
+            <h3 style="color: var(--text-color); margin-top: 20px;"><?= t_theme('theme_no_hay_info_institucional') ?></h3>
+            <p style="color: var(--text-muted);"><?= t_theme('theme_proximamente_info') ?></p>
         </div>
         <?php else: ?>
         <div class="row">

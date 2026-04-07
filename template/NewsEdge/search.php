@@ -192,9 +192,9 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                                 <h4>Sugerencias:</h4>
                                 <ul>
                                     <li>Verifica que todas las palabras estén escritas correctamente</li>
-                                    <li>Intenta con palabras clave diferentes</li>
-                                    <li>Intenta con palabras clave más generales</li>
-                                    <li>Intenta con menos palabras clave</li>
+                                    <li><?= t_theme('theme_intenta_diferente') ?></li>
+                                    <li><?= t_theme('theme_intenta_general') ?></li>
+                                    <li><?= t_theme('theme_intenta_menos') ?></li>
                                 </ul>
                             </div>
                             <a href="<?= URLBASE ?>" class="btn-back-home">

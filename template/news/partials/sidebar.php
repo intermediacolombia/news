@@ -7,31 +7,31 @@
                         <div class="d-flex mb-3">
 							<?php if (!empty($sys['facebook'])): ?>
                             <a href="<?= htmlspecialchars($sys['facebook']) ?>" target="_blank" class="d-block w-50 py-2 px-3 text-white text-decoration-none mr-2" style="background: #39569E;">
-                                <small class="fa fa-facebook-f mr-2"></small><small>Facebook</small>
+                                <small class="fa fa-facebook-f mr-2"></small><small><?= t_theme('theme_facebook') ?></small>
                             </a>
 							<?php endif; ?>
 							<?php if (!empty($sys['twitter'])): ?>
                             <a href="<?= htmlspecialchars($sys['twitter']) ?>" target="_blank" class="d-block w-50 py-2 px-3 text-white text-decoration-none ml-2" style="background: #000000;">
-                                <small class="fa fa-x-twitter mr-2"></small><small>X</small>
+                                <small class="fa fa-x-twitter mr-2"></small><small><?= t_theme('theme_twitter') ?></small>
                             </a>
 							<?php endif; ?>
                         </div>
 						<?php if (!empty($sys['instagram'])): ?>
                         <div class="d-flex mb-3">
                             <a href="<?= htmlspecialchars($sys['instagram']) ?>" target="_blank" class="d-block w-50 py-2 px-3 text-white text-decoration-none mr-2" style="background: #C13584;">
-                                <small class="fa fa-instagram mr-2"></small><small>Instagram</small>
+                                <small class="fa fa-instagram mr-2"></small><small><?= t_theme('theme_instagram') ?></small>
                             </a>
 							<?php endif; ?>
 							<?php if (!empty($sys['tiktok'])): ?>
                             <a href="<?= htmlspecialchars($sys['tiktok']) ?>" target="_blank" class="d-block w-50 py-2 px-3 text-white text-decoration-none ml-2" style="background: #000000;">
-                                <small class="fa fa-tiktok mr-2"></small><small>TikTok</small>
+                                <small class="fa fa-tiktok mr-2"></small><small><?= t_theme('theme_tiktok') ?></small>
                             </a>
 							<?php endif; ?>
                         </div>
                         <div class="d-flex mb-3">
 							<?php if (!empty($sys['youtube'])): ?>
                             <a href="<?= htmlspecialchars($sys['youtube']) ?>" target="_blank" class="d-block w-50 py-2 px-3 text-white text-decoration-none mr-2" style="background: #FF0000;">
-                                <small class="fa fa-youtube mr-2"></small><small>YouTube</small>
+                                <small class="fa fa-youtube mr-2"></small><small><?= t_theme('theme_youtube') ?></small>
                             </a>
 							<?php endif; ?>
 							<?php if (!empty($sys['whatsapp'])): ?>
@@ -48,14 +48,14 @@
                     <!-- Newsletter Start -
                     <div class="pb-3">
                         <div class="bg-light py-2 px-4 mb-3">
-                            <h3 class="m-0">Newsletter</h3>
+                            <h3 class="m-0"><?= t_theme('theme_newsletter') ?></h3>
                         </div>
                         <div class="bg-light text-center p-4 mb-3">
                             <p>Aliqu justo et labore at eirmod justo sea erat diam dolor diam vero kasd</p>
                             <div class="input-group" style="width: 100%;">
-                                <input type="text" class="form-control form-control-lg" placeholder="Your Email">
+                                <input type="text" class="form-control form-control-lg" placeholder="<?= t_theme('theme_tu_email') ?>">
                                 <div class="input-group-append">
-                                    <button class="btn btn-primary">Sign Up</button>
+                                    <button class="btn btn-primary"><?= t_theme('theme_sign_up') ?></button>
                                 </div>
                             </div>
                             <small>Sit eirmod nonumy kasd eirmod</small>

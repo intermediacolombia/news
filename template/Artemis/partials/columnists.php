@@ -68,7 +68,7 @@ $columnistas = db()->query("
         
         <div class="text-center mt-4">
             <a href="<?= URLBASE ?>/columnista/" class="btn-artemis">
-                Ver Todos los Columnistas <i class="fas fa-arrow-right ml-2"></i>
+                <?= t_theme('theme_ver_todos_columnistas') ?> <i class="fas fa-arrow-right ml-2"></i>
             </a>
         </div>
     </div>
