@@ -25,7 +25,7 @@ if (isset($_GET['run']) && isset($_GET['token'])) {
 
     chdir($repoPath);
 
-    $process = popen("git pull origin main 2>&1", "r");
+    $process = popen("git pull origin test 2>&1", "r");
 
     if (!$process) {
         echo "❌ Error ejecutando git pull\n";
