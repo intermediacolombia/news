@@ -269,14 +269,22 @@ function init_default_theme_translations(): void {
         'theme_ultimas' => 'Últimas',
         'theme_buscar_descripcion' => 'Escribe lo que necesitas y presiona "Buscar".',
     ];
-    
+
     try {
         foreach ($defaultKeys as $key => $value) {
-            $stmt = db()->prepare("
-                INSERT IGNORE INTO system_translations (lang_code, trans_key, trans_value)
-                VALUES ('es', :key, :value)
-            ");
-            $stmt->execute([':key' => $key, ':value' => $value]);
+            // Verificar si ya existe una traducción EN ESPAÑOL antes de insertar
+            $checkStmt = db()->prepare("SELECT trans_value FROM system_translations WHERE lang_code = 'es' AND trans_key = ?");
+            $checkStmt->execute([$key]);
+            $existing = $checkStmt->fetch(PDO::FETCH_ASSOC);
+            
+            // Solo insertar si no existe o si está vacía
+            if (!$existing || empty($existing['trans_value'])) {
+                $stmt = db()->prepare("
+                    INSERT IGNORE INTO system_translations (lang_code, trans_key, trans_value)
+                    VALUES ('es', :key, :value)
+                ");
+                $stmt->execute([':key' => $key, ':value' => $value]);
+            }
         }
     } catch (Throwable $e) {
         // Silently fail if table doesn't exist or other error
