@@ -44,7 +44,7 @@ $typeIcons = [
     <div class="container">
         <div class="row mb-4">
             <div class="col-12">
-                <h1 class="section-title" style="color: var(--text-color);">INFORMACIÓN INSTITUCIONAL</h1>
+                <h1 class="section-title" style="color: var(--text-color);"><?= t_theme('theme_informacion_institucional') ?></h1>
                 <p style="color: var(--text-muted); margin-top: 15px;"><?= t_theme('theme_conoce_mas_organizacion') ?></p>
             </div>
         </div>

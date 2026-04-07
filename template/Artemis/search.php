@@ -44,7 +44,7 @@ $page_description = !empty($q) ? "Resultados de búsqueda para: $q en " . NOMBRE
     <div class="container">
         <div class="row mb-4">
             <div class="col-12">
-                <h1 class="section-title" style="color: var(--text-color);">Búsqueda</h1>
+                <h1 class="section-title" style="color: var(--text-color);"><?= t_theme('theme_buscar_noticias') ?></h1>
                 <?php if (!empty($q)): ?>
                 <p style="color: var(--text-muted); margin-top: 10px;">
                     Se <?= $totalResults === 1 ? 'encontró' : 'encontraron' ?> <strong style="color: var(--text-color);"><?= $totalResults ?></strong> <?= $totalResults === 1 ? 'resultado' : 'resultados' ?> para "<?= htmlspecialchars($q) ?>"

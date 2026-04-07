@@ -178,7 +178,7 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <?= truncate_text($post['seo_description'] ?: $post['content'], 90) ?>
                             </p>
                             <a href="<?= $postUrl ?>" class="read-more-link font-weight-bold">
-                                LEER COLUMNA <i class="fa fa-long-arrow-right ml-10"></i>
+                                <?= t_theme('theme_leer_columna') ?> <i class="fa fa-long-arrow-right ml-10"></i>
                             </a>
                         </div>
                     </div>

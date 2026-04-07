@@ -36,7 +36,7 @@ if (!function_exists('img_url')) {
         <div class="row">
             <div class="col-lg-8">
                 <a href="<?= URLBASE ?>/institucional/" style="color: var(--primary); text-decoration: none; display: inline-block; margin-bottom: 20px;">
-                    <i class="fas fa-arrow-left mr-2"></i>Volver al listado
+                    <i class="fas fa-arrow-left mr-2"></i><?= t_theme('theme_volver_listado') ?>
                 </a>
                 
                 <div style="background: var(--dark-secondary); border-radius: 20px; overflow: hidden;">
@@ -56,7 +56,7 @@ if (!function_exists('img_url')) {
                         </div>
                         
                         <div class="mt-4 pt-4" style="border-top: 1px solid rgba(255,255,255,0.1);">
-                            <span style="color: var(--text-muted); margin-right: 15px;">Compartir:</span>
+                            <span style="color: var(--text-muted); margin-right: 15px;"><?= t_theme('theme_compartir') ?></span>
                             <a href="https://www.facebook.com/sharer/sharer.php?u=<?= urlencode($_SERVER['REQUEST_URI']) ?>" target="_blank" style="color: #1877f2; font-size: 18px; margin-right: 12px;"><i class="fab fa-facebook-f"></i></a>
                             <a href="https://twitter.com/intent/tweet?url=<?= urlencode($_SERVER['REQUEST_URI']) ?>&text=<?= urlencode($page['title']) ?>" target="_blank" style="color: #1da1f2; font-size: 18px; margin-right: 12px;"><i class="fab fa-twitter"></i></a>
                             <a href="https://api.whatsapp.com/send?text=<?= urlencode($page['title'] . ' ' . $_SERVER['REQUEST_URI']) ?>" target="_blank" style="color: #25d366; font-size: 18px; margin-right: 12px;"><i class="fab fa-whatsapp"></i></a>

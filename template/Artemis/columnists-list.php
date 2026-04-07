@@ -37,7 +37,7 @@ if (!function_exists('img_url')) {
         <?php if(empty($columnistas)): ?>
         <div class="text-center py-5">
             <i class="fas fa-users" style="font-size: 60px; color: var(--text-muted); opacity: 0.3;"></i>
-            <h3 style="color: var(--text-color); margin-top: 20px;">No hay columnistas disponibles</h3>
+            <h3 style="color: var(--text-color); margin-top: 20px;"><?= t_theme('theme_no_hay_disponibles') ?></h3>
             <p style="color: var(--text-muted);">Próximamente agregaremos nuevos columnistas a nuestro equipo.</p>
         </div>
         <?php else: ?>

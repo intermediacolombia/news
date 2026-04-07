@@ -206,6 +206,18 @@ function t(string $key, string $lang = null): string {
         'theme_contactanos_descripcion' => 'Si necesitas publicidad, saber más sobre nosotros o simplemente quieres contactarnos, déjanos un mensaje y nos pondremos en contacto contigo lo antes posible.',
         'theme_columnas_publicadas' => 'Columnas publicadas',
         'theme_columnas_opinion' => 'Columnas de Opinión',
+        'theme_no_ha_publicado' => 'Este columnista aún no ha publicado artículos',
+        'theme_busca_noticias' => 'Busca noticias, artículos y contenido en',
+        'theme_utiliza_buscador' => 'Utiliza el formulario de búsqueda para encontrar noticias, artículos y contenido.',
+        'theme_pagina_busqueda' => 'pagina de busqueda de',
+        'theme_error_pagina' => 'Error en encontrar la pagina',
+        'theme_leer_columna' => 'LEER COLUMNA',
+        'theme_no_hay_disponibles' => 'No hay columnistas disponibles',
+        'theme_volver_listado' => 'Volver al listado',
+        'theme_volver_inicio' => 'Volver al inicio',
+        'theme_no_hay_noticias_disponibles' => 'No hay noticias disponibles',
+        'theme_pronto_tendremos' => 'Pronto tendremos nuevo contenido para ti.',
+        'theme_tienes_pregunta' => '¿Tienes alguna pregunta? Escríbenos',
     ];
 
     return $spanishDefaults[$key] ?? $key;
@@ -475,6 +487,18 @@ function init_default_theme_translations(): void {
         'theme_contactanos_descripcion' => 'If you need advertising, information about our services or simply want to contact us, leave us a message and we will respond as soon as possible.',
         'theme_columnas_publicadas' => 'Published columns',
         'theme_columnas_opinion' => 'Opinion Columns',
+        'theme_no_ha_publicado' => 'This columnist has not published any articles yet',
+        'theme_busca_noticias' => 'Search news, articles and content in',
+        'theme_utiliza_buscador' => 'Use the search form to find news, articles and content.',
+        'theme_pagina_busqueda' => 'search page of',
+        'theme_error_pagina' => 'Error finding the page',
+        'theme_leer_columna' => 'READ COLUMN',
+        'theme_no_hay_disponibles' => 'No columnists available',
+        'theme_volver_listado' => 'Back to list',
+        'theme_volver_inicio' => 'Back to home',
+        'theme_no_hay_noticias_disponibles' => 'No news available',
+        'theme_pronto_tendremos' => 'We will soon have new content for you.',
+        'theme_tienes_pregunta' => 'Have a question? Write to us',
     ];
 
     try {

@@ -316,7 +316,19 @@ INSERT INTO system_translations (lang_code, trans_key, trans_value) VALUES
 ('es', 'theme_cerrar', 'Cerrar'),
 ('es', 'theme_contactanos_descripcion', 'Si necesitas publicidad, saber más sobre nosotros o simplemente quieres contactarnos, déjanos un mensaje y nos pondremos en contacto contigo lo antes posible.'),
 ('es', 'theme_columnas_publicadas', 'Columnas publicadas'),
-('es', 'theme_columnas_opinion', 'Columnas de Opinión')
+('es', 'theme_columnas_opinion', 'Columnas de Opinión'),
+('es', 'theme_no_ha_publicado', 'Este columnista aún no ha publicado artículos'),
+('es', 'theme_busca_noticias', 'Busca noticias, artículos y contenido en'),
+('es', 'theme_utiliza_buscador', 'Utiliza el formulario de búsqueda para encontrar noticias, artículos y contenido.'),
+('es', 'theme_pagina_busqueda', 'pagina de busqueda de'),
+('es', 'theme_error_pagina', 'Error en encontrar la pagina'),
+('es', 'theme_leer_columna', 'LEER COLUMNA'),
+('es', 'theme_no_hay_disponibles', 'No hay columnistas disponibles'),
+('es', 'theme_volver_listado', 'Volver al listado'),
+('es', 'theme_volver_inicio', 'Volver al inicio'),
+('es', 'theme_no_hay_noticias_disponibles', 'No hay noticias disponibles'),
+('es', 'theme_pronto_tendremos', 'Pronto tendremos nuevo contenido para ti.'),
+('es', 'theme_tienes_pregunta', '¿Tienes alguna pregunta? Escríbenos')
 ON DUPLICATE KEY UPDATE trans_value = VALUES(trans_value);
 
 -- Insertar traducciones del tema en INGLÉS
@@ -442,5 +454,17 @@ INSERT INTO system_translations (lang_code, trans_key, trans_value) VALUES
 ('en', 'theme_cerrar', 'Close'),
 ('en', 'theme_contactanos_descripcion', 'If you need advertising, information about our services or simply want to contact us, leave us a message and we will respond as soon as possible.'),
 ('en', 'theme_columnas_publicadas', 'Published columns'),
-('en', 'theme_columnas_opinion', 'Opinion Columns')
+('en', 'theme_columnas_opinion', 'Opinion Columns'),
+('en', 'theme_no_ha_publicado', 'This columnist has not published any articles yet'),
+('en', 'theme_busca_noticias', 'Search news, articles and content in'),
+('en', 'theme_utiliza_buscador', 'Use the search form to find news, articles and content.'),
+('en', 'theme_pagina_busqueda', 'search page of'),
+('en', 'theme_error_pagina', 'Error finding the page'),
+('en', 'theme_leer_columna', 'READ COLUMN'),
+('en', 'theme_no_hay_disponibles', 'No columnists available'),
+('en', 'theme_volver_listado', 'Back to list'),
+('en', 'theme_volver_inicio', 'Back to home'),
+('en', 'theme_no_hay_noticias_disponibles', 'No news available'),
+('en', 'theme_pronto_tendremos', 'We will soon have new content for you.'),
+('en', 'theme_tienes_pregunta', 'Have a question? Write to us')
 ON DUPLICATE KEY UPDATE trans_value = VALUES(trans_value);
