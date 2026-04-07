@@ -1,7 +1,7 @@
 <?php
 /**
- * Sistema de actualización silenciosa
- * Verifica si hay nuevas versiones en GitHub y puede actualizar en segundo plano
+ * Sistema de actualización automática
+ * Compara el conteo de commits para detectar cambios externos
  */
 
 define('GITHUB_REPO', 'intermediacolombia/news');
@@ -16,35 +16,47 @@ function get_current_git_hash() {
     return 'unknown';
 }
 
+function get_commit_count() {
+    if (is_dir(__DIR__ . '/../../.git')) {
+        $count = trim(shell_exec('cd ' . __DIR__ . '/../.. && ' . GIT_BIN . ' rev-list --count HEAD 2>/dev/null'));
+        return $count ?: '0';
+    }
+    return '0';
+}
+
 function get_local_version() {
     $version_file = __DIR__ . '/cache/version.json';
     if (file_exists($version_file)) {
         return json_decode(file_get_contents($version_file), true);
     }
-    return ['hash' => '', 'updated_at' => ''];
+    return ['commit_count' => '', 'hash' => '', 'updated_at' => ''];
 }
 
-function save_local_version($hash, $version) {
+function save_local_version($count, $hash) {
     if (!is_dir(__DIR__ . '/cache')) {
         mkdir(__DIR__ . '/cache', 0755, true);
     }
     $version_file = __DIR__ . '/cache/version.json';
     file_put_contents($version_file, json_encode([
+        'commit_count' => $count,
         'hash' => $hash,
-        'version' => $version,
         'updated_at' => date('Y-m-d H:i:s')
     ]));
 }
 
 function check_for_updates() {
     $currentHash = get_current_git_hash();
+    $currentCount = get_commit_count();
     $localVersion = get_local_version();
     
-    $hasChanges = $currentHash !== $localVersion['hash'];
+    $localCount = $localVersion['commit_count'] ?? '0';
+    $hasChanges = ($currentCount > $localCount);
     
     $result = [
         'current_hash' => $currentHash,
-        'saved_hash' => $localVersion['hash'],
+        'current_count' => $currentCount,
+        'saved_count' => $localCount,
+        'saved_hash' => $localVersion['hash'] ?? '',
         'has_changes' => $hasChanges,
         'update_available' => $hasChanges,
         'checked_at' => date('Y-m-d H:i:s')
@@ -85,14 +97,17 @@ function perform_silent_update() {
     }
     
     $oldHash = get_current_git_hash();
+    $oldCount = get_commit_count();
     $output = shell_exec('cd ' . __DIR__ . '/../.. && ' . GIT_BIN . ' pull origin main 2>&1');
     
     $newHash = get_current_git_hash();
-    save_local_version($newHash, CURRENT_VERSION);
+    $newCount = get_commit_count();
+    save_local_version($newCount, $newHash);
     
     $status = [
         'updated_at' => date('Y-m-d H:i:s'),
-        'old_hash' => $oldHash,
+        'old_count' => $oldCount,
+        'new_count' => $newCount,
         'new_hash' => $newHash,
         'output' => $output,
         'success' => true
@@ -139,8 +154,9 @@ if ($_GET['action'] === 'reset') {
     if (file_exists($version_file)) unlink($version_file);
     if (file_exists($status_file)) unlink($status_file);
     $currentHash = get_current_git_hash();
-    save_local_version('', CURRENT_VERSION);
-    echo json_encode(['success' => true, 'message' => 'Estado reseteado', 'hash' => $currentHash]);
+    $currentCount = get_commit_count();
+    save_local_version($currentCount - 1, $currentHash);
+    echo json_encode(['success' => true, 'message' => 'Estado reseteado', 'count' => $currentCount, 'hash' => $currentHash]);
     exit;
 }
 

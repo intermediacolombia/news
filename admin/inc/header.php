@@ -166,11 +166,11 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Update check result:', data);
         
         if (data.update_available) {
-            if (confirm('🔄 Hay actualizaciones pendientes!\n\nHash actual: ' + data.current_hash + '\nHash guardado: ' + data.saved_hash + '\n\n¿Deseas actualizar ahora?')) {
+            if (confirm('🔄 Hay actualizaciones pendientes!\n\nCommits locales: ' + data.current_count + '\nCommits guardados: ' + data.saved_count + '\n\n¿Deseas actualizar ahora?')) {
                 doUpdate();
             }
         } else {
-            console.log('Sistema actualizado. Hash: ' + data.current_hash);
+            console.log('Sistema actualizado. Commits: ' + data.current_count);
         }
     })
     .catch(error => {
