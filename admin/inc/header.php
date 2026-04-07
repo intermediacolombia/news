@@ -41,6 +41,31 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    function showUpdatingNotification() {
+        const existingNotification = document.getElementById('updating-notification');
+        if (existingNotification) return;
+        
+        const notification = document.createElement('div');
+        notification.id = 'updating-notification';
+        notification.innerHTML = `
+            <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 9999; display: flex; align-items: center; justify-content: center;">
+                <div style="background: #fff; padding: 30px 50px; border-radius: 10px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
+                    <i class="fas fa-sync-alt fa-spin" style="font-size: 40px; color: var(--primary-color); margin-bottom: 15px;"></i>
+                    <h4 style="margin: 0; color: #333;">Actualizando sistema...</h4>
+                    <p style="margin: 10px 0 0; color: #666; font-size: 14px;">Por favor espera mientras se aplican las actualizaciones</p>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(notification);
+    }
+    
+    function hideUpdatingNotification() {
+        const notification = document.getElementById('updating-notification');
+        if (notification) {
+            notification.remove();
+        }
+    }
+    
     fetch('<?= $url ?>/admin/inc/auto-update.php?action=check', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
@@ -48,7 +73,8 @@ document.addEventListener('DOMContentLoaded', function() {
     .then(response => response.json())
     .then(data => {
         if (data.update_available) {
-            console.log('Nueva versión disponible: ' + data.latest);
+            console.log('Nueva versión disponible: ' + data.latest + ' - Iniciando actualización...');
+            showUpdatingNotification();
             
             fetch('<?= $url ?>/admin/inc/auto-update.php?action=update&key=autoupdate', {
                 method: 'POST',
@@ -56,12 +82,16 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(res => res.json())
             .then(updateResult => {
+                hideUpdatingNotification();
                 if (updateResult.success) {
                     console.log('Actualización aplicada: ' + updateResult.updated_at);
                     location.reload();
+                } else {
+                    console.log('Error en actualización:', updateResult.message);
                 }
             })
             .catch(err => {
+                hideUpdatingNotification();
                 console.log('Error al actualizar:', err);
             });
         }
