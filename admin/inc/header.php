@@ -230,10 +230,12 @@ document.addEventListener('DOMContentLoaded', function () {
         // Activar primer paso al abrir
         setTimeout(function () { activateStep(0); }, 200);
 
-        var reloadTimer = null;
+        var successTriggered = false;
 
         function triggerSuccessReload() {
-            if (reloadTimer) return; // ya programado
+            if (successTriggered) return;
+            successTriggered = true;
+
             completeStep(stepIndex, true);
             activateStep(4);
             completeStep(4, true);
@@ -242,8 +244,22 @@ document.addEventListener('DOMContentLoaded', function () {
             var pctText = document.getElementById('upd-pct-text');
             if (pctText) pctText.textContent = '100%';
             var statusText = document.getElementById('upd-status-text');
-            if (statusText) statusText.textContent = 'Actualización completada. Recargando...';
-            reloadTimer = setTimeout(function () { location.reload(); }, 2500);
+            if (statusText) statusText.textContent = 'Actualización completada';
+
+            setTimeout(function () {
+                Swal.fire({
+                    title: '¡Sistema actualizado!',
+                    text: 'Todos los cambios fueron aplicados correctamente.',
+                    icon: 'success',
+                    confirmButtonText: 'Recargar página',
+                    confirmButtonColor: '#28a745',
+                    allowOutsideClick: false,
+                    timer: 4000,
+                    timerProgressBar: true,
+                }).then(function () {
+                    location.reload();
+                });
+            }, 500);
         }
 
         xhr.onprogress = function () {
