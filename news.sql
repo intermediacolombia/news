@@ -19873,7 +19873,8 @@ INSERT INTO `permissions` (`id`, `name`, `category`, `created_at`, `updated_at`)
 (19, 'Eliminar Institucional', 'Marca', '2026-01-29 16:49:47', '2026-01-29 16:49:47'),
 (21, 'Ver Institucional', 'Marca', '2026-01-29 16:50:43', '2026-01-29 16:50:43'),
 (22, 'Gestionar Multimedia', 'Multimedia', '2026-03-03 22:04:59', '2026-03-03 22:04:59'),
-(23, 'Ver Logs', 'Sistema', '2026-04-07 00:00:00', '2026-04-07 00:00:00');
+(23, 'Ver Logs', 'Sistema', '2026-04-07 00:00:00', '2026-04-07 00:00:00'),
+(24, 'Actualizar Sistema', 'Sistema', '2026-04-07 00:00:00', '2026-04-07 00:00:00');
 
 -- --------------------------------------------------------
 

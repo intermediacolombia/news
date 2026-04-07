@@ -30,7 +30,8 @@ function repair_database(): array {
         // Agregar aquí cada nuevo permiso necesario.
         // =====================================================================
         $newPermissions = [
-            [23, 'Ver Logs', 'Sistema'],
+            [23, 'Ver Logs',         'Sistema'],
+            [24, 'Actualizar Sistema', 'Sistema'],
         ];
 
         foreach ($newPermissions as [$id, $name, $category]) {

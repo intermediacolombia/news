@@ -39,6 +39,7 @@
 <!-- Google Material Icons -->
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
+<?php if (in_array('Actualizar Sistema', $_SESSION['user_permissions'] ?? [])): ?>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -353,7 +354,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 </script>
+<?php endif; ?>
 
-<!-- Script custom 
+<!-- Script custom
 <script src="<?= htmlspecialchars($url) ?>/template/assets/js/departamentos.js" crossorigin="anonymous"></script>
 -->
