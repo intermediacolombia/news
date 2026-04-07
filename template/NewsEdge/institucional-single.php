@@ -69,7 +69,7 @@ if (!function_exists('img_url')) {
                     <div class="mb-30">
                         <a href="<?= URLBASE ?>/institucional/" class="btn-gtf-dtp-50">
                             <i class="fa fa-arrow-left" aria-hidden="true"></i>
-                            Volver al listado
+                            <?= t_theme('theme_volver_listado') ?>
                         </a>
                     </div>
                     
@@ -104,7 +104,7 @@ if (!function_exists('img_url')) {
                                 <li>
                                     <span><i class="fa fa-calendar" aria-hidden="true"></i></span>
                                     <span>
-                                        Última actualización: <?= date('d/m/Y', strtotime($page['updated_at'])) ?>
+                                        <?= t_theme('theme_ultima_actualizacion') ?> <?= date('d/m/Y', strtotime($page['updated_at'])) ?>
                                     </span>
                                 </li>
                             </ul>
@@ -116,7 +116,7 @@ if (!function_exists('img_url')) {
                         <div class="row">
                             <div class="col-12 mb-20">
                                 <h4 class="title-semibold-dark size-md mb-0">
-                                    Compartir esta página
+                                    <?= t_theme('theme_compartir_pagina') ?>
                                 </h4>
                             </div>
                             <div class="col-12">

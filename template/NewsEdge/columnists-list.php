@@ -80,11 +80,11 @@ function getUniqueColor($nombre) {
             <div class="col-lg-8 text-center">
                 <div class="hero-badge mb-20" style="display: inline-block; background: rgba(255,255,255,0.2); padding: 8px 20px; border-radius: 30px; backdrop-filter: blur(10px);">
                     <i class="fa fa-users" style="color: #fff; margin-right: 8px;"></i>
-                    <span style="color: #fff; font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;">Nuestro Equipo</span>
+                    <span style="color: #fff; font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;"><?= t_theme('theme_nuestro_equipo') ?></span>
                 </div>
                 
                 <h1 class="hero-title" style="color: #fff; font-size: 48px; font-weight: 700; margin-bottom: 20px; line-height: 1.2;">
-                    Conoce a Nuestros <br><span style="position: relative; display: inline-block;">Columnistas
+                    <?= t_theme('theme_conoce_nuestros_columnistas') ?> <br><span style="position: relative; display: inline-block;"><?= t_theme('theme_columnistas') ?>
                         <svg style="position: absolute; bottom: -10px; left: 0; width: 100%;" height="12" viewBox="0 0 200 12" fill="none">
                             <path d="M2 10C60 2 140 2 198 10" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
                         </svg>
@@ -92,7 +92,7 @@ function getUniqueColor($nombre) {
                 </h1>
                 
                 <p class="hero-description" style="color: rgba(255,255,255,0.9); font-size: 18px; line-height: 1.8; max-width: 600px; margin: 0 auto;">
-                    Voces expertas con perspectivas únicas sobre los temas que más importan
+                    <?= t_theme('theme_columnistas_descripcion') ?>
                 </p>
             </div>
         </div>
@@ -112,8 +112,8 @@ function getUniqueColor($nombre) {
                 <div class="col-lg-6">
                     <div class="empty-state" style="text-align: center; padding: 60px 40px; background: #fff; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.08);">
                         <i class="fa fa-users" style="font-size: 64px; color: var(--primary); margin-bottom: 20px; opacity: 0.3;"></i>
-                        <h3 style="color: #333; margin-bottom: 10px;">No hay columnistas disponibles</h3>
-                        <p style="color: #666;">Próximamente agregaremos nuevos columnistas a nuestro equipo.</p>
+                        <h3 style="color: #333; margin-bottom: 10px;"><?= t_theme('theme_no_hay_columnistas') ?></h3>
+                        <p style="color: #666;"><?= t_theme('theme_prox_columnistas') ?></p>
                     </div>
                 </div>
             </div>
@@ -123,7 +123,7 @@ function getUniqueColor($nombre) {
             <div class="text-center mb-50">
                 <div class="columnist-count" style="display: inline-block; background: #fff; padding: 12px 30px; border-radius: 50px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
                     <span style="color: var(--primary); font-weight: 700; font-size: 24px;"><?= count($columnistas) ?></span>
-                    <span style="color: #666; margin-left: 8px; font-size: 15px;">Columnista<?= count($columnistas) !== 1 ? 's' : '' ?> en nuestro equipo</span>
+                    <span style="color: #666; margin-left: 8px; font-size: 15px;"><?= t_theme('theme_columnista_role') ?><?= count($columnistas) !== 1 ? 's' : '' ?> <?= t_theme('theme_nuestro_equipo') ?></span>
                 </div>
             </div>
             
@@ -178,19 +178,19 @@ function getUniqueColor($nombre) {
                             
                             <p class="columnist-role">
                                 <i class="fa fa-user-circle"></i>
-                                Columnista
+                                <?= t_theme('theme_columnista_role') ?>
                             </p>
                             
                             <p class="columnist-stats">
                                 <span class="stat-item">
                                     <i class="fa fa-newspaper-o"></i>
-                                    <?= $col['post_count'] ?> columna<?= $col['post_count'] !== 1 ? 's' : '' ?>
+                                    <?= $col['post_count'] ?> <?= t_theme('theme_columna') ?><?= $col['post_count'] !== 1 ? 's' : '' ?>
                                 </span>
                             </p>
                             
                             <!-- Botón Ver Perfil -->
                             <a href="<?= $profileUrl ?>" class="btn-columnist-modern">
-                                <span>Ver Perfil</span>
+                                <span><?= t_theme('theme_ver_perfil') ?></span>
                                 <i class="fa fa-arrow-right"></i>
                             </a>
                         </div>
@@ -212,15 +212,15 @@ function getUniqueColor($nombre) {
         <div class="row align-items-center">
             <div class="col-lg-8">
                 <h3 style="color: #fff; font-size: 28px; margin-bottom: 10px; font-weight: 600;">
-                    ¿Quieres ser parte de nuestro equipo?
+                    <?= t_theme('theme_quieres_unirte') ?>
                 </h3>
                 <p style="color: rgba(255,255,255,0.8); font-size: 16px; margin: 0;">
-                    Si tienes experiencia y pasión por escribir, únete a nuestro equipo de columnistas.
+                    <?= t_theme('theme_quieres_unirte_desc') ?>
                 </p>
             </div>
             <div class="col-lg-4 text-right text-center-sm">
                 <a href="<?= URLBASE ?>/contacto/" class="btn-cta-light" style="display: inline-block; background: #fff; color: #333; padding: 15px 35px; border-radius: 50px; font-weight: 600; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(255,255,255,0.2);">
-                    Contáctanos
+                    <?= t_theme('theme_contactanos') ?>
                     <i class="fa fa-arrow-right" style="margin-left: 10px;"></i>
                 </a>
             </div>

@@ -80,7 +80,7 @@ if ($categorySlug) {
     ");
     $posts = $stmt->fetchAll();
 
-    $category = ['name' => 'Noticias', 'slug' => 'noticias'];
+    $category = ['name' => t_theme('theme_noticias'), 'slug' => 'noticias'];
 }
 
 $totalPages = max(1, ceil($totalPosts / $perPage));

@@ -62,7 +62,7 @@ if ($categorySlug) {
         LIMIT $perPage OFFSET $offset
     ");
     $posts = $stmt->fetchAll();
-    $category = ['name' => 'Noticias', 'slug' => 'noticias'];
+    $category = ['name' => t_theme('theme_noticias'), 'slug' => 'noticias'];
 }
 
 // Total de páginas

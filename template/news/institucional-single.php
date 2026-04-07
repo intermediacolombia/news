@@ -48,15 +48,15 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
 
 // Tipo de página
 $typeNames = [
-    'general' => 'General',
-    'about' => 'Quiénes Somos',
-    'mission' => 'Misión y Visión',
-    'history' => 'Historia',
-    'organization' => 'Organigrama',
-    'board' => 'Junta Directiva',
-    'team' => 'Equipo',
-    'values' => 'Valores',
-    'policies' => 'Políticas'
+    'general'      => t_theme('theme_general'),
+    'about'        => t_theme('theme_quienes_somos'),
+    'mission'      => t_theme('theme_mision_vision'),
+    'history'      => t_theme('theme_historia'),
+    'organization' => t_theme('theme_organigrama'),
+    'board'        => t_theme('theme_junta_directiva'),
+    'team'         => t_theme('theme_equipo'),
+    'values'       => t_theme('theme_valores'),
+    'policies'     => t_theme('theme_politicas'),
 ];
 
 $typeName = $typeNames[$page['page_type']] ?? 'Institucional';
@@ -67,8 +67,8 @@ $typeName = $typeNames[$page['page_type']] ?? 'Institucional';
 <div class="container-fluid">
     <div class="container-bk">
         <nav class="breadcrumb bg-transparent m-0 p-0">
-            <a class="breadcrumb-item" href="<?= URLBASE ?>">Home</a>
-            <a class="breadcrumb-item" href="<?= URLBASE ?>/institucional">Institucional</a>
+            <a class="breadcrumb-item" href="<?= URLBASE ?>"><?= t_theme('theme_inicio') ?></a>
+            <a class="breadcrumb-item" href="<?= URLBASE ?>/institucional"><?= t_theme('theme_informacion_institucional') ?></a>
             <span class="breadcrumb-item active"><?= htmlspecialchars($page['title']) ?></span>
         </nav>
     </div>
@@ -96,7 +96,7 @@ $typeName = $typeNames[$page['page_type']] ?? 'Institucional';
                         <!-- Tipo y fecha -->
                         <div class="mb-3">
                             <a href="<?= URLBASE ?>/institucional" class="text-secondary">
-                                <i class="fa fa-arrow-left"></i> Volver al listado
+                                <i class="fa fa-arrow-left"></i> <?= t_theme('theme_volver_listado') ?>
                             </a>
                             <span class="px-2">/</span>
                             <span class="text-uppercase text-primary font-weight-medium">
@@ -118,7 +118,7 @@ $typeName = $typeNames[$page['page_type']] ?? 'Institucional';
                         <div class="border-top mt-5 pt-3">
                             <p class="text-muted mb-0">
                                 <i class="fa fa-calendar mr-2"></i>
-                                <small>Última actualización: <?= fecha_espanol(date("F d, Y", strtotime($page['updated_at']))) ?></small>
+                                <small><?= t_theme('theme_ultima_actualizacion') ?> <?= fecha_espanol(date("F d, Y", strtotime($page['updated_at']))) ?></small>
                             </p>
                         </div>
                         
@@ -143,7 +143,7 @@ $typeName = $typeNames[$page['page_type']] ?? 'Institucional';
                 <?php if($relatedPages): ?>
                     <div class="mt-4">
                         <div class="d-flex align-items-center justify-content-between bg-light py-2 px-4 mb-3 title-widgets">
-                            <h3 class="m-0">También te puede interesar</h3>
+                            <h3 class="m-0"><?= t_theme('theme_tambien_interesar') ?></h3>
                         </div>
                         
                         <div class="row">
@@ -177,7 +177,7 @@ $typeName = $typeNames[$page['page_type']] ?? 'Institucional';
                 
                 <!-- Comentarios de Facebook (opcional) -->
                 <div class="d-flex align-items-center justify-content-between bg-light py-2 px-4 mb-3 title-widgets mt-4">
-                    <h3 class="m-0">Comentarios</h3>
+                    <h3 class="m-0"><?= t_theme('theme_comentarios') ?></h3>
                 </div>
                 <div class="bg-light">
                     <div class="fb-comments" 

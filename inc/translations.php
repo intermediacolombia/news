@@ -156,8 +156,21 @@ function t(string $key, string $lang = null): string {
         'theme_minutos_de_lectura' => 'Minutos de Lectura',
         'theme_minute_read' => 'minute read',
         'theme_views' => 'Views',
+        'theme_volver_listado' => 'Volver al listado',
+        'theme_ultima_actualizacion' => 'Última actualización:',
+        'theme_compartir_pagina' => 'Compartir esta página',
+        'theme_ver_perfil' => 'Ver Perfil',
+        'theme_nuestro_equipo' => 'Nuestro Equipo',
+        'theme_conoce_nuestros_columnistas' => 'Conoce a Nuestros Columnistas',
+        'theme_columnistas_descripcion' => 'Voces expertas con perspectivas únicas sobre los temas que más importan',
+        'theme_no_hay_columnistas' => 'No hay columnistas disponibles',
+        'theme_prox_columnistas' => 'Próximamente agregaremos nuevos columnistas a nuestro equipo.',
+        'theme_columnista_role' => 'Columnista',
+        'theme_quieres_unirte' => '¿Quieres ser parte de nuestro equipo?',
+        'theme_quieres_unirte_desc' => 'Si tienes experiencia y pasión por escribir, únete a nuestro equipo de columnistas.',
+        'theme_columna' => 'columna',
     ];
-    
+
     return $spanishDefaults[$key] ?? $key;
 }
 
@@ -273,6 +286,19 @@ function init_default_theme_translations(): void {
         'theme_buscar_placeholder' => 'Escribe una palabra clave...',
         'theme_ultimas' => 'Últimas',
         'theme_buscar_descripcion' => 'Escribe lo que necesitas y presiona "Buscar".',
+        'theme_volver_listado' => 'Volver al listado',
+        'theme_ultima_actualizacion' => 'Última actualización:',
+        'theme_compartir_pagina' => 'Compartir esta página',
+        'theme_ver_perfil' => 'Ver Perfil',
+        'theme_nuestro_equipo' => 'Nuestro Equipo',
+        'theme_conoce_nuestros_columnistas' => 'Conoce a Nuestros Columnistas',
+        'theme_columnistas_descripcion' => 'Voces expertas con perspectivas únicas sobre los temas que más importan',
+        'theme_no_hay_columnistas' => 'No hay columnistas disponibles',
+        'theme_prox_columnistas' => 'Próximamente agregaremos nuevos columnistas a nuestro equipo.',
+        'theme_columnista_role' => 'Columnista',
+        'theme_quieres_unirte' => '¿Quieres ser parte de nuestro equipo?',
+        'theme_quieres_unirte_desc' => 'Si tienes experiencia y pasión por escribir, únete a nuestro equipo de columnistas.',
+        'theme_columna' => 'columna',
     ];
 
     $defaultEnKeys = [
@@ -348,6 +374,19 @@ function init_default_theme_translations(): void {
         'theme_buscar_placeholder'      => 'Type a keyword...',
         'theme_ultimas'                 => 'Latest',
         'theme_buscar_descripcion'      => 'Type what you need and press "Search".',
+        'theme_volver_listado'          => 'Back to list',
+        'theme_ultima_actualizacion'    => 'Last updated:',
+        'theme_compartir_pagina'        => 'Share this page',
+        'theme_ver_perfil'              => 'View Profile',
+        'theme_nuestro_equipo'          => 'Our Team',
+        'theme_conoce_nuestros_columnistas' => 'Meet Our Columnists',
+        'theme_columnistas_descripcion' => 'Expert voices with unique perspectives on the topics that matter most',
+        'theme_no_hay_columnistas'      => 'No columnists available',
+        'theme_prox_columnistas'        => 'We will soon add new columnists to our team.',
+        'theme_columnista_role'         => 'Columnist',
+        'theme_quieres_unirte'          => 'Want to join our team?',
+        'theme_quieres_unirte_desc'     => 'If you have experience and a passion for writing, join our team of columnists.',
+        'theme_columna'                 => 'column',
     ];
 
     try {
