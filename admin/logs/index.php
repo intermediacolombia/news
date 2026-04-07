@@ -105,7 +105,7 @@ $entityTypes = db()->query($entityTypesSql)->fetchAll(PDO::FETCH_COLUMN);
     </style>
 </head>
 <body>
-    <?php require_once __DIR__ . '/inc/menu.php'; ?>
+    <?php require_once __DIR__ . '/../inc/menu.php'; ?>
     
     <div class="container-fluid px-4 py-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -252,7 +252,7 @@ $entityTypes = db()->query($entityTypesSql)->fetchAll(PDO::FETCH_COLUMN);
         </div>
     </div>
 
-    <?php require_once __DIR__ . '/inc/menu-footer.php'; ?>
+    <?php require_once __DIR__ . '/../inc/menu-footer.php'; ?>
     
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
