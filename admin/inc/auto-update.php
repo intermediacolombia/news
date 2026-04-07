@@ -190,12 +190,56 @@ if ($action === 'stream_update') {
     echo "\n";
     if ($exitCode === 0) {
         echo "DONE:success\n";
+        
+        // Ejecutar actualizaciones de BD post-update
+        run_post_update_migrations();
     } else {
         echo "DONE:error\n";
     }
 
     invalidate_cache();
     exit;
+}
+
+function run_post_update_migrations() {
+    require_once __DIR__ . '/../../inc/config.php';
+    
+    if (!db()) return;
+    
+    try {
+        // 1. Agregar permiso 'Ver Logs' si no existe
+        $stmt = db()->prepare("SELECT id FROM permissions WHERE id = 23");
+        $stmt->execute();
+        if (!$stmt->fetch()) {
+            db()->exec("INSERT INTO permissions (id, name, category, created_at, updated_at) VALUES (23, 'Ver Logs', 'Sistema', NOW(), NOW())");
+        }
+        
+        // 2. Crear tabla system_logs si no existe
+        $stmt = db()->query("SHOW TABLES LIKE 'system_logs'");
+        if (!$stmt->fetch()) {
+            db()->exec("
+                CREATE TABLE `system_logs` (
+                  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+                  `user_id` int DEFAULT NULL,
+                  `username` varchar(50) DEFAULT NULL,
+                  `action` varchar(100) NOT NULL,
+                  `description` text,
+                  `entity_type` varchar(50) DEFAULT NULL,
+                  `entity_id` bigint DEFAULT NULL,
+                  `ip_address` varchar(45) DEFAULT NULL,
+                  `user_agent` text,
+                  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+                  PRIMARY KEY (`id`),
+                  KEY `idx_user_id` (`user_id`),
+                  KEY `idx_action` (`action`),
+                  KEY `idx_entity` (`entity_type`, `entity_id`),
+                  KEY `idx_created_at` (`created_at`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+            ");
+        }
+    } catch (Exception $e) {
+        error_log('[post-update] Migration error: ' . $e->getMessage());
+    }
 }
 
 header('Content-Type: application/json');
