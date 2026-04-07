@@ -230,11 +230,30 @@ document.addEventListener('DOMContentLoaded', function () {
         // Activar primer paso al abrir
         setTimeout(function () { activateStep(0); }, 200);
 
+        var reloadTimer = null;
+
+        function triggerSuccessReload() {
+            if (reloadTimer) return; // ya programado
+            completeStep(stepIndex, true);
+            activateStep(4);
+            completeStep(4, true);
+            var bar = document.getElementById('upd-bar');
+            if (bar) { bar.style.width = '100%'; bar.style.background = '#28a745'; }
+            var pctText = document.getElementById('upd-pct-text');
+            if (pctText) pctText.textContent = '100%';
+            var statusText = document.getElementById('upd-status-text');
+            if (statusText) statusText.textContent = 'Actualización completada. Recargando...';
+            reloadTimer = setTimeout(function () { location.reload(); }, 2500);
+        }
+
         xhr.onprogress = function () {
             var chunk = xhr.responseText.substring(lastLen);
             lastLen = xhr.responseText.length;
 
-            if (chunk.indexOf('DONE:success') !== -1) success = true;
+            if (chunk.indexOf('DONE:success') !== -1) {
+                success = true;
+                triggerSuccessReload();
+            }
 
             // Avanzar pasos según el contenido recibido
             stepTriggers.forEach(function (trigger) {
@@ -247,39 +266,23 @@ document.addEventListener('DOMContentLoaded', function () {
         };
 
         xhr.onload = function () {
-            if (xhr.responseText.indexOf('DONE:success') !== -1) success = true;
-
-            // Completar pasos restantes
-            completeStep(stepIndex, success);
-            if (success) {
-                activateStep(4);
-                completeStep(4, true);
-                var bar = document.getElementById('upd-bar');
-                if (bar) {
-                    bar.style.width = '100%';
-                    bar.style.background = '#28a745';
-                }
-                var pctText = document.getElementById('upd-pct-text');
-                if (pctText) pctText.textContent = '100%';
-                var statusText = document.getElementById('upd-status-text');
-                if (statusText) statusText.textContent = 'Actualización completada';
-            } else {
-                var bar2 = document.getElementById('upd-bar');
-                if (bar2) bar2.style.background = '#dc3545';
+            if (xhr.responseText.indexOf('DONE:success') !== -1) {
+                success = true;
+                triggerSuccessReload();
+                return;
             }
-
+            // Solo llega aquí si no hubo DONE:success (error)
+            completeStep(stepIndex, false);
+            var bar2 = document.getElementById('upd-bar');
+            if (bar2) bar2.style.background = '#dc3545';
             setTimeout(function () {
                 Swal.fire({
-                    title: success ? '¡Sistema actualizado!' : 'Error en la actualización',
-                    text: success
-                        ? 'Todos los cambios fueron aplicados correctamente.'
-                        : 'Ocurrió un problema. Intenta nuevamente o contacta al administrador.',
-                    icon: success ? 'success' : 'error',
-                    confirmButtonText: success ? 'Recargar página' : 'Cerrar',
-                    confirmButtonColor: success ? '#28a745' : 'var(--primary-color)',
+                    title: 'Error en la actualización',
+                    text: 'Ocurrió un problema. Intenta nuevamente o contacta al administrador.',
+                    icon: 'error',
+                    confirmButtonText: 'Cerrar',
+                    confirmButtonColor: 'var(--primary-color)',
                     allowOutsideClick: false,
-                }).then(function () {
-                    if (success) location.reload();
                 });
             }, 800);
         };

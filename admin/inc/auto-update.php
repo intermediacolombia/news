@@ -189,20 +189,38 @@ if ($action === 'stream_update') {
 
     echo "\n";
     if ($exitCode === 0) {
+        // Limpiar caché ANTES del DONE:success para que el reload no vea el estado anterior
+        invalidate_cache();
+        $newHash = trim(shell_exec(GIT_BIN . ' rev-parse HEAD'));
+        save_cache([
+            'update_available' => false,
+            'local_hash'       => substr($newHash, 0, 8),
+            'remote_hash'      => substr($newHash, 0, 8),
+            'commits_behind'   => 0,
+            'new_commits'      => [],
+            'checked_at'       => date('Y-m-d H:i:s'),
+            'fetch_error'      => null,
+        ]);
+
         echo "DONE:success\n";
+        ob_flush(); flush();
 
         // Ejecutar reparación automática de BD tras cada actualización
         $dbRepairFile = REPO_PATH . '/admin/inc/db_repair.php';
         if (file_exists($dbRepairFile)) {
             echo "Aplicando cambios de base de datos...\n";
             ob_flush(); flush();
-            require_once $dbRepairFile;
-            $repairResults = repair_database();
-            foreach (array_merge($repairResults['tables'], $repairResults['columns'], $repairResults['permissions']) as $msg) {
-                echo "  BD: $msg\n";
-            }
-            foreach ($repairResults['errors'] as $err) {
-                echo "  ERROR BD: $err\n";
+            try {
+                require_once $dbRepairFile;
+                $repairResults = repair_database();
+                foreach (array_merge($repairResults['tables'], $repairResults['columns'], $repairResults['permissions']) as $msg) {
+                    echo "  BD: $msg\n";
+                }
+                foreach ($repairResults['errors'] as $err) {
+                    echo "  ERROR BD: $err\n";
+                }
+            } catch (Throwable $e) {
+                echo "  ERROR BD (no crítico): " . $e->getMessage() . "\n";
             }
             ob_flush(); flush();
         }
@@ -210,7 +228,6 @@ if ($action === 'stream_update') {
         echo "DONE:error\n";
     }
 
-    invalidate_cache();
     exit;
 }
 
