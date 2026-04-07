@@ -49,6 +49,21 @@ document.addEventListener('DOMContentLoaded', function() {
     .then(data => {
         if (data.update_available) {
             console.log('Nueva versión disponible: ' + data.latest);
+            
+            fetch('<?= $url ?>/admin/inc/auto-update.php?action=update&key=autoupdate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then(res => res.json())
+            .then(updateResult => {
+                if (updateResult.success) {
+                    console.log('Actualización aplicada: ' + updateResult.updated_at);
+                    location.reload();
+                }
+            })
+            .catch(err => {
+                console.log('Error al actualizar:', err);
+            });
         }
     })
     .catch(error => {

@@ -128,6 +128,13 @@ if ($_GET['action'] === 'status') {
 
 if ($_GET['action'] === 'update' && $_GET['key'] === 'autoupdate') {
     header('Content-Type: application/json');
+    
+    $status = get_update_status();
+    if (!$status['auto_update_enabled']) {
+        echo json_encode(['success' => false, 'message' => 'Auto-update disabled']);
+        exit;
+    }
+    
     $result = perform_silent_update();
     echo json_encode($result);
     exit;
