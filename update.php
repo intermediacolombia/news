@@ -1,5 +1,6 @@
 <?php
 // ================= CONFIG =================
+if (function_exists('opcache_reset')) opcache_reset();
 ini_set('output_buffering', 'off');
 ini_set('zlib.output_compression', false);
 
