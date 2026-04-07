@@ -26,7 +26,11 @@ if (isset($_GET['run']) && isset($_GET['token'])) {
 
     chdir($repoPath);
 
-    $process = popen("git pull origin test 2>&1", "r");
+    shell_exec('git config user.name "intermediacolombia"');
+    shell_exec('git config user.email "intermediacolombia@gmail.com"');
+
+    shell_exec("git fetch origin main 2>&1");
+    $process = popen("git reset --hard origin/main 2>&1", "r");
 
     if (!$process) {
         echo "❌ Error ejecutando git pull\n";

@@ -13,6 +13,8 @@ define('CACHE_TTL', 300); // 5 minutos
 function git_exec($cmd) {
     $prev = getcwd();
     chdir(REPO_PATH);
+    shell_exec(GIT_BIN . ' config user.name "intermediacolombia"');
+    shell_exec(GIT_BIN . ' config user.email "intermediacolombia@gmail.com"');
     $result = trim(shell_exec(GIT_BIN . ' ' . $cmd . ' 2>&1'));
     chdir($prev);
     return $result;
@@ -160,8 +162,11 @@ if ($action === 'stream_update') {
     }
 
     chdir(REPO_PATH);
+    shell_exec(GIT_BIN . ' config user.name "intermediacolombia"');
+    shell_exec(GIT_BIN . ' config user.email "intermediacolombia@gmail.com"');
 
-    $process = popen(GIT_BIN . ' pull origin main 2>&1', 'r');
+    shell_exec(GIT_BIN . ' fetch origin main 2>&1');
+    $process = popen(GIT_BIN . ' reset --hard origin/main 2>&1', 'r');
 
     if (!$process) {
         echo "ERROR: No se pudo ejecutar git pull\n";
