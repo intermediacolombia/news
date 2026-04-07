@@ -77,6 +77,7 @@ foreach ($defaults as $k => $v) {
     <li class="nav-item"><a class="nav-link <?= $activeTab === 'email' ? 'active' : '' ?>" data-bs-toggle="tab" href="#email"><i class="fa fa-envelope"></i> Email</a></li>
     <li class="nav-item"><a class="nav-link <?= $activeTab === 'apariencia' ? 'active' : '' ?>" data-bs-toggle="tab" href="#apariencia"><i class="fas fa-brush"></i> Apariencia</a></li>
     <li class="nav-item"><a class="nav-link <?= $activeTab === 'idioma' ? 'active' : '' ?>" data-bs-toggle="tab" href="#idioma"><i class="fas fa-language"></i> Editor de Idioma</a></li>
+    <li class="nav-item"><a class="nav-link <?= $activeTab === 'sistema' ? 'active' : '' ?>" data-bs-toggle="tab" href="#sistema"><i class="fa fa-database"></i> Sistema</a></li>
   </ul>
 
   <form id="configForm" method="post" action="save_config.php"
@@ -107,6 +108,10 @@ foreach ($defaults as $k => $v) {
 
       <div class="tab-pane fade <?= $activeTab === 'idioma' ? 'show active' : '' ?>" id="idioma">
         <?php require_once __DIR__ . '/tabs/tab_idioma.php'; ?>
+      </div>
+
+      <div class="tab-pane fade <?= $activeTab === 'sistema' ? 'show active' : '' ?>" id="sistema">
+        <?php require_once __DIR__ . '/tabs/tab_sistema.php'; ?>
       </div>
 
     </div>
