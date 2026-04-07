@@ -655,7 +655,7 @@ function img_url_dashboard($path) {
             <i class="fa fa-users"></i>
           </div>
           <div class="stat-card-value"><?= number_format($totalColumnistas) ?></div>
-          <div class="stat-card-label">Columnistas</div>
+          <div class="stat-card-label">Columnistass</div>
         </div>
       </div>
       <?php endif; ?>
