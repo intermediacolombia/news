@@ -1,9 +1,9 @@
 <?php
-require_once __DIR__ . '/../inc/config.php';
-require_once __DIR__ . '/login/session.php';
+require_once __DIR__ . '/../../inc/config.php';
+require_once __DIR__ . '/../login/session.php';
 
 $permisopage = 'Ver Logs';
-require_once __DIR__ . '/login/restriction.php';
+require_once __DIR__ . '/../login/restriction.php';
 
 try {
     $stmt = db()->prepare("DELETE FROM system_logs WHERE created_at < DATE_SUB(NOW(), INTERVAL 30 DAY)");

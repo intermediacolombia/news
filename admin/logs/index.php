@@ -1,9 +1,9 @@
 <?php
-require_once __DIR__ . '/../inc/config.php';
-require_once __DIR__ . '/login/session.php';
+require_once __DIR__ . '/../../inc/config.php';
+require_once __DIR__ . '/../login/session.php';
 
 $permisopage = 'Ver Logs';
-require_once __DIR__ . '/login/restriction.php';
+require_once __DIR__ . '/../login/restriction.php';
 
 $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
 $limit = 50;
