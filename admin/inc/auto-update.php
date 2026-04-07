@@ -156,6 +156,27 @@ if ($_GET['action'] === 'status') {
     exit;
 }
 
+if ($_GET['action'] === 'force_check') {
+    header('Content-Type: application/json');
+    $cache_file = __DIR__ . '/cache/updates.json';
+    if (file_exists($cache_file)) unlink($cache_file);
+    $result = check_for_updates();
+    echo json_encode($result);
+    exit;
+}
+
+if ($_GET['action'] === 'reset') {
+    header('Content-Type: application/json');
+    $version_file = __DIR__ . '/cache/version.json';
+    $status_file = __DIR__ . '/cache/update_status.json';
+    if (file_exists($version_file)) unlink($version_file);
+    if (file_exists($status_file)) unlink($status_file);
+    $currentHash = get_current_git_hash();
+    save_local_version($currentHash, CURRENT_VERSION);
+    echo json_encode(['success' => true, 'message' => 'Estado resetado', 'hash' => $currentHash]);
+    exit;
+}
+
 if ($_GET['action'] === 'update' && $_GET['key'] === 'autoupdate') {
     header('Content-Type: application/json');
     

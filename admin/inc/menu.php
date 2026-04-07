@@ -112,6 +112,8 @@
         </a>
         <div class="submenu">
             <a href="<?php echo URLBASE; ?>/admin/herramientas/migrar-wordpress.php" onclick="closeSubmenus()">- <?php echo t('menu_migrar_wp'); ?></a>
+            <a href="#" onclick="checkForUpdates(event)">- Verificar actualizaciones</a>
+            <a href="#" onclick="resetUpdateStatus(event)">- Resetear estado</a>
         </div>
     <?php endif; ?>
 

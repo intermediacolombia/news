@@ -93,6 +93,47 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+    window.checkForUpdates = function(e) {
+        if (e) e.preventDefault();
+        showUpdatingNotification();
+        
+        fetch('<?= $url ?>/admin/inc/auto-update.php?action=force_check', {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        })
+        .then(response => response.json())
+        .then(data => {
+            hideUpdatingNotification();
+            if (data.update_available) {
+                showToast('Nueva versión disponible: ' + data.latest + ' - Actualizando...', 'success');
+                setTimeout(() => location.reload(), 2000);
+            } else {
+                showToast('Sistema actualizado. Hash: ' + data.current_hash, 'success');
+            }
+        })
+        .catch(err => {
+            hideUpdatingNotification();
+            showToast('Error al verificar', 'error');
+        });
+    };
+    
+    window.resetUpdateStatus = function(e) {
+        if (e) e.preventDefault();
+        if (!confirm('¿Resetear el estado de actualizaciones? Esto marcará el sistema como needing update.')) return;
+        
+        fetch('<?= $url ?>/admin/inc/auto-update.php?action=reset', {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        })
+        .then(response => response.json())
+        .then(data => {
+            showToast('Estado reseteado. Hash: ' + data.hash, 'success');
+        })
+        .catch(err => {
+            showToast('Error al resetear', 'error');
+        });
+    };
+    
     fetch('<?= $url ?>/admin/inc/auto-update.php?action=check', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
