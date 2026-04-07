@@ -66,6 +66,7 @@ function t(string $key, string $lang = null): string {
         'menu_perfil' => 'Perfil',
         'menu_herramientas' => 'Herramientas',
         'menu_migrar_wp' => 'Migrar desde WordPress',
+        'menu_repair_db' => 'Reparar BD',
         'menu_logs' => 'Logs del Sistema',
         'menu_salir' => 'Salir',
         'config_titulo' => 'Configuraciones del Sistema',

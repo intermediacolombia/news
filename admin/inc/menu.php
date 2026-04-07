@@ -98,6 +98,9 @@
         <a href="<?php echo URLBASE; ?>/admin/popups/" onclick="closeSubmenus()">
             <i class="fa fa-bullhorn"></i> <?php echo t('menu_popups'); ?>
         </a>
+        <a href="<?php echo URLBASE; ?>/admin/config/repair_db.php" onclick="closeSubmenus()">
+            <i class="fa fa-wrench"></i> <?php echo t('menu_repair_db'); ?>
+        </a>
     <?php endif; ?>
 
     <!-- PERFIL -->
