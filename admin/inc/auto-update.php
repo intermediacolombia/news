@@ -11,8 +11,11 @@ define('CACHE_FILE', CACHE_DIR . '/updates.json');
 define('CACHE_TTL', 300); // 5 minutos
 
 function git_exec($cmd) {
-    $repoPath = REPO_PATH;
-    return trim(shell_exec('cd "' . $repoPath . '" && ' . GIT_BIN . ' ' . $cmd . ' 2>&1'));
+    $prev = getcwd();
+    chdir(REPO_PATH);
+    $result = trim(shell_exec(GIT_BIN . ' ' . $cmd . ' 2>&1'));
+    chdir($prev);
+    return $result;
 }
 
 function ensure_cache_dir() {
@@ -50,7 +53,9 @@ function check_for_updates($force = false) {
     }
 
     // Obtener cambios del repositorio remoto
-    git_exec('fetch origin main --quiet');
+    $fetchOutput = git_exec('fetch origin main 2>&1');
+    $fetchError  = (stripos($fetchOutput, 'error') !== false || stripos($fetchOutput, 'fatal') !== false)
+                   ? $fetchOutput : null;
 
     $localHash  = git_exec('rev-parse HEAD');
     $remoteHash = git_exec('rev-parse origin/main');
@@ -91,6 +96,7 @@ function check_for_updates($force = false) {
         'commits_behind'   => $commitsBehind,
         'new_commits'      => $newCommits,
         'checked_at'       => date('Y-m-d H:i:s'),
+        'fetch_error'      => $fetchError,
     ];
 
     save_cache($result);
@@ -102,13 +108,29 @@ function check_for_updates($force = false) {
 // ============================================================
 
 if (!isset($_GET['action'])) {
-    // CLI
     header('Content-Type: application/json');
     echo json_encode(check_for_updates(true), JSON_PRETTY_PRINT);
     exit;
 }
 
+// --- Diagnóstico: ver si git funciona ---
 $action = $_GET['action'];
+
+if ($action === 'debug') {
+    header('Content-Type: application/json');
+    $repoPath = REPO_PATH;
+    echo json_encode([
+        'repo_path'      => $repoPath,
+        'git_version'    => git_exec('--version'),
+        'local_head'     => git_exec('rev-parse HEAD'),
+        'origin_main'    => git_exec('rev-parse origin/main'),
+        'remote_url'     => git_exec('remote get-url origin'),
+        'fetch_test'     => git_exec('fetch origin main --dry-run 2>&1'),
+        'status'         => git_exec('status --short'),
+        'repo_exists'    => is_dir($repoPath . '/.git'),
+    ], JSON_PRETTY_PRINT);
+    exit;
+}
 
 // --- Verificar actualizaciones (usa caché) ---
 if ($action === 'check') {

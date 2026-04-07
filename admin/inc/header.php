@@ -42,7 +42,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
-    // ── Utilidad: escapar HTML ────────────────────────────────────────────────
+    // ── Utilidades ────────────────────────────────────────────────────────────
     function escHtml(str) {
         return String(str)
             .replace(/&/g, '&amp;')
@@ -51,65 +51,82 @@ document.addEventListener('DOMContentLoaded', function () {
             .replace(/"/g, '&quot;');
     }
 
-    // ── Modal: información de actualización disponible ────────────────────────
-    function showUpdateModal(data) {
-        const count = data.commits_behind || 0;
+    // ── Snooze ────────────────────────────────────────────────────────────────
+    var SNOOZE_KEY      = 'upd_snoozed_until';
+    var SNOOZE_HASH_KEY = 'upd_snoozed_hash';
+    var SNOOZE_HOURS    = 4;
 
-        let commitRows = '';
+    function isSnoozed(remoteHash) {
+        var until = parseInt(localStorage.getItem(SNOOZE_KEY) || '0', 10);
+        var hash  = localStorage.getItem(SNOOZE_HASH_KEY) || '';
+        // Si llegó un hash DIFERENTE, mostrar aunque esté snoozed
+        if (remoteHash && hash && remoteHash !== hash) return false;
+        return Date.now() < until;
+    }
+
+    function snooze(remoteHash) {
+        localStorage.setItem(SNOOZE_KEY,      Date.now() + SNOOZE_HOURS * 3600000);
+        localStorage.setItem(SNOOZE_HASH_KEY, remoteHash || '');
+    }
+
+    function clearSnooze() {
+        localStorage.removeItem(SNOOZE_KEY);
+        localStorage.removeItem(SNOOZE_HASH_KEY);
+    }
+
+    // ── Modal: nueva versión disponible ───────────────────────────────────────
+    function showUpdateModal(data) {
+        var count = data.commits_behind || 0;
+        var commitRows = '';
         if (data.new_commits && data.new_commits.length) {
             data.new_commits.slice(0, 6).forEach(function (c) {
-                commitRows += `
-                    <tr>
-                        <td style="font-family:monospace;color:#888;white-space:nowrap">${escHtml(c.hash)}</td>
-                        <td style="text-align:left;padding-left:8px">${escHtml(c.message)}</td>
-                        <td style="white-space:nowrap;color:#888;padding-left:8px;font-size:11px">${escHtml(c.date)}</td>
-                    </tr>`;
+                commitRows +=
+                    '<tr>' +
+                    '<td style="font-family:monospace;color:#888;white-space:nowrap;padding:5px 4px">' + escHtml(c.hash) + '</td>' +
+                    '<td style="text-align:left;padding:5px 8px">' + escHtml(c.message) + '</td>' +
+                    '<td style="white-space:nowrap;color:#aaa;padding:5px 4px;font-size:11px">' + escHtml(c.date) + '</td>' +
+                    '</tr>';
             });
         }
-
-        const commitsHtml = commitRows ? `
-            <div style="max-height:180px;overflow-y:auto;margin:12px 0;border:1px solid #e0e0e0;border-radius:6px;">
-                <table style="width:100%;border-collapse:collapse;font-size:12px;">
-                    <tbody>${commitRows}</tbody>
-                </table>
-            </div>` : '';
+        var commitsHtml = commitRows
+            ? '<div style="max-height:160px;overflow-y:auto;margin:12px 0;border:1px solid #e0e0e0;border-radius:6px;">' +
+              '<table style="width:100%;border-collapse:collapse;font-size:12px;"><tbody>' +
+              commitRows + '</tbody></table></div>'
+            : '';
 
         Swal.fire({
             title: '<i class="fas fa-cloud-download-alt" style="color:var(--primary-color)"></i>&nbsp; Nueva versión disponible',
-            html: `
-                <p style="margin:0 0 6px">
-                    Se encontraron <strong>${count}</strong> cambio${count !== 1 ? 's' : ''} nuevo${count !== 1 ? 's' : ''}
-                    en el repositorio.
-                </p>
-                <p style="font-size:12px;color:#888;margin:0 0 4px">
-                    Local:&nbsp;<code>${escHtml(data.local_hash)}</code>
-                    &nbsp;→&nbsp;
-                    Remoto:&nbsp;<code>${escHtml(data.remote_hash)}</code>
-                </p>
-                ${commitsHtml}
-            `,
+            html:
+                '<p style="margin:0 0 6px">Se encontraron <strong>' + count + '</strong> cambio' + (count !== 1 ? 's' : '') +
+                ' nuevo' + (count !== 1 ? 's' : '') + ' en el repositorio.</p>' +
+                '<p style="font-size:12px;color:#888;margin:0 0 4px">Local:&nbsp;<code>' + escHtml(data.local_hash) +
+                '</code>&nbsp;→&nbsp;Remoto:&nbsp;<code>' + escHtml(data.remote_hash) + '</code></p>' +
+                commitsHtml,
             icon: false,
             showCancelButton: true,
             confirmButtonText: '<i class="fas fa-sync-alt"></i>&nbsp; Actualizar ahora',
-            cancelButtonText: 'Más tarde',
+            cancelButtonText: 'Más tarde (' + SNOOZE_HOURS + 'h)',
             confirmButtonColor: 'var(--primary-color)',
             cancelButtonColor: '#6c757d',
             reverseButtons: true,
             width: 560,
         }).then(function (result) {
             if (result.isConfirmed) {
+                clearSnooze();
                 startStreamUpdate();
+            } else {
+                snooze(data.remote_hash);
             }
         });
     }
 
-    // ── Modal: progreso de actualización estilo servidor ─────────────────────
+    // ── Pasos del proceso de actualización ────────────────────────────────────
     var UPDATE_STEPS = [
-        { id: 'step-connect',  icon: 'fa-plug',          label: 'Conectando con el servidor...' },
+        { id: 'step-connect',  icon: 'fa-plug',              label: 'Conectando con el servidor...' },
         { id: 'step-download', icon: 'fa-cloud-download-alt', label: 'Descargando cambios...' },
-        { id: 'step-apply',    icon: 'fa-cogs',          label: 'Aplicando actualización...' },
-        { id: 'step-verify',   icon: 'fa-shield-alt',    label: 'Verificando integridad...' },
-        { id: 'step-done',     icon: 'fa-check-circle',  label: 'Completado' },
+        { id: 'step-apply',    icon: 'fa-cogs',              label: 'Aplicando actualización...' },
+        { id: 'step-verify',   icon: 'fa-shield-alt',        label: 'Verificando integridad...' },
+        { id: 'step-done',     icon: 'fa-check-circle',      label: 'Completado' },
     ];
 
     function buildStepsHtml() {
@@ -278,17 +295,21 @@ document.addEventListener('DOMContentLoaded', function () {
     fetch('<?= $url ?>/admin/inc/auto-update.php?action=check')
         .then(function (r) { return r.json(); })
         .then(function (data) {
-            if (data.update_available) {
+            if (data.update_available && !isSnoozed(data.remote_hash)) {
                 showUpdateModal(data);
+            }
+            if (data.fetch_error) {
+                console.warn('[auto-update] fetch error:', data.fetch_error);
             }
         })
         .catch(function (err) {
             console.log('[auto-update] error al verificar:', err);
         });
 
-    // Exponer función para botón manual en menú
+    // ── Botón manual del menú ─────────────────────────────────────────────────
     window.checkForUpdates = function (e) {
         if (e) e.preventDefault();
+        clearSnooze();
         fetch('<?= $url ?>/admin/inc/auto-update.php?action=force_check')
             .then(function (r) { return r.json(); })
             .then(function (data) {
