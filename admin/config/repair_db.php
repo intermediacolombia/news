@@ -1,9 +1,9 @@
 <?php
-require_once __DIR__ . '/../inc/config.php';
-require_once __DIR__ . '/login/session.php';
+require_once __DIR__ . '/../../inc/config.php';
+require_once __DIR__ . '/../login/session.php';
 
 $permisopage = 'Editar Configuraciones';
-require_once __DIR__ . '/login/restriction.php';
+require_once __DIR__ . '/../login/restriction.php';
 
 function repair_database() {
     $results = [
