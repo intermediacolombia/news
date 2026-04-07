@@ -57,15 +57,7 @@ try {
         }
     }
 
-    // Log opcional
-    if (file_exists(__DIR__ . '/../inc/log_action.php')) {
-        require_once __DIR__ . '/../inc/log_action.php';
-        log_action(
-            'Actualizar Configuraciones',
-            json_encode(['accion' => 'Actualizó Configuraciones del Sistema'], JSON_UNESCAPED_UNICODE),
-            'Configuraciones'
-        );
-    }
+    log_system_action('update_config', 'Actualizó configuraciones del sistema', 'system_settings');
 
     echo json_encode(['success' => true, 'message' => 'Configuraciones guardadas correctamente.']);
 

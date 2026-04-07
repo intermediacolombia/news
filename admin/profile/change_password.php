@@ -49,7 +49,7 @@ try {
     $newPasswordHash = password_hash($newPassword, PASSWORD_DEFAULT);
     $stmtUpdate = db()->prepare("UPDATE usuarios SET password = :password WHERE id = :id");
     $stmtUpdate->execute([':password' => $newPasswordHash, ':id' => $userId]);
-    
+    log_system_action('Cambiar Contraseña Propia', json_encode(['user_id' => $userId]), 'usuarios', $userId);
     $_SESSION['success'] = "Contraseña actualizada correctamente.";
     header("Location: $url/admin/profile");
     exit();

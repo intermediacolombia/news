@@ -12,6 +12,7 @@ try {
     if (isset($_GET['delete']) && $_GET['delete'] == '1' && !empty($_GET['id'])) {
         $stmt = db()->prepare("DELETE FROM popups WHERE id = ?");
         $stmt->execute([$_GET['id']]);
+        log_system_action('Eliminar Popup', json_encode(['id' => $_GET['id']]), 'popups', $_GET['id']);
         echo json_encode(['success' => true, 'message' => 'Popup eliminado']);
         exit;
     }
@@ -81,8 +82,9 @@ try {
             }
         }
 
+        $popupAction = $id ? 'Editar Popup' : 'Crear Popup';
         if ($id) {
-            $sql = "UPDATE popups SET 
+            $sql = "UPDATE popups SET
                 title = ?, content = ?, popup_type = ?, position = ?, width = ?,
                 background_color = ?, text_color = ?, delay_seconds = ?, auto_close_seconds = ?,
                 button_text = ?, button_color = ?, button_text_color = ?, action_type = ?, action_url = ?,
@@ -111,6 +113,7 @@ try {
                 $action_new_tab, $overlay_enabled, $status, $show_on_all_pages, $show_once_per_visit]);
         }
 
+        log_system_action($popupAction, json_encode(['id' => $id, 'title' => $title, 'status' => $status]), 'popups', $id);
         echo json_encode(['success' => true, 'message' => 'Popup guardado correctamente']);
     }
 

@@ -446,8 +446,8 @@ function renderPopup(): string {
  */
 function log_system_action($action, $description, $entity_type = null, $entity_id = null) {
     try {
-        $user_id = $_SESSION['user_id'] ?? null;
-        $username = $_SESSION['username'] ?? null;
+        $user_id = $_SESSION['user']['id'] ?? null;
+        $username = $_SESSION['user']['username'] ?? null;
         $ip_address = $_SERVER['REMOTE_ADDR'] ?? null;
         $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? null;
         

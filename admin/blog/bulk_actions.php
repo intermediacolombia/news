@@ -22,6 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['ids']) && !empty($_P
     }
 
     $stmt->execute($ids);
+    log_system_action('Acción Masiva Blog: ' . $_POST['action'], json_encode(['ids' => $ids, 'accion' => $_POST['action']]), 'blog_posts');
     echo 'OK';
   } catch (Throwable $e) {
     http_response_code(500);

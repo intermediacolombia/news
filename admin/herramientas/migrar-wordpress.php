@@ -245,6 +245,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['migrar'])) {
                     $resultado[] = "Imágenes copiadas: {$imagenes_copiadas}.";
                 }
                 $migrado = true;
+                log_system_action('migrate_wordpress', 'Migró desde WordPress: ' . implode(', ', $resultado), 'blog_posts');
 
             } catch (Throwable $e) {
                 $errores[] = "Error al migrar posts: " . $e->getMessage();

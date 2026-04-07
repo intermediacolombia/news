@@ -143,6 +143,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             ]);
         }
 
+        log_system_action('Editar Usuario', json_encode(['id' => $id, 'nombre' => $nombre, 'correo' => $correo]), 'usuarios', $id);
         $_SESSION['success'] = "Usuario actualizado correctamente.";
         header("Location: $url/admin/users");
         exit();

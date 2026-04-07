@@ -15,6 +15,7 @@ $pubId         = ADSENSE_PUBLISHER_ID;
 if (isset($_GET['delete'])) {
     $pos = (int)$_GET['delete'];
     db()->prepare("DELETE FROM ads WHERE position=?")->execute([$pos]);
+    log_system_action('delete_ad_block', 'Eliminó bloque de publicidad posición: ' . $pos, 'ads', $pos);
     setFlash('success', "Bloque $pos eliminado.");
     header("Location: index.php#block$pos"); exit;
 }
@@ -24,6 +25,7 @@ if (isset($_GET['delete_gallery'])) {
     $id      = (int)($_GET['delete_gallery'] ?? 0);
     $section = (int)($_GET['section'] ?? 3);
     db()->prepare("DELETE FROM ads_gallery WHERE id=?")->execute([$id]);
+    log_system_action('delete_ad_gallery', 'Eliminó banner de galería sección: ' . $section, 'ads_gallery', $id);
     setFlash('success', "Banner eliminado.");
     header("Location: index.php#gallery$section"); exit;
 }
@@ -32,6 +34,7 @@ if (isset($_GET['delete_gallery'])) {
 if (isset($_GET['delete_adsense'])) {
     $pos = (int)$_GET['delete_adsense'];
     db()->prepare("DELETE FROM ads WHERE position=? AND ad_type='adsense'")->execute([$pos]);
+    log_system_action('delete_adsense_block', 'Eliminó bloque AdSense posición: ' . $pos, 'ads', $pos);
     setFlash('success', 'Bloque AdSense eliminado.');
     header("Location: index.php#adsense"); exit;
 }
@@ -72,6 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['position'])) {
     }
 
     setFlash('success', "Bloque $pos actualizado.");
+    log_system_action('update_ad_block', 'Actualizó bloque de publicidad posición: ' . $pos, 'ads', $pos);
     header("Location: index.php#block$pos"); exit;
 }
 
@@ -104,6 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_adsense'])) {
             ->execute([$pos, $label, $status, $adCode, $zone]);
     }
     setFlash('success', 'Bloques de AdSense guardados.');
+    log_system_action('save_adsense_blocks', 'Guardó bloques de AdSense', 'ads');
     header("Location: index.php#adsense"); exit;
 }
 
@@ -128,6 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_gallery'])) {
         }
     }
     setFlash('success', "Banners guardados en Sección $section.");
+    log_system_action('save_ad_gallery', 'Guardó banners de publicidad sección: ' . $section, 'ads_gallery');
     header("Location: index.php#gallery$section"); exit;
 }
 

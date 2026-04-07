@@ -17,6 +17,7 @@ if (isset($_GET['delete'])) {
         $abs = __DIR__ . '/../../' . ltrim($row['file_path'], '/');
         if (file_exists($abs)) unlink($abs);
         db()->prepare("UPDATE multimedia SET deleted = 1 WHERE id = ?")->execute([$id]);
+        log_system_action('delete_multimedia', 'Eliminó archivo multimedia ID: ' . $id, 'multimedia', $id);
         setFlash('success', 'Archivo eliminado.');
     }
     header("Location: index.php"); exit;

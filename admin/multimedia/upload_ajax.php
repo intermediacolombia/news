@@ -121,10 +121,9 @@ try {
             $caption,
             $_SESSION['user']['id'],
         ]);
+    log_system_action('Subir Multimedia', json_encode(['archivo' => $fileName, 'ruta' => $filePath, 'tipo' => $mime]), 'multimedia');
 } catch (Throwable $e) {
     // Archivo subido pero error en BD — no bloquear
-    // Descomentar para debug:
-    // echo json_encode(['success' => false, 'message' => 'BD: ' . $e->getMessage()]); exit;
 }
 
 echo json_encode([

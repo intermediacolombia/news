@@ -48,6 +48,7 @@ try {
             ->execute([$alt, $caption, $path]);
     }
 
+    log_system_action('Editar Multimedia', json_encode(['id' => $id, 'path' => $path, 'alt' => $alt]), 'multimedia', $id);
     echo json_encode(['success' => true, 'message' => 'Metadata actualizada correctamente.']);
 
 } catch (Throwable $e) {

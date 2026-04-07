@@ -41,7 +41,7 @@ if($deleteStmt->execute([$id])) {
             @unlink($imagePath);
         }
     }
-    
+    log_system_action('Eliminar Página Institucional', json_encode(['id' => $id]), 'institutional_pages', $id);
     $_SESSION['success'] = 'Página eliminada correctamente';
     echo json_encode(['success' => true, 'message' => 'Página eliminada correctamente']);
 } else {

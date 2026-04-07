@@ -39,6 +39,8 @@ try {
 
     $stmt->execute([':value' => json_encode($data, JSON_UNESCAPED_UNICODE)]);
 
+    log_system_action('update_ads_zonemap', 'Actualizó mapa de zonas de publicidad', 'system_settings');
+
     // Limpiar cache
     $cacheFile = sys_get_temp_dir() . '/ads_zonemap_' . md5(URLBASE) . '.json';
     if (file_exists($cacheFile)) unlink($cacheFile);

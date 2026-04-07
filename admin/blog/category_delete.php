@@ -16,6 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Marcamos como eliminada en lugar de borrar físicamente
             $st = db()->prepare("UPDATE blog_categories SET deleted = 1 WHERE id = ?");
             $st->execute([$id]);
+            log_system_action('Eliminar Categoría Blog', json_encode(['id' => $id]), 'blog_categories', $id);
 
             flash_set("success", "¡Exito!", "Categoría eliminada correctamente.");
         } catch (Throwable $e) {

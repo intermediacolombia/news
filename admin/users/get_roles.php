@@ -47,6 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $stmtInsertPermissions->execute($params);
                     }
 
+                    log_system_action('reactivate_role', 'Reactivo rol: ' . $name, 'roles', $roleId);
                     echo json_encode(['status' => 'success', 'message' => 'Rol reactivado correctamente']);
                     exit;
                 } else {
@@ -81,6 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->execute($params);
 }
 
+            log_system_action('create_role', 'Creó nuevo rol: ' . $name, 'roles', $roleId);
 
             echo json_encode(['status' => 'success', 'message' => 'Rol agregado correctamente']);
             exit;
@@ -124,6 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->execute($params);
 }
 
+        log_system_action('update_role', 'Actualizó rol: ' . $name . ' (ID: ' . $roleId . ')', 'roles', $roleId);
 
         echo json_encode(['status' => 'success', 'message' => 'Rol actualizado correctamente']);
         exit;
@@ -132,9 +135,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Marcar un rol como borrado (borrado lógico)
         $roleId = trim($_POST['id']);
 
+        // Obtener nombre del rol antes de borrar
+        $stmtName = db()->prepare("SELECT name FROM roles WHERE id = :id");
+        $stmtName->execute([':id' => $roleId]);
+        $roleName = $stmtName->fetchColumn();
+
         // Actualizar el estado de borrado
         $stmt = db()->prepare("UPDATE roles SET borrado = 1 WHERE id = :id");
         if ($stmt->execute([':id' => $roleId])) {
+            log_system_action('delete_role', 'Eliminó rol: ' . $roleName, 'roles', $roleId);
             echo json_encode(['status' => 'success', 'message' => 'Rol borrado correctamente']);
         } else {
             echo json_encode(['status' => 'error', 'message' => 'Error al borrar el rol']);

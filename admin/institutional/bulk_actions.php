@@ -58,7 +58,7 @@ try {
                         @unlink($imagePath);
                     }
                 }
-                
+                log_system_action('Eliminar Masivo Institucional', json_encode(['ids' => $ids]), 'institutional_pages');
                 $success = true;
                 $message = count($ids) . ' página(s) eliminada(s) correctamente';
                 $_SESSION['success'] = $message;
@@ -72,6 +72,7 @@ try {
             $stmt = db()->prepare($sql);
             
             if($stmt->execute($ids)) {
+                log_system_action('Borrador Masivo Institucional', json_encode(['ids' => $ids]), 'institutional_pages');
                 $success = true;
                 $message = count($ids) . ' página(s) marcada(s) como borrador';
                 $_SESSION['success'] = $message;
@@ -85,6 +86,7 @@ try {
             $stmt = db()->prepare($sql);
             
             if($stmt->execute($ids)) {
+                log_system_action('Publicar Masivo Institucional', json_encode(['ids' => $ids]), 'institutional_pages');
                 $success = true;
                 $message = count($ids) . ' página(s) publicada(s) correctamente';
                 $_SESSION['success'] = $message;

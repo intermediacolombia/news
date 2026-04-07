@@ -36,7 +36,7 @@ try {
         // Marcar como borrado
         $stmt = $pdo->prepare("UPDATE usuarios SET borrado = 1 WHERE id = :id");
         $stmt->execute([':id' => $id]);
-        
+        log_system_action('Eliminar Usuario', json_encode(['id' => $id]), 'usuarios', $id);
         $_SESSION['success'] = "Usuario borrado exitosamente.";
     }
 } catch (PDOException $e) {

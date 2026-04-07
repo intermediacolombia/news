@@ -35,6 +35,7 @@ try {
                    WHERE id IN ($placeholders) AND deleted = 0")
         ->execute($params);
 
+    log_system_action('Transferir Autoría Blog', json_encode(['ids' => $ids, 'nuevo_autor' => $newAuthor, 'username' => $newAuthorUser]), 'blog_posts');
     echo json_encode([
         'success' => true,
         'message' => count($ids) . ' entrada(s) transferidas a ' . $newAuthor . '.',

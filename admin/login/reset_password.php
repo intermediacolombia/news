@@ -42,6 +42,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':id'       => $resetRequest['user_id']
         ]);
 
+        log_system_action('password_reset', 'Restableció contraseña', 'usuarios', $resetRequest['user_id']);
+
         $stmt = db()->prepare("DELETE FROM password_resets WHERE token = :token");
         $stmt->execute([':token' => $token]);
 

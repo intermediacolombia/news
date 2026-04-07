@@ -113,3 +113,5 @@ echo json_encode([
     'errors'   => $errors,
     'message'  => "Escaneo completado: $inserted nuevos, $skipped ya existían" . ($errors ? ", $errors errores" : ''),
 ], JSON_UNESCAPED_UNICODE);
+
+log_system_action('scan_multimedia', "Escaneó archivos multimedia: $inserted nuevos, $skipped existentes", 'multimedia');

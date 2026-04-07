@@ -26,6 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Si no se encontró el usuario o está marcado como borrado, mostramos mensaje genérico
     if (!$user || $user["borrado"] == 1) {
+        log_system_action('Login Fallido', json_encode(['username' => $username, 'motivo' => 'usuario no encontrado']), 'usuarios');
         $_SESSION["error"] = "Usuario o contraseña incorrectos.";
         header("Location: $url/admin/login/");
         exit();
@@ -46,12 +47,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Se alcanzó el máximo de intentos, se marca al usuario como inactivo
             $stmt = db()->prepare("UPDATE usuarios SET intentos = :intentos, estado = 1 WHERE id = :id");
             $stmt->execute(["intentos" => $intentos, "id" => $user["id"]]);
+            log_system_action('Usuario Bloqueado', json_encode(['username' => $username, 'motivo' => 'máximo de intentos']), 'usuarios', $user['id']);
             $_SESSION["error"] = "Usuario inactivo, comuníquese con el administrador.";
         } else {
             // Actualizar el número de intentos y mostrar los intentos restantes
             $stmt = db()->prepare("UPDATE usuarios SET intentos = :intentos WHERE id = :id");
             $stmt->execute(["intentos" => $intentos, "id" => $user["id"]]);
             $restantes = 5 - $intentos;
+            log_system_action('Login Fallido', json_encode(['username' => $username, 'intentos' => $intentos, 'restantes' => $restantes]), 'usuarios', $user['id']);
             $_SESSION["error"] = "Nombre de usuario o contraseña incorrectos. Tienes $restantes intento(s) más.";
         }
         header("Location: $url/admin/login/");
@@ -64,6 +67,7 @@ $stmt->execute(["id" => $user["id"]]);
 
 // Iniciar sesión: almacenar los datos del usuario en sesión
 $_SESSION["user"] = $user;
+log_system_action('Login Exitoso', json_encode(['username' => $username]), 'usuarios', $user['id']);
 
 // IMPLEMENTAR REMEMBER ME: 
 // Si el usuario marcó la opción "remember me" en el formulario, generamos el token

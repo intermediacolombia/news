@@ -31,6 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $stmt = db()->prepare("UPDATE blog_categories SET name=?, slug=?, description=?, status=? WHERE id=?");
         $stmt->execute([$name, $slug, $description, $status, $id]);
+        log_system_action('Editar Categoría Blog', json_encode(['id' => $id, 'name' => $name, 'slug' => $slug]), 'blog_categories', $id);
 
         flash_set('success', '¡Éxito!', 'Categoría actualizada correctamente.');
         header("Location: categories.php");

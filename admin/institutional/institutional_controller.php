@@ -307,7 +307,9 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['id'])) {
         $data['created_by'] = $_SESSION['user_id'] ?? 1;
         
         try {
-            if(createPage($data)) {
+            $newId = createPage($data);
+        if($newId) {
+                log_system_action('Crear Página Institucional', json_encode(['titulo' => $data['title'], 'slug' => $data['slug']]), 'institutional_pages', $newId);
                 $_SESSION['success'] = 'Página creada exitosamente';
                 header('Location: index.php');
                 exit;
@@ -374,6 +376,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
     if(empty($errors)) {
         try {
             if(updatePage($id, $data)) {
+                log_system_action('Editar Página Institucional', json_encode(['id' => $id, 'titulo' => $data['title']]), 'institutional_pages', $id);
                 $_SESSION['success'] = 'Página actualizada exitosamente';
                 header('Location: index.php');
                 exit;

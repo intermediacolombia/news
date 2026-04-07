@@ -14,6 +14,8 @@ try {
     // Vaciar tabla
     db()->exec("TRUNCATE TABLE blog_post_views");
 
+    log_system_action('truncate_views', 'Vació la tabla de vistas de blog', 'blog_post_views');
+
     // Mostrar respuesta para verificar que funcionó
     echo "OK: Tabla blog_post_views vaciada correctamente. " . date('Y-m-d H:i:s');
 

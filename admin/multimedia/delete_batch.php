@@ -46,6 +46,7 @@ try {
     // Soft delete en BD
     db()->prepare("UPDATE multimedia SET deleted = 1, updated_at = NOW() WHERE id IN ($placeholders)")
         ->execute($ids);
+    log_system_action('Eliminar Multimedia', json_encode(['ids' => $ids, 'archivos_eliminados' => $deleted]), 'multimedia');
 
     echo json_encode([
         'success' => true,

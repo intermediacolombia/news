@@ -31,6 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $stmt = db()->prepare("INSERT INTO blog_categories (name, slug, description, status) VALUES (?,?,?,?)");
         $stmt->execute([$name, $slug, $description, $status]);
+        log_system_action('Crear Categoría Blog', json_encode(['name' => $name, 'slug' => $slug]), 'blog_categories', db()->lastInsertId());
 
         flash_set('success', '¡Éxito!', 'Categoría creada correctamente.');
         header("Location: categories.php");
