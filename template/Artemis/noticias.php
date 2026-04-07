@@ -65,7 +65,7 @@ $page_title = $categorySlug ? $category['name'] . " | " . NOMBRE_SITIO : "Notici
         <div class="row mb-4">
             <div class="col-12">
                 <h1 class="section-title" style="color: var(--text-color);"><?= htmlspecialchars($category['name']) ?></h1>
-                <p style="color: var(--text-muted); margin-top: 10px;"><?= $totalPosts ?> <?= $totalPosts === 1 ? 'artículo' : 'artículos' ?></p>
+                <p style="color: var(--text-muted); margin-top: 10px;"><?= $totalPosts ?> <?= $totalPosts === 1 ? t_theme('theme_articulo') : t_theme('theme_articulos') ?></p>
             </div>
         </div>
         
@@ -73,9 +73,9 @@ $page_title = $categorySlug ? $category['name'] . " | " . NOMBRE_SITIO : "Notici
             <?php if (empty($posts)): ?>
             <div class="col-12 text-center py-5">
                 <i class="fas fa-newspaper" style="font-size: 60px; color: var(--text-muted); opacity: 0.3;"></i>
-                <h3 style="color: var(--text-color); margin-top: 20px;">No hay noticias disponibles</h3>
-                <p style="color: var(--text-muted);">Pronto tendremos nuevo contenido para ti.</p>
-                <a href="<?= URLBASE ?>" class="btn-artemis mt-3">Volver al Inicio</a>
+                <h3 style="color: var(--text-color); margin-top: 20px;"><?= t_theme('theme_no_hay_noticias_disponibles') ?></h3>
+                <p style="color: var(--text-muted);"><?= t_theme('theme_pronto_tendremos') ?></p>
+                <a href="<?= URLBASE ?>" class="btn-artemis mt-3"><?= t_theme('theme_volver_inicio') ?></a>
             </div>
             <?php else: ?>
             <?php foreach ($posts as $p): 

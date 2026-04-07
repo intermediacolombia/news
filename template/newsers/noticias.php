@@ -108,10 +108,10 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                     <div class="col-12">
                         <div class="d-flex align-items-center justify-content-between bg-light py-2 px-4 mb-3 title-widgets">
             <h3 class="m-0"><?= htmlspecialchars($category['name']) ?></h3>
-                            <a class="text-secondary font-weight-medium text-decoration-none" href="<?= URLBASE ?>/noticias/">
+                        <a class="text-secondary font-weight-medium text-decoration-none" href="<?= URLBASE ?>/noticias/">
                               <?php if (!empty($categorySlug)): ?>
-    							Ver Todas
-								<?php endif; ?>
+    							<?= t_theme('theme_ver_todas') ?>
+							<?php endif; ?>
 
 
                             </a>
