@@ -5,7 +5,7 @@
  */
 
 define('GITHUB_REPO', 'intermediacolombia/news');
-define('CURRENT_VERSION', '1.0.0');
+define('CURRENT_VERSION', '1.0.1');
 define('GIT_BIN', 'git');
 
 function get_latest_version_from_github() {
