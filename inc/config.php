@@ -52,6 +52,10 @@ db();
 // Cargar funciones de traducción
 if (file_exists(__DIR__ . '/translations.php')) {
     require_once __DIR__ . '/translations.php';
+    // Inicializar traducciones por defecto del tema si no existen
+    if (function_exists('init_default_theme_translations')) {
+        init_default_theme_translations();
+    }
 }
 
 // AHORA DEFINIR LAS CONSTANTES USANDO EL GLOBALS

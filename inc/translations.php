@@ -190,6 +190,86 @@ function get_all_translation_keys(): array {
     }
 }
 
+function init_default_theme_translations(): void {
+    $defaultKeys = [
+        'theme_tendencias' => 'Tendencias',
+        'theme_seguinos' => 'Síguenos:',
+        'theme_ultimas_noticias' => 'Últimas Noticias',
+        'theme_por' => 'por',
+        'theme_categorias' => 'Categorías',
+        'theme_las_mas_leidas' => 'Las Más Leídas',
+        'theme_ver_mas' => 'Ver Más',
+        'theme_tags_tendencias' => 'Tags Tendencias',
+        'theme_resultados_para' => 'Resultados para:',
+        'theme_ver_todas_las_noticias' => 'Ver todas las noticias',
+        'theme_no_se_encontraron' => 'No se encontraron resultados',
+        'theme_no_hay_publicaciones' => 'No hay publicaciones que coincidan con',
+        'theme_volver_noticias' => 'Volver a Noticias',
+        'theme_no_hay_noticias' => 'No hay noticias en esta categoría.',
+        'theme_vistas' => 'vistas',
+        'theme_compartir' => 'Compartir:',
+        'theme_tags' => 'Tags:',
+        'theme_comentarios' => 'Comentarios',
+        'theme_tambien_interesar' => 'También te puede interesar',
+        'theme_facebook' => 'Facebook',
+        'theme_twitter' => 'X (Twitter)',
+        'theme_youtube' => 'YouTube',
+        'theme_instagram' => 'Instagram',
+        'theme_tiktok' => 'TikTok',
+        'theme_buscar' => 'Buscar',
+        'theme_leer_mas' => 'Leer más',
+        'theme_escuchar_articulo' => 'Escuchar artículo',
+        'theme_que_hay_de_nuevo' => '¿Qué hay de nuevo?',
+        'theme_minutos' => 'Minutos',
+        'theme_las_mas_leidas_2' => 'Las Más Leídas',
+        'theme_no_hay_noticias_recientes' => 'No hay noticias recientes.',
+        'theme_informacion_institucional' => 'Información Institucional',
+        'theme_conoce_mas_nuestra_org' => 'Conoce más sobre nuestra organización, nuestra historia y nuestros valores.',
+        'theme_no_hay_info_institucional' => 'No hay información institucional disponible en este momento.',
+        'theme_general' => 'General',
+        'theme_quienes_somos' => 'Quiénes Somos',
+        'theme_mision_vision' => 'Misión y Visión',
+        'theme_historia' => 'Historia',
+        'theme_organigrama' => 'Organigrama',
+        'theme_junta_directiva' => 'Junta Directiva',
+        'theme_equipo' => 'Equipo',
+        'theme_valores' => 'Valores',
+        'theme_politicas' => 'Políticas',
+        'theme_inicio' => 'Inicio',
+        'theme_paginas' => 'Páginas',
+        'theme_pagina_no_encontrada' => 'Página No Encontrada',
+        'theme_pagina_no_existe' => 'Lo sentimos, la página que estás buscando no existe en nuestro sitio web. Puedes regresar a la página de inicio o intentar usar el buscador.',
+        'theme_volver_inicio' => 'Volver al Inicio',
+        'theme_contactanos' => 'Contáctanos',
+        'theme_tu_nombre' => 'Tu nombre',
+        'theme_tu_correo' => 'Tu correo electrónico',
+        'theme_tu_telefono' => 'Tu teléfono',
+        'theme_asunto' => 'Asunto',
+        'theme_tu_mensaje' => 'Tu mensaje',
+        'theme_enviar_mensaje' => 'Enviar mensaje',
+        'theme_direccion' => 'Dirección',
+        'theme_correo' => 'Correo',
+        'theme_telefono' => 'Teléfono',
+        'theme_siguenos' => 'Síguenos',
+        'theme_destacados' => 'Destacados',
+        'theme_minutos_de_lectura' => 'Minutos de Lectura',
+        'theme_minute_read' => 'minute read',
+        'theme_views' => 'Views',
+    ];
+
+    try {
+        foreach ($defaultKeys as $key => $value) {
+            $stmt = db()->prepare("
+                INSERT IGNORE INTO system_translations (lang_code, trans_key, trans_value)
+                VALUES ('es', :key, :value)
+            ");
+            $stmt->execute([':key' => $key, ':value' => $value]);
+        }
+    } catch (Throwable $e) {
+        // Silently fail if table doesn't exist or other error
+    }
+}
+
 function get_translations_by_key(string $key): array {
     try {
         if (!function_exists('db') || !db()) {
