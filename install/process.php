@@ -3,107 +3,132 @@ if (file_exists(__DIR__ . '/../inc/url_bd.php')) {
     die('El sistema ya está instalado. Elimina /inc/url_bd.php para reinstalar.');
 }
 
-$db_host = $_POST['db_host'] ?? '';
-$db_name = $_POST['db_name'] ?? '';
-$db_user = $_POST['db_user'] ?? '';
+$db_host = trim($_POST['db_host'] ?? '');
+$db_name = trim($_POST['db_name'] ?? '');
+$db_user = trim($_POST['db_user'] ?? '');
 $db_pass = $_POST['db_pass'] ?? '';
 $site_url = rtrim($_POST['site_url'] ?? '', '/');
 
-$admin_name = $_POST['admin_name'] ?? '';
-$admin_lastname = $_POST['admin_lastname'] ?? '';
-$admin_email = $_POST['admin_email'] ?? '';
-$admin_username = $_POST['admin_username'] ?? '';
+$admin_name     = trim($_POST['admin_name'] ?? '');
+$admin_lastname = trim($_POST['admin_lastname'] ?? '');
+$admin_email    = trim($_POST['admin_email'] ?? '');
+$admin_username = trim($_POST['admin_username'] ?? '');
 $admin_password = $_POST['admin_password'] ?? '';
 
 if (!$db_host || !$db_name || !$db_user || !$site_url || !$admin_name || !$admin_email || !$admin_username || !$admin_password) {
     die('Error: Todos los campos son obligatorios.');
 }
 
+// Tablas cuyo INSERT se omite en instalación limpia
+$skipInsertTables = [
+    'usuarios',
+    'blog_posts',
+    'blog_post_category',
+    'blog_post_views',
+    'visit_stats',
+    'user_tokens',
+    'password_resets',
+    'multimedia',
+    'institutional_pages',
+];
+
 try {
-    // 1) Conectar sin dbname para poder crear la BD
+    // ── 1. Conectar sin dbname ────────────────────────────────────────────────
     $pdo = new PDO(
         "mysql:host={$db_host};charset=utf8mb4",
         $db_user,
         $db_pass,
         [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_EMULATE_PREPARES => false,
+            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_EMULATE_PREPARES   => false,
         ]
     );
 
-    // 2) Crear BD + USE
+    // ── 2. Crear BD y seleccionarla ───────────────────────────────────────────
     $pdo->exec("CREATE DATABASE IF NOT EXISTS `{$db_name}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
     $pdo->exec("USE `{$db_name}`");
 
-    // 3) Ejecutar db.sql de forma robusta (por líneas, acumulando hasta ';')
-    $sqlFile = __DIR__ . '/db.sql';
+    // ── 3. Ejecutar news.sql de la raíz del proyecto ──────────────────────────
+    $sqlFile = __DIR__ . '/../news.sql';
     if (!file_exists($sqlFile)) {
-        throw new Exception("No se encontró /install/db.sql");
+        throw new Exception("No se encontró news.sql en la raíz del proyecto.");
     }
 
     $handle = fopen($sqlFile, 'r');
     if (!$handle) {
-        throw new Exception("No se pudo abrir /install/db.sql");
+        throw new Exception("No se pudo abrir news.sql (permisos).");
     }
 
-    $statement = '';
+    $statement    = '';
+    $inSkipInsert = false;
+    $errors       = [];
+
     while (($line = fgets($handle)) !== false) {
         $trim = trim($line);
 
-        // Saltar líneas vacías y comentarios
-        if ($trim === '' || str_starts_with($trim, '--') || str_starts_with($trim, '/*') || str_starts_with($trim, '*/')) {
-            continue;
+        // Saltar vacías, comentarios -- y bloques /*!...*/
+        if ($trim === '')                             continue;
+        if (str_starts_with($trim, '--'))             continue;
+        if (str_starts_with($trim, '/*!'))            continue;
+        if (str_starts_with($trim, '/*'))             continue;
+
+        // Detectar inicio de INSERT para tablas a omitir
+        if (!$inSkipInsert) {
+            foreach ($skipInsertTables as $tbl) {
+                if (stripos($trim, "INSERT INTO `{$tbl}`") === 0) {
+                    $inSkipInsert = true;
+                    break;
+                }
+            }
         }
 
-        // Saltar comandos tipo /*!40101 ... */ (compat phpMyAdmin)
-        if (str_starts_with($trim, '/*!') && str_ends_with($trim, '*/')) {
+        if ($inSkipInsert) {
+            // El INSERT puede ser multi-línea; esperar el ; final
+            if (preg_match('/;\s*$/', $trim)) {
+                $inSkipInsert = false;
+            }
             continue;
         }
 
         $statement .= $line;
 
-        // Si termina en ; entonces ejecutamos
         if (preg_match('/;\s*$/', $trim)) {
-            $pdo->exec($statement);
+            $sql = trim($statement);
             $statement = '';
+
+            if ($sql === '') continue;
+
+            try {
+                $pdo->exec($sql);
+            } catch (PDOException $e) {
+                // Registrar pero continuar (p.ej. duplicados en reintalación parcial)
+                $errors[] = $e->getMessage() . ' → ' . mb_substr($sql, 0, 120);
+            }
         }
     }
     fclose($handle);
 
-    // 4) Verificar que la tabla usuarios existe ANTES de insertar
+    // ── 4. Verificar tabla usuarios ───────────────────────────────────────────
     $exists = $pdo->query("SHOW TABLES LIKE 'usuarios'")->fetchColumn();
     if (!$exists) {
-        throw new Exception("No se creó la tabla 'usuarios'. Revisa el contenido de /install/db.sql");
+        $detail = $errors ? implode("\n", array_slice($errors, 0, 5)) : 'Sin detalles';
+        throw new Exception("No se creó la tabla 'usuarios'.\n\nPrimeros errores:\n{$detail}");
     }
 
-    // 5) Insertar admin
+    // ── 5. Insertar usuario administrador ─────────────────────────────────────
+    // El rol 'Administrador' (id=1) ya fue insertado por el SQL seed
     $passwordHash = password_hash($admin_password, PASSWORD_BCRYPT);
 
     $stmt = $pdo->prepare("
-        INSERT INTO usuarios (nombre, apellido, correo, username, password, rol, estado, borrado, created_at)
-        VALUES (?, ?, ?, ?, ?, 'admin', 0, 0, NOW())
+        INSERT INTO usuarios
+            (nombre, apellido, correo, username, rol_id, password, rol, estado, borrado, intentos, es_columnista)
+        VALUES
+            (?, ?, ?, ?, 1, ?, 'admin', 0, 0, 0, 0)
     ");
     $stmt->execute([$admin_name, $admin_lastname, $admin_email, $admin_username, $passwordHash]);
-    $adminId = (int)$pdo->lastInsertId();
 
-    // 6) Crear rol admin en roles (si no existe)
-    // Nota: tu schema tiene tabla roles con `name`
-    $pdo->exec("INSERT INTO roles (name, description) VALUES ('admin', 'Administrador del sistema')");
-    $adminRoleId = (int)$pdo->lastInsertId();
-
-    // 7) Asignar todos los permisos al rol admin
-    $permIds = $pdo->query("SELECT id FROM permissions")->fetchAll(PDO::FETCH_COLUMN);
-    $stmtPerm = $pdo->prepare("INSERT INTO role_permissions (role_id, permission_id) VALUES (?, ?)");
-    foreach ($permIds as $pid) {
-        $stmtPerm->execute([$adminRoleId, (int)$pid]);
-    }
-
-    // 8) Vincular rol_id al usuario admin
-    $upd = $pdo->prepare("UPDATE usuarios SET rol_id = ? WHERE id = ?");
-    $upd->execute([$adminRoleId, $adminId]);
-
-    // 9) Crear /inc/url_bd.php
-    $configContent = "<?php\n";
+    // ── 6. Escribir /inc/url_bd.php ───────────────────────────────────────────
+    $configContent  = "<?php\n";
     $configContent .= "if (!isset(\$host))   \$host   = " . var_export($db_host, true) . ";\n";
     $configContent .= "if (!isset(\$dbname)) \$dbname = " . var_export($db_name, true) . ";\n";
     $configContent .= "if (!isset(\$dbuser)) \$dbuser = " . var_export($db_user, true) . ";\n";
@@ -113,14 +138,14 @@ try {
 
     $configPath = __DIR__ . '/../inc/url_bd.php';
     if (!file_put_contents($configPath, $configContent)) {
-        throw new Exception("No se pudo escribir /inc/url_bd.php (permisos).");
+        throw new Exception("No se pudo escribir /inc/url_bd.php (revisa permisos de escritura).");
     }
 
     header('Location: ../admin/');
     exit;
 
 } catch (PDOException $e) {
-    die('Error de base de datos: ' . $e->getMessage());
+    die('<b>Error de base de datos:</b> ' . htmlspecialchars($e->getMessage()));
 } catch (Exception $e) {
-    die('Error: ' . $e->getMessage());
+    die('<b>Error:</b> ' . nl2br(htmlspecialchars($e->getMessage())));
 }
