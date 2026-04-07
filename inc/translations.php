@@ -259,15 +259,15 @@ function init_default_theme_translations(): void {
         'theme_minutos_de_lectura' => 'Minutos de Lectura',
         'theme_minute_read' => 'minute read',
         'theme_views' => 'Views',
-        'theme_inicio' => 'Inicio',
         'theme_noticias' => 'Noticias',
-        'theme_categorias' => 'Categorías',
         'theme_columnistas' => 'Columnistas',
         'theme_nosotros' => 'Nosotros',
         'theme_ver_todas' => 'Ver todas',
         'theme_contacto' => 'Contacto',
         'theme_buscar_noticias' => 'Buscar noticias',
         'theme_buscar_placeholder' => 'Escribe una palabra clave...',
+        'theme_ultimas' => 'Últimas',
+        'theme_buscar_descripcion' => 'Escribe lo que necesitas y presiona "Buscar".',
     ];
     
     try {

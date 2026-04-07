@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/../../inc/config.php';
+require_once __DIR__ . '/../../inc/translations.php';
+
 if (!function_exists('img_url')) {
     function img_url(?string $path): string {
         if (empty($path)) return URLBASE . '/template/Artemis/img/placeholder.jpg';
@@ -119,7 +122,7 @@ $tags = array_slice(array_keys($freq), 0, 9);
 <?php include __DIR__ . '/ads5.php'; ?>
 
 <div class="sidebar-section p-4 mt-4" style="background: var(--bg-secondary); border-radius: 16px;">
-    <h5 class="mb-4" style="font-family: 'Playfair Display', serif;">Categorías</h5>
+    <h5 class="mb-4" style="font-family: 'Playfair Display', serif;"><?= t_theme('theme_categorias') ?></h5>
     <?php foreach ($categories as $cat): ?>
     <a href="<?= URLBASE ?>/noticias/<?= htmlspecialchars($cat['slug']) ?>/" 
        class="d-flex justify-content-between align-items-center p-2 mb-2 sidebar-category-link"

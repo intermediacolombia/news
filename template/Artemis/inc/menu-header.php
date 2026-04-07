@@ -1,4 +1,8 @@
 ﻿<div id="wrapper">
+<?php 
+require_once __DIR__ . '/../../../inc/config.php';
+require_once __DIR__ . '/../../../inc/translations.php';
+?>
     <header class="artemis-navbar navbar-expand-lg fixed-top">
         <div class="container">
             <div class="row align-items-center">
@@ -20,15 +24,15 @@
                         <ul class="navbar-nav">
                             <li class="nav-item">
                                 <a class="nav-link <?= ($_GET['page'] ?? '') === 'index' ? 'active' : '' ?>" href="<?= URLBASE ?>">
-                                    INICIO
+                                    <?= strtoupper(t_theme('theme_inicio')) ?>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="<?= URLBASE ?>/noticias">NOTICIAS</a>
+                                <a class="nav-link" href="<?= URLBASE ?>/noticias"><?= strtoupper(t_theme('theme_noticias')) ?></a>
                             </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link" href="<?= URLBASE ?>/noticias">
-                                    CATEGORÍAS
+                                    <?= strtoupper(t_theme('theme_categorias')) ?>
                                 </a>
                                 <div class="dropdown-menu">
                                     <?php
@@ -68,13 +72,13 @@
                             <?php if (count($columnistasMenu) === 1): ?>
                             <li class="nav-item">
                                 <a class="nav-link" href="<?= URLBASE ?>/columnista/<?= htmlspecialchars($columnistasMenu[0]['username']) ?>/">
-                                    COLUMNISTAS
+                                    <?= strtoupper(t_theme('theme_columnistas')) ?>
                                 </a>
                             </li>
                             <?php elseif (count($columnistasMenu) > 1): ?>
                             <li class="nav-item dropdown">
                                 <a class="nav-link" href="<?= URLBASE ?>/columnista">
-                                    COLUMNISTAS
+                                    <?= strtoupper(t_theme('theme_columnistas')) ?>
                                 </a>
                                 <div class="dropdown-menu">
                                     <?php foreach ($columnistasMenu as $col):
@@ -90,7 +94,7 @@
 
                             <li class="nav-item dropdown">
                                 <a class="nav-link" href="<?= URLBASE ?>/institucional">
-                                    NOSOTROS
+                                    <?= strtoupper(t_theme('theme_nosotros')) ?>
                                 </a>
                                 <div class="dropdown-menu">
                                     <?php
@@ -108,13 +112,13 @@
                                         </a>
                                     <?php endforeach; ?>
                                     <a class="dropdown-item" href="<?= URLBASE ?>/institucional">
-                                        <i class="fas fa-list mr-2"></i>Ver todas
+                                        <i class="fas fa-list mr-2"></i><?= t_theme('theme_ver_todas') ?>
                                     </a>
                                 </div>
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link" href="<?= URLBASE ?>/contact">CONTACTO</a>
+                                <a class="nav-link" href="<?= URLBASE ?>/contact"><?= strtoupper(t_theme('theme_contacto')) ?></a>
                             </li>
                         </ul>
                     </nav>
@@ -174,7 +178,7 @@
     <div class="ticker-wrapper">
         <div class="container">
             <div style="display: flex; align-items: center; overflow: hidden;">
-                <span class="ticker-label" style="flex-shrink: 0;">ÚLTIMAS</span>
+                <span class="ticker-label" style="flex-shrink: 0;"><?= strtoupper(t_theme('theme_ultimas')) ?></span>
                 <div class="ticker-content" style="flex: 1; overflow: hidden; min-width: 0;">
                     <div class="ticker-track">
                         <?php

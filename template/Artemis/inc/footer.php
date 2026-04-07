@@ -1,4 +1,7 @@
 ﻿<?php
+require_once __DIR__ . '/../../../inc/config.php';
+require_once __DIR__ . '/../../../inc/translations.php';
+
 if (!function_exists('truncate_text')) {
     function truncate_text(string $text, int $limit = 100): string {
         $text = strip_tags($text);
@@ -17,15 +20,15 @@ global $sys;
                     <i class="fas fa-times fa-lg"></i>
                 </button>
 
-                <h3 class="mb-3" style="color: var(--text-color); font-family: 'Playfair Display', serif;">Buscar</h3>
-                <p class="mb-4" style="color: var(--text-muted-color);">Escribe lo que necesitas y presiona "Buscar".</p>
+                <h3 class="mb-3" style="color: var(--text-color); font-family: 'Playfair Display', serif;"><?= t_theme('theme_buscar') ?></h3>
+                <p class="mb-4" style="color: var(--text-muted-color);"><?= t_theme('theme_buscar_descripcion') ?></p>
 
                 <form action="<?= URLBASE ?>/buscar/" method="get">
                     <div class="input-group">
                         <input type="text"
                                name="q"
                                class="search-input"
-                               placeholder="Buscar noticias, artículos..."
+                               placeholder="<?= t_theme('theme_buscar_placeholder') ?>"
                                required
                                style="width: 100%;">
                     </div>
@@ -84,7 +87,7 @@ global $sys;
             </div>
 
             <div class="col-lg-4 col-md-6 mb-4">
-                <h5 class="mb-4" style="color: var(--text-color); font-family: 'Playfair Display', serif;">Últimas Noticias</h5>
+                <h5 class="mb-4" style="color: var(--text-color); font-family: 'Playfair Display', serif;"><?= t_theme('theme_ultimas_noticias') ?></h5>
                 <ul class="list-unstyled">
                     <?php
                     $latestNews = db()->query("
@@ -111,7 +114,7 @@ global $sys;
             </div>
 
             <div class="col-lg-4 col-md-12 mb-4">
-                <h5 class="mb-4" style="color: var(--text-color); font-family: 'Playfair Display', serif;">Categorías</h5>
+                <h5 class="mb-4" style="color: var(--text-color); font-family: 'Playfair Display', serif;"><?= t_theme('theme_categorias') ?></h5>
                 <ul class="list-unstyled">
                     <?php
                     $cats = db()->query("
