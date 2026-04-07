@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . '/../../inc/config.php';
-require_once __DIR__ . '/../../inc/translations.php';
+require_once __DIR__ . '/../../../inc/config.php';
+require_once __DIR__ . '/../../../inc/translations.php';
 
 if (!function_exists('img_url')) {
     function img_url(?string $path): string {
