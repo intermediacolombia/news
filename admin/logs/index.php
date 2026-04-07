@@ -68,7 +68,7 @@ $entityTypes = db()->query($entityTypesSql)->fetchAll(PDO::FETCH_COLUMN);
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Logs del Sistema - <?= NOMBRE_SITIO ?></title>
-    <?php require_once __DIR__ . '/inc/header.php'; ?>
+    <?php require_once __DIR__ . '/../inc/header.php'; ?>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
     <style>
         .filter-card {
