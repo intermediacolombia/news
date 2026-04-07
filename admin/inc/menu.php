@@ -112,9 +112,15 @@
         </a>
         <div class="submenu">
             <a href="<?php echo URLBASE; ?>/admin/herramientas/migrar-wordpress.php" onclick="closeSubmenus()">- <?php echo t('menu_migrar_wp'); ?></a>
-            <a href="#" onclick="checkForUpdates(event)">- Verificar actualizaciones</a>
-            <a href="#" onclick="resetUpdateStatus(event)">- Resetear estado</a>
+            <a href="#" onclick="checkForUpdates(event)">- Verificar actualizaciones</a>            
         </div>
+    <?php endif; ?>
+
+    <!-- LOGS -->
+    <?php if (isset($_SESSION["user_permissions"]) && in_array('Ver Logs', $_SESSION["user_permissions"])): ?>
+        <a href="<?php echo URLBASE; ?>/admin/logs/" onclick="closeSubmenus()">
+            <i class="fa fa-history"></i> <?php echo t('menu_logs'); ?>
+        </a>
     <?php endif; ?>
 
     <!-- SALIR -->

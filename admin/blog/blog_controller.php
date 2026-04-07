@@ -110,6 +110,8 @@ $imageAlt       = trim($_POST['image_alt']       ?? '');
         ]);
         $postId = db()->lastInsertId();
 
+        log_system_action('create_post', 'Nueva entrada creada: ' . $title, 'post', $postId);
+
         /* ── Categorías ── */
         if (!empty($catsSel)) {
             $stCat = db()->prepare("INSERT INTO blog_post_category (post_id, category_id) VALUES (?,?)");

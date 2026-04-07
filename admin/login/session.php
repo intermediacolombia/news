@@ -64,6 +64,16 @@ if (!isset($_SESSION["user"])) {
     exit();
 }
 
+// Registrar inicio de sesión en logs
+$currentUser = $_SESSION["user"];
+$username = $currentUser['username'] ?? $currentUser['correo'] ?? 'desconocido';
+
+// Ya hay una sesión activa - verificar si no se ha logueado recently
+if (!isset($_SESSION['_logged_at'])) {
+    $_SESSION['_logged_at'] = time();
+    log_system_action('login', 'Usuario inició sesión: ' . $username, 'user', $currentUser['id'] ?? null);
+}
+
 // Obtener datos del usuario para usarlos en la aplicación
 $id_user   = $_SESSION["user"]["id"];
 $nombre    = $_SESSION["user"]["nombre"];

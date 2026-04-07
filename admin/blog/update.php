@@ -180,6 +180,8 @@ if (!empty($cats) && is_array($cats)) {
     }
 }
 
+log_system_action('update_post', 'Entrada actualizada: ' . $title, 'post', $id);
+
 /* ========= Éxito ========= */
 flash_set('success', '¡Entrada actualizada!', 'Se guardaron los cambios correctamente.');
 header("Location: index.php");

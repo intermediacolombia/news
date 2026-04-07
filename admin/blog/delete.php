@@ -33,6 +33,8 @@ if (!$post) {
 // 2) Borrado lógico
 db()->prepare("UPDATE blog_posts SET deleted=1, updated_at=NOW() WHERE id=?")->execute([$id]);
 
+log_system_action('delete_post', 'Entrada eliminada: ' . $post['title'], 'post', $id);
+
 // 3) Opcional: limpiar relaciones en blog_post_category
 db()->prepare("DELETE FROM blog_post_category WHERE post_id=?")->execute([$id]);
 

@@ -436,5 +436,40 @@ function renderPopup(): string {
     return $html;
 }
 
+/**
+ * Función para registrar acciones en el sistema de logs
+ * @param string $action - Nombre de la acción (ej: 'login', 'create_post', 'update_user')
+ * @param string $description - Descripción detallada de lo que ocurrió
+ * @param string|null $entity_type - Tipo de entidad (ej: 'post', 'user', 'category')
+ * @param int|string|null $entity_id - ID de la entidad afectada
+ * @return bool - True si se insertó correctamente
+ */
+function log_system_action($action, $description, $entity_type = null, $entity_id = null) {
+    try {
+        $user_id = $_SESSION['user_id'] ?? null;
+        $username = $_SESSION['username'] ?? null;
+        $ip_address = $_SERVER['REMOTE_ADDR'] ?? null;
+        $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? null;
+        
+        $stmt = db()->prepare("
+            INSERT INTO system_logs (user_id, username, action, description, entity_type, entity_id, ip_address, user_agent)
+            VALUES (:user_id, :username, :action, :description, :entity_type, :entity_id, :ip_address, :user_agent)
+        ");
+        
+        return $stmt->execute([
+            ':user_id' => $user_id,
+            ':username' => $username,
+            ':action' => $action,
+            ':description' => $description,
+            ':entity_type' => $entity_type,
+            ':entity_id' => $entity_id,
+            ':ip_address' => $ip_address,
+            ':user_agent' => $user_agent
+        ]);
+    } catch (Throwable $e) {
+        error_log('[log_system_action] Error: ' . $e->getMessage());
+        return false;
+    }
+}
 
 

@@ -109,6 +109,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     ':foto_perfil'   => $foto_perfil,
                     ':id'            => $existingUser['id']
                 ]);
+                log_system_action('create_user', 'Usuario reactivado: ' . $nombre . ' ' . $apellido . ' (' . $correo . ')', 'user', $existingUser['id']);
                 $_SESSION['success'] = "Usuario registrado correctamente.";
             } catch (PDOException $e) {
                 $_SESSION['error'] = "Error al actualizar el usuario: " . $e->getMessage();
@@ -134,6 +135,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 ':es_columnista' => $es_columnista,
                 ':foto_perfil'   => $foto_perfil
             ]);
+            $newUserId = db()->lastInsertId();
+            log_system_action('create_user', 'Nuevo usuario creado: ' . $nombre . ' ' . $apellido . ' (' . $correo . ')', 'user', $newUserId);
             $_SESSION['success'] = "Usuario registrado correctamente.";
         } catch (PDOException $e) {
             $_SESSION['error'] = "Error al registrar el usuario: " . $e->getMessage();

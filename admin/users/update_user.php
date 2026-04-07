@@ -74,6 +74,8 @@ try {
     $stmt = db()->prepare($sql);
     $stmt->execute($params);
 
+    log_system_action('update_user', 'Usuario actualizado: ' . $nombre . ' ' . $apellido . ' (' . $correo . ')', 'user', $id);
+
     $_SESSION['success'] = "Usuario actualizado correctamente.";
     header("Location: $url/admin/users");
     exit();
