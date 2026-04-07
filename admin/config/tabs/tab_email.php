@@ -37,8 +37,57 @@
       </select>
     </div>
 
+    <div class="mb-3">
+      <label class="form-label">Probar conexión SMTP</label>
+      <div class="input-group">
+        <input type="email" id="test_email" class="form-control" placeholder="correo@ejemplo.com">
+        <button type="button" class="btn btn-outline-primary" onclick="testSmtp()">
+          <span id="test_smtp_btn">Enviar Prueba</span>
+        </button>
+      </div>
+      <div id="test_smtp_result" class="mt-2"></div>
+    </div>
+
   </div>
 </div>
+
+<script>
+function testSmtp() {
+  const email = document.getElementById('test_email').value.trim();
+  const resultDiv = document.getElementById('test_smtp_result');
+  const btn = document.getElementById('test_smtp_btn');
+  
+  if (!email) {
+    resultDiv.innerHTML = '<span class="text-danger">Ingrese un correo electrónico.</span>';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Enviando...';
+  resultDiv.innerHTML = '';
+
+  fetch('/actions/test_smtp.php', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({email: email})
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.success) {
+      resultDiv.innerHTML = '<span class="text-success">' + data.message + '</span>';
+    } else {
+      resultDiv.innerHTML = '<span class="text-danger">' + data.message + '</span>';
+    }
+  })
+  .catch(err => {
+    resultDiv.innerHTML = '<span class="text-danger">Error de conexión: ' + err + '</span>';
+  })
+  .finally(() => {
+    btn.disabled = false;
+    btn.textContent = 'Enviar Prueba';
+  });
+}
+</script>
 
 <div class="card mb-3">
   <div class="card-header bg-light"><strong>Mensajes de Email por Estado de Pedido</strong></div>
