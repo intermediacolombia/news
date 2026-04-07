@@ -76,7 +76,15 @@ function get_update_status() {
     $status_file = __DIR__ . '/cache/update_status.json';
     
     if (file_exists($status_file)) {
-        return json_decode(file_get_contents($status_file), true);
+        $data = json_decode(file_get_contents($status_file), true);
+        if (isset($data['auto_update_enabled']) && !$data['auto_update_enabled']) {
+            return [
+                'last_check' => $data['last_check'] ?? null,
+                'update_available' => $data['update_available'] ?? false,
+                'auto_update_enabled' => true
+            ];
+        }
+        return $data;
     }
     
     return [
@@ -162,13 +170,6 @@ if ($_GET['action'] === 'reset') {
 
 if ($_GET['action'] === 'update' && $_GET['key'] === 'autoupdate') {
     header('Content-Type: application/json');
-    
-    $status = get_update_status();
-    if (!$status['auto_update_enabled']) {
-        echo json_encode(['success' => false, 'message' => 'Auto-update disabled']);
-        exit;
-    }
-    
     $result = perform_silent_update();
     echo json_encode($result);
     exit;
