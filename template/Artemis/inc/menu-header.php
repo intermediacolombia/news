@@ -7,35 +7,8 @@ require_once __DIR__ . '/../../../inc/translations.php';
         <div class="container">
             <div class="row align-items-center">
                 
-                <div class="col-lg-2 col-md-3 d-lg-none">
-                    <button type="button" 
-                            class="artemis-menu-toggle"
-                            onclick="toggleMobileMenu()"
-                            aria-label="Abrir menú"
-                            style="background: transparent; border: none; color: var(--text-color); cursor: pointer; padding: 8px;">
-                        <i class="fas fa-bars" style="font-size: 20px;"></i>
-                    </button>
-                </div>
-                
-                <div class="col-lg-2 col-md-3 d-none d-lg-block">
-                    <a href="<?= URLBASE ?>" class="navbar-brand">
-                        <img src="<?= URLBASE . SITE_LOGO ?>?<?= time() ?>" 
-                             alt="Logo" 
-                             class="img-fluid"
-                             style="max-height: 50px;">
-                    </a>
-                </div>
-                
-                <div class="col-lg-2 col-md-3 d-lg-none text-center">
-                    <a href="<?= URLBASE ?>" class="navbar-brand">
-                        <img src="<?= URLBASE . SITE_LOGO ?>?<?= time() ?>" 
-                             alt="Logo" 
-                             class="img-fluid artemis-logo"
-                             style="max-height: 42px;">
-                    </a>
-                </div>
-                
-                <div class="col-lg-2 col-md-3 d-lg-none">
+                <!-- Mobile: iconos izquierda -->
+                <div class="col-4 d-lg-none d-flex align-items-center">
                     <button type="button"
                             class="header-search-trigger artemis-icon-btn"
                             data-toggle="modal"
@@ -45,13 +18,44 @@ require_once __DIR__ . '/../../../inc/translations.php';
                         <i class="fas fa-search"></i>
                     </button>
 
-                    <button id="theme-toggle-mobile" 
+                    <button id="theme-toggle-mobile"
                             type="button"
                             onclick="toggleTheme()"
                             class="artemis-icon-btn"
                             style="background: transparent; border: none; color: var(--text-color); font-size: 18px; cursor: pointer; padding: 8px;"
                             aria-label="Cambiar tema">
                         <i class="fas fa-moon" id="theme-icon-mobile"></i>
+                    </button>
+                </div>
+
+                <!-- Desktop: logo izquierda -->
+                <div class="col-lg-2 col-md-3 d-none d-lg-block">
+                    <a href="<?= URLBASE ?>" class="navbar-brand">
+                        <img src="<?= URLBASE . SITE_LOGO ?>?<?= time() ?>"
+                             alt="Logo"
+                             class="img-fluid"
+                             style="max-height: 50px;">
+                    </a>
+                </div>
+
+                <!-- Mobile: logo centro -->
+                <div class="col-4 d-lg-none text-center">
+                    <a href="<?= URLBASE ?>" class="navbar-brand mb-0">
+                        <img src="<?= URLBASE . SITE_LOGO ?>?<?= time() ?>"
+                             alt="Logo"
+                             class="img-fluid artemis-logo"
+                             style="max-height: 42px;">
+                    </a>
+                </div>
+
+                <!-- Mobile: hamburguesa derecha -->
+                <div class="col-4 d-lg-none d-flex align-items-center justify-content-end">
+                    <button type="button"
+                            class="artemis-menu-toggle"
+                            onclick="toggleMobileMenu()"
+                            aria-label="Abrir menú"
+                            style="background: transparent; border: none; color: var(--text-color); cursor: pointer; padding: 8px;">
+                        <i class="fas fa-bars" style="font-size: 20px;"></i>
                     </button>
                 </div>
                 
@@ -188,7 +192,9 @@ require_once __DIR__ . '/../../../inc/translations.php';
     
     <div id="artemis-mobile-menu" class="artemis-mobile-menu">
         <div class="artemis-mobile-menu-header">
-            <span class="artemis-menu-title"><?= NOMBRE_SITIO ?></span>
+            <a href="<?= URLBASE ?>">
+                <img src="<?= URLBASE . SITE_LOGO ?>?<?= time() ?>" alt="Logo" style="max-height: 38px;">
+            </a>
             <button type="button" class="artemis-menu-close" onclick="toggleMobileMenu()" aria-label="Cerrar menú">
                 <i class="fas fa-times"></i>
             </button>
