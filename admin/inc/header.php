@@ -39,6 +39,24 @@
 <!-- Google Material Icons -->
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    fetch('<?= $url ?>/admin/inc/auto-update.php?action=check', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.update_available) {
+            console.log('Nueva versión disponible: ' + data.latest);
+        }
+    })
+    .catch(error => {
+        console.log('Error al verificar actualizaciones:', error);
+    });
+});
+</script>
+
 <!-- Script custom 
 <script src="<?= htmlspecialchars($url) ?>/template/assets/js/departamentos.js" crossorigin="anonymous"></script>
 -->
