@@ -648,16 +648,20 @@ document.addEventListener('DOMContentLoaded', function () {
         zone.style.pointerEvents = 'none';
         progWrap.classList.remove('d-none');
 
-        const total = uploadQueue.length;
-        let done = 0, ok = 0, fail = 0;
+        /* Snapshot fijo: iterar sobre la copia, NO sobre el array vivo.
+           El bug anterior usaba uploadQueue[i] mientras shift() lo encogía,
+           haciendo que i apuntara a undefined y el script crasheara a mitad. */
+        const snapshot = [...uploadQueue];
+        const total    = snapshot.length;
+        let ok = 0, fail = 0;
 
         for (let i = 0; i < total; i++) {
-            const item = uploadQueue[i];
+            const item = snapshot[i];
             progText.textContent = `Subiendo ${i + 1} de ${total}: ${item.file.name}`;
             progBar.style.width  = Math.round((i / total) * 100) + '%';
 
-            /* Marcar como "subiendo" visualmente */
-            const thumb = queueGrid.querySelectorAll('.uq-thumb')[0]; // siempre el primero (cola va eliminando)
+            /* Spinner en la primera miniatura visible */
+            const thumb = queueGrid.querySelector('.uq-thumb');
             if (thumb) {
                 let st = thumb.querySelector('.uq-status');
                 if (!st) { st = document.createElement('div'); st.className = 'uq-status'; thumb.appendChild(st); }
@@ -673,17 +677,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (d.success) { ok++; } else { fail++; }
             } catch (e) { fail++; }
 
-            done++;
+            /* Liberar URL de objeto y quitar de la cola visual */
             if (item.objectUrl) URL.revokeObjectURL(item.objectUrl);
-            uploadQueue.shift(); // quitar el primero
+            uploadQueue.shift();
             renderQueue();
-            progBar.style.width = Math.round((done / total) * 100) + '%';
+            progBar.style.width = Math.round((i + 1) / total * 100) + '%';
         }
 
-        progBar.style.width = '100%';
+        progBar.style.width  = '100%';
         progText.textContent = `✓ ${ok} subido(s)` + (fail ? ` · ${fail} con error` : '');
 
-        /* Recargar la galería después de un momento */
         setTimeout(() => window.location.reload(), 900);
     });
 
