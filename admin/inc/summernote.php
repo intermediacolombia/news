@@ -8,6 +8,43 @@
   .ql-editor p:has(> img:only-child) { margin: 0; line-height: 0; }
   /* El pie de foto queda pegado a la imagen, sin espacio entre ambos */
   .ql-editor p:has(> img:only-child) + p { margin-top: 0 !important; }
+
+  /* Tarjetas de medios en la galería */
+  .em-card { cursor: pointer; transition: .15s; position: relative; }
+  .em-card:hover { opacity: .88; }
+  .em-check-badge {
+    position: absolute; top: 4px; right: 4px;
+    width: 22px; height: 22px;
+    background: #0d6efd; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1; pointer-events: none;
+  }
+  .em-check-badge i { font-size: 13px; font-weight: bold; }
+
+  /* Miniaturas en la cola de subida */
+  .em-upload-thumb {
+    position: relative; border-radius: 6px; overflow: hidden;
+    border: 1px solid #dee2e6; background: #f8f9fa;
+  }
+  .em-upload-thumb img { width: 100%; height: 80px; object-fit: cover; display: block; }
+  .em-upload-thumb .thumb-name {
+    font-size: 10px; padding: 2px 4px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    background: #fff;
+  }
+  .em-upload-thumb .thumb-remove {
+    position: absolute; top: 2px; right: 2px;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: rgba(220,53,69,.85); border: none; color: #fff;
+    font-size: 11px; line-height: 1; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .em-upload-thumb .thumb-status {
+    position: absolute; inset: 0; display: flex;
+    align-items: center; justify-content: center;
+    background: rgba(255,255,255,.75);
+    font-size: 20px;
+  }
 </style>
 
 <!-- Modal: Galería de medios para el editor de contenido -->
@@ -19,70 +56,106 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body p-0">
-        <div class="p-3">
-          <div class="row g-2 mb-3 align-items-end">
-            <div class="col-sm-5">
-              <input type="text" id="em-search" class="form-control form-control-sm" placeholder="Buscar imagen...">
-            </div>
-            <div class="col-sm-2">
-              <button type="button" class="btn btn-sm btn-primary w-100" id="btn-em-search">
-                <i class="bi bi-search me-1"></i> Buscar
-              </button>
-            </div>
-            <div class="col-sm-3 text-end">
-              <span class="text-muted small" id="em-total"></span>
-            </div>
-          </div>
 
-          <div class="row g-2">
-            <div class="col-lg-8">
-              <div id="em-grid" class="row g-2" style="min-height:250px;">
-                <div class="col-12 text-center py-5 text-muted">
-                  <div class="spinner-border spinner-border-sm me-2"></div> Cargando...
-                </div>
+        <!-- TABS -->
+        <ul class="nav nav-tabs px-3 pt-2" id="editorMediaTabs">
+          <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#em-tab-library">
+              <i class="bi bi-grid me-1"></i> Biblioteca
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#em-tab-upload">
+              <i class="bi bi-cloud-upload me-1"></i> Subir archivos
+            </a>
+          </li>
+        </ul>
+
+        <div class="tab-content">
+
+          <!-- TAB BIBLIOTECA -->
+          <div class="tab-pane fade show active p-3" id="em-tab-library">
+
+            <div class="row g-2 mb-2 align-items-end">
+              <div class="col-sm-6">
+                <input type="text" id="em-search" class="form-control form-control-sm"
+                       placeholder="Buscar imagen...">
               </div>
-              <div id="em-pagination" class="d-flex justify-content-center mt-3 gap-1 flex-wrap"></div>
-            </div>
-
-            <div class="col-lg-4">
-              <div class="border rounded p-3" style="background:#f8f9fa; min-height:250px;">
-                <div id="em-detail-empty" class="text-center text-muted py-5">
-                  <i class="bi bi-hand-index-thumb fs-2"></i>
-                  <div class="mt-2 small">Selecciona una imagen<br>para ver sus detalles</div>
-                </div>
-                <div id="em-detail-content" class="d-none">
-                  <img id="em-detail-img" src="" alt="" class="img-fluid rounded mb-2 w-100"
-                       style="max-height:130px; object-fit:cover;">
-                  <div class="mb-2">
-                    <label class="form-label small fw-semibold mb-1">Texto alternativo (alt)</label>
-                    <input type="text" id="em-alt" class="form-control form-control-sm"
-                           placeholder="Descripción de la imagen">
-                  </div>
-                  <div class="mb-2">
-                    <label class="form-label small fw-semibold mb-1">Caption (pie de foto)</label>
-                    <input type="text" id="em-caption" class="form-control form-control-sm"
-                           placeholder="Opcional">
-                  </div>
-                  <div class="mb-2">
-                    <label class="form-label small fw-semibold mb-1">Tamaño</label>
-                    <select id="em-width" class="form-select form-select-sm">
-                      <option value="">Grande (100%)</option>
-                      <option value="img-medium" selected>Mediano (75%)</option>
-                      <option value="img-small">Pequeño (50%)</option>
-                      <option value="img-thumbnail">Miniatura (25%)</option>
-                    </select>
-                  </div>
-                </div>
+              <div class="col-sm-3">
+                <button type="button" class="btn btn-sm btn-primary w-100" id="btn-em-search">
+                  <i class="bi bi-search me-1"></i> Buscar
+                </button>
+              </div>
+              <div class="col-sm-3 text-end">
+                <span class="text-muted small" id="em-total"></span>
               </div>
             </div>
+
+            <!-- Selector de tamaño global + hint de selección múltiple -->
+            <div class="d-flex align-items-center gap-2 mb-3 flex-wrap">
+              <label class="form-label small fw-semibold mb-0 text-nowrap">Tamaño:</label>
+              <select id="em-width" class="form-select form-select-sm" style="max-width:180px;">
+                <option value="">Grande (100%)</option>
+                <option value="img-medium" selected>Mediano (75%)</option>
+                <option value="img-small">Pequeño (50%)</option>
+                <option value="img-thumbnail">Miniatura (25%)</option>
+              </select>
+              <span class="text-muted small">
+                <i class="bi bi-info-circle me-1"></i>
+                Haz clic en las imágenes para seleccionarlas (puedes elegir varias)
+              </span>
+            </div>
+
+            <div id="em-grid" class="row g-2" style="min-height:250px;"></div>
+            <div id="em-pagination" class="d-flex justify-content-center mt-3 gap-1 flex-wrap"></div>
           </div>
+
+          <!-- TAB SUBIR ARCHIVOS -->
+          <div class="tab-pane fade p-3" id="em-tab-upload">
+
+            <!-- Zona de drop -->
+            <div class="border rounded p-4 text-center mb-3"
+                 id="em-upload-zone"
+                 style="cursor:pointer; border-style:dashed !important; border-color:#dee2e6; transition:.2s;
+                        min-height:110px; display:flex; flex-direction:column;
+                        align-items:center; justify-content:center;">
+              <i class="bi bi-cloud-arrow-up fs-1 text-muted"></i>
+              <div class="mt-2 text-muted">Arrastra archivos aquí o haz clic para seleccionar</div>
+              <small class="text-muted">JPG, PNG, WebP, GIF, SVG — Máx 20 MB por archivo — Puedes elegir varios</small>
+            </div>
+            <input type="file" id="em-file-input" accept="image/*" multiple class="d-none">
+
+            <!-- Previsualización de los archivos seleccionados -->
+            <div id="em-upload-queue" class="row g-2 mb-3"></div>
+
+            <!-- Botón subir -->
+            <button type="button" class="btn btn-primary w-100" id="btn-em-upload" disabled>
+              <i class="bi bi-upload me-1"></i>
+              Subir <span id="em-upload-count">0</span> archivo(s) y seleccionar para insertar
+            </button>
+
+            <!-- Barra de progreso -->
+            <div id="em-upload-progress" class="d-none mt-3">
+              <div class="progress mb-1" style="height:10px;">
+                <div class="progress-bar progress-bar-striped progress-bar-animated"
+                     id="em-progress-bar" style="width:0%; transition:width .3s;"></div>
+              </div>
+              <div class="text-muted small text-center" id="em-progress-text">Preparando...</div>
+            </div>
+
+          </div>
+
         </div>
       </div>
+
       <div class="modal-footer">
-        <span class="me-auto small text-muted" id="em-selected-info"></span>
+        <span class="me-auto small text-muted fw-semibold" id="em-selected-info">
+          Ninguna imagen seleccionada
+        </span>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
         <button type="button" class="btn btn-primary" id="btn-em-insert" disabled>
-          <i class="bi bi-check-circle me-1"></i> Insertar imagen
+          <i class="bi bi-check-circle me-1"></i>
+          Insertar <span id="em-insert-count">0</span> imagen(es)
         </button>
       </div>
     </div>
@@ -209,9 +282,11 @@ function initImageResizer(quill) {
   var UPLOAD_URL = '<?= $url ?>/admin/multimedia/upload_ajax.php';
   var PICKER_URL = '<?= $url ?>/admin/multimedia/media_picker.php';
 
-  var emSelected = null;
+  /* Lista de imágenes seleccionadas para insertar: [{url, alt, caption}] */
+  var emSelectedList = [];
   var emEditor = null;
 
+  /* ─────────────── QuillEditor ─────────────── */
   var QuillEditor = function (selector) {
     this.selector = selector;
     this.quill = null;
@@ -284,14 +359,16 @@ function initImageResizer(quill) {
   QuillEditor.prototype.openGallery = function () {
     // Guardar el cursor ANTES de que el modal quite el foco al editor
     this._savedRange = this.quill.getSelection() || { index: this.quill.getLength(), length: 0 };
-    emSelected = null;
+    emSelectedList = [];
     emEditor = this;
-    document.getElementById('em-detail-empty').classList.remove('d-none');
-    document.getElementById('em-detail-content').classList.add('d-none');
-    document.getElementById('btn-em-insert').disabled = true;
-    document.getElementById('em-selected-info').textContent = '';
+    updateEmSelection();
     document.getElementById('em-search').value = '';
+    // Asegurar que se inicia en la tab de biblioteca
+    var libTab = document.querySelector('[href="#em-tab-library"]');
+    if (libTab) bootstrap.Tab.getOrCreateInstance(libTab).show();
     loadEmGrid(1);
+    // Limpiar cola de subida
+    resetUploadTab();
     new bootstrap.Modal(document.getElementById('editorMediaModal')).show();
   };
 
@@ -356,16 +433,15 @@ function initImageResizer(quill) {
       }
       var quillEditor = new QuillEditor('#' + textarea.id);
       quillEditor.init(function () { quillEditor.openGallery(); });
-      
+
       var initialContent = textarea.value;
       if (initialContent) {
         setTimeout(function() {
           quillEditor.setContent(initialContent);
         }, 100);
       }
-      
-      editors.push(quillEditor);
 
+      editors.push(quillEditor);
       window[textarea.id + '_quill'] = quillEditor;
     });
   }
@@ -376,10 +452,28 @@ function initImageResizer(quill) {
     initEditors();
   }
 
+  /* ─────────────── Actualizar contador de selección ─────────────── */
+  function updateEmSelection() {
+    var count = emSelectedList.length;
+    var infoEl   = document.getElementById('em-selected-info');
+    var countEl  = document.getElementById('em-insert-count');
+    var btnInsert = document.getElementById('btn-em-insert');
+
+    if (count === 0) {
+      infoEl.textContent = 'Ninguna imagen seleccionada';
+      btnInsert.disabled = true;
+    } else {
+      infoEl.textContent = count + ' imagen' + (count > 1 ? 'es' : '') + ' seleccionada' + (count > 1 ? 's' : '');
+      btnInsert.disabled = false;
+    }
+    countEl.textContent = count;
+  }
+
+  /* ─────────────── Grid de biblioteca (multi-select) ─────────────── */
   function loadEmGrid(page) {
-    var q = (document.getElementById('em-search').value || '').trim();
+    var q    = (document.getElementById('em-search').value || '').trim();
     var grid = document.getElementById('em-grid');
-    var pgn = document.getElementById('em-pagination');
+    var pgn  = document.getElementById('em-pagination');
 
     grid.innerHTML = '<div class="col-12 text-center py-5 text-muted"><div class="spinner-border spinner-border-sm me-2"></div> Cargando...</div>';
     pgn.innerHTML = '';
@@ -396,45 +490,55 @@ function initImageResizer(quill) {
         }
 
         data.files.forEach(function (f) {
+          var isSelected = emSelectedList.some(function(s) { return s.url === f.url; });
           var col = document.createElement('div');
           col.className = 'col-6 col-sm-4 col-md-3';
+
           col.innerHTML =
-            '<div class="em-card border rounded overflow-hidden" style="cursor:pointer;" '
-            + 'data-url="' + _esc(f.url) + '" '
-            + 'data-alt="' + _esc(f.alt || '') + '" '
-            + 'data-caption="' + _esc(f.caption || '') + '" '
-            + 'data-name="' + _esc(f.name) + '">'
+            '<div class="em-card border rounded overflow-hidden'
+            + (isSelected ? '" style="outline:3px solid #0d6efd; box-shadow:0 0 0 1px #0d6efd;"' : '"')
+            + ' data-url="' + _esc(f.url) + '"'
+            + ' data-alt="' + _esc(f.alt || '') + '"'
+            + ' data-caption="' + _esc(f.caption || '') + '"'
+            + ' data-name="' + _esc(f.name) + '">'
+            + (isSelected ? '<div class="em-check-badge"><i class="bi bi-check text-white"></i></div>' : '')
             + '<div style="height:80px;overflow:hidden;background:#f0f0f0;display:flex;align-items:center;justify-content:center;">'
-            + '<img src="' + f.url + '" alt="' + _esc(f.name) + '" style="width:100%;height:80px;object-fit:cover;" loading="lazy" '
-            + 'onerror="this.parentNode.innerHTML=\'<i class=\\\'bi bi-image text-muted\\\' style=\\\'font-size:28px\\\'></i>\'">'
+            + '<img src="' + f.url + '" alt="' + _esc(f.name) + '"'
+            + ' style="width:100%;height:80px;object-fit:cover;" loading="lazy"'
+            + ' onerror="this.parentNode.innerHTML=\'<i class=\\\'bi bi-image text-muted\\\' style=\\\'font-size:28px\\\'></i>\'">'
             + '</div>'
             + '<div class="p-1 bg-white" style="font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'
             + _esc(f.name) + '</div>'
             + '</div>';
 
-          col.querySelector('.em-card').addEventListener('click', function () {
-            document.querySelectorAll('.em-card').forEach(function (el) {
-              el.style.outline = '';
-              el.style.boxShadow = '';
-            });
-            this.style.outline = '3px solid #0d6efd';
-            this.style.boxShadow = '0 0 0 1px #0d6efd';
+          var card = col.querySelector('.em-card');
+          card.addEventListener('click', function () {
+            var url     = this.dataset.url;
+            var selIdx  = emSelectedList.findIndex(function(s) { return s.url === url; });
 
-            emSelected = {
-              url: this.dataset.url,
-              alt: this.dataset.alt,
-              caption: this.dataset.caption,
-              widthClass: ''
-            };
+            if (selIdx >= 0) {
+              /* Deseleccionar */
+              emSelectedList.splice(selIdx, 1);
+              this.style.outline    = '';
+              this.style.boxShadow  = '';
+              var badge = this.querySelector('.em-check-badge');
+              if (badge) badge.remove();
+            } else {
+              /* Seleccionar */
+              emSelectedList.push({
+                url    : this.dataset.url,
+                alt    : this.dataset.alt,
+                caption: this.dataset.caption
+              });
+              this.style.outline   = '3px solid #0d6efd';
+              this.style.boxShadow = '0 0 0 1px #0d6efd';
+              var newBadge = document.createElement('div');
+              newBadge.className = 'em-check-badge';
+              newBadge.innerHTML = '<i class="bi bi-check text-white"></i>';
+              this.appendChild(newBadge);
+            }
 
-            document.getElementById('em-detail-empty').classList.add('d-none');
-            document.getElementById('em-detail-content').classList.remove('d-none');
-            document.getElementById('em-detail-img').src = emSelected.url;
-            document.getElementById('em-alt').value = emSelected.alt;
-            document.getElementById('em-caption').value = emSelected.caption;
-            document.getElementById('em-width').value = 'img-medium';
-            document.getElementById('btn-em-insert').disabled = false;
-            document.getElementById('em-selected-info').textContent = this.dataset.name;
+            updateEmSelection();
           });
 
           grid.appendChild(col);
@@ -466,36 +570,179 @@ function initImageResizer(quill) {
     if (e.key === 'Enter') { e.preventDefault(); loadEmGrid(1); }
   });
 
+  /* ─────────────── Insertar todas las seleccionadas ─────────────── */
   document.getElementById('btn-em-insert').addEventListener('click', function () {
-    if (!emSelected || !emEditor) return;
+    if (!emSelectedList.length || !emEditor) return;
 
-    var alt = document.getElementById('em-alt').value.trim();
-    var caption = document.getElementById('em-caption').value.trim();
     var widthClass = document.getElementById('em-width').value;
-    var url = emSelected.url;
-
-    // Usar la posición guardada antes de que el modal quitara el foco
+    var imgClass   = 'img-fluid' + (widthClass ? ' ' + widthClass : '');
     var idx = (emEditor._savedRange || { index: emEditor.quill.getLength() }).index;
-    var imgClass = 'img-fluid' + (widthClass ? ' ' + widthClass : '');
 
-    // Una sola llamada con imagen + caption juntos:
-    // así Quill parsea el bloque completo y crea párrafos separados correctamente.
-    // Dos llamadas separadas insertan el caption dentro del mismo <p> de la imagen.
-    var insertHtml = '<img src="' + url + '" alt="' + _esc(alt) + '" class="' + imgClass + '" style="max-width:100%;">';
-    if (caption) {
-      insertHtml += '<p style="text-align:center;font-style:italic;margin:0 0 0.5em;">' + _escHtml(caption) + '</p>';
-    }
+    var insertHtml = '';
+    var extraChars = 0;
+    emSelectedList.forEach(function (item) {
+      insertHtml += '<img src="' + item.url + '" alt="' + _esc(item.alt) + '" class="' + imgClass + '" style="max-width:100%;">';
+      if (item.caption) {
+        insertHtml += '<p style="text-align:center;font-style:italic;margin:0 0 0.5em;">' + _escHtml(item.caption) + '</p>';
+        extraChars += item.caption.length + 2;
+      }
+    });
 
     emEditor.quill.clipboard.dangerouslyPasteHTML(idx, insertHtml);
 
-    // Posicionar cursor después de lo insertado:
-    // imagen(1) + \n(1) + caption-texto + \n(1) si había caption
-    var after = idx + 1 + (caption ? caption.length + 2 : 0);
+    var after = idx + emSelectedList.length + extraChars;
     emEditor.quill.setSelection(after, 0);
 
     bootstrap.Modal.getInstance(document.getElementById('editorMediaModal')).hide();
   });
 
+  /* ─────────────── Tab Subir archivos (múltiple) ─────────────── */
+  var uploadQueue = []; // [{file, objectUrl}]
+
+  var uploadZone    = document.getElementById('em-upload-zone');
+  var fileInput     = document.getElementById('em-file-input');
+  var queueEl       = document.getElementById('em-upload-queue');
+  var btnUpload     = document.getElementById('btn-em-upload');
+  var uploadCountEl = document.getElementById('em-upload-count');
+  var progressWrap  = document.getElementById('em-upload-progress');
+  var progressBar   = document.getElementById('em-progress-bar');
+  var progressText  = document.getElementById('em-progress-text');
+
+  uploadZone.addEventListener('click', function () { fileInput.click(); });
+
+  ['dragenter','dragover'].forEach(function(ev) {
+    uploadZone.addEventListener(ev, function(e) {
+      e.preventDefault();
+      uploadZone.style.background   = '#f0f4ff';
+      uploadZone.style.borderColor  = '#0d6efd';
+    });
+  });
+  ['dragleave','drop'].forEach(function(ev) {
+    uploadZone.addEventListener(ev, function(e) {
+      e.preventDefault();
+      uploadZone.style.background  = '';
+      uploadZone.style.borderColor = '#dee2e6';
+    });
+  });
+  uploadZone.addEventListener('drop', function (e) {
+    e.preventDefault();
+    uploadZone.style.background  = '';
+    uploadZone.style.borderColor = '#dee2e6';
+    addFilesToQueue(e.dataTransfer.files);
+  });
+  fileInput.addEventListener('change', function () {
+    addFilesToQueue(this.files);
+    this.value = ''; // reset para permitir re-seleccionar los mismos archivos
+  });
+
+  function addFilesToQueue(fileList) {
+    Array.from(fileList).forEach(function (file) {
+      if (!file.type.startsWith('image/')) return;
+      uploadQueue.push({ file: file, objectUrl: URL.createObjectURL(file) });
+    });
+    renderUploadQueue();
+  }
+
+  function renderUploadQueue() {
+    queueEl.innerHTML = '';
+    uploadQueue.forEach(function (item, i) {
+      var col = document.createElement('div');
+      col.className = 'col-4 col-sm-3 col-md-2';
+      col.innerHTML =
+        '<div class="em-upload-thumb">'
+        + '<img src="' + item.objectUrl + '" alt="">'
+        + '<div class="thumb-name" title="' + _esc(item.file.name) + '">' + _esc(item.file.name) + '</div>'
+        + '<button type="button" class="thumb-remove" data-idx="' + i + '" title="Quitar">&times;</button>'
+        + '</div>';
+      col.querySelector('.thumb-remove').addEventListener('click', function () {
+        var idx = parseInt(this.dataset.idx);
+        URL.revokeObjectURL(uploadQueue[idx].objectUrl);
+        uploadQueue.splice(idx, 1);
+        renderUploadQueue();
+      });
+      queueEl.appendChild(col);
+    });
+
+    var count = uploadQueue.length;
+    uploadCountEl.textContent = count;
+    btnUpload.disabled = (count === 0);
+    if (count > 0) {
+      queueEl.classList.remove('d-none');
+    } else {
+      queueEl.classList.add('d-none');
+      progressWrap.classList.add('d-none');
+    }
+  }
+
+  function resetUploadTab() {
+    uploadQueue.forEach(function(item) { URL.revokeObjectURL(item.objectUrl); });
+    uploadQueue = [];
+    renderUploadQueue();
+    progressWrap.classList.add('d-none');
+    progressBar.style.width = '0%';
+    progressText.textContent = 'Preparando...';
+  }
+
+  btnUpload.addEventListener('click', function () {
+    if (!uploadQueue.length) return;
+
+    btnUpload.disabled = true;
+    progressWrap.classList.remove('d-none');
+
+    var total    = uploadQueue.length;
+    var done     = 0;
+    var uploaded = [];
+
+    function uploadNext(i) {
+      if (i >= total) {
+        /* Todos subidos */
+        progressBar.style.width = '100%';
+        progressText.textContent = 'Listo. ' + uploaded.length + ' de ' + total + ' subidos.';
+
+        /* Agregar a la selección */
+        uploaded.forEach(function (item) {
+          if (!emSelectedList.some(function(s) { return s.url === item.url; })) {
+            emSelectedList.push(item);
+          }
+        });
+        updateEmSelection();
+
+        /* Limpiar cola y cambiar a tab Biblioteca */
+        setTimeout(function () {
+          resetUploadTab();
+          var libTab = document.querySelector('[href="#em-tab-library"]');
+          if (libTab) bootstrap.Tab.getOrCreateInstance(libTab).show();
+          loadEmGrid(1); // recarga la biblioteca para mostrar las nuevas imágenes
+        }, 600);
+        return;
+      }
+
+      var item = uploadQueue[i];
+      progressText.textContent = 'Subiendo ' + (i + 1) + ' de ' + total + ': ' + item.file.name;
+      progressBar.style.width = Math.round((i / total) * 100) + '%';
+
+      var fd = new FormData();
+      fd.append('file', item.file);
+
+      fetch(UPLOAD_URL, { method: 'POST', body: fd })
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          if (d.success) {
+            uploaded.push({ url: d.url, alt: d.alt || '', caption: d.caption || '' });
+          }
+          done++;
+          uploadNext(i + 1);
+        })
+        .catch(function () {
+          done++;
+          uploadNext(i + 1);
+        });
+    }
+
+    uploadNext(0);
+  });
+
+  /* ─────────────── Helpers ─────────────── */
   function _esc(str) {
     return String(str)
       .replace(/&/g, '&amp;')
