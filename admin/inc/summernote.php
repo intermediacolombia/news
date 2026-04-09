@@ -4,7 +4,8 @@
 <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
 <style>
   /* Sin margen por defecto en imágenes — el usuario lo controla desde el editor */
-  .ql-editor img { margin: 0; vertical-align: bottom; }
+  .ql-editor img { margin: 0; vertical-align: bottom; cursor: grab; }
+  .ql-editor img:active { cursor: grabbing; }
   .ql-editor p:has(> img:only-child) { margin: 0; line-height: 0; }
   /* El pie de foto queda pegado a la imagen, sin espacio entre ambos */
   .ql-editor p:has(> img:only-child) + p { margin-top: 0 !important; }
@@ -163,16 +164,24 @@
 </div>
 
 <script>
-/* ── Image Resizer: drag corners to resize images inside Quill 2 ── */
+/* ── Image Resizer + Delete + Drag-to-move para imágenes en Quill 2 ── */
 function initImageResizer(quill) {
   var quillRoot = quill.root;                   // .ql-editor
   var container = quillRoot.parentElement;      // .ql-container (position:relative)
 
-  var overlay   = null;
-  var activeImg = null;
+  var overlay    = null;
+  var activeImg  = null;
 
+  /* Variables para drag-to-move */
+  var draggedImg  = null;
+  var draggedIdx  = null;
+  var draggedHtml = null;
+  var dropCursor  = null;   // línea indicadora de posición de drop
+
+  /* ── Helpers de overlay ── */
   function removeOverlay() {
     if (overlay) { overlay.remove(); overlay = null; }
+    if (activeImg) activeImg.removeAttribute('draggable');
     activeImg = null;
   }
 
@@ -189,6 +198,7 @@ function initImageResizer(quill) {
   function showOverlay(img) {
     removeOverlay();
     activeImg = img;
+    img.setAttribute('draggable', 'true');
 
     overlay = document.createElement('div');
     overlay.style.cssText = [
@@ -249,7 +259,7 @@ function initImageResizer(quill) {
     positionOverlay();
   }
 
-  /* Click en una imagen → mostrar handles */
+  /* ── Click en imagen → handles ── */
   quillRoot.addEventListener('click', function(e) {
     if (e.target.tagName === 'IMG') {
       showOverlay(e.target);
@@ -267,6 +277,135 @@ function initImageResizer(quill) {
 
   /* Scroll del editor → reposicionar overlay */
   quillRoot.addEventListener('scroll', positionOverlay);
+
+  /* ── Eliminar imagen con Supr / Delete ── */
+  document.addEventListener('keydown', function(e) {
+    if (!activeImg || !activeImg.isConnected) return;
+    if (e.key !== 'Delete' && e.key !== 'Backspace') return;
+    /* No interferir si el foco está en un campo de texto */
+    var tag = (document.activeElement || {}).tagName || '';
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+    e.preventDefault();
+    try {
+      var blot = Quill.find(activeImg, true);
+      if (blot) quill.deleteText(quill.getIndex(blot), 1, 'user');
+    } catch (ex) {
+      /* fallback: eliminar el nodo directamente */
+      activeImg.closest('p') ? activeImg.closest('p').remove() : activeImg.remove();
+    }
+    removeOverlay();
+  });
+
+  /* ── Obtener índice Quill desde coordenadas de ratón ── */
+  function getDropIndex(clientX, clientY) {
+    var node, offset;
+    if (document.caretPositionFromPoint) {
+      var pos = document.caretPositionFromPoint(clientX, clientY);
+      if (!pos) return quill.getLength() - 1;
+      node = pos.offsetNode; offset = pos.offset;
+    } else if (document.caretRangeFromPoint) {
+      var r = document.caretRangeFromPoint(clientX, clientY);
+      if (!r) return quill.getLength() - 1;
+      node = r.startContainer; offset = r.startOffset;
+    } else {
+      return quill.getLength() - 1;
+    }
+    var current = node;
+    while (current && current !== quillRoot) {
+      try {
+        var blot = Quill.find(current, false);
+        if (blot) {
+          var idx = quill.getIndex(blot);
+          if (node.nodeType === 3) idx += Math.min(offset, node.textContent.length);
+          return Math.max(0, Math.min(idx, quill.getLength() - 1));
+        }
+      } catch (ex) {}
+      current = current.parentNode;
+    }
+    return quill.getLength() - 1;
+  }
+
+  /* ── Línea indicadora de drop ── */
+  function showDropCursor(clientX, clientY) {
+    if (!dropCursor) {
+      dropCursor = document.createElement('div');
+      dropCursor.style.cssText = 'position:absolute;pointer-events:none;z-index:200;'
+        + 'width:3px;background:#0d6efd;border-radius:2px;transition:top .05s,left .05s,height .05s;';
+      container.appendChild(dropCursor);
+    }
+    /* Buscar el elemento más cercano al punto para dimensionar el cursor */
+    var cr  = container.getBoundingClientRect();
+    var el  = document.elementFromPoint(clientX, clientY);
+    var ref = (el && container.contains(el)) ? el : null;
+    var h   = ref ? ref.getBoundingClientRect().height : 20;
+    var top = ref ? (ref.getBoundingClientRect().top - cr.top) : (clientY - cr.top - 10);
+    dropCursor.style.left   = (clientX - cr.left - 1) + 'px';
+    dropCursor.style.top    = top + 'px';
+    dropCursor.style.height = Math.max(16, h) + 'px';
+  }
+
+  function removeDropCursor() {
+    if (dropCursor) { dropCursor.remove(); dropCursor = null; }
+  }
+
+  /* ── Drag-to-move ── */
+  quillRoot.addEventListener('dragstart', function(e) {
+    if (e.target.tagName !== 'IMG') { e.preventDefault(); return; }
+    draggedImg  = e.target;
+    draggedHtml = e.target.outerHTML;
+    try {
+      var blot = Quill.find(draggedImg, true);
+      draggedIdx = blot ? quill.getIndex(blot) : null;
+    } catch (ex) { draggedIdx = null; }
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', '');   /* requerido en Firefox */
+    setTimeout(function() { if (draggedImg) draggedImg.style.opacity = '0.25'; }, 0);
+  });
+
+  quillRoot.addEventListener('dragover', function(e) {
+    if (!draggedImg) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    showDropCursor(e.clientX, e.clientY);
+  });
+
+  quillRoot.addEventListener('dragleave', function(e) {
+    if (!quillRoot.contains(e.relatedTarget)) removeDropCursor();
+  });
+
+  quillRoot.addEventListener('drop', function(e) {
+    removeDropCursor();
+    if (!draggedImg || draggedIdx === null) return;
+    e.preventDefault();
+    e.stopPropagation();
+
+    var dropIdx = getDropIndex(e.clientX, e.clientY);
+    var html    = draggedHtml;
+
+    draggedImg.style.opacity = '';
+    draggedImg  = null;
+
+    /* Borrar del sitio original */
+    quill.deleteText(draggedIdx, 1, 'user');
+
+    /* Ajustar índice si el destino estaba después del origen */
+    if (dropIdx > draggedIdx) dropIdx = Math.max(0, dropIdx - 1);
+
+    /* Insertar en la nueva posición conservando todos los atributos (src, class, style…) */
+    quill.clipboard.dangerouslyPasteHTML(dropIdx, html, 'user');
+
+    draggedIdx  = null;
+    draggedHtml = null;
+    removeOverlay();
+  });
+
+  /* Cancelar drag (soltó fuera del editor) */
+  quillRoot.addEventListener('dragend', function() {
+    removeDropCursor();
+    if (draggedImg) { draggedImg.style.opacity = ''; draggedImg = null; }
+    draggedIdx  = null;
+    draggedHtml = null;
+  });
 
   /* Cambio de contenido → reposicionar o quitar overlay */
   quill.on('text-change', function() {
