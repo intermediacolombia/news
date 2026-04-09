@@ -178,8 +178,19 @@ $qsPag = 'type=' . urlencode($filterType)
     .media-info .name { font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .media-actions { display:flex; gap:4px; padding:0 8px 8px; }
 
-    .upload-zone { border:2px dashed #dee2e6; border-radius:8px; padding:40px; text-align:center; cursor:pointer; transition:.2s; }
+    .upload-zone { border:2px dashed #dee2e6; border-radius:8px; padding:24px 12px; text-align:center; cursor:pointer; transition:.2s; }
     .upload-zone:hover, .upload-zone.drag-over { border-color:#0d6efd; background:#f0f4ff; }
+
+    /* Miniaturas de la cola de subida */
+    .uq-thumb { position:relative; border-radius:5px; overflow:hidden; border:1px solid #dee2e6; background:#f8f9fa; }
+    .uq-thumb img { width:100%; height:56px; object-fit:cover; display:block; }
+    .uq-thumb .uq-icon { height:56px; display:flex; align-items:center; justify-content:center; font-size:22px; color:#6c757d; }
+    .uq-thumb .uq-name { font-size:9px; padding:1px 3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; background:#fff; }
+    .uq-thumb .uq-rm { position:absolute; top:2px; right:2px; width:16px; height:16px; border-radius:50%;
+                       background:rgba(220,53,69,.85); border:none; color:#fff; font-size:10px; line-height:1;
+                       cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; }
+    .uq-thumb .uq-status { position:absolute; inset:0; background:rgba(255,255,255,.75);
+                           display:flex; align-items:center; justify-content:center; font-size:18px; }
 
     .type-badge-image    { background:#d1fae5; color:#065f46; }
     .type-badge-video    { background:#dbeafe; color:#1e40af; }
@@ -231,32 +242,38 @@ $qsPag = 'type=' . urlencode($filterType)
 
       <!-- Subir -->
       <div class="card mb-3">
-        <div class="card-header bg-light"><strong><i class="bi bi-cloud-upload me-2"></i>Subir archivo</strong></div>
-        <div class="card-body">
-          <form method="post" enctype="multipart/form-data" id="upload-form">
-            <div class="upload-zone mb-3" id="upload-zone" onclick="document.getElementById('file-input').click()">
-              <i class="bi bi-cloud-arrow-up fs-1 text-muted"></i>
-              <div class="mt-2 text-muted small">Arrastra o haz clic para subir</div>
-              <div class="text-muted" style="font-size:11px">JPG, PNG, WebP, GIF, MP4, MP3, PDF — Máx 20MB</div>
-            </div>
-            <input type="file" id="file-input" name="file" class="d-none"
-                   accept="image/*,video/mp4,video/webm,audio/mpeg,audio/wav,application/pdf">
-            <div id="file-preview" class="mb-3 d-none text-center">
-              <img id="preview-img" src="" class="img-thumbnail" style="max-height:100px">
-              <div id="preview-name" class="small text-muted mt-1"></div>
-            </div>
-            <div class="mb-3">
-              <label class="form-label small fw-semibold">Texto alternativo (alt)</label>
-              <input type="text" name="alt_text" class="form-control form-control-sm" placeholder="Descripción de la imagen">
-            </div>
-            <div class="mb-3">
-              <label class="form-label small fw-semibold">Caption</label>
-              <textarea name="caption" class="form-control form-control-sm" rows="2" placeholder="Pie de foto opcional"></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary w-100" id="btn-upload" disabled>
-              <i class="bi bi-upload me-1"></i> Subir
+        <div class="card-header bg-light"><strong><i class="bi bi-cloud-upload me-2"></i>Subir archivos</strong></div>
+        <div class="card-body p-2">
+
+          <!-- Zona drop -->
+          <div class="upload-zone mb-2" id="upload-zone">
+            <i class="bi bi-cloud-arrow-up fs-2 text-muted"></i>
+            <div class="mt-1 text-muted small">Arrastra o haz clic para subir varios</div>
+            <div class="text-muted" style="font-size:10px;">JPG, PNG, WebP, GIF, MP4, MP3, PDF — Máx 20 MB</div>
+          </div>
+          <input type="file" id="file-input" multiple
+                 accept="image/*,video/mp4,video/webm,audio/mpeg,audio/wav,application/pdf"
+                 class="d-none">
+
+          <!-- Cola de archivos seleccionados -->
+          <div id="upload-queue" class="d-none">
+            <div id="upload-queue-grid" class="row g-1 mb-2"></div>
+            <button type="button" class="btn btn-primary btn-sm w-100" id="btn-upload" disabled>
+              <i class="bi bi-upload me-1"></i>
+              Subir <span id="upload-file-count">0</span> archivo(s)
             </button>
-          </form>
+            <!-- Progreso -->
+            <div id="upload-progress-wrap" class="d-none mt-2">
+              <div class="progress mb-1" style="height:8px;">
+                <div class="progress-bar progress-bar-striped progress-bar-animated"
+                     id="upload-progress-bar" style="width:0%;transition:width .3s;"></div>
+              </div>
+              <div class="text-muted text-center" style="font-size:11px;" id="upload-progress-text">
+                Preparando...
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
 
@@ -568,26 +585,110 @@ document.addEventListener('DOMContentLoaded', function () {
         window.location.href = url.toString();
     });
 
-    /* ── Upload drag & drop ── */
-    const zone  = document.getElementById('upload-zone');
-    const input = document.getElementById('file-input');
-    const btnUp = document.getElementById('btn-upload');
+    /* ── Upload multi-archivo vía AJAX ── */
+    const UPLOAD_URL = '<?= URLBASE ?>/admin/multimedia/upload_ajax.php';
+    const zone       = document.getElementById('upload-zone');
+    const fileInput  = document.getElementById('file-input');
+    const queueWrap  = document.getElementById('upload-queue');
+    const queueGrid  = document.getElementById('upload-queue-grid');
+    const btnUp      = document.getElementById('btn-upload');
+    const countEl    = document.getElementById('upload-file-count');
+    const progWrap   = document.getElementById('upload-progress-wrap');
+    const progBar    = document.getElementById('upload-progress-bar');
+    const progText   = document.getElementById('upload-progress-text');
 
+    let uploadQueue = []; // [{file, objectUrl}]
+
+    /* — Drop zone events — */
+    zone.addEventListener('click', () => fileInput.click());
     ['dragenter','dragover'].forEach(e => zone.addEventListener(e, ev => { ev.preventDefault(); zone.classList.add('drag-over'); }));
     ['dragleave','drop'].forEach(e => zone.addEventListener(e, ev => { ev.preventDefault(); zone.classList.remove('drag-over'); }));
-    zone.addEventListener('drop', ev => { input.files = ev.dataTransfer.files; handleFileSelect(); });
-    input.addEventListener('change', handleFileSelect);
+    zone.addEventListener('drop', ev => { addToQueue(ev.dataTransfer.files); });
+    fileInput.addEventListener('change', function () { addToQueue(this.files); this.value = ''; });
 
-    function handleFileSelect() {
-        if (!input.files.length) return;
-        const file = input.files[0];
-        const prev = document.getElementById('file-preview');
-        const img  = document.getElementById('preview-img');
-        document.getElementById('preview-name').textContent = file.name + ' (' + (file.size/1024).toFixed(0) + 'KB)';
-        prev.classList.remove('d-none');
-        btnUp.disabled = false;
-        if (file.type.startsWith('image/')) { img.src = URL.createObjectURL(file); img.classList.remove('d-none'); }
-        else { img.classList.add('d-none'); }
+    function addToQueue(fileList) {
+        Array.from(fileList).forEach(f => {
+            uploadQueue.push({ file: f, objectUrl: f.type.startsWith('image/') ? URL.createObjectURL(f) : null });
+        });
+        renderQueue();
+    }
+
+    function renderQueue() {
+        queueGrid.innerHTML = '';
+        uploadQueue.forEach((item, i) => {
+            const col = document.createElement('div');
+            col.className = 'col-4';
+            col.innerHTML = `<div class="uq-thumb">
+                ${item.objectUrl
+                    ? `<img src="${item.objectUrl}" alt="">`
+                    : `<div class="uq-icon"><i class="bi bi-file-earmark"></i></div>`}
+                <div class="uq-name" title="${escHtml(item.file.name)}">${escHtml(item.file.name)}</div>
+                <button class="uq-rm" data-idx="${i}" title="Quitar">&times;</button>
+            </div>`;
+            col.querySelector('.uq-rm').addEventListener('click', function () {
+                const idx = parseInt(this.dataset.idx);
+                if (uploadQueue[idx].objectUrl) URL.revokeObjectURL(uploadQueue[idx].objectUrl);
+                uploadQueue.splice(idx, 1);
+                renderQueue();
+            });
+            queueGrid.appendChild(col);
+        });
+
+        const n = uploadQueue.length;
+        countEl.textContent = n;
+        btnUp.disabled = (n === 0);
+        if (n > 0) { queueWrap.classList.remove('d-none'); }
+        else       { queueWrap.classList.add('d-none'); progWrap.classList.add('d-none'); }
+    }
+
+    /* — Subir todos — */
+    btnUp.addEventListener('click', async function () {
+        if (!uploadQueue.length) return;
+        btnUp.disabled = true;
+        zone.style.pointerEvents = 'none';
+        progWrap.classList.remove('d-none');
+
+        const total = uploadQueue.length;
+        let done = 0, ok = 0, fail = 0;
+
+        for (let i = 0; i < total; i++) {
+            const item = uploadQueue[i];
+            progText.textContent = `Subiendo ${i + 1} de ${total}: ${item.file.name}`;
+            progBar.style.width  = Math.round((i / total) * 100) + '%';
+
+            /* Marcar como "subiendo" visualmente */
+            const thumb = queueGrid.querySelectorAll('.uq-thumb')[0]; // siempre el primero (cola va eliminando)
+            if (thumb) {
+                let st = thumb.querySelector('.uq-status');
+                if (!st) { st = document.createElement('div'); st.className = 'uq-status'; thumb.appendChild(st); }
+                st.innerHTML = '<div class="spinner-border spinner-border-sm text-primary"></div>';
+            }
+
+            const fd = new FormData();
+            fd.append('file', item.file);
+
+            try {
+                const r = await fetch(UPLOAD_URL, { method: 'POST', body: fd });
+                const d = await r.json();
+                if (d.success) { ok++; } else { fail++; }
+            } catch (e) { fail++; }
+
+            done++;
+            if (item.objectUrl) URL.revokeObjectURL(item.objectUrl);
+            uploadQueue.shift(); // quitar el primero
+            renderQueue();
+            progBar.style.width = Math.round((done / total) * 100) + '%';
+        }
+
+        progBar.style.width = '100%';
+        progText.textContent = `✓ ${ok} subido(s)` + (fail ? ` · ${fail} con error` : '');
+
+        /* Recargar la galería después de un momento */
+        setTimeout(() => window.location.reload(), 900);
+    });
+
+    function escHtml(s) {
+        return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
 
     /* ── Copiar URL tarjetas ── */
