@@ -171,17 +171,11 @@ function initImageResizer(quill) {
 
   var overlay    = null;
   var activeImg  = null;
-
-  /* Variables para drag-to-move */
-  var draggedImg  = null;
-  var draggedIdx  = null;
-  var draggedHtml = null;
-  var dropCursor  = null;   // línea indicadora de posición de drop
+  var dropCursor = null;   /* línea indicadora de posición al mover */
 
   /* ── Helpers de overlay ── */
   function removeOverlay() {
     if (overlay) { overlay.remove(); overlay = null; }
-    if (activeImg) activeImg.removeAttribute('draggable');
     activeImg = null;
   }
 
@@ -198,7 +192,6 @@ function initImageResizer(quill) {
   function showOverlay(img) {
     removeOverlay();
     activeImg = img;
-    img.setAttribute('draggable', 'true');
 
     overlay = document.createElement('div');
     overlay.style.cssText = [
@@ -210,6 +203,28 @@ function initImageResizer(quill) {
     ].join(';');
     container.appendChild(overlay);
 
+    /* ── Handle de arrastre (centro superior) ── */
+    var dragHandle = document.createElement('div');
+    dragHandle.title = 'Arrastrar para mover';
+    dragHandle.style.cssText = [
+      'position:absolute',
+      'top:-26px', 'left:50%', 'transform:translateX(-50%)',
+      'background:#0d6efd', 'color:#fff',
+      'border-radius:4px', 'padding:2px 10px',
+      'font-size:11px', 'cursor:move',
+      'pointer-events:all', 'user-select:none',
+      'white-space:nowrap', 'display:flex', 'align-items:center', 'gap:4px'
+    ].join(';');
+    dragHandle.innerHTML = '<i class="bi bi-arrows-move"></i> Mover';
+    overlay.appendChild(dragHandle);
+
+    dragHandle.addEventListener('mousedown', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      startMove(e);
+    });
+
+    /* ── Esquinas de redimensión ── */
     ['nw','ne','sw','se'].forEach(function(corner) {
       var h = document.createElement('span');
       h.style.cssText = [
@@ -348,64 +363,77 @@ function initImageResizer(quill) {
     if (dropCursor) { dropCursor.remove(); dropCursor = null; }
   }
 
-  /* ── Drag-to-move ── */
-  quillRoot.addEventListener('dragstart', function(e) {
-    if (e.target.tagName !== 'IMG') { e.preventDefault(); return; }
-    draggedImg  = e.target;
-    draggedHtml = e.target.outerHTML;
+  /* ── Mover imagen con drag custom (mousedown → mousemove → mouseup) ── */
+  /* No usamos la API nativa de drag porque Quill la intercepta internamente */
+  function startMove(e) {
+    if (!activeImg) return;
+
+    var origImg  = activeImg;
+    var origHtml = origImg.outerHTML;
+    var origIdx  = null;
     try {
-      var blot = Quill.find(draggedImg, true);
-      draggedIdx = blot ? quill.getIndex(blot) : null;
-    } catch (ex) { draggedIdx = null; }
-    e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text/plain', '');   /* requerido en Firefox */
-    setTimeout(function() { if (draggedImg) draggedImg.style.opacity = '0.25'; }, 0);
-  });
+      var blot = Quill.find(origImg, true);
+      origIdx  = blot ? quill.getIndex(blot) : null;
+    } catch (ex) {}
 
-  quillRoot.addEventListener('dragover', function(e) {
-    if (!draggedImg) return;
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-    showDropCursor(e.clientX, e.clientY);
-  });
+    if (origIdx === null) return;
 
-  quillRoot.addEventListener('dragleave', function(e) {
-    if (!quillRoot.contains(e.relatedTarget)) removeDropCursor();
-  });
+    /* Ghost que sigue al cursor */
+    var ghost = document.createElement('img');
+    ghost.src = origImg.src;
+    ghost.style.cssText = [
+      'position:fixed', 'pointer-events:none', 'z-index:9999',
+      'opacity:0.6', 'max-width:160px', 'max-height:120px', 'object-fit:contain',
+      'border:2px dashed #0d6efd', 'border-radius:4px',
+      'box-shadow:0 4px 14px rgba(0,0,0,.25)'
+    ].join(';');
+    ghost.style.left = (e.clientX + 14) + 'px';
+    ghost.style.top  = (e.clientY + 14) + 'px';
+    document.body.appendChild(ghost);
 
-  quillRoot.addEventListener('drop', function(e) {
-    removeDropCursor();
-    if (!draggedImg || draggedIdx === null) return;
-    e.preventDefault();
-    e.stopPropagation();
+    origImg.style.opacity = '0.2';
 
-    var dropIdx = getDropIndex(e.clientX, e.clientY);
-    var html    = draggedHtml;
+    function onMove(ev) {
+      ghost.style.left = (ev.clientX + 14) + 'px';
+      ghost.style.top  = (ev.clientY + 14) + 'px';
 
-    draggedImg.style.opacity = '';
-    draggedImg  = null;
+      /* Indicador de posición solo si el cursor está sobre el editor */
+      var hit = document.elementFromPoint(ev.clientX, ev.clientY);
+      if (hit && (quillRoot.contains(hit) || hit === quillRoot)) {
+        showDropCursor(ev.clientX, ev.clientY);
+      } else {
+        removeDropCursor();
+      }
+    }
 
-    /* Borrar del sitio original */
-    quill.deleteText(draggedIdx, 1, 'user');
+    function onUp(ev) {
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup',  onUp);
+      ghost.remove();
+      removeDropCursor();
+      origImg.style.opacity = '';
 
-    /* Ajustar índice si el destino estaba después del origen */
-    if (dropIdx > draggedIdx) dropIdx = Math.max(0, dropIdx - 1);
+      /* Solo mover si soltó dentro del editor */
+      var hit = document.elementFromPoint(ev.clientX, ev.clientY);
+      if (!hit || (!quillRoot.contains(hit) && hit !== quillRoot)) return;
 
-    /* Insertar en la nueva posición conservando todos los atributos (src, class, style…) */
-    quill.clipboard.dangerouslyPasteHTML(dropIdx, html, 'user');
+      var dropIdx = getDropIndex(ev.clientX, ev.clientY);
 
-    draggedIdx  = null;
-    draggedHtml = null;
-    removeOverlay();
-  });
+      /* Eliminar del sitio original */
+      quill.deleteText(origIdx, 1, 'user');
 
-  /* Cancelar drag (soltó fuera del editor) */
-  quillRoot.addEventListener('dragend', function() {
-    removeDropCursor();
-    if (draggedImg) { draggedImg.style.opacity = ''; draggedImg = null; }
-    draggedIdx  = null;
-    draggedHtml = null;
-  });
+      /* Ajustar índice si el destino era posterior al origen */
+      if (dropIdx > origIdx) dropIdx = Math.max(0, dropIdx - 1);
+
+      /* Insertar preservando src, class, style y demás atributos */
+      quill.clipboard.dangerouslyPasteHTML(dropIdx, origHtml, 'user');
+
+      removeOverlay();
+    }
+
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup',  onUp);
+  }
 
   /* Cambio de contenido → reposicionar o quitar overlay */
   quill.on('text-change', function() {
