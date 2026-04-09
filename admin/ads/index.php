@@ -288,7 +288,7 @@ if (!empty($sys['ads_zone_map'])) {
       <div class="alert alert-warning mt-3">
         <i class="fa fa-triangle-exclamation me-2"></i>
         No tienes configurado un <strong>Publisher ID</strong>.
-        Ve a <a href="../configuraciones/index.php">Configuraciones → SEO</a> y agrégalo primero.
+        Ve a <a href="../config/">Configuraciones → SEO</a> y agrégalo primero.
       </div>
       <?php else: ?>
       <div class="alert alert-success py-2 mt-3">
