@@ -106,8 +106,9 @@ $info   = @getimagesize($uploadDir . $fileName);
 $width  = $info[0] ?? null;
 $height = $info[1] ?? null;
 
+$newId = null;
 try {
-    db()->prepare("INSERT INTO multimedia 
+    db()->prepare("INSERT INTO multimedia
         (file_name, file_path, file_type, mime_type, file_size, width, height, alt_text, caption, uploaded_by, origin)
         VALUES (?,?,'image',?,?,?,?,?,?,?,'blog')")
         ->execute([
@@ -121,16 +122,22 @@ try {
             $caption,
             $_SESSION['user']['id'],
         ]);
+    $newId = (int)db()->lastInsertId();
     log_system_action('Subir Multimedia', json_encode(['archivo' => $fileName, 'ruta' => $filePath, 'tipo' => $mime]), 'multimedia');
 } catch (Throwable $e) {
     // Archivo subido pero error en BD — no bloquear
 }
 
 echo json_encode([
-    'success' => true,
-    'path'    => $filePath,
-    'url'     => URLBASE . '/' . $filePath,
-    'name'    => $fileName,
-    'alt'     => $alt,
-    'caption' => $caption,
+    'success'   => true,
+    'id'        => $newId,
+    'path'      => $filePath,
+    'url'       => URLBASE . '/' . $filePath,
+    'name'      => $fileName,
+    'alt'       => $alt,
+    'caption'   => $caption,
+    'file_type' => 'image',
+    'file_size' => $file['size'],
+    'width'     => $width,
+    'height'    => $height,
 ]);

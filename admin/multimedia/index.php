@@ -198,6 +198,7 @@ $qsPag = 'type=' . urlencode($filterType)
     .type-badge-document { background:#fef3c7; color:#92400e; }
     .type-badge-other    { background:#f3f4f6; color:#374151; }
     .btn-xs { padding:2px 8px; font-size:12px; }
+    @keyframes fadeIn { from { opacity:0; transform:scale(.92); } to { opacity:1; transform:scale(1); } }
 
     /* Barra de acciones en lote */
     #batch-bar {
@@ -382,7 +383,7 @@ $qsPag = 'type=' . urlencode($filterType)
       </div>
 
       <?php if (empty($files)): ?>
-      <div class="text-center text-muted py-5">
+      <div class="text-center text-muted py-5" id="empty-state">
         <i class="bi bi-images fs-1"></i>
         <div class="mt-2">No hay archivos aún</div>
       </div>
@@ -648,17 +649,14 @@ document.addEventListener('DOMContentLoaded', function () {
         zone.style.pointerEvents = 'none';
         progWrap.classList.remove('d-none');
 
-        /* Snapshot fijo: iterar sobre la copia, NO sobre el array vivo.
-           El bug anterior usaba uploadQueue[i] mientras shift() lo encogía,
-           haciendo que i apuntara a undefined y el script crasheara a mitad. */
-        const snapshot = [...uploadQueue];
+        const snapshot = [...uploadQueue]; // copia fija para iterar sin desincronizar índices
         const total    = snapshot.length;
         let ok = 0, fail = 0;
 
         for (let i = 0; i < total; i++) {
             const item = snapshot[i];
             progText.textContent = `Subiendo ${i + 1} de ${total}: ${item.file.name}`;
-            progBar.style.width  = Math.round((i / total) * 100) + '%';
+            progBar.style.width  = Math.round(i / total * 100) + '%';
 
             /* Spinner en la primera miniatura visible */
             const thumb = queueGrid.querySelector('.uq-thumb');
@@ -674,10 +672,14 @@ document.addEventListener('DOMContentLoaded', function () {
             try {
                 const r = await fetch(UPLOAD_URL, { method: 'POST', body: fd });
                 const d = await r.json();
-                if (d.success) { ok++; } else { fail++; }
+                if (d.success) {
+                    ok++;
+                    addCardToGrid(d); // insertar tarjeta en tiempo real
+                } else {
+                    fail++;
+                }
             } catch (e) { fail++; }
 
-            /* Liberar URL de objeto y quitar de la cola visual */
             if (item.objectUrl) URL.revokeObjectURL(item.objectUrl);
             uploadQueue.shift();
             renderQueue();
@@ -687,16 +689,88 @@ document.addEventListener('DOMContentLoaded', function () {
         progBar.style.width  = '100%';
         progText.textContent = `✓ ${ok} subido(s)` + (fail ? ` · ${fail} con error` : '');
 
-        setTimeout(() => window.location.reload(), 900);
+        /* Ocultar progreso tras 2 s, restaurar zona */
+        setTimeout(() => {
+            progWrap.classList.add('d-none');
+            progBar.style.width = '0%';
+            zone.style.pointerEvents = '';
+        }, 2000);
     });
 
-    function escHtml(s) {
-        return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    /* ── Construir tarjeta y añadirla al grid sin recargar ── */
+    function addCardToGrid(d) {
+        /* Si la biblioteca estaba vacía, ocultar el empty-state y crear el grid */
+        const emptyState = document.getElementById('empty-state');
+        if (emptyState) emptyState.style.display = 'none';
+
+        let grid = document.getElementById('media-grid');
+        if (!grid) {
+            grid = document.createElement('div');
+            grid.className = 'media-grid';
+            grid.id = 'media-grid';
+            /* Insertar antes de la paginación o al final de col-lg-9 */
+            const col = document.querySelector('.col-lg-9');
+            col.appendChild(grid);
+        }
+
+        const sizeKb  = Math.round((d.file_size || 0) / 1024);
+        const sizeTxt = sizeKb > 1024 ? (sizeKb / 1024).toFixed(1) + 'MB' : sizeKb + 'KB';
+        const ext     = d.name.split('.').pop().toUpperCase();
+        const typeIconMap = { image:'bi-image', video:'bi-camera-video', audio:'bi-music-note-beamed', document:'bi-file-pdf', other:'bi-file-earmark' };
+        const typeIcon    = typeIconMap[d.file_type] || 'bi-file-earmark';
+        const dimsHtml    = (d.width && d.height) ? ` · ${d.width}×${d.height}px` : '';
+        const isImage     = d.file_type === 'image';
+
+        const thumbHtml = isImage
+            ? `<img src="${escHtml(d.url)}" alt="${escHtml(d.alt || d.name)}" loading="lazy">`
+            : `<div class="d-flex flex-column align-items-center">
+                 <i class="bi ${typeIcon} media-icon"></i>
+                 <span class="small text-muted mt-1">${escHtml(ext)}</span>
+               </div>`;
+
+        const typeLabel = (d.file_type || 'image').charAt(0).toUpperCase() + (d.file_type || 'image').slice(1);
+
+        const tmp = document.createElement('div');
+        tmp.innerHTML = `<div class="media-card" data-id="${d.id}" style="animation:fadeIn .3s ease;">
+          <div class="card-check"><i class="bi bi-check-lg"></i></div>
+          <div class="media-thumb">${thumbHtml}</div>
+          <div class="media-info">
+            <div class="name" title="${escHtml(d.name)}">${escHtml(d.name)}</div>
+            <div class="text-muted">${sizeTxt}${dimsHtml}</div>
+            <div><span class="badge type-badge-${escHtml(d.file_type)}">${escHtml(typeLabel)}</span></div>
+          </div>
+          <div class="media-actions">
+            <button type="button" class="btn btn-xs btn-outline-secondary btn-copy-url flex-fill"
+                    data-url="${escHtml(d.url)}" title="Copiar URL">
+              <i class="bi bi-clipboard"></i>
+            </button>
+            <button type="button" class="btn btn-xs btn-outline-primary btn-preview-media"
+                    data-url="${escHtml(d.url)}" data-type="${escHtml(d.file_type)}"
+                    data-name="${escHtml(d.name)}" data-size="${escHtml(sizeTxt)}"
+                    data-dims="${d.width && d.height ? d.width+'×'+d.height+'px' : ''}"
+                    title="Ver"><i class="bi bi-eye"></i>
+            </button>
+            <button type="button" class="btn btn-xs btn-outline-info btn-edit-media"
+                    data-id="${d.id}" data-type="${escHtml(d.file_type)}"
+                    data-name="${escHtml(d.name)}" data-alt="${escHtml(d.alt||'')}"
+                    data-caption="${escHtml(d.caption||'')}" data-url="${escHtml(d.url)}"
+                    title="Editar"><i class="bi bi-pencil"></i>
+            </button>
+            <button type="button" class="btn btn-xs btn-outline-danger btn-delete-single"
+                    data-id="${d.id}" title="Eliminar">
+              <i class="bi bi-trash"></i>
+            </button>
+          </div>
+        </div>`;
+
+        const card = tmp.firstElementChild;
+        grid.insertBefore(card, grid.firstChild); // más reciente primero
+        wireCardButtons(card);
     }
 
-    /* ── Copiar URL tarjetas ── */
-    document.querySelectorAll('.btn-copy-url').forEach(b => {
-        b.addEventListener('click', function (e) {
+    /* Conectar los botones de una tarjeta (nueva o existente) */
+    function wireCardButtons(card) {
+        card.querySelector('.btn-copy-url')?.addEventListener('click', function (e) {
             e.stopPropagation();
             navigator.clipboard.writeText(this.dataset.url).then(() => {
                 const orig = this.innerHTML;
@@ -704,11 +778,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 setTimeout(() => this.innerHTML = orig, 1500);
             });
         });
-    });
 
-    /* ── Eliminar individual (btn en card) ── */
-    document.querySelectorAll('.btn-delete-single').forEach(b => {
-        b.addEventListener('click', function (e) {
+        card.querySelector('.btn-preview-media')?.addEventListener('click', function (e) {
+            e.stopPropagation();
+            openPreviewModal(this.dataset);
+        });
+
+        card.querySelector('.btn-edit-media')?.addEventListener('click', function (e) {
+            e.stopPropagation();
+            openEditModal(this.dataset);
+        });
+
+        card.querySelector('.btn-delete-single')?.addEventListener('click', function (e) {
             e.stopPropagation();
             const id = this.dataset.id;
             Swal.fire({
@@ -720,7 +801,27 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (r.isConfirmed) window.location.href = '?delete=' + id + '&<?= $qsPag ?>&p=<?= $page ?>';
             });
         });
-    });
+
+        /* Selección Ctrl+clic */
+        card.addEventListener('click', function (e) {
+            if (e.target.closest('.media-actions')) return;
+            if (!e.ctrlKey && !e.metaKey) return;
+            e.preventDefault();
+            const id = this.dataset.id;
+            if (selectedIds.has(id)) {
+                selectedIds.delete(id);
+                this.classList.remove('selected');
+            } else {
+                selectedIds.add(id);
+                this.classList.add('selected');
+            }
+            updateBatchBar();
+        });
+    }
+
+    function escHtml(s) {
+        return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
 
     /* ════════════════════════════
        MULTISELECT CON Ctrl/Cmd
@@ -738,26 +839,6 @@ document.addEventListener('DOMContentLoaded', function () {
             batchBar.classList.remove('visible');
         }
     }
-
-    document.querySelectorAll('.media-card').forEach(card => {
-        card.addEventListener('click', function (e) {
-            // Los botones de acción no deben activar la selección
-            if (e.target.closest('.media-actions')) return;
-            // Solo con Ctrl o Cmd
-            if (!e.ctrlKey && !e.metaKey) return;
-
-            e.preventDefault();
-            const id = this.dataset.id;
-            if (selectedIds.has(id)) {
-                selectedIds.delete(id);
-                this.classList.remove('selected');
-            } else {
-                selectedIds.add(id);
-                this.classList.add('selected');
-            }
-            updateBatchBar();
-        });
-    });
 
     /* — Limpiar selección — */
     document.getElementById('btn-batch-clear')?.addEventListener('click', () => {
@@ -800,66 +881,52 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    /* ── Modal PREVIEW ── */
+    /* ── Funciones compartidas para modales ── */
     const typeIcons = { video:'bi-camera-video', audio:'bi-music-note-beamed', document:'bi-file-pdf', other:'bi-file-earmark' };
 
-    document.querySelectorAll('.btn-preview-media').forEach(b => {
-        b.addEventListener('click', function (e) {
-            e.stopPropagation();
-            const url  = this.dataset.url;
-            const type = this.dataset.type;
-            const name = this.dataset.name;
-            const size = this.dataset.size;
-            const dims = this.dataset.dims;
+    function openPreviewModal(ds) {
+        const { url, type, name, size, dims } = ds;
+        document.getElementById('preview-modal-name').textContent = name;
+        document.getElementById('preview-modal-link').href        = url;
+        document.getElementById('preview-modal-meta').textContent = size + (dims ? ' · ' + dims : '');
+        const body = document.getElementById('preview-modal-body');
+        if (type === 'image') {
+            body.innerHTML = `<img src="${url}" class="img-fluid rounded" style="max-height:70vh" alt="${name}">`;
+        } else if (type === 'video') {
+            body.innerHTML = `<video controls class="w-100" style="max-height:70vh"><source src="${url}"></video>`;
+        } else if (type === 'audio') {
+            body.innerHTML = `<div class="py-4"><i class="bi bi-music-note-beamed" style="font-size:64px;color:#9d174d"></i><div class="mt-3"><audio controls class="w-100"><source src="${url}"></audio></div></div>`;
+        } else if (type === 'document') {
+            body.innerHTML = `<div class="py-4"><i class="bi bi-file-pdf" style="font-size:64px;color:#92400e"></i><div class="mt-3"><a href="${url}" target="_blank" class="btn btn-outline-danger"><i class="bi bi-box-arrow-up-right me-1"></i>Abrir PDF</a></div></div>`;
+        } else {
+            body.innerHTML = `<div class="py-4"><i class="bi bi-file-earmark" style="font-size:64px;color:#6c757d"></i></div>`;
+        }
+        new bootstrap.Modal(document.getElementById('modalPreviewMedia')).show();
+    }
 
-            document.getElementById('preview-modal-name').textContent = name;
-            document.getElementById('preview-modal-link').href        = url;
-            document.getElementById('preview-modal-meta').textContent = size + (dims ? ' · ' + dims : '');
+    function openEditModal(ds) {
+        const { id, type, url, alt, caption, name } = ds;
+        document.getElementById('modal-id').value      = id;
+        document.getElementById('modal-alt').value     = alt || '';
+        document.getElementById('modal-caption').value = caption || '';
+        document.getElementById('modal-url').value     = url;
+        const imgWrap  = document.getElementById('edit-preview-wrap');
+        const iconWrap = document.getElementById('edit-preview-icon');
+        if (type === 'image') {
+            document.getElementById('edit-preview-img').src = url;
+            imgWrap.classList.remove('d-none');
+            iconWrap.classList.add('d-none');
+        } else {
+            document.getElementById('edit-preview-icon-el').className = 'bi ' + (typeIcons[type] || 'bi-file-earmark') + ' fs-1 text-muted';
+            document.getElementById('edit-preview-icon-name').textContent = name || '';
+            iconWrap.classList.remove('d-none');
+            imgWrap.classList.add('d-none');
+        }
+        new bootstrap.Modal(document.getElementById('modalEditMedia')).show();
+    }
 
-            const body = document.getElementById('preview-modal-body');
-            if (type === 'image') {
-                body.innerHTML = `<img src="${url}" class="img-fluid rounded" style="max-height:70vh" alt="${name}">`;
-            } else if (type === 'video') {
-                body.innerHTML = `<video controls class="w-100" style="max-height:70vh"><source src="${url}"></video>`;
-            } else if (type === 'audio') {
-                body.innerHTML = `<div class="py-4"><i class="bi bi-music-note-beamed" style="font-size:64px;color:#9d174d"></i><div class="mt-3"><audio controls class="w-100"><source src="${url}"></audio></div></div>`;
-            } else if (type === 'document') {
-                body.innerHTML = `<div class="py-4"><i class="bi bi-file-pdf" style="font-size:64px;color:#92400e"></i><div class="mt-3"><a href="${url}" target="_blank" class="btn btn-outline-danger"><i class="bi bi-box-arrow-up-right me-1"></i>Abrir PDF</a></div></div>`;
-            } else {
-                body.innerHTML = `<div class="py-4"><i class="bi bi-file-earmark" style="font-size:64px;color:#6c757d"></i></div>`;
-            }
-            new bootstrap.Modal(document.getElementById('modalPreviewMedia')).show();
-        });
-    });
-
-    /* ── Modal EDITAR ── */
-    document.querySelectorAll('.btn-edit-media').forEach(b => {
-        b.addEventListener('click', function (e) {
-            e.stopPropagation();
-            const type = this.dataset.type;
-            const url  = this.dataset.url;
-
-            document.getElementById('modal-id').value      = this.dataset.id;
-            document.getElementById('modal-alt').value     = this.dataset.alt;
-            document.getElementById('modal-caption').value = this.dataset.caption;
-            document.getElementById('modal-url').value     = url;
-
-            const imgWrap  = document.getElementById('edit-preview-wrap');
-            const iconWrap = document.getElementById('edit-preview-icon');
-
-            if (type === 'image') {
-                document.getElementById('edit-preview-img').src = url;
-                imgWrap.classList.remove('d-none');
-                iconWrap.classList.add('d-none');
-            } else {
-                document.getElementById('edit-preview-icon-el').className = 'bi ' + (typeIcons[type] || 'bi-file-earmark') + ' fs-1 text-muted';
-                document.getElementById('edit-preview-icon-name').textContent = this.dataset.name;
-                iconWrap.classList.remove('d-none');
-                imgWrap.classList.add('d-none');
-            }
-            new bootstrap.Modal(document.getElementById('modalEditMedia')).show();
-        });
-    });
+    /* Conectar botones de todas las tarjetas ya existentes en el DOM */
+    document.querySelectorAll('.media-card').forEach(wireCardButtons);
 
     document.querySelector('.btn-copy-url-modal')?.addEventListener('click', function () {
         navigator.clipboard.writeText(document.getElementById('modal-url').value);
