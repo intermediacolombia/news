@@ -152,8 +152,3 @@ document.addEventListener('DOMContentLoaded', function() {
 
     console.log('Artemis Theme loaded - Theme:', currentTheme);
 });
-
-// Global functions for audio player
-window.handlePlay = function() { console.log('Play clicked'); };
-window.handlePause = function() { console.log('Pause clicked'); };
-window.handleStop = function() { console.log('Stop clicked'); };

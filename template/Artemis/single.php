@@ -278,8 +278,6 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
     }
 </style>
 <script>
-console.log('TTS Script loaded. TEXT_TO_SPEECH constant:', <?= json_encode(defined('TEXT_TO_SPEECH') ? TEXT_TO_SPEECH : 'undefined') ?>);
-
 const synth = window.speechSynthesis;
 let utterance = null;
 let isPaused = false;
@@ -291,22 +289,13 @@ let currentRate = 1.0;
 
 // Preparar el texto
 window.addEventListener('load', function() {
-    console.log('window.load fired - preparing text');
     const articleContent = document.querySelector('.post-content');
     const title = "<?= addslashes($post['title']) ?>";
     const excerpt = "<?= addslashes(strip_tags($post['excerpt'] ?? '')) ?>";
 
-    console.log('articleContent found:', !!articleContent);
-    if (articleContent) {
-        console.log('articleContent innerText length:', articleContent.innerText.length);
-    }
-
     fullText = (title + '. ' + excerpt + '. ' + (articleContent ? articleContent.innerText : ''))
         .replace(/\s+/g, ' ')
         .trim();
-
-    console.log('fullText prepared, length:', fullText.length);
-    console.log('fullText preview:', fullText.substring(0, 100) + '...');
 
     const wordCount = fullText.split(' ').length;
     totalDuration = Math.ceil((wordCount / 150) * 60);
@@ -326,10 +315,6 @@ function changeSpeed(speed) {
 }
 
 function handlePlay() {
-    console.log('handlePlay called');
-    console.log('fullText is ready:', !!fullText);
-    console.log('fullText length:', fullText.length);
-    
     if (!fullText) {
         console.error('Text not ready yet. Waiting for window.load...');
         return;
