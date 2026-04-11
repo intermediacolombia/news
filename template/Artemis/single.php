@@ -287,17 +287,17 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
 
 <?php if (!empty(TEXT_TO_SPEECH) && TEXT_TO_SPEECH == '1'): ?>
 <style>
-    /* Estilos del reproductor moderno */
+    /* Estilos del reproductor moderno - Colores adaptados al tema Artemis */
     .audio-player-modern {
-        background: linear-gradient(135deg, var(--primary) 0%, var(--color-hover-link) 100%);
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
         border-radius: 16px;
         padding: 20px;
-        box-shadow: 0 8px 32px rgba(0, 123, 255, 0.25);
+        box-shadow: 0 8px 32px rgba(230, 57, 70, 0.25);
         transition: all 0.3s ease;
     }
 
     .audio-player-modern:hover {
-        box-shadow: 0 12px 48px rgba(0, 123, 255, 0.35);
+        box-shadow: 0 12px 48px rgba(230, 57, 70, 0.35);
         transform: translateY(-2px);
     }
 
@@ -325,7 +325,6 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
     .audio-btn-main:hover {
         transform: scale(1.1);
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-        color: var(--color-hover-link);
     }
 
     .audio-btn-main:active {
@@ -359,7 +358,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
     }
 
     .audio-label {
-        color: white;
+        color: var(--text-color);
         font-weight: 600;
         font-size: 14px;
         display: flex;
@@ -395,6 +394,18 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
     @keyframes pulse {
         0%, 100% { transform: scale(1); }
         50% { transform: scale(1.05); }
+    }
+
+    /* Control de velocidad */
+    #speedControl {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    #speedControl option {
+        background: var(--dark-secondary, #2d2d2d);
+        color: white;
     }
 </style>
 <script>
