@@ -292,7 +292,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
     let startTime     = 0;
     let fullText      = '';
 
-    window.addEventListener('load', function () {
+    window.addEventListener('DOMContentLoaded', function () {
         const content = document.querySelector('.post-content');
         const title   = <?= json_encode($post['title']) ?>;
         if (content) {
