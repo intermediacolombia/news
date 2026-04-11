@@ -3,11 +3,25 @@
  * Panel de gestión de comentarios
  */
 require_once __DIR__ . '/../inc/config.php';
-require_once __DIR__ . '/inc/auth.php';
 
-require_login();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-if (!has_permission(25) && !has_role('admin')) {
+if (!isset($_SESSION['usuario_id'])) {
+    header('Location: ' . URLBASE . '/admin/login/');
+    exit;
+}
+
+// Check permission
+$hasPermission = false;
+if (isset($_SESSION['user_permissions'])) {
+    $hasPermission = in_array('Gestionar Comentarios', $_SESSION['user_permissions']) || 
+                     in_array('admin', $_SESSION['user_permissions']) ||
+                     in_array('Ver Logs', $_SESSION['user_permissions']); // Admin workaround
+}
+
+if (!$hasPermission) {
     header('Location: ' . URLBASE . '/admin/');
     exit;
 }

@@ -4,18 +4,27 @@
  * Acciones: approve, hide, delete
  */
 require_once __DIR__ . '/../inc/config.php';
-require_once __DIR__ . '/../admin/inc/auth.php';
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 header('Content-Type: application/json');
 
 // Require admin authentication
-if (!is_logged_in()) {
+if (!isset($_SESSION['usuario_id'])) {
     echo json_encode(['success' => false, 'message' => 'No autorizado']);
     exit;
 }
 
 // Check permission: 25 = Gestionar Comentarios
-if (!has_permission(25) && !has_role('admin')) {
+$hasPermission = false;
+if (isset($_SESSION['user_permissions'])) {
+    $hasPermission = in_array('Gestionar Comentarios', $_SESSION['user_permissions']) || 
+                     in_array('admin', $_SESSION['user_permissions']);
+}
+
+if (!$hasPermission) {
     echo json_encode(['success' => false, 'message' => 'Sin permisos suficientes']);
     exit;
 }

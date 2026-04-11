@@ -185,8 +185,76 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
 
                 <!-- Comentarios -->
                 <div class="bg-light rounded p-4 mb-4">
-                    <h4 class="mb-3"><?= t_theme('theme_comentarios') ?></h4>
-                    <div class="fb-comments" data-href="<?= 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] ?>" data-width="100%" data-numposts="10"></div>
+                    <h4 class="mb-3">
+                        <i class="fas fa-comments text-primary me-2"></i><?= t_theme('theme_comentarios') ?>
+                    </h4>
+                    
+                    <!-- Formulario -->
+                    <div class="mb-4 p-3 bg-white rounded">
+                        <h5 class="mb-3"><?= t_theme('theme_dejar_comentario') ?></h5>
+                        <form id="commentForm">
+                            <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
+                            <input type="text" name="website" style="display:none;" tabindex="-1" autocomplete="off">
+                            <input type="text" name="phone" style="display:none;" tabindex="-1" autocomplete="off">
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label><?= t_theme('theme_nombre') ?> *</label>
+                                    <input type="text" name="nombre" id="commentNombre" required class="form-control">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label><?= t_theme('theme_email') ?> *</label>
+                                    <input type="email" name="email" id="commentEmail" required class="form-control">
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label><?= t_theme('theme_comentario') ?> *</label>
+                                <textarea name="contenido" id="commentContenido" rows="4" required maxlength="2000" class="form-control"></textarea>
+                                <small class="text-muted">Mínimo 10 caracteres, máximo 2000</small>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane me-2"></i><?= t_theme('theme_enviar_comentario') ?>
+                            </button>
+                        </form>
+                        <div id="commentMessage" class="mt-3" style="display:none;"></div>
+                    </div>
+                    
+                    <!-- Lista -->
+                    <div id="commentsList">
+                        <?php
+                        $stmtComments = db()->prepare("
+                            SELECT c.* FROM comments c
+                            WHERE c.post_id = ? AND c.estado = 'approved' AND c.borrado = 0
+                            ORDER BY c.created_at ASC
+                        ");
+                        $stmtComments->execute([$post['id']]);
+                        $comments = $stmtComments->fetchAll();
+                        
+                        if (empty($comments)):
+                        ?>
+                        <div class="text-center py-4 text-muted">
+                            <i class="fas fa-comment-slash fa-2x mb-2"></i>
+                            <p><?= t_theme('theme_sin_comentarios') ?></p>
+                        </div>
+                        <?php else: ?>
+                        <?php foreach ($comments as $comment): ?>
+                        <div class="mb-3 p-3 border-bottom">
+                            <div class="d-flex align-items-start mb-2">
+                                <div class="me-3" style="width: 40px; height: 40px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                                    <?= strtoupper(substr($comment['nombre'], 0, 1)) ?>
+                                </div>
+                                <div>
+                                    <strong><?= htmlspecialchars($comment['nombre']) ?></strong>
+                                    <div class="small text-muted">
+                                        <i class="far fa-clock me-1"></i><?= date('d/m/Y H:i', strtotime($comment['created_at'])) ?>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ms-5"><?= nl2br(htmlspecialchars($comment['contenido'])) ?></div>
+                        </div>
+                        <?php endforeach; ?>
+                        <?php endif; ?>
+                    </div>
                 </div>
 
                 <!-- Noticias relacionadas -->
@@ -568,5 +636,54 @@ window.addEventListener('beforeunload', () => {
 });
 </script>
 <?php endif; ?>
+
+<!-- JavaScript para formulario de comentarios -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const commentForm = document.getElementById('commentForm');
+    const commentMessage = document.getElementById('commentMessage');
+    
+    if (commentForm) {
+        commentForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(commentForm);
+            const submitBtn = commentForm.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Enviando...';
+            
+            fetch('<?= URLBASE ?>/actions/add_comment.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                commentMessage.style.display = 'block';
+                if (data.success) {
+                    commentMessage.className = 'alert alert-success';
+                    commentMessage.innerHTML = '<i class="fas fa-check-circle me-2"></i>' + data.message;
+                    commentForm.reset();
+                    setTimeout(() => location.reload(), 2000);
+                } else {
+                    commentMessage.className = 'alert alert-danger';
+                    commentMessage.innerHTML = '<i class="fas fa-exclamation-circle me-2"></i>' + data.message;
+                }
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            })
+            .catch(err => {
+                commentMessage.style.display = 'block';
+                commentMessage.className = 'alert alert-danger';
+                commentMessage.innerHTML = '<i class="fas fa-exclamation-circle me-2"></i>Error al enviar. Intenta nuevamente.';
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+                console.error(err);
+            });
+        });
+    }
+});
+</script>
 
         
