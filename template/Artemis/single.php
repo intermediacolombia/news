@@ -147,21 +147,45 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                         </div>
 
                         <?php if (!empty(TEXT_TO_SPEECH) && TEXT_TO_SPEECH == '1'): ?>
-                        <div class="audio-player-modern mb-4" style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); border-radius: 16px; padding: 20px;">
-                            <div class="d-flex align-items-center gap-3">
-                                <button id="playBtn" class="audio-btn-main" onclick="handlePlay()" title="Reproducir" style="width: 56px; height: 56px; border-radius: 50%; background: #fff; border: none; color: var(--primary); font-size: 20px; display: flex; align-items: center; justify-content: center; cursor: pointer;">
-                                    <i class="fas fa-play" id="playIcon"></i>
-                                </button>
-                                <div class="flex-grow-1">
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <span style="color: var(--text-color); font-weight: 600;">
-                                            <i class="fas fa-headphones mr-2"></i>Escuchar artículo
-                                        </span>
-                                        <span id="timeDisplay" style="color: rgba(255,255,255,0.9); font-size: 13px;">0:00</span>
+                        <div class="audio-player-modern mb-4">
+                            <div class="audio-player-inner">
+                                <div class="d-flex align-items-center gap-3">
+                                    <!-- Botón Play/Pause -->
+                                    <button id="playBtn" class="audio-btn-main" onclick="handlePlay()" title="Reproducir">
+                                        <i class="fas fa-play" id="playIcon"></i>
+                                    </button>
+
+                                    <!-- Info y Progreso -->
+                                    <div class="audio-info">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span class="audio-label">
+                                                <i class="fas fa-headphones me-2"></i><?= t_theme('theme_escuchar_articulo') ?>
+                                            </span>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <!-- Control de Velocidad -->
+                                                <select id="speedControl" class="form-select form-select-sm" style="width: auto; font-size: 12px; padding: 2px 8px; background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3);" onchange="changeSpeed(this.value)">
+                                                    <option value="0.5">0.5x</option>
+                                                    <option value="0.75">0.75x</option>
+                                                    <option value="1" selected>1x</option>
+                                                    <option value="1.25">1.25x</option>
+                                                    <option value="1.5">1.5x</option>
+                                                    <option value="1.75">1.75x</option>
+                                                    <option value="2">2x</option>
+                                                </select>
+                                                <span class="audio-time" id="timeDisplay">0:00</span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Barra de progreso -->
+                                        <div class="audio-progress-container">
+                                            <div class="audio-progress-bar" id="audioProgress"></div>
+                                        </div>
                                     </div>
-                                    <div style="height: 6px; background: rgba(255,255,255,0.2); border-radius: 10px; overflow: hidden;">
-                                        <div id="audioProgress" style="height: 100%; background: #fff; border-radius: 10px; width: 0%;"></div>
-                                    </div>
+
+                                    <!-- Botón Stop -->
+                                    <button id="stopBtn" class="audio-btn-stop d-none" onclick="handleStop()" title="Detener">
+                                        <i class="fas fa-stop"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -263,12 +287,108 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
 
 <?php if (!empty(TEXT_TO_SPEECH) && TEXT_TO_SPEECH == '1'): ?>
 <style>
-    .audio-player-modern:hover {
-        box-shadow: 0 12px 48px rgba(230, 57, 70, 0.35);
+    /* Estilos del reproductor moderno */
+    .audio-player-modern {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--color-hover-link) 100%);
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 8px 32px rgba(0, 123, 255, 0.25);
+        transition: all 0.3s ease;
     }
+
+    .audio-player-modern:hover {
+        box-shadow: 0 12px 48px rgba(0, 123, 255, 0.35);
+        transform: translateY(-2px);
+    }
+
+    .audio-player-inner {
+        position: relative;
+    }
+
+    .audio-btn-main {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: white;
+        border: none;
+        color: var(--primary);
+        font-size: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        flex-shrink: 0;
+    }
+
     .audio-btn-main:hover {
         transform: scale(1.1);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        color: var(--color-hover-link);
     }
+
+    .audio-btn-main:active {
+        transform: scale(0.95);
+    }
+
+    .audio-btn-stop {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        border: 2px solid white;
+        color: white;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        flex-shrink: 0;
+    }
+
+    .audio-btn-stop:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.1);
+    }
+
+    .audio-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .audio-label {
+        color: white;
+        font-weight: 600;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+    }
+
+    .audio-time {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 13px;
+        font-weight: 500;
+        font-family: 'Courier New', monospace;
+    }
+
+    .audio-progress-container {
+        height: 6px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .audio-progress-bar {
+        height: 100%;
+        background: white;
+        border-radius: 10px;
+        transition: width 0.1s linear;
+        width: 0%;
+    }
+
     .audio-btn-main.playing {
         animation: pulse 2s infinite;
     }
@@ -325,12 +445,20 @@ function handlePlay() {
         return;
     }
 
-    if (synth.speaking && !isPaused) return;
+    // Si está reproduciendo, pausar
+    if (synth.speaking && !isPaused) {
+        isPaused = true;
+        synth.cancel();
+        updateUI('paused');
+        return;
+    }
 
+    // Si está pausado, reanudar
     if (isPaused) {
         isPaused = false;
         speak(currentPosition);
     } else {
+        // Iniciar desde el principio
         currentPosition = 0;
         startTime = Date.now();
         speak(0);
@@ -397,12 +525,25 @@ function handleStop() {
 function updateUI(state) {
     const playIcon = document.getElementById('playIcon');
     const playBtn = document.getElementById('playBtn');
+    const stopBtn = document.getElementById('stopBtn');
     
     if (playIcon) {
         playIcon.className = state === 'playing' ? 'fas fa-pause' : 'fas fa-play';
     }
     if (playBtn) {
         playBtn.title = state === 'playing' ? 'Pausar' : 'Reproducir';
+        if (state === 'playing') {
+            playBtn.classList.add('playing');
+        } else {
+            playBtn.classList.remove('playing');
+        }
+    }
+    if (stopBtn) {
+        if (state === 'stopped') {
+            stopBtn.classList.add('d-none');
+        } else {
+            stopBtn.classList.remove('d-none');
+        }
     }
 }
 
