@@ -63,6 +63,7 @@ $stats = $statsStmt->fetch();
 $page_title = 'Gestión de Comentarios';
 include __DIR__ . '/inc/header.php';
 ?>
+<?php require_once __DIR__ . '/inc/menu.php'; ?>
 
 <div class="container-fluid py-4">
     <div class="row">
