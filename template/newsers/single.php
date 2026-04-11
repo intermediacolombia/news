@@ -93,7 +93,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                     <div class="d-flex align-items-center flex-wrap gap-3">
                         <span><i class="fa fa-calendar-alt me-1 text-primary"></i> <?= fecha_espanol(date("F d, Y", strtotime($post['created_at']))) ?></span>
                         <?php if (!empty($post['author'])): ?>
-                            <span><i class="fa fa-user-edit me-1 text-primary"></i> <?= htmlspecialchars($post['author']) ?></span>
+                            <span><i class="fa fa-user-edit me-1 text-primary"></i> <a href="<?= URLBASE ?>/autor/<?= urlencode($post['author']) ?>/" class="text-decoration-none"><?= htmlspecialchars($post['author']) ?></a></span>
                         <?php endif; ?>
                     </div>
                     <span><i class="fa fa-eye me-1 text-primary"></i> <?= number_format($totalViews) ?> <?= t_theme('theme_vistas') ?></span>

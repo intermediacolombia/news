@@ -159,7 +159,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                     <ul class="post-info-dark mb-30">
                         <?php if ($authorData): ?>
                         <li>
-                            <a href="#">
+                            <a href="<?= URLBASE ?>/autor/<?= urlencode($authorData['nombre'] . ' ' . $authorData['apellido']) ?>/">
                                 <span><?= t_theme('theme_por') ?></span> <?= htmlspecialchars($authorData['nombre'] . ' ' . $authorData['apellido']) ?>
                             </a>
                         </li>
@@ -316,9 +316,9 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                     <?php if ($authorData): ?>
                     <div class="author-info p-35-r mb-50 border-all">
                         <div class="media media-none-xs">
-                            <?php 
-                            $fotoAutor = !empty($authorData['foto_perfil']) 
-                                ? img_url($authorData['foto_perfil']) 
+                            <?php
+                            $fotoAutor = !empty($authorData['foto_perfil'])
+                                ? img_url($authorData['foto_perfil'])
                                 : 'data:image/svg+xml;base64,' . base64_encode('
                                 <svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
                                     <rect width="200" height="200" fill="#667eea"/>
@@ -327,13 +327,17 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                                     </text>
                                 </svg>');
                             ?>
-                            <img src="<?= $fotoAutor ?>" 
-                                 alt="<?= htmlspecialchars($authorData['nombre'] . ' ' . $authorData['apellido']) ?>" 
-                                 class="img-fluid rounded-circle"
-                                 style="width: 120px; height: 120px; object-fit: cover;">
+                            <a href="<?= URLBASE ?>/autor/<?= urlencode($authorData['nombre'] . ' ' . $authorData['apellido']) ?>/">
+                                <img src="<?= $fotoAutor ?>"
+                                     alt="<?= htmlspecialchars($authorData['nombre'] . ' ' . $authorData['apellido']) ?>"
+                                     class="img-fluid rounded-circle"
+                                     style="width: 120px; height: 120px; object-fit: cover;">
+                            </a>
                             <div class="media-body pt-10 media-margin30">
                                 <h3 class="size-lg mb-5">
-                                    <?= htmlspecialchars($authorData['nombre'] . ' ' . $authorData['apellido']) ?>
+                                    <a href="<?= URLBASE ?>/autor/<?= urlencode($authorData['nombre'] . ' ' . $authorData['apellido']) ?>/" style="color: inherit; text-decoration: none;">
+                                        <?= htmlspecialchars($authorData['nombre'] . ' ' . $authorData['apellido']) ?>
+                                    </a>
                                 </h3>
                                 <div class="post-by mb-5"><?= t_theme('theme_autor') ?></div>
                                 <p class="mb-15">

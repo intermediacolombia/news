@@ -215,7 +215,7 @@ function getFeaturedPostsByCategory($categoryId, $limit = 2) {
                                     </a>
                                     <div class="d-flex justify-content-between">
                                         <?php if (!empty($newsItem['author'])): ?>
-                                        <span class="small text-body">Por <?= htmlspecialchars($newsItem['author']) ?></span>
+                                        <span class="small text-body">Por <a href="<?= URLBASE ?>/autor/<?= urlencode($newsItem['author']) ?>/" class="text-decoration-none"><?= htmlspecialchars($newsItem['author']) ?></a></span>
                                         <?php else: ?>
                                         <span class="small text-body">Por <?= htmlspecialchars($sys['site_name'] ?? 'Admin') ?></span>
                                         <?php endif; ?>
@@ -257,7 +257,7 @@ function getFeaturedPostsByCategory($categoryId, $limit = 2) {
                                                 </a>
                                                 <div class="d-flex justify-content-between mt-4">
                                                     <?php if (!empty($featPost['author'])): ?>
-                                                    <span class="small text-white link-hover">Por <?= htmlspecialchars($featPost['author']) ?></span>
+                                                    <span class="small text-white link-hover">Por <a href="<?= URLBASE ?>/autor/<?= urlencode($featPost['author']) ?>/" class="text-white"><?= htmlspecialchars($featPost['author']) ?></a></span>
                                                     <?php else: ?>
                                                     <span class="small text-white link-hover">Por <?= htmlspecialchars($sys['site_name'] ?? 'Admin') ?></span>
                                                     <?php endif; ?>

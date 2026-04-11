@@ -47,9 +47,15 @@ $latestNews = db()->query($sqlLatest)->fetchAll();
                             <ul>
                                 <li>
                                     <span><?= t_theme('theme_por') ?></span>
+                                    <?php if (!empty($news['author'])): ?>
+                                    <a href="<?= URLBASE ?>/autor/<?= urlencode($news['author']) ?>/">
+                                        <?= htmlspecialchars($news['author'] ?? 'Admin') ?>
+                                    </a>
+                                    <?php else: ?>
                                     <a href="<?= $postUrl ?>">
                                         <?= htmlspecialchars($news['author'] ?? 'Admin') ?>
                                     </a>
+                                    <?php endif; ?>
                                 </li>
                                 <li>
                                     <span>

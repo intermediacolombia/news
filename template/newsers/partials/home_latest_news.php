@@ -50,7 +50,7 @@ $latestNews = db()->query($sqlLatest)->fetchAll();
                         </a>
                         <div class="d-flex justify-content-between">
                             <?php if (!empty($news['author'])): ?>
-                            <span class="small text-body"><?= t_theme('theme_por') ?> <?= htmlspecialchars($news['author']) ?></span>
+                            <span class="small text-body"><?= t_theme('theme_por') ?> <a href="<?= URLBASE ?>/autor/<?= urlencode($news['author']) ?>/" class="text-decoration-none"><?= htmlspecialchars($news['author']) ?></a></span>
                             <?php else: ?>
                             <span class="small text-body"><?= t_theme('theme_por') ?> <?= htmlspecialchars($sys['site_name'] ?? 'Admin') ?></span>
                             <?php endif; ?>

@@ -71,7 +71,11 @@ $themeColors = ['color-apple', 'color-pomegranate', 'color-java', 'color-mandy',
                                 <ul>
                                     <li>
                                         <span><?= t_theme('theme_por') ?></span>
+                                        <?php if (!empty($cat['last_post_author'])): ?>
+                                        <a href="<?= URLBASE ?>/autor/<?= urlencode($cat['last_post_author']) ?>/"><?= htmlspecialchars($cat['last_post_author']) ?></a>
+                                        <?php else: ?>
                                         <a href="#"><?= htmlspecialchars($cat['last_post_author']) ?></a>
+                                        <?php endif; ?>
                                     </li>
                                     <li>
                                         <span>

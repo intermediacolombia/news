@@ -69,7 +69,11 @@ $isotopePosts = db()->query($sqlIsotope)->fetchAll();
                                         <ul>
                                             <li>
                                                 <span><?= t_theme('theme_por') ?></span>
+                                                <?php if (!empty($post['author'])): ?>
+                                                <a href="<?= URLBASE ?>/autor/<?= urlencode($post['author']) ?>/"><?= htmlspecialchars($post['author'] ?? 'Admin') ?></a>
+                                                <?php else: ?>
                                                 <a href="<?= $postUrl ?>"><?= htmlspecialchars($post['author'] ?? 'Admin') ?></a>
+                                                <?php endif; ?>
                                             </li>
                                             <li>
                                                 <span>

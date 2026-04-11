@@ -86,6 +86,23 @@ if ($parts[0] === 'buscar') {
     }
 
 // ===============================
+// AUTOR: /autor/nombre-apellido/
+// /autor/nombre-apellido/page/2/
+// ===============================
+} elseif ($parts[0] === 'autor') {
+    $_GET['page'] = 'author';
+    if (isset($parts[1]) && !empty($parts[1])) {
+        // /autor/nombre/page/2/
+        if ($parts[2] === 'page' && isset($parts[3])) {
+            $_GET['author_slug'] = urldecode($parts[1]);
+            $_GET['page_num'] = (int)$parts[3];
+        } else {
+            $_GET['author_slug'] = urldecode($parts[1]);
+        }
+    }
+    $templateFile = __DIR__ . "/template/" . THEME . "/author.php";
+
+// ===============================
 // Single post: /categoria/post/
 // IMPORTANTE: DEBE IR DESPUÉS DE TODAS LAS RUTAS ESPECIALES
 // ===============================
