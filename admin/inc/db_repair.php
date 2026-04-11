@@ -21,10 +21,45 @@ function repair_database(): array {
         'tables'      => [],
         'columns'     => [],
         'indexes'     => [],
+        'translations'=> [],
         'errors'      => [],
     ];
 
     try {
+        // =====================================================================
+        // SECCIÓN 0: TRADUCCIONES NUEVAS
+        // Agregar aquí cada nueva traducción necesaria para el sistema.
+        // Formato: [lang_code, trans_key, trans_value]
+        // =====================================================================
+        $translations = [
+            // Author page translations
+            ['es', 'theme_articulo_publicado', 'artículo publicado'],
+            ['es', 'theme_articulos_publicados', 'artículos publicados'],
+            ['en', 'theme_articulo_publicado', 'published article'],
+            ['en', 'theme_articulos_publicados', 'published articles'],
+        ];
+
+        foreach ($translations as [$langCode, $transKey, $transValue]) {
+            try {
+                $stmt = db()->prepare("
+                    SELECT COUNT(*) FROM system_translations
+                    WHERE lang_code = ? AND trans_key = ?
+                ");
+                $stmt->execute([$langCode, $transKey]);
+                if ($stmt->fetchColumn() == 0) {
+                    db()->prepare("
+                        INSERT INTO system_translations (lang_code, trans_key, trans_value, created_at, updated_at)
+                        VALUES (?, ?, ?, NOW(), NOW())
+                    ")->execute([$langCode, $transKey, $transValue]);
+                    $results['translations'][] = "Agregada traducción: $transKey ($langCode)";
+                } else {
+                    $results['translations'][] = "Ya existe traducción: $transKey ($langCode)";
+                }
+            } catch (Exception $e) {
+                $results['errors'][] = "Error traducción $transKey ($langCode): " . $e->getMessage();
+            }
+        }
+
         // =====================================================================
         // SECCIÓN 1: PERMISOS
         // Formato: [id, 'Nombre permiso', 'Categoría']
