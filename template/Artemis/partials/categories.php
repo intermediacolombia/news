@@ -11,9 +11,25 @@ $categories = db()->query("
     LIMIT 6
 ")->fetchAll();
 
+// Obtener una imagen aleatoria por categoría
+$catImages = [];
+foreach ($categories as $cat) {
+    $stmt = db()->prepare("
+        SELECT p.image
+        FROM blog_posts p
+        INNER JOIN blog_post_category pc ON pc.post_id = p.id
+        WHERE pc.category_id = ? AND p.status = 'published' AND p.deleted = 0 AND p.image IS NOT NULL AND p.image != ''
+        ORDER BY RAND()
+        LIMIT 1
+    ");
+    $stmt->execute([$cat['id']]);
+    $img = $stmt->fetchColumn();
+    $catImages[$cat['id']] = $img ?: null;
+}
+
 if (!function_exists('img_url')) {
     function img_url(?string $path): string {
-        if (empty($path)) return URLBASE . '/template/Artemis/img/category.jpg';
+        if (empty($path)) return URLBASE . '/template/Artemis/img/placeholder.jpg';
         if (preg_match('#^https?://#i', $path)) return $path;
         return URLBASE . '/' . ltrim($path, '/');
     }
@@ -33,19 +49,19 @@ if (!function_exists('img_url')) {
                 $catUrl = URLBASE . '/noticias/' . htmlspecialchars($cat['slug']) . '/';
             ?>
             <div class="col-lg-4 col-md-6 mb-4">
-                <a href="<?= $catUrl ?>" 
+                <a href="<?= $catUrl ?>"
                    class="category-card d-block"
                    style="position: relative; border-radius: 16px; overflow: hidden; height: 150px; text-decoration: none;">
-                    <div style="width: 100%; height: 100%; background: linear-gradient(135deg, var(--secondary), var(--dark)); display: flex; align-items: center; justify-content: center;">
-                        <i class="fas fa-folder" style="font-size: 40px; color: rgba(255,255,255,0.3);"></i>
-                    </div>
-                    
+                    <img src="<?= img_url($catImages[$cat['id']] ?? null) ?>"
+                         alt="<?= htmlspecialchars($cat['name']) ?>"
+                         style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease;">
+
                     <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(transparent, rgba(0,0,0,0.8)); display: flex; align-items: flex-end; padding: 20px;">
                         <div>
-                            <h4 style="color: var(--text-color); font-size: 20px; font-weight: 600; margin: 0;">
+                            <h4 style="color: #fff; font-size: 20px; font-weight: 600; margin: 0; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">
                                 <?= htmlspecialchars($cat['name']) ?>
                             </h4>
-                            <span style="color: var(--text-muted); font-size: 14px;">
+                            <span style="color: rgba(255,255,255,0.8); font-size: 14px;">
                                 <?= $cat['total'] ?> <?= $cat['total'] === 1 ? 'artículo' : 'artículos' ?>
                             </span>
                         </div>
