@@ -278,191 +278,145 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
     }
 </style>
 <script>
-(function () {
-    if (!('speechSynthesis' in window)) return;
+const synth = window.speechSynthesis;
+let utterance = null;
+let isPaused = false;
+let currentPosition = 0;
+let fullText = '';
+let startTime = 0;
+let totalDuration = 0;
+let currentRate = 1.0;
 
-    const synth       = window.speechSynthesis;
-    let chunks        = [];      // oraciones divididas
-    let chunkIndex    = 0;       // índice de la oración actual
-    let charsSpoken   = 0;       // chars en chunks anteriores al actual
-    let isPaused      = false;
-    let utterance     = null;
-    let keepAliveTimer    = null;
-    let keepAlivePausing  = false; // true durante el ciclo pause/resume del keep-alive
-    let startTime     = 0;
-    let fullText      = '';
+// Preparar el texto
+window.addEventListener('load', function() {
+    const articleContent = document.querySelector('.post-content');
+    const title = "<?= addslashes($post['title']) ?>";
+    const excerpt = "<?= addslashes(strip_tags($post['excerpt'] ?? '')) ?>";
 
-    function initFullText() {
-        const content = document.querySelector('.post-content');
-        const title   = <?= json_encode($post['title']) ?>;
-        if (content) {
-            fullText = (title + '. ' + content.innerText).replace(/\s+/g, ' ').trim();
+    fullText = (title + '. ' + excerpt + '. ' + articleContent.innerText)
+        .replace(/\s+/g, ' ')
+        .trim();
+
+    const wordCount = fullText.split(' ').length;
+    totalDuration = Math.ceil((wordCount / 150) * 60);
+});
+
+function changeSpeed(speed) {
+    currentRate = parseFloat(speed);
+
+    // Si está reproduciendo, reiniciar con nueva velocidad
+    if (synth.speaking && !isPaused) {
+        const wasPlaying = true;
+        synth.cancel();
+        if (wasPlaying) {
+            setTimeout(() => speak(currentPosition), 100);
         }
     }
+}
 
-    // Intentar obtener el texto inmediatamente si el DOM ya está listo
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initFullText);
+function handlePlay() {
+    if (!('speechSynthesis' in window)) {
+        alert('Tu navegador no soporta Text-to-Speech. Intenta con Chrome, Firefox o Edge.');
+        return;
+    }
+
+    if (synth.speaking && !isPaused) return;
+
+    if (isPaused) {
+        isPaused = false;
+        speak(currentPosition);
     } else {
-        initFullText();
+        currentPosition = 0;
+        startTime = Date.now();
+        speak(0);
+    }
+}
+
+function speak(startOffset) {
+    synth.cancel();
+
+    const textToSpeak = fullText.substring(startOffset);
+    utterance = new SpeechSynthesisUtterance(textToSpeak);
+    utterance.lang = 'es-ES';
+    utterance.rate = currentRate;
+    utterance.pitch = 1.0;
+    utterance.volume = 1.0;
+
+    const voices = synth.getVoices();
+    const spanishVoice = voices.find(voice => voice.lang.startsWith('es'));
+    if (spanishVoice) {
+        utterance.voice = spanishVoice;
     }
 
-    // Dividir en trozos de ~200 chars (por oraciones) para evitar el bug de Chrome en textos largos
-    function splitChunks(text, maxLen) {
-        maxLen = maxLen || 200;
-        var sentences = text.match(/[^.!?]+[.!?]*/g) || [text];
-        var result = [], current = '';
-        sentences.forEach(function (s) {
-            if ((current + s).length > maxLen && current) {
-                result.push(current.trim());
-                current = s;
-            } else {
-                current += s;
-            }
-        });
-        if (current.trim()) result.push(current.trim());
-        return result.length ? result : [text];
-    }
+    utterance.onstart = () => {
+        updateUI('playing');
+        updateTime();
+    };
 
-    // Keep-alive: evita que Chrome corte el audio a los ~15 s
-    // keepAlivePausing evita que el onend del utterance se dispare erroneamente
-    function startKeepAlive() {
-        stopKeepAlive();
-        keepAliveTimer = setInterval(function () {
-            if (synth.speaking && !isPaused && !keepAlivePausing) {
-                keepAlivePausing = true;
-                synth.pause();
-                synth.resume();
-                setTimeout(function () { keepAlivePausing = false; }, 300);
-            }
-        }, 10000);
-    }
+    utterance.onboundary = (event) => {
+        currentPosition = startOffset + event.charIndex;
+        const progress = (currentPosition / fullText.length) * 100;
+        document.getElementById('audioProgress').style.width = progress + '%';
+    };
 
-    function stopKeepAlive() {
-        if (keepAliveTimer) { clearInterval(keepAliveTimer); keepAliveTimer = null; }
-        keepAlivePausing = false;
-    }
-
-    function setPlayState(playing) {
-        var icon = document.getElementById('playIcon');
-        var btn  = document.getElementById('playBtn');
-        if (!icon || !btn) return;
-        icon.className = playing ? 'fas fa-pause' : 'fas fa-play';
-        btn.title = playing ? 'Pausar' : 'Reproducir';
-    }
-
-    function getEsVoice() {
-        return synth.getVoices().find(function (v) { return v.lang.startsWith('es'); }) || null;
-    }
-
-    function speakChunk(index) {
-        if (index >= chunks.length) {
-            // Terminó
-            chunkIndex = 0; charsSpoken = 0; isPaused = false;
-            setPlayState(false);
-            stopKeepAlive();
-            var bar  = document.getElementById('audioProgress');
-            var time = document.getElementById('timeDisplay');
-            if (bar)  bar.style.width = '0%';
-            if (time) time.textContent = '0:00';
-            return;
-        }
-
-        chunkIndex = index;
-        utterance  = new SpeechSynthesisUtterance(chunks[index]);
-        utterance.rate = 1.0;
-        var voice = getEsVoice();
-        if (voice) utterance.voice = voice;
-        utterance.lang = voice ? voice.lang : 'es-ES';
-
-        utterance.onstart = function () {
-            setPlayState(true);
-            if (index === 0) { startTime = Date.now(); updateTime(); startKeepAlive(); }
-        };
-
-        utterance.onboundary = function (e) {
-            var total = charsSpoken + (e.charIndex || 0);
-            var pct   = fullText.length ? (total / fullText.length) * 100 : 0;
-            var bar   = document.getElementById('audioProgress');
-            if (bar) bar.style.width = Math.min(pct, 100) + '%';
-        };
-
-        utterance.onend = function () {
-            if (keepAlivePausing || isPaused) return; // ignorar fin espurio del keep-alive o pausa
-            charsSpoken += chunks[index].length + 1;
-            speakChunk(index + 1);
-        };
-
-        utterance.onerror = function (e) {
-            if (e.error === 'interrupted' || e.error === 'canceled') return;
-            setPlayState(false);
-            stopKeepAlive();
-        };
-
-        synth.speak(utterance);
-    }
-
-    function doStart(fromChunk, fromCharsSpoken) {
-        fromChunk = fromChunk || 0;
-        fromCharsSpoken = fromCharsSpoken || 0;
-        chunks = splitChunks(fullText, 200);
-        chunkIndex  = fromChunk;
-        charsSpoken = fromCharsSpoken;
-        isPaused    = false;
-
-        function run() { speakChunk(fromChunk); }
-        if (synth.getVoices().length > 0) { run(); }
-        else { speechSynthesis.addEventListener('voiceschanged', run, { once: true }); }
-    }
-
-    function updateTime() {
-        var elapsed = Math.floor((Date.now() - startTime) / 1000);
-        var m = Math.floor(elapsed / 60);
-        var s = elapsed % 60;
-        var el = document.getElementById('timeDisplay');
-        if (el) el.textContent = m + ':' + String(s).padStart(2, '0');
-        if (synth.speaking || isPaused) setTimeout(updateTime, 1000);
-    }
-
-    window.handlePlay = function () {
-        if (!fullText) {
-            // Si el texto aún no está listo, intentar obtenerlo de nuevo
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', function() {
-                    const content = document.querySelector('.post-content');
-                    const title   = <?= json_encode($post['title']) ?>;
-                    if (content) {
-                        fullText = (title + '. ' + content.innerText).replace(/\s+/g, ' ').trim();
-                    }
-                    if (fullText) window.handlePlay();
-                }, { once: true });
-            }
-            return;
-        }
-
-        if (isPaused) {
-            // Reanudar desde el chunk donde se pausó
-            var savedChunk = chunkIndex;
-            var savedChars = charsSpoken;
-            synth.cancel();
-            doStart(savedChunk, savedChars);
-            startKeepAlive();
-            updateTime();
-        } else if (synth.speaking) {
-            // Pausar
-            isPaused = true;
-            synth.cancel();
-            stopKeepAlive();
-            setPlayState(false);
-        } else {
-            // Iniciar desde el principio
-            if (!chunks.length) chunks = splitChunks(fullText, 200);
-            synth.cancel();
-            doStart(0, 0);
+    utterance.onend = () => {
+        if (!isPaused) {
+            handleStop();
         }
     };
 
-    window.addEventListener('beforeunload', function () { synth.cancel(); });
-})();
+    utterance.onerror = (event) => {
+        if (event.error !== 'canceled' && event.error !== 'interrupted') {
+            console.error('Error en Text-to-Speech:', event);
+        }
+    };
+
+    synth.speak(utterance);
+}
+
+function handlePause() {
+    if (synth.speaking) {
+        isPaused = true;
+        synth.cancel();
+        updateUI('paused');
+    }
+}
+
+function handleStop() {
+    synth.cancel();
+    isPaused = false;
+    currentPosition = 0;
+    updateUI('stopped');
+}
+
+function updateUI(state) {
+    const playIcon = document.getElementById('playIcon');
+    const playBtn = document.getElementById('playBtn');
+    
+    if (playIcon) {
+        playIcon.className = state === 'playing' ? 'fas fa-pause' : 'fas fa-play';
+    }
+    if (playBtn) {
+        playBtn.title = state === 'playing' ? 'Pausar' : 'Reproducir';
+    }
+}
+
+function updateTime() {
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+    const minutes = Math.floor(elapsed / 60);
+    const seconds = elapsed % 60;
+    const timeDisplay = document.getElementById('timeDisplay');
+    if (timeDisplay) {
+        timeDisplay.textContent = minutes + ':' + String(seconds).padStart(2, '0');
+    }
+    
+    if (synth.speaking && !isPaused) {
+        setTimeout(updateTime, 1000);
+    }
+}
+
+window.addEventListener('beforeunload', function () {
+    synth.cancel();
+});
 </script>
 <?php endif; ?>
