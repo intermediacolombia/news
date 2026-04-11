@@ -61,7 +61,7 @@ $statsStmt = db()->query("
 $stats = $statsStmt->fetch();
 
 $page_title = 'Gestión de Comentarios';
-include __DIR__ . '/inc/header_admin.php';
+include __DIR__ . '/inc/header.php';
 ?>
 
 <div class="container-fluid py-4">
@@ -296,4 +296,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<?php include __DIR__ . '/inc/footer_admin.php'; ?>
+<?php include __DIR__ . '/inc/menu-footer.php'; ?>
