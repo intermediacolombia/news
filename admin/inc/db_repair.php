@@ -37,6 +37,29 @@ function repair_database(): array {
             ['es', 'theme_articulos_publicados', 'artículos publicados'],
             ['en', 'theme_articulo_publicado', 'published article'],
             ['en', 'theme_articulos_publicados', 'published articles'],
+            // Comments system translations
+            ['es', 'theme_comentarios', 'Comentarios'],
+            ['es', 'theme_dejar_comentario', 'Dejar un comentario'],
+            ['es', 'theme_nombre', 'Nombre'],
+            ['es', 'theme_email', 'Correo electrónico'],
+            ['es', 'theme_comentario', 'Comentario'],
+            ['es', 'theme_enviar_comentario', 'Enviar comentario'],
+            ['es', 'theme_comentario_enviado', 'Tu comentario ha sido enviado y está pendiente de aprobación'],
+            ['es', 'theme_comentario_error', 'Error al enviar el comentario'],
+            ['es', 'theme_sin_comentarios', 'Aún no hay comentarios. ¡Sé el primero en comentar!'],
+            ['es', 'theme_comentarios_post', 'comentarios'],
+            ['es', 'theme_responder', 'Responder'],
+            ['en', 'theme_comentarios', 'Comments'],
+            ['en', 'theme_dejar_comentario', 'Leave a comment'],
+            ['en', 'theme_nombre', 'Name'],
+            ['en', 'theme_email', 'Email'],
+            ['en', 'theme_comentario', 'Comment'],
+            ['en', 'theme_enviar_comentario', 'Submit comment'],
+            ['en', 'theme_comentario_enviado', 'Your comment has been sent and is pending approval'],
+            ['en', 'theme_comentario_error', 'Error sending comment'],
+            ['en', 'theme_sin_comentarios', 'No comments yet. Be the first to comment!'],
+            ['en', 'theme_comentarios_post', 'comments'],
+            ['en', 'theme_responder', 'Reply'],
         ];
 
         foreach ($translations as [$langCode, $transKey, $transValue]) {
@@ -68,6 +91,7 @@ function repair_database(): array {
         $newPermissions = [
             [23, 'Ver Logs',         'Sistema'],
             [24, 'Actualizar Sistema', 'Sistema'],
+            [25, 'Gestionar Comentarios', 'Contenido'],
         ];
 
         foreach ($newPermissions as [$id, $name, $category]) {
@@ -104,6 +128,27 @@ function repair_database(): array {
                   KEY `idx_user_id`    (`user_id`),
                   KEY `idx_action`     (`action`),
                   KEY `idx_entity`     (`entity_type`, `entity_id`),
+                  KEY `idx_created_at` (`created_at`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+            ",
+            'comments' => "
+                CREATE TABLE IF NOT EXISTS `comments` (
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `post_id` int NOT NULL,
+                  `user_id` int DEFAULT NULL,
+                  `nombre` varchar(100) NOT NULL,
+                  `email` varchar(150) NOT NULL,
+                  `contenido` text NOT NULL,
+                  `estado` enum('pending','approved','hidden') NOT NULL DEFAULT 'pending',
+                  `ip_address` varchar(45) DEFAULT NULL,
+                  `user_agent` text,
+                  `borrado` tinyint(1) NOT NULL DEFAULT '0',
+                  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+                  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                  PRIMARY KEY (`id`),
+                  KEY `idx_post_id` (`post_id`),
+                  KEY `idx_user_id` (`user_id`),
+                  KEY `idx_estado` (`estado`),
                   KEY `idx_created_at` (`created_at`)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
             ",

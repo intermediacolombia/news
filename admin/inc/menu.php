@@ -48,6 +48,21 @@
         </div>
     <?php endif; ?>
 
+    <!-- COMENTARIOS -->
+    <?php if (isset($_SESSION["user_permissions"]) && (in_array('Gestionar Comentarios', $_SESSION["user_permissions"]) || in_array('admin', $_SESSION["user_permissions"]))): ?>
+        <?php
+        // Get pending comments count
+        $pendingStmt = db()->query("SELECT COUNT(*) FROM comments WHERE estado = 'pending' AND borrado = 0");
+        $pendingCount = $pendingStmt->fetchColumn();
+        ?>
+        <a href="<?php echo URLBASE; ?>/admin/comments.php" onclick="closeSubmenus()">
+            <i class="fa fa-comments"></i> Comentarios
+            <?php if ($pendingCount > 0): ?>
+            <span class="badge bg-danger"><?php echo $pendingCount; ?></span>
+            <?php endif; ?>
+        </a>
+    <?php endif; ?>
+
     <!-- MULTIMEDIA -->
 <?php if (isset($_SESSION["user_permissions"]) && in_array('Gestionar Multimedia', $_SESSION["user_permissions"])): ?>
     <a href="<?php echo URLBASE; ?>/admin/multimedia/" onclick="closeSubmenus()">
