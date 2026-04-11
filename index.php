@@ -93,7 +93,7 @@ if ($parts[0] === 'buscar') {
     $_GET['page'] = 'author';
     if (isset($parts[1]) && !empty($parts[1])) {
         // /autor/nombre/page/2/
-        if ($parts[2] === 'page' && isset($parts[3])) {
+        if (isset($parts[2]) && $parts[2] === 'page' && isset($parts[3])) {
             $_GET['author_slug'] = urldecode($parts[1]);
             $_GET['page_num'] = (int)$parts[3];
         } else {

@@ -26,11 +26,11 @@ if (!empty($authorSlug)) {
     // Convertir slug a nombre (reemplazar guiones por espacios)
     $authorName = str_replace('-', ' ', $authorSlug);
     
-    // Buscar autor por nombre completo o user_login
+    // Buscar autor por nombre completo o username
     $stmtAuthor = db()->prepare("
-        SELECT u.id, u.nombre, u.apellido, u.user_login, u.foto_perfil, u.bio
+        SELECT u.id, u.nombre, u.apellido, u.username, u.foto_perfil, u.bio
         FROM usuarios u
-        WHERE (CONCAT(u.nombre, ' ', u.apellido) = ? OR u.user_login = ?)
+        WHERE (CONCAT(u.nombre, ' ', u.apellido) = ? OR u.username = ?)
         AND u.borrado = 0
         LIMIT 1
     ");
@@ -48,7 +48,7 @@ if (!empty($authorSlug)) {
             WHERE (p.author = ? OR p.author_user = ?)
             AND p.status = 'published' AND p.deleted = 0
         ");
-        $stmtCount->execute([$authorData['nombre'] . ' ' . $authorData['apellido'], $authorData['id']]);
+        $stmtCount->execute([$authorData['nombre'] . ' ' . $authorData['apellido'], $authorData['username']]);
         $totalPosts = $stmtCount->fetchColumn();
         $totalPages = max(1, ceil($totalPosts / $perPage));
         
@@ -62,7 +62,7 @@ if (!empty($authorSlug)) {
             ORDER BY p.created_at DESC
             LIMIT $perPage OFFSET $offset
         ");
-        $stmtPosts->execute([$authorData['nombre'] . ' ' . $authorData['apellido'], $authorData['id']]);
+        $stmtPosts->execute([$authorData['nombre'] . ' ' . $authorData['apellido'], $authorData['username']]);
         $posts = $stmtPosts->fetchAll(PDO::FETCH_ASSOC);
     }
 }
