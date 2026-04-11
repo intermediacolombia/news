@@ -5,6 +5,14 @@
 require_once __DIR__ . '/../inc/config.php';
 require_once __DIR__ . '/login/session.php';
 
+if (!function_exists('truncate_text')) {
+    function truncate_text($text, $limit) {
+        if (empty($text)) return '';
+        $text = strip_tags($text);
+        return (mb_strlen($text) > $limit) ? mb_substr($text, 0, $limit) . '...' : $text;
+    }
+}
+
 // Pagination
 $page = max(1, (int)($_GET['page'] ?? 1));
 $perPage = 20;
