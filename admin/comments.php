@@ -3,46 +3,7 @@
  * Panel de gestión de comentarios
  */
 require_once __DIR__ . '/../inc/config.php';
-
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ' . URLBASE . '/admin/login/');
-    exit;
-}
-
-// Check permission - Allow any logged-in user for now (new permission)
-// Once users have the permission assigned, this will work properly
-$hasPermission = true; // TODO: Remove this after assigning permission to existing users
-
-if (isset($_SESSION['user_permissions'])) {
-    // If permissions exist, check properly
-    if (!in_array('Gestionar Comentarios', $_SESSION['user_permissions']) && 
-        !in_array('admin', $_SESSION['user_permissions'])) {
-        // Check if user has ANY admin-like permission
-        $adminPerms = ['Ver Blogs', 'Crear Entrada', 'Editar Entrada', 'Borrar Entrada', 
-                       'Ver Categorias', 'Crear Categorias', 'Editar Categorias', 'Borrar Categorias',
-                       'Gestionar Multimedia', 'Manejar Publicidad', 'Ver y Editar Usuarios', 
-                       'Editar Configuraciones', 'Ver Logs', 'Actualizar Sistema'];
-        $hasAdminLikePermission = false;
-        foreach ($adminPerms as $adminPerm) {
-            if (in_array($adminPerm, $_SESSION['user_permissions'])) {
-                $hasAdminLikePermission = true;
-                break;
-            }
-        }
-        if (!$hasAdminLikePermission) {
-            $hasPermission = false;
-        }
-    }
-}
-
-if (!$hasPermission) {
-    header('Location: ' . URLBASE . '/admin/');
-    exit;
-}
+require_once __DIR__ . '/login/session.php';
 
 // Pagination
 $page = max(1, (int)($_GET['page'] ?? 1));
