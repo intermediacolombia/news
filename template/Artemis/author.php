@@ -27,7 +27,7 @@ if (!empty($authorSlug)) {
     
     // Buscar autor por nombre completo o username
     $stmtAuthor = db()->prepare("
-        SELECT u.id, u.nombre, u.apellido, u.username, u.foto_perfil, u.bio
+        SELECT u.id, u.nombre, u.apellido, u.username, u.foto_perfil
         FROM usuarios u
         WHERE (CONCAT(u.nombre, ' ', u.apellido) = ? OR u.username = ?)
         AND u.borrado = 0
@@ -76,9 +76,7 @@ $authorFullName = trim($authorData['nombre'] . ' ' . $authorData['apellido']);
 $authorUrl = URLBASE . '/autor/' . $authorSlug . '/';
 
 $page_title = "$authorFullName | " . NOMBRE_SITIO;
-$page_description = !empty($authorData['bio']) 
-    ? truncate_text($authorData['bio'], 150) 
-    : "Artículos y publicaciones de $authorFullName en " . NOMBRE_SITIO;
+$page_description = "Artículos y publicaciones de $authorFullName en " . NOMBRE_SITIO;
 ?>
 
 <section class="py-5" style="background: var(--dark); min-height: 60vh;">
@@ -106,9 +104,6 @@ $page_description = !empty($authorData['bio'])
                         <div>
                             <h1 style="color: var(--text-color); margin: 0 0 8px 0;"><?= htmlspecialchars($authorFullName) ?></h1>
                             <span style="color: var(--primary); font-size: 14px;"><?= t_theme('theme_autor') ?></span>
-                            <?php if (!empty($authorData['bio'])): ?>
-                            <p style="color: var(--text-muted); margin-top: 10px;"><?= htmlspecialchars($authorData['bio']) ?></p>
-                            <?php endif; ?>
                         </div>
                     </div>
                 </div>

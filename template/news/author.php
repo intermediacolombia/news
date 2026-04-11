@@ -27,7 +27,7 @@ if (!empty($authorSlug)) {
     
     // Buscar autor por nombre completo o username
     $stmtAuthor = db()->prepare("
-        SELECT u.id, u.nombre, u.apellido, u.username, u.foto_perfil, u.bio
+        SELECT u.id, u.nombre, u.apellido, u.username, u.foto_perfil
         FROM usuarios u
         WHERE (CONCAT(u.nombre, ' ', u.apellido) = ? OR u.username = ?)
         AND u.borrado = 0
@@ -76,9 +76,7 @@ $authorFullName = trim($authorData['nombre'] . ' ' . $authorData['apellido']);
 $authorUrl = URLBASE . '/autor/' . $authorSlug . '/';
 
 $page_title = "$authorFullName | " . NOMBRE_SITIO;
-$page_description = !empty($authorData['bio']) 
-    ? truncate_text($authorData['bio'], 150) 
-    : "Artículos y publicaciones de $authorFullName en " . NOMBRE_SITIO;
+$page_description = "Artículos y publicaciones de $authorFullName en " . NOMBRE_SITIO;
 $page_author = NOMBRE_SITIO;
 
 // Imagen SEO
@@ -115,9 +113,6 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                             <div>
                                 <h1 class="mb-2"><?= htmlspecialchars($authorFullName) ?></h1>
                                 <p class="text-secondary mb-2"><?= t_theme('theme_autor') ?></p>
-                                <?php if (!empty($authorData['bio'])): ?>
-                                <p class="m-0"><?= htmlspecialchars($authorData['bio']) ?></p>
-                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
