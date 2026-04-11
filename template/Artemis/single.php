@@ -230,7 +230,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                                         </text>
                                     </svg>');
                                 ?>
-                                <img src="<?= $fotoAutor ?>" 
+                                <img src="<?= htmlspecialchars($fotoAutor, ENT_QUOTES, 'UTF-8') ?>" 
                                      alt="<?= htmlspecialchars($authorData['nombre'] . ' ' . $authorData['apellido']) ?>" 
                                      class="mr-3"
                                      style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover;">

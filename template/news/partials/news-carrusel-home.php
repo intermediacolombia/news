@@ -56,33 +56,30 @@ $latestPosts = $stmt->fetchAll();
         <a class="text-secondary font-weight-medium text-decoration-none" href="<?= URLBASE ?>/noticias/">Ver Todas</a>
     </div>
     <?php
-    // Seleccionar 4 categorías activas al azar
-    $cats = db()->query("
-        SELECT id, name, slug 
-        FROM blog_categories 
-        WHERE status='active' AND deleted=0 
-        ORDER BY RAND() 
+    // Obtener 4 categorías con más posts + imagen aleatoria (single query)
+    $catsQuery = db()->query("
+        SELECT c.id, c.name, c.slug,
+               (SELECT p2.image
+                FROM blog_posts p2
+                INNER JOIN blog_post_category pc2 ON pc2.post_id = p2.id
+                WHERE pc2.category_id = c.id
+                  AND p2.status='published'
+                  AND p2.deleted=0
+                  AND p2.image IS NOT NULL
+                ORDER BY RAND()
+                LIMIT 1
+               ) AS random_image
+        FROM blog_categories c
+        INNER JOIN blog_post_category pc ON c.id = pc.category_id
+        INNER JOIN blog_posts p ON p.id = pc.post_id AND p.status='published' AND p.deleted=0
+        WHERE c.status='active' AND c.deleted=0
+        GROUP BY c.id, c.name, c.slug
+        ORDER BY COUNT(p.id) DESC
         LIMIT 4
     ")->fetchAll();
 
-    foreach ($cats as $cat):
-        // Buscar imagen aleatoria de un post de esa categoría
-        $stmtImg = db()->prepare("
-            SELECT p.image 
-            FROM blog_posts p
-            INNER JOIN blog_post_category pc ON pc.post_id = p.id
-            WHERE pc.category_id = ? 
-              AND p.status='published' 
-              AND p.deleted=0 
-              AND p.image IS NOT NULL 
-            ORDER BY RAND() 
-            LIMIT 1
-        ");
-        $stmtImg->execute([$cat['id']]);
-        $postImg = $stmtImg->fetchColumn();
-
-        // Si no hay imagen asociada, usar una de respaldo
-        $imgSrc = $postImg ? URLBASE . '/' . $postImg : URLBASE . '/template/news/img/cat-500x80-1.jpg';
+    foreach ($catsQuery as $cat):
+        $imgSrc = !empty($cat['random_image']) ? URLBASE . '/' . htmlspecialchars($cat['random_image']) : URLBASE . '/template/news/img/cat-500x80-1.jpg';
     ?>
         <div class="position-relative overflow-hidden mb-3" style="height: 80px;">
             <img class="img-fluid w-100 h-100"

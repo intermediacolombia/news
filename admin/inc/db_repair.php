@@ -20,6 +20,7 @@ function repair_database(): array {
         'permissions' => [],
         'tables'      => [],
         'columns'     => [],
+        'indexes'     => [],
         'errors'      => [],
     ];
 
@@ -106,6 +107,38 @@ function repair_database(): array {
                 $results['columns'][] = "Agregada columna: $table.$column";
             } else {
                 $results['columns'][] = "Ya existe columna: $table.$column";
+            }
+        }
+
+        // =====================================================================
+        // SECCIÓN 4: ÍNDICES DE RENDIMIENTO
+        // CREATE INDEX ... si no existen — mejora consultas frecuentes.
+        // =====================================================================
+        $indexes = [
+            // blog_post_views: acelerar conteo de vistas por post
+            "CREATE INDEX IF NOT EXISTS idx_bpv_post_id ON blog_post_views (post_id)",
+            // blog_post_views: acelerar consultas por fecha
+            "CREATE INDEX IF NOT EXISTS idx_bpv_created_at ON blog_post_views (created_at)",
+            // blog_post_category: acelerar JOIN por categoría
+            "CREATE INDEX IF NOT EXISTS idx_bpc_category_post ON blog_post_category (category_id, post_id)",
+            // blog_posts: acelerar filtrado por status + deleted + fecha
+            "CREATE INDEX IF NOT EXISTS idx_bp_status_deleted_created ON blog_posts (status, deleted, created_at)",
+            // blog_categories: acelerar filtrado por status
+            "CREATE INDEX IF NOT EXISTS idx_bc_status_deleted ON blog_categories (status, deleted)",
+            // blog_posts: acelerar búsqueda por slug
+            "CREATE INDEX IF NOT EXISTS idx_bp_slug ON blog_posts (slug)",
+            // blog_posts: acelerar consultas de posts populares
+            "CREATE INDEX IF NOT EXISTS idx_bp_status_created ON blog_posts (status, deleted, created_at DESC)",
+        ];
+
+        foreach ($indexes as $sql) {
+            try {
+                db()->exec($sql);
+                preg_match('/INDEX\s+\S+\s+ON\s+(\S+)/i', $sql, $match);
+                $idxName = $match[1] ?? 'unknown';
+                $results['indexes'][] = "Índice creado/verificado en: $idxName";
+            } catch (Exception $e) {
+                $results['errors'][] = "Error índice: " . $e->getMessage();
             }
         }
 

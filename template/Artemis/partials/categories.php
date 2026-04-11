@@ -1,6 +1,17 @@
 ﻿<?php
 $categories = db()->query("
-    SELECT c.id, c.name, c.slug, COUNT(p.id) AS total
+    SELECT c.id, c.name, c.slug, COUNT(p.id) AS total,
+           (SELECT p2.image
+            FROM blog_posts p2
+            INNER JOIN blog_post_category pc2 ON pc2.post_id = p2.id
+            WHERE pc2.category_id = c.id
+              AND p2.status = 'published'
+              AND p2.deleted = 0
+              AND p2.image IS NOT NULL
+              AND p2.image != ''
+            ORDER BY RAND()
+            LIMIT 1
+           ) AS random_image
     FROM blog_categories c
     LEFT JOIN blog_post_category pc ON c.id = pc.category_id
     LEFT JOIN blog_posts p ON p.id = pc.post_id AND p.status='published' AND p.deleted=0
@@ -10,22 +21,6 @@ $categories = db()->query("
     ORDER BY total DESC
     LIMIT 6
 ")->fetchAll();
-
-// Obtener una imagen aleatoria por categoría
-$catImages = [];
-foreach ($categories as $cat) {
-    $stmt = db()->prepare("
-        SELECT p.image
-        FROM blog_posts p
-        INNER JOIN blog_post_category pc ON pc.post_id = p.id
-        WHERE pc.category_id = ? AND p.status = 'published' AND p.deleted = 0 AND p.image IS NOT NULL AND p.image != ''
-        ORDER BY RAND()
-        LIMIT 1
-    ");
-    $stmt->execute([$cat['id']]);
-    $img = $stmt->fetchColumn();
-    $catImages[$cat['id']] = $img ?: null;
-}
 
 if (!function_exists('img_url')) {
     function img_url(?string $path): string {
@@ -52,7 +47,7 @@ if (!function_exists('img_url')) {
                 <a href="<?= $catUrl ?>"
                    class="category-card d-block"
                    style="position: relative; border-radius: 16px; overflow: hidden; height: 150px; text-decoration: none;">
-                    <img src="<?= img_url($catImages[$cat['id']] ?? null) ?>"
+                    <img src="<?= img_url($cat['random_image'] ?? null) ?>"
                          alt="<?= htmlspecialchars($cat['name']) ?>"
                          style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease;">
 

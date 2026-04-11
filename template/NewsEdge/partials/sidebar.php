@@ -48,8 +48,11 @@ $popular = db()->query("
 ")->fetchAll();
 
 // 3. Generación de Tags automáticos
-$textos = db()->query("SELECT CONCAT(title, ' ', content) FROM blog_posts WHERE status='published' LIMIT 10")->fetchAll(PDO::FETCH_COLUMN);
-$palabras = preg_split('/\W+/u', strtolower(strip_tags(implode(' ', $textos))), -1, PREG_SPLIT_NO_EMPTY);
+// 3. Generación de Tags desde títulos recientes (no contenido completo, mucho más liviano)
+$tagsResult = db()->query("
+    SELECT title FROM blog_posts WHERE status='published' ORDER BY created_at DESC LIMIT 50
+")->fetchAll(PDO::FETCH_COLUMN);
+$palabras = preg_split('/\W+/u', strtolower(implode(' ', $tagsResult)), -1, PREG_SPLIT_NO_EMPTY);
 $stop = ['que','con','para','este','esta','entre','cuando','pero','sobre','nbsp','como','del','las','los'];
 $freq = array_count_values(array_filter($palabras, function($p) use ($stop) {
     return mb_strlen($p) > 4 && !in_array($p, $stop);

@@ -45,12 +45,12 @@ $columnistas = db()->query("
                     
                     <div class="mb-3" style="position: relative; display: inline-block;">
                         <?php if (!empty($col['foto_perfil'])): ?>
-                            <img src="<?= $imageUrl ?>" 
+                            <img src="<?= htmlspecialchars($imageUrl) ?>"
                                  alt="<?= htmlspecialchars($nombreCompleto) ?>"
                                  style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary);">
                         <?php else: ?>
                             <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); display: flex; align-items: center; justify-content: center; margin: 0 auto; border: 3px solid var(--primary);">
-                                <span style="color: var(--text-color); font-size: 28px; font-weight: 700;"><?= $iniciales ?></span>
+                                <span style="color: var(--text-color); font-size: 28px; font-weight: 700;"><?= htmlspecialchars($iniciales) ?></span>
                             </div>
                         <?php endif; ?>
                     </div>

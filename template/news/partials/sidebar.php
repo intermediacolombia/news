@@ -71,7 +71,7 @@
                     <?php
 //require_once __DIR__ . '/../../../inc/config.php';
 
-// Obtener 5 noticias populares (aleatorias entre las más vistas en total)
+// Obtener 5 noticias populares (ordenadas por vistas, LIMIT sin RAND para rendimiento)
 $stmt = db()->query("
     SELECT p.id, p.title, p.slug, p.image, p.created_at,
            c.name AS category_name, c.slug AS category_slug,
@@ -82,7 +82,7 @@ $stmt = db()->query("
     INNER JOIN blog_categories c ON c.id = pc.category_id
     WHERE p.status='published' AND p.deleted=0
     GROUP BY p.id, p.title, p.slug, p.image, p.created_at, c.name, c.slug
-    ORDER BY RAND()
+    ORDER BY total_views DESC, p.created_at DESC
     LIMIT 5
 ");
 $trendingPosts = $stmt->fetchAll();

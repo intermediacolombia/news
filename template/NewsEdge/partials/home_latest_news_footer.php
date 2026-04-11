@@ -51,8 +51,8 @@ $sqlMostViews = "
 ";
 $mostViewedNews = db()->query($sqlMostViews)->fetchAll();
 
-/* ===== Categoría aleatoria con al menos 2 posts ===== */
-$sqlRandomCategory = "
+/* ===== Categoría con más posts recientes (sin RAND para rendimiento) ===== */
+$sqlTopCategory = "
   SELECT c.id, c.name, c.slug
   FROM blog_categories c
   INNER JOIN blog_post_category pc ON c.id = pc.category_id
@@ -60,10 +60,10 @@ $sqlRandomCategory = "
   WHERE c.status = 1
   GROUP BY c.id, c.name, c.slug
   HAVING COUNT(pc.post_id) >= 2
-  ORDER BY RAND()
+  ORDER BY COUNT(pc.post_id) DESC
   LIMIT 1
 ";
-$randomCategory = db()->query($sqlRandomCategory)->fetch();
+$topCategory = db()->query($sqlTopCategory)->fetch();
 
 /* ===== Obtener posts destacados por categoría ===== */
 function getFeaturedPostsByCategory($categoryId, $limit = 2) {
@@ -232,12 +232,12 @@ function getFeaturedPostsByCategory($categoryId, $limit = 2) {
                     </div>
                     
                     <!-- UNA Categoría Aleatoria con 2 Posts -->
-                    <?php if ($randomCategory): ?>
-                        <?php $featuredPosts = getFeaturedPostsByCategory($randomCategory['id'], 2); ?>
+                    <?php if ($topCategory): ?>
+                        <?php $featuredPosts = getFeaturedPostsByCategory($topCategory['id'], 2); ?>
                         <?php if (count($featuredPosts) >= 2): ?>
                         <div class="mt-5 lifestyle">
                             <div class="border-bottom mb-4">
-                                <h1 class="mb-4"><?= htmlspecialchars($randomCategory['name']) ?></h1>
+                                <h1 class="mb-4"><?= htmlspecialchars($topCategory['name']) ?></h1>
                             </div>
                             <div class="row g-4">
                                 <?php foreach ($featuredPosts as $featPost): ?>

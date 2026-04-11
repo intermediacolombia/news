@@ -31,14 +31,15 @@ $stmtPop = db()->query("
 ");
 $popular = $stmtPop->fetchAll();
 
-// Tags dinámicos (desde títulos + contenido)
+// Tags dinámicos (solo títulos de posts recientes, no contenido completo)
 $stmtTxt = db()->query("
-    SELECT CONCAT(title, ' ', content) AS texto
-    FROM blog_posts
+    SELECT title FROM blog_posts
     WHERE status='published' AND deleted=0
+    ORDER BY created_at DESC
+    LIMIT 50
 ");
 $textos = $stmtTxt->fetchAll(PDO::FETCH_COLUMN);
-$todo = strtolower(strip_tags(implode(' ', $textos)));
+$todo = strtolower(implode(' ', $textos));
 $palabras = preg_split('/\W+/u', $todo, -1, PREG_SPLIT_NO_EMPTY);
 $stop = ['nbsp','a','acá','ahí','al','algo','algún','alguna','algunas','algunos','allá','allí','ante','antes','aquel','aquella','aquellas','aquellos','aquí','así','aunque','bajo','bien','cada','casi','cierta','ciertas','cierto','ciertos','como','con','contra','cual','cuando','cuanta','cuantas','cuanto','cuantos','cuyo','cuyos','cuyas','de','del','desde','donde','dos','el','ella','ellas','ello','ellos','en','entre','era','eran','es','esa','esas','ese','eso','esos','esta','estaba','estado','estamos','estan','estar','estas','este','esto','estos','está','están','fue','fueron','ha','había','habían','han','hasta','hay','la','las','le','les','lo','los','luego','me','mi','mis','muy','más','ni','no','nos','nosotros','nuestra','nuestras','nuestro','nuestros','nunca','o','otra','otras','otro','otros','para','pero','poco','por','porque','primero','puede','que','quien','quienes','se','sea','según','ser','si','sí','sin','sobre','solamente','solo','sólo','son','su','sus','también','tan','tanto','te','tenemos','tener','tengo','ti','tiene','tienen','todo','todos','tras','tu','tus','un','una','uno','unos','usted','ustedes','va','vamos','van','y','ya','yo','él','ésta','éstas','éste','éstos','esto','esta','estas','estos','sino','además','entonces','luego','aun','inclusive','durante','cuál','cuáles','dónde','cuándo','cuánto','cuántos','cuántas','qué','quién','quiénes','cómo','será','estar','estará','habrá','he','hemos','han','mismo','misma','mismos','mismas','propio','propia','propios','propias','ninguno','ninguna','bastante','poco','poca','mucho','mucha','muchos','muchas','demasiado','demasiada','demasiados','demasiadas','otro','otra','otros','otras','varios','varias','demás','algún','ningún','algunos','algunas','the','of','and','to','in','on','for','with','at','by','from','a','an','is','it','that','as','be','are','this','was','were','or','if','has','had','but','they','their','them','you','your','our','we','he','she','his','her','itself','which','what','where','when','how','why'];
 $freq = [];

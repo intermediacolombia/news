@@ -1,16 +1,18 @@
 <?php
 
 require_once __DIR__ . '/../../../inc/config.php';
-// Obtener todos los textos (títulos + contenido) de posts publicados
+// Obtener solo títulos de posts recientes (no contenido completo)
 $stmt = db()->query("
-    SELECT CONCAT(title, ' ', content) AS texto
+    SELECT title
     FROM blog_posts
     WHERE status='published' AND deleted=0
+    ORDER BY created_at DESC
+    LIMIT 50
 ");
 $textos = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
 // Unir todo en un solo string
-$todoTexto = strtolower(strip_tags(implode(' ', $textos)));
+$todoTexto = strtolower(implode(' ', $textos));
 
 // Quitar caracteres especiales y dividir en palabras
 $palabras = preg_split('/\W+/u', $todoTexto, -1, PREG_SPLIT_NO_EMPTY);
