@@ -292,13 +292,20 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
     let startTime     = 0;
     let fullText      = '';
 
-    window.addEventListener('DOMContentLoaded', function () {
+    function initFullText() {
         const content = document.querySelector('.post-content');
         const title   = <?= json_encode($post['title']) ?>;
         if (content) {
             fullText = (title + '. ' + content.innerText).replace(/\s+/g, ' ').trim();
         }
-    });
+    }
+
+    // Intentar obtener el texto inmediatamente si el DOM ya está listo
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initFullText);
+    } else {
+        initFullText();
+    }
 
     // Dividir en trozos de ~200 chars (por oraciones) para evitar el bug de Chrome en textos largos
     function splitChunks(text, maxLen) {
@@ -418,7 +425,20 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
     }
 
     window.handlePlay = function () {
-        if (!fullText) return;
+        if (!fullText) {
+            // Si el texto aún no está listo, intentar obtenerlo de nuevo
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', function() {
+                    const content = document.querySelector('.post-content');
+                    const title   = <?= json_encode($post['title']) ?>;
+                    if (content) {
+                        fullText = (title + '. ' + content.innerText).replace(/\s+/g, ' ').trim();
+                    }
+                    if (fullText) window.handlePlay();
+                }, { once: true });
+            }
+            return;
+        }
 
         if (isPaused) {
             // Reanudar desde el chunk donde se pausó
