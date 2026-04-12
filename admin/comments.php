@@ -98,10 +98,10 @@ $page_title = 'Gestión de Comentarios';
       opacity: .9;
     }
 
-    .stat-total   { background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); }
-    .stat-pending { background: linear-gradient(135deg, #f59e0b, #d97706); }
-    .stat-approved{ background: linear-gradient(135deg, #22c55e, #16a34a); }
-    .stat-hidden  { background: linear-gradient(135deg, #6b7280, #4b5563); }
+    .stat-total    { background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)) !important; }
+    .stat-pending  { background: linear-gradient(135deg, #f59e0b, #d97706) !important; }
+    .stat-approved { background: linear-gradient(135deg, #22c55e, #16a34a) !important; }
+    .stat-hidden   { background: linear-gradient(135deg, #6b7280, #4b5563) !important; }
 
     .stat-card .stat-icon {
       font-size: 2rem;
