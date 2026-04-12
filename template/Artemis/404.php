@@ -1,6 +1,6 @@
 ﻿<?php
-require_once __DIR__ . '/../inc/config.php';
-require_once __DIR__ . '/../inc/translations.php';
+require_once __DIR__ . '/../../inc/config.php';
+require_once __DIR__ . '/../../inc/translations.php';
 
 $page_title = "404 - " . t_theme('theme_pagina_no_encontrada') . " | " . NOMBRE_SITIO;
 ?>
