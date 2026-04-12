@@ -70,11 +70,6 @@ $page_title = 'Gestión de Comentarios';
   <title><?= htmlspecialchars($page_title) ?> - <?= NOMBRE_SITIO ?></title>
   <?php require_once __DIR__ . '/../inc/header.php'; ?>
   <style>
-    :root {
-      --primary-color: <?= COLOR_PRIMARY ?? '#E21F0C' ?>;
-      --primary-dark:  <?= COLOR_PRIMARY_HOVER_LINK ?? '#8A0002' ?>;
-    }
-
     .stat-card {
       border: none;
       border-radius: 12px;
@@ -183,6 +178,20 @@ $page_title = 'Gestión de Comentarios';
       border: none;
       border-radius: 14px;
       box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+    }
+
+    /* Dark mode */
+    [data-theme="dark"] .main-card { background: var(--card-bg) !important; }
+    [data-theme="dark"] .table thead th {
+      background: var(--sidebar-bg-light) !important;
+      color: var(--sidebar-text) !important;
+      border-color: var(--sidebar-border) !important;
+    }
+    [data-theme="dark"] .table tbody tr:hover { background: var(--sidebar-hover) !important; }
+    [data-theme="dark"] .table td { border-color: var(--sidebar-border) !important; color: var(--sidebar-text); }
+    [data-theme="dark"] .nav-pills .nav-link:not(.active):hover {
+      background: var(--sidebar-hover);
+      color: var(--sidebar-text);
     }
   </style>
 </head>

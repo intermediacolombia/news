@@ -21,10 +21,10 @@ $usuarios = db()->query("SELECT id, nombre, apellido, username, foto_perfil
 <?php include('../inc/header.php'); ?>
 <style>
   #postsTable thead th {
-    background-color:#214A82; color:#fff;
+    background-color: var(--primary-color); color:#fff;
 }
 #postsTable tbody tr:hover {
-    background-color:#4972AA !important;
+    background-color: var(--primary-hover) !important;
     color:#fff; cursor:pointer;
 }
 .page-header {
@@ -154,11 +154,21 @@ $usuarios = db()->query("SELECT id, nombre, apellido, username, foto_perfil
 .btn-transfer-row {
     display: inline-flex; align-items: center; justify-content: center;
     width: 32px; height: 32px;
-    border: 1px solid #214A82; border-radius: 6px;
-    background: #fff; color: #214A82;
+    border: 1px solid var(--primary-color); border-radius: 6px;
+    background: #fff; color: var(--primary-color);
     cursor: pointer; transition: .15s;
 }
-.btn-transfer-row:hover { background: #214A82; color: #fff; }
+.btn-transfer-row:hover { background: var(--primary-color); color: #fff; }
+
+/* Dark mode */
+[data-theme="dark"] #massActions { background: var(--sidebar-bg-light) !important; border-color: var(--sidebar-border) !important; }
+[data-theme="dark"] .btn-transfer-row { background: var(--input-bg) !important; }
+[data-theme="dark"] .author-card { border-color: var(--sidebar-border) !important; }
+[data-theme="dark"] .author-card.current { background: rgba(255,193,7,.1) !important; }
+[data-theme="dark"] .author-card.new     { background: rgba(16,185,129,.1) !important; }
+[data-theme="dark"] .user-option-info .name { color: var(--sidebar-text) !important; }
+[data-theme="dark"] .transfer-summary { background: var(--sidebar-bg-light) !important; border-color: var(--sidebar-border) !important; }
+[data-theme="dark"] .transfer-modal-header { background: linear-gradient(135deg, var(--primary-color), var(--primary-hover)) !important; }
 </style>
 </head>
 <body>

@@ -1,6 +1,5 @@
 :root {
-    --primary-color: #E21F0C;
-    --primary-hover: #C4180C;
+    /* --primary-color and --primary-hover are injected dynamically by header.php */
     --gold: #ddc686;
     --border-radius: 12px;
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -661,4 +660,235 @@
 
 [data-theme="dark"] .site-logo {
     color: var(--primary-color);
+}
+
+/* ── Page header (used across all admin pages) ────────────────────────── */
+[data-theme="dark"] .page-header {
+    background: var(--card-bg) !important;
+    box-shadow: 0 2px 8px var(--shadow-color) !important;
+}
+[data-theme="dark"] .page-header h4,
+[data-theme="dark"] .page-header h4 * {
+    color: var(--sidebar-text) !important;
+}
+
+/* ── Bootstrap card header variants ──────────────────────────────────── */
+[data-theme="dark"] .card-header.bg-light,
+[data-theme="dark"] .card-header.bg-white {
+    background: var(--sidebar-bg-light) !important;
+    border-bottom-color: var(--sidebar-border) !important;
+    color: var(--sidebar-text) !important;
+}
+
+/* ── List groups ─────────────────────────────────────────────────────── */
+[data-theme="dark"] .list-group-item {
+    background-color: var(--card-bg) !important;
+    border-color: var(--sidebar-border) !important;
+    color: var(--sidebar-text) !important;
+}
+[data-theme="dark"] .list-group-item:hover {
+    background-color: var(--sidebar-hover) !important;
+}
+
+/* ── bg-white / table.bg-white (Bootstrap utilities) ─────────────────── */
+[data-theme="dark"] .bg-white {
+    background-color: var(--card-bg) !important;
+}
+[data-theme="dark"] .table-light,
+[data-theme="dark"] .table thead.table-light tr th,
+[data-theme="dark"] thead.table-light th {
+    background-color: var(--sidebar-bg-light) !important;
+    color: var(--sidebar-text) !important;
+    border-color: var(--sidebar-border) !important;
+}
+
+/* ── Override thead th !important from style.css in dark mode ─────────── */
+[data-theme="dark"] thead th {
+    background-color: var(--sidebar-bg-light) !important;
+    color: var(--sidebar-text) !important;
+    border-color: var(--sidebar-border) !important;
+}
+
+/* ── tbody text colors in dark mode ─────────────────────────────────── */
+[data-theme="dark"] tbody td,
+[data-theme="dark"] tbody th {
+    color: var(--sidebar-text);
+    border-color: var(--sidebar-border);
+}
+
+/* ── .filter-card (logs page) ────────────────────────────────────────── */
+[data-theme="dark"] .filter-card {
+    background: var(--card-bg) !important;
+    color: var(--sidebar-text);
+}
+
+/* ── Profile card ────────────────────────────────────────────────────── */
+[data-theme="dark"] .profile-card {
+    background: var(--card-bg) !important;
+    color: var(--sidebar-text) !important;
+}
+
+/* ── Mass action bars ────────────────────────────────────────────────── */
+[data-theme="dark"] #massActions {
+    background: var(--sidebar-bg-light) !important;
+    border-color: var(--sidebar-border) !important;
+    color: var(--sidebar-text);
+}
+
+/* ── Scrollable containers ───────────────────────────────────────────── */
+[data-theme="dark"] #users-list {
+    background: var(--input-bg) !important;
+    border-color: var(--input-border) !important;
+    color: var(--sidebar-text);
+}
+
+/* ── Badges / action chips ───────────────────────────────────────────── */
+[data-theme="dark"] .badge-action {
+    background: var(--sidebar-bg-light) !important;
+    color: var(--sidebar-text) !important;
+}
+[data-theme="dark"] .log-table th {
+    background: var(--sidebar-bg-light) !important;
+    color: var(--sidebar-text) !important;
+    border-color: var(--sidebar-border) !important;
+}
+
+/* ── Buttons (trash) ─────────────────────────────────────────────────── */
+[data-theme="dark"] .btn-trash {
+    background: var(--input-bg) !important;
+    border-color: rgba(220,53,69,.5) !important;
+    color: #ea868f !important;
+}
+[data-theme="dark"] .btn-trash:hover {
+    background: rgba(220,53,69,.15) !important;
+}
+
+/* ── Stat / widget cards (dashboard) ────────────────────────────────── */
+[data-theme="dark"] .stat-card {
+    background: var(--card-bg) !important;
+}
+[data-theme="dark"] .stat-card-value,
+[data-theme="dark"] .stat-card-label,
+[data-theme="dark"] .widget-title,
+[data-theme="dark"] .top-post-title,
+[data-theme="dark"] .activity-title,
+[data-theme="dark"] .post-title-link {
+    color: var(--sidebar-text) !important;
+}
+[data-theme="dark"] .widget-card {
+    background: var(--card-bg) !important;
+    color: var(--sidebar-text);
+}
+[data-theme="dark"] .widget-header {
+    border-bottom-color: var(--sidebar-border) !important;
+}
+[data-theme="dark"] .empty-dashboard {
+    background: var(--card-bg) !important;
+    color: var(--sidebar-text);
+}
+[data-theme="dark"] .posts-table thead {
+    background: var(--sidebar-bg-light) !important;
+}
+[data-theme="dark"] .posts-table th,
+[data-theme="dark"] .posts-table td {
+    color: var(--sidebar-text) !important;
+    border-bottom-color: var(--sidebar-border) !important;
+}
+[data-theme="dark"] .posts-table tbody tr:hover {
+    background: var(--sidebar-hover) !important;
+}
+[data-theme="dark"] .top-post-item:hover,
+[data-theme="dark"] .activity-item {
+    border-bottom-color: var(--sidebar-border) !important;
+}
+[data-theme="dark"] .activity-meta,
+[data-theme="dark"] .top-post-views,
+[data-theme="dark"] .log-meta {
+    color: var(--sidebar-text-muted) !important;
+}
+
+/* ── Media cards (multimedia page) ──────────────────────────────────── */
+[data-theme="dark"] .media-card {
+    background: var(--card-bg) !important;
+    border-color: var(--sidebar-border) !important;
+    color: var(--sidebar-text);
+}
+[data-theme="dark"] .media-thumb {
+    background: var(--sidebar-bg-light) !important;
+}
+[data-theme="dark"] .media-thumb .media-icon {
+    color: var(--sidebar-text-muted);
+}
+[data-theme="dark"] .upload-zone {
+    border-color: var(--sidebar-border) !important;
+    background: var(--sidebar-bg-light) !important;
+    color: var(--sidebar-text-muted);
+}
+[data-theme="dark"] .upload-zone:hover,
+[data-theme="dark"] .upload-zone.drag-over {
+    border-color: var(--primary-color) !important;
+    background: rgba(226,31,12,.08) !important;
+}
+[data-theme="dark"] .uq-thumb {
+    background: var(--sidebar-bg-light) !important;
+    border-color: var(--sidebar-border) !important;
+}
+[data-theme="dark"] .uq-thumb .uq-name {
+    background: var(--card-bg) !important;
+    color: var(--sidebar-text);
+}
+[data-theme="dark"] .ctrl-hint {
+    color: var(--sidebar-text-muted);
+}
+[data-theme="dark"] .ctrl-hint kbd {
+    background: var(--sidebar-bg-light) !important;
+    border-color: var(--sidebar-border) !important;
+    color: var(--sidebar-text);
+}
+
+/* ── User select list (blog transfer modal) ──────────────────────────── */
+[data-theme="dark"] .user-select-option:hover {
+    background: var(--sidebar-hover) !important;
+    border-color: var(--sidebar-border) !important;
+}
+[data-theme="dark"] .user-select-option.selected {
+    background: rgba(226,31,12,.12) !important;
+    border-color: var(--primary-color) !important;
+}
+[data-theme="dark"] .user-option-info .name {
+    color: var(--sidebar-text) !important;
+}
+[data-theme="dark"] .user-option-info .username {
+    color: var(--sidebar-text-muted) !important;
+}
+[data-theme="dark"] #user-search-input {
+    background: var(--input-bg) !important;
+    border-color: var(--input-border) !important;
+    color: var(--sidebar-text) !important;
+}
+[data-theme="dark"] #user-search-input:focus {
+    border-color: var(--primary-color) !important;
+}
+
+/* ── Transfer summary ────────────────────────────────────────────────── */
+[data-theme="dark"] .transfer-summary {
+    background: var(--sidebar-bg-light) !important;
+    border-color: var(--sidebar-border) !important;
+    color: var(--sidebar-text);
+}
+
+/* ── Status badges (popups) ──────────────────────────────────────────── */
+[data-theme="dark"] .status-active {
+    background: rgba(25,135,84,.2) !important;
+    color: #75b798 !important;
+}
+[data-theme="dark"] .status-inactive {
+    background: rgba(220,53,69,.2) !important;
+    color: #ea868f !important;
+}
+
+/* ── body override in dark mode (background image) ───────────────────── */
+[data-theme="dark"] body {
+    background-color: var(--body-bg) !important;
+    background-image: none !important;
 }

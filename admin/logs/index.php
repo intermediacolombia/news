@@ -102,6 +102,11 @@ $entityTypes = db()->query($entityTypesSql)->fetchAll(PDO::FETCH_COLUMN);
             border-radius: 4px;
             font-size: 0.75rem;
         }
+    /* Dark mode */
+    [data-theme="dark"] .filter-card { background: var(--card-bg) !important; color: var(--sidebar-text); }
+    [data-theme="dark"] .log-table th { background: var(--sidebar-bg-light) !important; color: var(--sidebar-text) !important; }
+    [data-theme="dark"] .log-meta { color: var(--sidebar-text-muted) !important; }
+    [data-theme="dark"] .badge-action { background: var(--sidebar-bg-light) !important; color: var(--sidebar-text) !important; }
     </style>
 </head>
 <body>

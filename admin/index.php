@@ -287,8 +287,6 @@ function img_url_dashboard($path) {
   
   <style>
     :root {
-      --primary-color: <?= COLOR_PRIMARY ?? '#E21F0C' ?>;
-      --primary-dark: <?= COLOR_PRIMARY_HOVER_LINK ?? '#8A0002' ?>;
       --accent-gold: #DDC686;
       --bg-light: #f8f9fa;
       --card-shadow: 0 4px 15px rgba(0,0,0,0.08);
@@ -567,6 +565,30 @@ function img_url_dashboard($path) {
       .dashboard-header .user-name { font-size: 1.8rem; }
       .stat-card-value { font-size: 2rem; }
     }
+
+    /* ===== DARK MODE ===== */
+    [data-theme="dark"] .stat-card {
+      background: var(--card-bg) !important;
+      border-left-color: inherit;
+    }
+    [data-theme="dark"] .stat-card-value { color: var(--sidebar-text) !important; }
+    [data-theme="dark"] .stat-card-label { color: var(--sidebar-text-muted) !important; }
+    [data-theme="dark"] .widget-card     { background: var(--card-bg) !important; }
+    [data-theme="dark"] .widget-header   { border-bottom-color: var(--sidebar-border) !important; }
+    [data-theme="dark"] .widget-title    { color: var(--sidebar-text) !important; }
+    [data-theme="dark"] .posts-table thead { background: var(--sidebar-bg-light) !important; }
+    [data-theme="dark"] .posts-table th,
+    [data-theme="dark"] .posts-table td   { color: var(--sidebar-text) !important; border-bottom-color: var(--sidebar-border) !important; }
+    [data-theme="dark"] .posts-table tbody tr:hover { background: var(--sidebar-hover) !important; }
+    [data-theme="dark"] .post-title-link  { color: var(--sidebar-text) !important; }
+    [data-theme="dark"] .top-post-title   { color: var(--sidebar-text) !important; }
+    [data-theme="dark"] .top-post-views,
+    [data-theme="dark"] .activity-meta   { color: var(--sidebar-text-muted) !important; }
+    [data-theme="dark"] .activity-item   { border-bottom-color: var(--sidebar-border) !important; }
+    [data-theme="dark"] .activity-title  { color: var(--sidebar-text) !important; }
+    [data-theme="dark"] .empty-dashboard { background: var(--card-bg) !important; color: var(--sidebar-text); }
+    [data-theme="dark"] .badge-published { background: rgba(25,135,84,.2) !important; color: #75b798 !important; }
+    [data-theme="dark"] .badge-draft     { background: rgba(255,193,7,.15) !important; color: #ffda6a !important; }
   </style>
 </head>
 <body>

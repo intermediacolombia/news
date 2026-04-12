@@ -1,10 +1,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Apply saved dark theme immediately to prevent white flash -->
+<script>(function(){var t=localStorage.getItem('admin-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}());</script>
 <style>
-        :root {
-            --primary-color: <?= COLOR_PRIMARY ?? '#E21F0C' ?>;
-            --color-hover-link: <?= COLOR_PRIMARY_HOVER_LINK  ?? '#C4180C' ?>;
-        }
-    </style>
+    :root {
+        --primary-color: <?= COLOR_PRIMARY ?? '#E21F0C' ?>;
+        --primary-hover: <?= COLOR_PRIMARY_HOVER_LINK ?? '#C4180C' ?>;
+        --primary-dark: <?= COLOR_PRIMARY_HOVER_LINK ?? '#C4180C' ?>;
+        --color-hover-link: <?= COLOR_PRIMARY_HOVER_LINK ?? '#C4180C' ?>;
+    }
+</style>
 <!-- Favicon -->
 <link rel="shortcut icon" type="image/x-icon" href="<?php echo URLBASE; ?><?php echo FAVICON ?>">
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>

@@ -16,10 +16,10 @@ require_once __DIR__ . '/../inc/flash_helpers.php';
 <?php include('../inc/header.php'); ?>
 <style>
   #institutionalTable thead th {
-    background-color:#214A82; color:#fff;
+    background-color: var(--primary-color); color:#fff;
   }
   #institutionalTable tbody tr:hover {
-    background-color:#4972AA !important;
+    background-color: var(--primary-hover) !important;
     color:#fff; cursor:pointer;
   }
   .no-click { cursor:default !important; }

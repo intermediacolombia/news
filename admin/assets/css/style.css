@@ -71,14 +71,14 @@ body {
       transition: background-color 0.1s ease;
     }
     #formularios thead th {
-      background-color: var(--sidebar-bg-light, #214A82);
-      color: var(--sidebar-text, white);
+      background-color: var(--primary-color);
+      color: white;
     }
     #formularios tbody tr:hover {
-      background-color: var(--sidebar-hover, #4972AA) !important;
+      background-color: var(--primary-hover) !important;
     }
     #formularios tbody tr:hover td {
-      color: var(--sidebar-text, white) !important;
+      color: white !important;
     }
     /* La columna de checkboxes no dispara redirección */
     .no-click {
@@ -104,18 +104,18 @@ tbody tr td {
 
 /* Estilo para el encabezado */
 thead th {
-  background-color: var(--graphite)!important;
-  color: white!important;
+  background-color: var(--primary-color) !important;
+  color: white !important;
 }
 
 /* Cambio de color de fondo y texto cuando se pasa el ratón sobre la fila */
 tbody tr:hover {
-  background-color: var(--sidebar-hover, #4972AA) !important;
+  background-color: var(--sidebar-hover) !important;
 }
 
 tbody tr:hover td {
-  color: var(--sidebar-text, white) !important;
-  background: var(--sidebar-hover, #B3B3B3);
+  color: var(--sidebar-text) !important;
+  background: var(--sidebar-hover) !important;
 }
 
 /* La columna de acción no dispara redirección */
@@ -293,7 +293,7 @@ table tbody tr {
 }
 
 .btn-success:hover {
-  background: var(--primary-hover, #4db000);
+  background: var(--primary-hover) !important;
   transform: translateY(-1px);
 }
 
@@ -306,7 +306,7 @@ table tbody tr {
 
 .form-control:focus, .form-select:focus {
   border-color: var(--primary-color)!important;
-  box-shadow: 0 0 0 0.15rem rgba(95, 202, 0, 0.25);
+  box-shadow: 0 0 0 0.15rem rgba(226, 31, 12, 0.2);
 }
 
 label.form-label {
@@ -314,115 +314,95 @@ label.form-label {
   color: var(--sidebar-text, #333);
 }
 
-/* Dark Mode Support */
-[data-theme="dark"] {
-  body {
-    background: var(--body-bg) !important;
-  }
-  
-  .portada h1 {
-    color: var(--sidebar-text, #000);
-  }
-  
-  .container {
-    background: var(--card-bg);
-  }
-  
-  #formularios thead th {
-    background: var(--sidebar-bg-light) !important;
-    color: var(--sidebar-text) !important;
-  }
-  
-  #formularios tbody tr:hover {
-    background: var(--sidebar-hover) !important;
-  }
-  
-  #formularios tbody tr:hover td {
-    color: var(--sidebar-text) !important;
-  }
-  
-  thead th {
-    background: var(--sidebar-bg-light) !important;
-    color: var(--sidebar-text) !important;
-  }
-  
-  tbody tr:hover {
-    background: var(--sidebar-hover) !important;
-  }
-  
-  tbody tr:hover td {
-    background: var(--sidebar-hover) !important;
-    color: var(--sidebar-text) !important;
-  }
-  
-  .nav-tabs {
-    background: var(--sidebar-bg);
-    border-color: var(--sidebar-border);
-  }
-  
-  .nav-tabs .nav-link {
-    color: var(--sidebar-text-muted);
-  }
-  
-  .nav-tabs .nav-link:hover {
-    background: var(--sidebar-hover);
-    color: var(--primary-color) !important;
-  }
-  
-  .nav-tabs .nav-link.active {
-    background: var(--primary-color) !important;
-    color: #fff !important;
-  }
-  
-  .tab-content {
-    background: var(--card-bg);
-    border-color: var(--sidebar-border);
-  }
-  
-  .card {
-    background: var(--card-bg);
-    border-color: var(--sidebar-border);
-    box-shadow: var(--shadow-color);
-  }
-  
-  .card-header {
-    background: var(--sidebar-bg-light);
-    color: var(--sidebar-text);
-    border-color: var(--sidebar-border);
-  }
-  
-  .card-body {
-    background: var(--card-bg);
-    color: var(--sidebar-text);
-  }
-  
-  .btn-success:hover {
-    background: var(--primary-hover) !important;
-  }
-  
-  .form-control, .form-select {
-    background: var(--input-bg);
-    border-color: var(--input-border);
-    color: var(--sidebar-text);
-  }
-  
-  .form-control:focus, .form-select:focus {
-    border-color: var(--primary-color);
-    background: var(--input-bg);
-    color: var(--sidebar-text);
-  }
-  
-  label.form-label {
-    color: var(--sidebar-text);
-  }
-  
-  .slider {
-    background-color: var(--sidebar-border);
-  }
-  
-  input:checked + .slider {
-    background-color: var(--primary-color);
-  }
+/* ── Dark Mode Support (non-nested for broad browser compatibility) ─── */
+[data-theme="dark"] body {
+  background: var(--body-bg) !important;
+  background-image: none !important;
+}
+[data-theme="dark"] .portada h1 {
+  color: var(--sidebar-text);
+}
+[data-theme="dark"] .container {
+  background: var(--card-bg) !important;
+  color: var(--sidebar-text);
+}
+[data-theme="dark"] #formularios thead th {
+  background: var(--sidebar-bg-light) !important;
+  color: var(--sidebar-text) !important;
+}
+[data-theme="dark"] #formularios tbody tr:hover {
+  background: var(--sidebar-hover) !important;
+}
+[data-theme="dark"] #formularios tbody tr:hover td {
+  color: var(--sidebar-text) !important;
+  background: var(--sidebar-hover) !important;
+}
+[data-theme="dark"] thead th {
+  background-color: var(--sidebar-bg-light) !important;
+  color: var(--sidebar-text) !important;
+  border-color: var(--sidebar-border) !important;
+}
+[data-theme="dark"] tbody tr:hover {
+  background: var(--sidebar-hover) !important;
+}
+[data-theme="dark"] tbody tr:hover td {
+  background: var(--sidebar-hover) !important;
+  color: var(--sidebar-text) !important;
+}
+[data-theme="dark"] .nav-tabs {
+  background: var(--sidebar-bg);
+  border-color: var(--sidebar-border);
+}
+[data-theme="dark"] .nav-tabs .nav-link {
+  color: var(--sidebar-text-muted);
+}
+[data-theme="dark"] .nav-tabs .nav-link:hover {
+  background: var(--sidebar-hover);
+  color: var(--primary-color) !important;
+}
+[data-theme="dark"] .nav-tabs .nav-link.active {
+  background: var(--primary-color) !important;
+  color: #fff !important;
+  border-color: transparent;
+}
+[data-theme="dark"] .tab-content {
+  background: var(--card-bg);
+  border-color: var(--sidebar-border);
+}
+[data-theme="dark"] .card {
+  background: var(--card-bg) !important;
+  border-color: var(--sidebar-border);
+}
+[data-theme="dark"] .card-header {
+  background: var(--sidebar-bg-light) !important;
+  color: var(--sidebar-text) !important;
+  border-color: var(--sidebar-border) !important;
+}
+[data-theme="dark"] .card-body {
+  background: var(--card-bg) !important;
+  color: var(--sidebar-text);
+}
+[data-theme="dark"] .form-control,
+[data-theme="dark"] .form-select {
+  background: var(--input-bg) !important;
+  border-color: var(--input-border) !important;
+  color: var(--sidebar-text) !important;
+}
+[data-theme="dark"] .form-control:focus,
+[data-theme="dark"] .form-select:focus {
+  border-color: var(--primary-color) !important;
+  background: var(--input-bg) !important;
+  color: var(--sidebar-text) !important;
+  box-shadow: 0 0 0 0.15rem rgba(226, 31, 12, 0.25) !important;
+}
+[data-theme="dark"] label.form-label {
+  color: var(--sidebar-text);
+}
+[data-theme="dark"] .slider {
+  background-color: var(--sidebar-border);
+}
+[data-theme="dark"] input:checked + .slider {
+  background-color: var(--primary-color);
 }
 
 

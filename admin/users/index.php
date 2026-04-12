@@ -58,11 +58,11 @@ try {
       transition: background-color 0.1s ease;
     }
     #formularios thead th {
-      background-color: #214A82;
+      background-color: var(--primary-color);
       color: white;
     }
     #formularios tbody tr:hover {
-      background-color: #4972AA !important;
+      background-color: var(--primary-hover) !important;
     }
     #formularios tbody tr:hover td {
       color: white !important;

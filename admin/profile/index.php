@@ -45,6 +45,9 @@ $user = $_SESSION['user']; // Contiene, por ejemplo, id, nombre, apellido, corre
       font-weight: 700;
       color: #1e293b;
     }
+    /* Dark mode */
+    [data-theme="dark"] body { background-color: var(--body-bg) !important; }
+    [data-theme="dark"] .profile-card { background: var(--card-bg) !important; color: var(--sidebar-text) !important; }
   </style>
 </head>
 <body>

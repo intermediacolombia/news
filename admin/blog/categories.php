@@ -51,6 +51,8 @@ $categories = $st->fetchAll();
     background:#fff; color:#dc3545;
   }
   .btn-trash:hover { background:#fff3f3; }
+  /* Dark mode */
+  [data-theme="dark"] body { background-color: var(--body-bg) !important; }
 </style>
 </head>
 
