@@ -60,6 +60,9 @@ function repair_database(): array {
             ['en', 'theme_sin_comentarios', 'No comments yet. Be the first to comment!'],
             ['en', 'theme_comentarios_post', 'comments'],
             ['en', 'theme_responder', 'Reply'],
+            // Menu translations
+            ['es', 'menu_comentarios', 'Comentarios'],
+            ['en', 'menu_comentarios', 'Comments'],
         ];
 
         foreach ($translations as [$langCode, $transKey, $transValue]) {
