@@ -12,7 +12,7 @@ if (session_status() === PHP_SESSION_NONE) {
 header('Content-Type: application/json');
 
 // Require admin authentication
-if (!isset($_SESSION['usuario_id'])) {
+if (!isset($_SESSION['user'])) {
     echo json_encode(['success' => false, 'message' => 'No autorizado']);
     exit;
 }
