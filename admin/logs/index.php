@@ -107,9 +107,10 @@ $entityTypes = db()->query($entityTypesSql)->fetchAll(PDO::FETCH_COLUMN);
 <body>
     <?php require_once __DIR__ . '/../inc/menu.php'; ?>
     
-    <div class="container-fluid px-4 py-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2><i class="fa fa-history"></i> Logs del Sistema</h2>
+    <div class="container-fluid py-4">
+        <!-- Page header -->
+        <div class="page-header">
+            <h4><i class="fa fa-history me-2" style="color:var(--primary-color)"></i>Logs del Sistema</h4>
             <div>
                 <button class="btn btn-outline-secondary btn-sm" onclick="exportLogs()">
                     <i class="fa fa-download"></i> Exportar CSV

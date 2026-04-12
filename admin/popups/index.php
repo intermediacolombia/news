@@ -55,20 +55,35 @@ $popups = db()->query("SELECT * FROM popups ORDER BY id DESC")->fetchAll(PDO::FE
         .status-badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
         .status-active { background: #d4edda; color: #155724; }
         .status-inactive { background: #f8d7da; color: #721c24; }
+        .page-header {
+            background: #fff;
+            border-radius: 12px;
+            padding: 1.2rem 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: .5rem;
+        }
+        .page-header h4 {
+            margin: 0;
+            font-weight: 700;
+            color: #1e293b;
+        }
     </style>
 </head>
 <body>
 
-<div class="container" style="padding:0; background:rgba(0,0,0,0)">
-    <div class="portada"><h1 class="mb-4">Gestionar Popups</h1></div>
-</div>
-
 <?php require_once __DIR__ . '/../inc/menu.php'; ?>
 
-<div class="container py-4">
+<div class="container-fluid py-4">
     <?php require_once __DIR__ . '/../inc/flash_simple.php'; ?>
-    
-    <div class="mb-3 text-end">
+
+    <!-- Page header -->
+    <div class="page-header">
+        <h4><i class="fa fa-bullhorn me-2" style="color:var(--primary-color)"></i>Gestionar Popups</h4>
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#popupModal" onclick="resetForm()">
             <i class="fa fa-plus"></i> Nuevo Popup
         </button>

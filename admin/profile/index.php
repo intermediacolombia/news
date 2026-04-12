@@ -28,17 +28,37 @@ $user = $_SESSION['user']; // Contiene, por ejemplo, id, nombre, apellido, corre
     }
     .profile-card h2 { margin-bottom: 20px; }
     .profile-card .row + .row { margin-top: 10px; }
+    .page-header {
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.2rem 1.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: .5rem;
+    }
+    .page-header h4 {
+      margin: 0;
+      font-weight: 700;
+      color: #1e293b;
+    }
   </style>
 </head>
 <body>
-<div class="container" style="padding: 0px; background:rgba(0,0,0,0.00)">
-  <div class="portada">
-    <h1 class="mb-4">Mi Perfil</h1>
-  </div>
-</div>
+
 <?php require_once('../inc/menu.php'); ?>
 
-<div class="profile-card">
+<div class="container-fluid py-4">
+
+  <!-- Page header -->
+  <div class="page-header">
+    <h4><i class="fas fa-user me-2" style="color:var(--primary-color)"></i>Mi Perfil</h4>
+  </div>
+
+  <div class="profile-card">
   
 	<div class="row">
     <div class="col-sm-3 font-weight-bold">Usuario:</div>

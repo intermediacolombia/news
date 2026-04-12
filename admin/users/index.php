@@ -34,6 +34,23 @@ try {
   <?php include('../inc/header.php'); ?>
   
   <style>
+    .page-header {
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.2rem 1.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: .5rem;
+    }
+    .page-header h4 {
+      margin: 0;
+      font-weight: 700;
+      color: #1e293b;
+    }
     /* Estilos de la tabla según lo solicitado */
     #formularios tbody tr,
     #formularios tbody tr td {
@@ -125,20 +142,19 @@ try {
   </style>
 </head>
 <body>
-<div class="container" style="padding: 0px; background:rgba(0,0,0,0.00)">
-  <div class="portada">
-    <h1>Listado de Usuarios</h1>
-
-    <!-- BS5: data-bs-* -->
-    <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#newUserModal">
-      <i class="fas fa-user-plus"></i> Nuevo Usuario
-    </button>
-  </div>
-</div>
 
 <?php include('../inc/menu.php'); ?>
 
-<div class="container mt-4">
+<div class="container-fluid py-4">
+
+  <!-- Page header -->
+  <div class="page-header">
+    <h4><i class="fas fa-users me-2" style="color:var(--primary-color)"></i>Listado de Usuarios</h4>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newUserModal">
+      <i class="fas fa-user-plus"></i> Nuevo Usuario
+    </button>
+  </div>
+
   <!-- Alertas de Bootstrap para mensajes de sesión -->
   <?php if(isset($_SESSION['error'])): ?>
     <div class="alert alert-danger alert-dismissible fade show" role="alert">

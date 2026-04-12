@@ -198,6 +198,23 @@ $qsPag = 'type=' . urlencode($filterType)
     .type-badge-document { background:#fef3c7; color:#92400e; }
     .type-badge-other    { background:#f3f4f6; color:#374151; }
     .btn-xs { padding:2px 8px; font-size:12px; }
+    .page-header {
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.2rem 1.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: .5rem;
+    }
+    .page-header h4 {
+      margin: 0;
+      font-weight: 700;
+      color: #1e293b;
+    }
     @keyframes fadeIn { from { opacity:0; transform:scale(.92); } to { opacity:1; transform:scale(1); } }
 
     /* Barra de acciones en lote */
@@ -226,15 +243,15 @@ $qsPag = 'type=' . urlencode($filterType)
 </head>
 <body>
 
-<div class="container" style="padding:0;background:rgba(0,0,0,0)">
-  <div class="portada">
-    <h1 class="mb-4"><i class="bi bi-images"></i> Multimedia</h1>
-  </div>
-</div>
 <?php require_once __DIR__ . '/../inc/menu.php'; ?>
 
-<div class="container py-4">
+<div class="container-fluid py-4">
   <?php require_once __DIR__ . '/../inc/flash_simple.php'; ?>
+
+  <!-- Page header -->
+  <div class="page-header">
+    <h4><i class="bi bi-images me-2" style="color:var(--primary-color)"></i>Multimedia</h4>
+  </div>
 
   <div class="row g-4">
 

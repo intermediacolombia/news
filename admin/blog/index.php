@@ -27,6 +27,23 @@ $usuarios = db()->query("SELECT id, nombre, apellido, username, foto_perfil
     background-color:#4972AA !important;
     color:#fff; cursor:pointer;
 }
+.page-header {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.2rem 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: .5rem;
+}
+.page-header h4 {
+    margin: 0;
+    font-weight: 700;
+    color: #1e293b;
+}
 .post-thumb {
     width:100px; border-radius:6px; box-shadow:0 2px 6px rgba(0,0,0,.1);
 }
@@ -145,18 +162,19 @@ $usuarios = db()->query("SELECT id, nombre, apellido, username, foto_perfil
 </style>
 </head>
 <body>
-<div class="container" style="padding:0">
-  <div class="portada">
-    <h1><i class="bi bi-journal-text"></i> Blog</h1>
-    <a class="btn btn-success float-end" href="<?= $url ?>/admin/blog/create.php">
-      <i class="fa fa-plus"></i> Nueva entrada
-    </a>
-  </div>
-</div>
 
 <?php include('../inc/menu.php'); ?>
 
-<div class="container-fluid">
+<div class="container-fluid py-4">
+
+  <!-- Page header -->
+  <div class="page-header">
+    <h4><i class="bi bi-journal-text me-2" style="color:var(--primary-color)"></i>Blog</h4>
+    <a class="btn btn-success" href="<?= $url ?>/admin/blog/create.php">
+      <i class="fa fa-plus"></i> Nueva entrada
+    </a>
+  </div>
+
   <div class="card shadow-sm">
     <div class="card-body">
 

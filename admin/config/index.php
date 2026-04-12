@@ -57,17 +57,37 @@ foreach ($defaults as $k => $v) {
   <meta charset="utf-8">
   <title>Configuraciones del Sistema</title>
   <?php require_once __DIR__ . '/../inc/header.php'; ?>
+  <style>
+    .page-header {
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.2rem 1.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: .5rem;
+    }
+    .page-header h4 {
+      margin: 0;
+      font-weight: 700;
+      color: #1e293b;
+    }
+  </style>
 </head>
 <body>
 
-<div class="container" style="padding:0; background:rgba(0,0,0,0)">
-  <div class="portada"><h1 class="mb-4">Configuraciones del Sistema</h1></div>
-</div>
-
 <?php require_once __DIR__ . '/../inc/menu.php'; ?>
 
-<div class="container py-4">
+<div class="container-fluid py-4">
   <?php require_once __DIR__ . '/../inc/flash_simple.php'; ?>
+
+  <!-- Page header -->
+  <div class="page-header">
+    <h4><i class="fa fa-cog me-2" style="color:var(--primary-color)"></i>Configuraciones del Sistema</h4>
+  </div>
 
   <ul class="nav nav-tabs" id="configTabs" role="tablist">
     <li class="nav-item"><a class="nav-link <?= $activeTab === 'generales' ? 'active' : '' ?>" data-bs-toggle="tab" href="#generales"><i class="fa fa-cog"></i> Generales</a></li>

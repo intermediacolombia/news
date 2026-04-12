@@ -54,21 +54,39 @@ require_once __DIR__ . '/../inc/flash_helpers.php';
     font-size: 0.75rem;
     padding: 0.35em 0.65em;
   }
+  .page-header {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.2rem 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: .5rem;
+  }
+  .page-header h4 {
+    margin: 0;
+    font-weight: 700;
+    color: #1e293b;
+  }
 </style>
 </head>
 <body>
-<div class="container" style="padding: 0px;">
-  <div class="portada">
-    <h1><i class="bi bi-building"></i> Información Institucional</h1>
-    <a class="btn btn-success float-end" href="<?= $url ?>/admin/institutional/create.php">
-      <i class="fa fa-plus"></i> Nueva Página
-    </a>
-  </div>
-</div>
 
 <?php include('../inc/menu.php'); ?>
 
-<div class="container-fluid">
+<div class="container-fluid py-4">
+
+  <!-- Page header -->
+  <div class="page-header">
+    <h4><i class="bi bi-building me-2" style="color:var(--primary-color)"></i>Información Institucional</h4>
+    <a class="btn btn-success" href="<?= $url ?>/admin/institutional/create.php">
+      <i class="fa fa-plus"></i> Nueva Página
+    </a>
+  </div>
+
   <?php if(isset($_SESSION['error'])): ?>
     <div class="alert alert-danger alert-dismissible fade show"><?= $_SESSION['error']; unset($_SESSION['error']); ?></div>
   <?php endif; ?>
