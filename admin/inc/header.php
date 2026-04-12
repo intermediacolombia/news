@@ -1,10 +1,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
         :root {
-            --primary-color: <?= COLOR_PRIMARY ?? '#007bff' ?>;
-            --color-hover-link: <?= COLOR_PRIMARY_HOVER_LINK  ?? '#0056b3' ?>;
-            --color-TEST1: <?= COLOR_PRIMARY ?>;
-            --color-TEST2: <?= COLOR_PRIMARY_HOVER_LINK ?>;
+            --primary-color: <?= COLOR_PRIMARY ?? '#E21F0C' ?>;
+            --color-hover-link: <?= COLOR_PRIMARY_HOVER_LINK  ?? '#C4180C' ?>;
         }
     </style>
 <!-- Favicon -->
