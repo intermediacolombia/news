@@ -55,7 +55,7 @@
         $pendingStmt = db()->query("SELECT COUNT(*) FROM comments WHERE estado = 'pending' AND borrado = 0");
         $pendingCount = $pendingStmt->fetchColumn();
         ?>
-        <a href="<?php echo URLBASE; ?>/admin/comments.php" onclick="closeSubmenus()">
+        <a href="<?php echo URLBASE; ?>/admin/comments/" onclick="closeSubmenus()">
             <i class="fa fa-comments"></i> Comentarios
             <?php if ($pendingCount > 0): ?>
             <span class="badge bg-danger"><?php echo $pendingCount; ?></span>

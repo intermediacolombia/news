@@ -2,8 +2,8 @@
 /**
  * Panel de gestión de comentarios
  */
-require_once __DIR__ . '/../inc/config.php';
-require_once __DIR__ . '/login/session.php';
+require_once __DIR__ . '/../../inc/config.php';
+require_once __DIR__ . '/../login/session.php';
 
 if (!function_exists('truncate_text')) {
     function truncate_text($text, $limit) {
@@ -68,7 +68,7 @@ $page_title = 'Gestión de Comentarios';
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><?= htmlspecialchars($page_title) ?> - <?= NOMBRE_SITIO ?></title>
-  <?php require_once __DIR__ . '/inc/header.php'; ?>
+  <?php require_once __DIR__ . '/../inc/header.php'; ?>
   <style>
     :root {
       --primary-color: <?= COLOR_PRIMARY ?? '#E21F0C' ?>;
@@ -98,10 +98,15 @@ $page_title = 'Gestión de Comentarios';
       opacity: .9;
     }
 
-    .stat-total    { background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)) !important; }
-    .stat-pending  { background: linear-gradient(135deg, #f59e0b, #d97706) !important; }
-    .stat-approved { background: linear-gradient(135deg, #22c55e, #16a34a) !important; }
-    .stat-hidden   { background: linear-gradient(135deg, #6b7280, #4b5563) !important; }
+    .stat-card.stat-total    { background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)) !important; color: #fff !important; }
+    .stat-card.stat-pending  { background: linear-gradient(135deg, #f59e0b, #d97706) !important; color: #fff !important; }
+    .stat-card.stat-approved { background: linear-gradient(135deg, #22c55e, #16a34a) !important; color: #fff !important; }
+    .stat-card.stat-hidden   { background: linear-gradient(135deg, #6b7280, #4b5563) !important; color: #fff !important; }
+    
+    .stat-card.stat-total .card-body, .stat-card.stat-total .card-body h3, .stat-card.stat-total .card-body p { color: #fff !important; background: transparent !important; }
+    .stat-card.stat-pending .card-body, .stat-card.stat-pending .card-body h3, .stat-card.stat-pending .card-body p { color: #fff !important; background: transparent !important; }
+    .stat-card.stat-approved .card-body, .stat-card.stat-approved .card-body h3, .stat-card.stat-approved .card-body p { color: #fff !important; background: transparent !important; }
+    .stat-card.stat-hidden .card-body, .stat-card.stat-hidden .card-body h3, .stat-card.stat-hidden .card-body p { color: #fff !important; background: transparent !important; }
 
     .stat-card .stat-icon {
       font-size: 2rem;
@@ -182,7 +187,7 @@ $page_title = 'Gestión de Comentarios';
   </style>
 </head>
 <body>
-<?php require_once __DIR__ . '/inc/menu.php'; ?>
+<?php require_once __DIR__ . '/../inc/menu.php'; ?>
 
 <div class="container-fluid py-4">
 
@@ -414,6 +419,6 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
-<?php require_once __DIR__ . '/inc/menu-footer.php'; ?>
+<?php require_once __DIR__ . '/../inc/menu-footer.php'; ?>
 </body>
 </html>
