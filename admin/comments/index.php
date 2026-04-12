@@ -189,7 +189,7 @@ $page_title = 'Gestión de Comentarios';
 <body>
 <?php require_once __DIR__ . '/../inc/menu.php'; ?>
 
-<div class="container-fluid py-4">
+<div class="page-wrapper">
 
   <!-- Page header -->
   <div class="page-header">

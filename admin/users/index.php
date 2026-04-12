@@ -145,7 +145,7 @@ try {
 
 <?php include('../inc/menu.php'); ?>
 
-<div class="container-fluid py-4">
+<div class="page-wrapper">
 
   <!-- Page header -->
   <div class="page-header">

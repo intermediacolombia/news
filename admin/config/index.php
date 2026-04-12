@@ -81,7 +81,7 @@ foreach ($defaults as $k => $v) {
 
 <?php require_once __DIR__ . '/../inc/menu.php'; ?>
 
-<div class="container-fluid py-4">
+<div class="page-wrapper">
   <?php require_once __DIR__ . '/../inc/flash_simple.php'; ?>
 
   <!-- Page header -->

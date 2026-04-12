@@ -51,7 +51,7 @@ $user = $_SESSION['user']; // Contiene, por ejemplo, id, nombre, apellido, corre
 
 <?php require_once('../inc/menu.php'); ?>
 
-<div class="container-fluid py-4">
+<div class="page-wrapper">
 
   <!-- Page header -->
   <div class="page-header">

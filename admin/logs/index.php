@@ -107,7 +107,7 @@ $entityTypes = db()->query($entityTypesSql)->fetchAll(PDO::FETCH_COLUMN);
 <body>
     <?php require_once __DIR__ . '/../inc/menu.php'; ?>
     
-    <div class="container-fluid py-4">
+    <div class="page-wrapper">
         <!-- Page header -->
         <div class="page-header">
             <h4><i class="fa fa-history me-2" style="color:var(--primary-color)"></i>Logs del Sistema</h4>

@@ -165,7 +165,7 @@ $usuarios = db()->query("SELECT id, nombre, apellido, username, foto_perfil
 
 <?php include('../inc/menu.php'); ?>
 
-<div class="container-fluid py-4">
+<div class="page-wrapper">
 
   <!-- Page header -->
   <div class="page-header">

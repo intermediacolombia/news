@@ -1,3 +1,5 @@
+<?php require_once __DIR__ . '/topbar.php'; ?>
+
 <div class="menu">
     <div class="logo-container">
         <img src="<?php echo URLBASE . SITE_LOGO; ?>?<?php echo time(); ?>" alt="Logo">
