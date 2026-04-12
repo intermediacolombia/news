@@ -1,8 +1,9 @@
 <div class="topbar">
     <div class="topbar-left">
-        <button class="menu-toggle" onclick="toggleMenu()">
-            <i class="fas fa-bars"></i>
-        </button>
+        <div class="site-logo">
+            <i class="fas fa-newspaper"></i>
+            <span class="site-name">SysNews</span>
+        </div>
     </div>
     <div class="topbar-right">
         <!-- Theme Toggle -->
@@ -29,10 +30,7 @@
 
 <style>
 .topbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
+    position: relative;
     height: 60px;
     background: var(--sidebar-bg);
     border-bottom: 1px solid var(--sidebar-border);
@@ -42,6 +40,7 @@
     padding: 0 20px;
     z-index: 1001;
     transition: var(--transition);
+    flex-shrink: 0;
 }
 
 .topbar-left {
@@ -50,24 +49,21 @@
     gap: 15px;
 }
 
-.menu-toggle {
-    width: 40px;
-    height: 40px;
-    border: none;
-    background: var(--sidebar-hover);
-    color: var(--sidebar-text);
-    border-radius: 10px;
-    cursor: pointer;
-    transition: var(--transition);
+.site-logo {
     display: flex;
     align-items: center;
-    justify-content: center;
-    font-size: 18px;
+    gap: 10px;
+    color: var(--primary-color);
+    font-weight: 700;
 }
 
-.menu-toggle:hover {
-    background: var(--sidebar-accent);
-    color: var(--primary-color);
+.site-logo i {
+    font-size: 24px;
+}
+
+.site-name {
+    font-size: 20px;
+    letter-spacing: -0.5px;
 }
 
 .topbar-right {
@@ -244,8 +240,4 @@ document.addEventListener('click', function(e) {
     }
 });
 
-// Menu toggle for mobile
-function toggleMenu() {
-    document.querySelector('.menu').classList.toggle('open');
-}
 </script>

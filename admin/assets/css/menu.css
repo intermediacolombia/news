@@ -371,10 +371,13 @@
 /* Page wrapper for content */
 .page-wrapper {
     margin-left: 260px;
-    margin-top: 60px;
-    padding: 25px;
-    min-height: calc(100vh - 60px);
+    padding: 20px 25px;
+    min-height: calc(100vh);
     transition: var(--transition);
+}
+
+[data-theme="dark"] .page-wrapper {
+    background: var(--content-bg);
 }
 
 @media (max-width: 768px) {
