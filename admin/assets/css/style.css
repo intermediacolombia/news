@@ -71,14 +71,14 @@ body {
       transition: background-color 0.1s ease;
     }
     #formularios thead th {
-      background-color: #214A82;
-      color: white;
+      background-color: var(--sidebar-bg-light, #214A82);
+      color: var(--sidebar-text, white);
     }
     #formularios tbody tr:hover {
-      background-color: #4972AA !important;
+      background-color: var(--sidebar-hover, #4972AA) !important;
     }
     #formularios tbody tr:hover td {
-      color: white !important;
+      color: var(--sidebar-text, white) !important;
     }
     /* La columna de checkboxes no dispara redirección */
     .no-click {
@@ -110,13 +110,12 @@ thead th {
 
 /* Cambio de color de fondo y texto cuando se pasa el ratón sobre la fila */
 tbody tr:hover {
-  background-color: #4972AA!important;
+  background-color: var(--sidebar-hover, #4972AA) !important;
 }
 
 tbody tr:hover td {
-  color: white !important; /* Cambiar el color del texto a blanco */
-	background:#B3B3B3;
-	
+  color: var(--sidebar-text, white) !important;
+  background: var(--sidebar-hover, #B3B3B3);
 }
 
 /* La columna de acción no dispara redirección */
@@ -294,7 +293,7 @@ table tbody tr {
 }
 
 .btn-success:hover {
-  background: #4db000;
+  background: var(--primary-hover, #4db000);
   transform: translateY(-1px);
 }
 
@@ -312,7 +311,118 @@ table tbody tr {
 
 label.form-label {
   font-weight: 500;
-  color: #333;
+  color: var(--sidebar-text, #333);
+}
+
+/* Dark Mode Support */
+[data-theme="dark"] {
+  body {
+    background: var(--body-bg) !important;
+  }
+  
+  .portada h1 {
+    color: var(--sidebar-text, #000);
+  }
+  
+  .container {
+    background: var(--card-bg);
+  }
+  
+  #formularios thead th {
+    background: var(--sidebar-bg-light) !important;
+    color: var(--sidebar-text) !important;
+  }
+  
+  #formularios tbody tr:hover {
+    background: var(--sidebar-hover) !important;
+  }
+  
+  #formularios tbody tr:hover td {
+    color: var(--sidebar-text) !important;
+  }
+  
+  thead th {
+    background: var(--sidebar-bg-light) !important;
+    color: var(--sidebar-text) !important;
+  }
+  
+  tbody tr:hover {
+    background: var(--sidebar-hover) !important;
+  }
+  
+  tbody tr:hover td {
+    background: var(--sidebar-hover) !important;
+    color: var(--sidebar-text) !important;
+  }
+  
+  .nav-tabs {
+    background: var(--sidebar-bg);
+    border-color: var(--sidebar-border);
+  }
+  
+  .nav-tabs .nav-link {
+    color: var(--sidebar-text-muted);
+  }
+  
+  .nav-tabs .nav-link:hover {
+    background: var(--sidebar-hover);
+    color: var(--primary-color) !important;
+  }
+  
+  .nav-tabs .nav-link.active {
+    background: var(--primary-color) !important;
+    color: #fff !important;
+  }
+  
+  .tab-content {
+    background: var(--card-bg);
+    border-color: var(--sidebar-border);
+  }
+  
+  .card {
+    background: var(--card-bg);
+    border-color: var(--sidebar-border);
+    box-shadow: var(--shadow-color);
+  }
+  
+  .card-header {
+    background: var(--sidebar-bg-light);
+    color: var(--sidebar-text);
+    border-color: var(--sidebar-border);
+  }
+  
+  .card-body {
+    background: var(--card-bg);
+    color: var(--sidebar-text);
+  }
+  
+  .btn-success:hover {
+    background: var(--primary-hover) !important;
+  }
+  
+  .form-control, .form-select {
+    background: var(--input-bg);
+    border-color: var(--input-border);
+    color: var(--sidebar-text);
+  }
+  
+  .form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    background: var(--input-bg);
+    color: var(--sidebar-text);
+  }
+  
+  label.form-label {
+    color: var(--sidebar-text);
+  }
+  
+  .slider {
+    background-color: var(--sidebar-border);
+  }
+  
+  input:checked + .slider {
+    background-color: var(--primary-color);
+  }
 }
 
 
