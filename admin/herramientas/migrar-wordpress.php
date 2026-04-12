@@ -261,19 +261,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['migrar'])) {
     <title>Migrar desde WordPress</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?php require_once __DIR__ . '/../inc/header.php'; ?>
+    <style>
+    .page-header {
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.2rem 1.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: .5rem;
+    }
+    .page-header h4 {
+      margin: 0;
+      font-weight: 700;
+      color: #1e293b;
+    }
+    </style>
 </head>
 <body>
-<div class="container" style="padding:0; background:rgba(0,0,0,0)">
-    <div class="portada">
-        <h1 class="mb-4"><i class="fa fa-screwdriver-wrench"></i> Herramientas</h1>
-    </div>
-</div>
+
 <?php require_once __DIR__ . '/../inc/menu.php'; ?>
+
+<div class="container-fluid py-4">
+
+  <!-- Page header -->
+  <div class="page-header">
+    <h4><i class="fas fa-tools me-2" style="color:var(--primary-color)"></i>Herramientas</h4>
+  </div>
 
 <div class="wrap">
     <div class="card">
         <div class="card-header d-flex align-items-center justify-content-between">
-            <h5 class="mb-0"><i class="fa fa-wordpress me-2"></i> Migrar desde WordPress</h5>
+            <h5 class="mb-0"><i class="fab fa-wordpress me-2"></i> Migrar desde WordPress</h5>
             <span class="badge badge-brand">Herramientas</span>
         </div>
         <div class="card-body">

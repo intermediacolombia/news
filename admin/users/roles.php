@@ -17,21 +17,41 @@ require_once realpath(__DIR__ . '/../login/restriction.php');
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Gestión de Roles</title>
+<title>Gestión de Roles</title>
   <?php include('../inc/header.php'); ?>
+  <style>
+    .page-header {
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.2rem 1.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: .5rem;
+    }
+    .page-header h4 {
+      margin: 0;
+      font-weight: 700;
+      color: #1e293b;
+    }
+  </style>
 </head>
 <body>
-<div class="container" style="padding: 0px; background:rgba(0,0,0,0.00)">
-  <div class="portada">
-     <h1 class="mb-4">Gestión de Roles</h1>
-	  <button class="btn btn-success float-end" id="btnAddRole"><i class="fa fa-plus"></i> Agregar Nuevo Rol</button>
+
+<?php include('../inc/menu.php'); ?>
+
+<div class="container-fluid py-4">
+
+  <!-- Page header -->
+  <div class="page-header">
+    <h4><i class="fas fa-user-shield me-2" style="color:var(--primary-color)"></i>Gestión de Roles</h4>
+    <button class="btn btn-success" id="btnAddRole"><i class="fas fa-plus"></i> Agregar Nuevo Rol</button>
   </div>
-</div>
-  <?php include('../inc/menu.php'); ?>
-  <div class="container mt-4">
-   
-    
-    <table id="roles-table" class="table table-striped table-bordered">
+
+  <table id="roles-table" class="table table-striped table-bordered">
       <thead>
         <tr>
           <th>Nombre</th>

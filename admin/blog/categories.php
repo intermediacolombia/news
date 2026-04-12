@@ -28,6 +28,23 @@ $categories = $st->fetchAll();
 
 <style>
   body { background-color: #f8f9fa; }
+  .page-header {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.2rem 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: .5rem;
+  }
+  .page-header h4 {
+    margin: 0;
+    font-weight: 700;
+    color: #1e293b;
+  }
   .btn-trash {
     display:inline-flex; align-items:center; justify-content:center;
     width:32px; height:32px; border:1px solid #dc3545; border-radius:6px;
@@ -38,20 +55,18 @@ $categories = $st->fetchAll();
 </head>
 
 <body>
-<div class="container" style="padding: 0px; background:rgba(0,0,0,0.00)">
-  <div class="portada">
-    <h1><i class="bi bi-journal-text"></i> Categorias</h1>
 
-    <!-- BS5: data-bs-* -->
-    <a class="btn btn-success float-end" href="<?= $url ?>/admin/blog/category_create.php">
-      <i class="fa fa-plus"></i> Nueva Categoria
-    </a>
-  </div>
-</div>
 <?php require_once __DIR__ . '/../inc/menu.php'; ?>
 
-<div class="container-fluid">
-  
+<div class="container-fluid py-4">
+
+  <!-- Page header -->
+  <div class="page-header">
+    <h4><i class="fas fa-tags me-2" style="color:var(--primary-color)"></i>Categorías</h4>
+    <a class="btn btn-success" href="<?= $url ?>/admin/blog/category_create.php">
+      <i class="fas fa-plus"></i> Nueva Categoría
+    </a>
+  </div>
 
   <div class="card shadow-sm">
     <div class="card-body">
