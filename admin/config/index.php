@@ -93,7 +93,7 @@ foreach ($defaults as $k => $v) {
     <li class="nav-item"><a class="nav-link <?= $activeTab === 'generales' ? 'active' : '' ?>" data-bs-toggle="tab" href="#generales"><i class="fa fa-cog"></i> Generales</a></li>
     <li class="nav-item"><a class="nav-link <?= $activeTab === 'identidad' ? 'active' : '' ?>" data-bs-toggle="tab" href="#identidad"><i class="fa fa-user"></i> Identidad</a></li>
     <li class="nav-item"><a class="nav-link <?= $activeTab === 'code' ? 'active' : '' ?>" data-bs-toggle="tab" href="#code"><i class="fa fa-code"></i> Codigo HTML</a></li>
-    <li class="nav-item"><a class="nav-link <?= $activeTab === 'seo' ? 'active' : '' ?>" data-bs-toggle="tab" href="#seo"><i class="fa fa-google"></i> SEO</a></li>
+    <li class="nav-item"><a class="nav-link <?= $activeTab === 'seo' ? 'active' : '' ?>" data-bs-toggle="tab" href="#seo"><i class="fab fa-google"></i> SEO</a></li>
     <li class="nav-item"><a class="nav-link <?= $activeTab === 'email' ? 'active' : '' ?>" data-bs-toggle="tab" href="#email"><i class="fa fa-envelope"></i> Email</a></li>
     <li class="nav-item"><a class="nav-link <?= $activeTab === 'apariencia' ? 'active' : '' ?>" data-bs-toggle="tab" href="#apariencia"><i class="fas fa-brush"></i> Apariencia</a></li>
     <li class="nav-item"><a class="nav-link <?= $activeTab === 'idioma' ? 'active' : '' ?>" data-bs-toggle="tab" href="#idioma"><i class="fas fa-language"></i> Editor de Idioma</a></li>
