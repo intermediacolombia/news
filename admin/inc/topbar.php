@@ -41,6 +41,7 @@
     z-index: 1001;
     transition: var(--transition);
     flex-shrink: 0;
+    margin-left: 20px;
 }
 
 .topbar-left {
