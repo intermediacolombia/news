@@ -320,6 +320,9 @@ $page_title = 'Gestión de Comentarios';
                 <small class="text-muted"><?= date('d/m/Y H:i', strtotime($comment['created_at'])) ?></small>
               </td>
               <td class="text-end">
+                <button class="btn btn-sm btn-info btn-view-js" data-id="<?= $comment['id'] ?>" title="Ver detalle">
+                  <i class="fas fa-eye"></i>
+                </button>
                 <?php if ($comment['estado'] !== 'approved'): ?>
                 <button class="btn btn-sm btn-approve btn-approve-js" data-id="<?= $comment['id'] ?>" title="Aprobar">
                   <i class="fas fa-check"></i>
@@ -358,8 +361,146 @@ $page_title = 'Gestión de Comentarios';
   </div>
 </div>
 
+<!-- Modal: Ver Comentario -->
+<div class="modal fade" id="commentModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="fas fa-comments me-2"></i>Detalle del Comentario</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div id="modalContent">
+          <div class="text-center py-4">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="mt-2">Cargando...</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" id="modalActions">
+        <!-- Botones de acción se cargan dinámicamente -->
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+
+  let commentModal;
+  const commentData = {};
+
+  <?php foreach ($comments as $c): ?>
+  commentData[<?= $c['id'] ?>] = <?= json_encode($c, JSON_HEX_TAG | JSON_HEX_APOS) ?>;
+  <?php endforeach; ?>
+
+  document.querySelectorAll('.btn-view-js').forEach(btn => {
+    btn.addEventListener('click', function () {
+      const comment = commentData[this.dataset.id];
+      if (!comment) return;
+
+      const estadoLabel = comment.estado === 'pending' ? '<span class="badge bg-warning text-dark">Pendiente</span>' :
+                         comment.estado === 'approved' ? '<span class="badge bg-success">Aprobado</span>' :
+                         '<span class="badge bg-secondary">Oculto</span>';
+
+      const postLink = comment.post_title 
+        ? `<a href="<?= URLBASE ?>/${comment.post_slug}/" target="_blank" class="text-decoration-none">${comment.post_title}</a>`
+        : '<span class="text-muted fst-italic">Artículo eliminado</span>';
+
+      document.getElementById('modalContent').innerHTML = `
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="text-muted small text-uppercase">Autor</label>
+            <p class="mb-1 fw-bold">${comment.nombre || 'Anónimo'}</p>
+            <small class="text-muted">${comment.email || 'Sin email'}</small>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="text-muted small text-uppercase">Estado</label>
+            <p class="mb-0">${estadoLabel}</p>
+          </div>
+          <div class="col-12 mb-3">
+            <label class="text-muted small text-uppercase">Artículo</label>
+            <p class="mb-0">${postLink}</p>
+          </div>
+          <div class="col-12 mb-3">
+            <label class="text-muted small text-uppercase">Comentario</label>
+            <div class="bg-light p-3 rounded" style="white-space: pre-wrap;">${comment.contenido || ''}</div>
+          </div>
+          <div class="col-md-6">
+            <label class="text-muted small text-uppercase">Fecha</label>
+            <p class="mb-0">${comment.created_at ? new Date(comment.created_at).toLocaleString('es-CO') : '-'}</p>
+          </div>
+          <div class="col-md-6">
+            <label class="text-muted small text-uppercase">IP</label>
+            <p class="mb-0">${comment.ip_address || '-'}</p>
+          </div>
+        </div>
+      `;
+
+      let actionsHtml = '';
+      if (comment.estado !== 'approved') {
+        actionsHtml += `<button type="button" class="btn btn-success btn-approve-js" data-id="${comment.id}"><i class="fas fa-check me-1"></i>Aprobar</button>`;
+      }
+      if (comment.estado !== 'hidden') {
+        actionsHtml += `<button type="button" class="btn btn-secondary btn-hide-js" data-id="${comment.id}"><i class="fas fa-eye-slash me-1"></i>Ocultar</button>`;
+      }
+      actionsHtml += `<button type="button" class="btn btn-danger btn-delete-js" data-id="${comment.id}"><i class="fas fa-trash me-1"></i>Eliminar</button>`;
+
+      document.getElementById('modalActions').innerHTML = actionsHtml;
+
+      commentModal = new bootstrap.Modal(document.getElementById('commentModal'));
+      commentModal.show();
+
+      afterModalInsert();
+    });
+  });
+
+  function afterModalInsert() {
+    document.querySelectorAll('#commentModal .btn-approve-js').forEach(btn => {
+      btn.addEventListener('click', function () {
+        const row = document.querySelector(`tr#comment-${btn.dataset.id}`);
+        if (commentModal) commentModal.hide();
+        moderateComment(btn.dataset.id, 'approve', row);
+      });
+    });
+    document.querySelectorAll('#commentModal .btn-hide-js').forEach(btn => {
+      btn.addEventListener('click', function () {
+        Swal.fire({
+          title: '¿Ocultar comentario?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Sí, ocultar',
+          cancelButtonText: 'Cancelar',
+          confirmButtonColor: '#6b7280',
+        }).then(r => {
+          if (r.isConfirmed) {
+            const row = document.querySelector(`tr#comment-${btn.dataset.id}`);
+            if (commentModal) commentModal.hide();
+            moderateComment(btn.dataset.id, 'hide', row);
+          }
+        });
+      });
+    });
+    document.querySelectorAll('#commentModal .btn-delete-js').forEach(btn => {
+      btn.addEventListener('click', function () {
+        Swal.fire({
+          title: '¿Eliminar comentario?',
+          text: 'Esta acción no se puede deshacer.',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Sí, eliminar',
+          cancelButtonText: 'Cancelar',
+          confirmButtonColor: '#dc2626',
+        }).then(r => {
+          if (r.isConfirmed) {
+            const row = document.querySelector(`tr#comment-${btn.dataset.id}`);
+            if (commentModal) commentModal.hide();
+            moderateComment(btn.dataset.id, 'delete', row);
+          }
+        });
+      });
+    });
+  }
 
   document.querySelectorAll('.btn-approve-js').forEach(btn => {
     btn.addEventListener('click', function () {
