@@ -367,7 +367,7 @@
 
 /* Page wrapper for content */
 .page-wrapper {
-    margin-left: 260px;
+    margin-left: 20px;
     padding: 20px 25px;
     min-height: calc(100vh);
     transition: var(--transition);
