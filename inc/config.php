@@ -49,6 +49,42 @@ function db() {
 // Inicializar la base de datos para cargar las variables
 db();
 
+// Reparación automática de BD al detectar nueva versión desplegada o periódicamente
+$repairFlagFile = __DIR__ . '/admin/inc/cache/last_repair_hash.txt';
+$dbRepairFile   = __DIR__ . '/admin/inc/db_repair.php';
+$gitHeadFile    = __DIR__ . '/.git/refs/heads/main';
+
+if (file_exists($dbRepairFile) && db()) {
+    try {
+        $shouldRepair = false;
+        $currentHash  = file_exists($gitHeadFile) ? trim(file_get_contents($gitHeadFile)) : '';
+        $lastHash     = file_exists($repairFlagFile) ? trim(file_get_contents($repairFlagFile)) : '';
+        
+        if ($currentHash && $currentHash !== $lastHash) {
+            $shouldRepair = true;
+        } elseif (!file_exists($repairFlagFile)) {
+            $shouldRepair = true;
+        } else {
+            $lastRepairTime = file_exists($repairFlagFile) ? filemtime($repairFlagFile) : 0;
+            if ($lastRepairTime && (time() - $lastRepairTime) > 86400) {
+                $shouldRepair = true;
+            }
+        }
+
+        if ($shouldRepair) {
+            require_once $dbRepairFile;
+            if (function_exists('repair_database')) {
+                repair_database();
+                $cacheDir = dirname($repairFlagFile);
+                if (!is_dir($cacheDir)) mkdir($cacheDir, 0755, true);
+                file_put_contents($repairFlagFile, $currentHash ?: 'repaired');
+            }
+        }
+    } catch (Throwable $e) {
+        // Silencioso
+    }
+}
+
 date_default_timezone_set('America/Bogota');
 /* ========= Carga de ajustes del sistema (con cache global) ========= */
 if (!isset($GLOBALS['SYS_SETTINGS'])) {
