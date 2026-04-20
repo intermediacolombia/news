@@ -339,6 +339,7 @@ function editPopup(id) {
                 document.getElementById('action_url').value = p.action_url || '';
                 document.getElementById('action_new_tab').checked = p.action_new_tab == '1';
                 document.getElementById('overlay_enabled').checked = p.overlay_enabled == '1';
+                document.getElementById('show_title').checked = p.show_title == '1';
                 document.getElementById('status').value = p.status;
                 document.getElementById('show_on_pages').value = p.show_on_all_pages == '1' ? 'all' : 'homepage';
                 document.getElementById('show_once_per_visit').value = p.show_once_per_visit;
