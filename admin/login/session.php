@@ -74,24 +74,38 @@ if (!isset($_SESSION['_logged_at'])) {
     log_system_action('login', 'Usuario inició sesión: ' . $username, 'user', $currentUser['id'] ?? null);
 }
 
-// Reparación automática de BD al detectar nueva versión desplegada
+// Reparación automática de BD al detectar nueva versión desplegada o periódicamente
 // Compara el hash actual del repo con el último hash reparado (archivo de bandera)
 try {
     $repairFlagFile = __DIR__ . '/../../admin/inc/cache/last_repair_hash.txt';
     $dbRepairFile   = __DIR__ . '/../../admin/inc/db_repair.php';
     $gitHeadFile    = __DIR__ . '/../../.git/refs/heads/main';
 
-    if (file_exists($dbRepairFile) && file_exists($gitHeadFile)) {
-        $currentHash  = trim(file_get_contents($gitHeadFile));
+    if (file_exists($dbRepairFile)) {
+        $shouldRepair = false;
+        $currentHash  = file_exists($gitHeadFile) ? trim(file_get_contents($gitHeadFile)) : '';
         $lastHash     = file_exists($repairFlagFile) ? trim(file_get_contents($repairFlagFile)) : '';
-
+        
+        // Reparar si: hash cambió (nuevo deploy) O nunca se ha reparado O pasaron más de 24 horas
         if ($currentHash && $currentHash !== $lastHash) {
+            $shouldRepair = true;
+        } elseif (!file_exists($repairFlagFile)) {
+            $shouldRepair = true;
+        } else {
+            $lastRepairTime = file_exists($repairFlagFile) ? filemtime($repairFlagFile) : 0;
+            if ($lastRepairTime && (time() - $lastRepairTime) > 86400) { // 24 horas
+                $shouldRepair = true;
+            }
+        }
+
+        if ($shouldRepair) {
             require_once $dbRepairFile;
-            repair_database();
-            // Guardar el hash reparado para no volver a correr hasta la próxima versión
-            $cacheDir = dirname($repairFlagFile);
-            if (!is_dir($cacheDir)) mkdir($cacheDir, 0755, true);
-            file_put_contents($repairFlagFile, $currentHash);
+            if (function_exists('repair_database')) {
+                $repairResult = repair_database();
+                $cacheDir = dirname($repairFlagFile);
+                if (!is_dir($cacheDir)) mkdir($cacheDir, 0755, true);
+                file_put_contents($repairFlagFile, $currentHash ?: 'repaired');
+            }
         }
     }
 } catch (Throwable $e) {
