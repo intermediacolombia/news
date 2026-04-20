@@ -174,7 +174,7 @@ function repair_database(): array {
         // Ejemplo: ['usuarios', 'avatar', "VARCHAR(255) DEFAULT NULL AFTER email"]
         // =====================================================================
         $columns = [
-            // Agregar aquí cuando sea necesario
+            ['popups', 'show_title', "TINYINT(1) DEFAULT 1 AFTER overlay_enabled"],
         ];
 
         foreach ($columns as [$table, $column, $definition]) {
