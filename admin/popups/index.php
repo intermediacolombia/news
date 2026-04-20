@@ -33,6 +33,7 @@ if ($stmt->rowCount() == 0) {
             action_new_tab TINYINT(1) DEFAULT 0,
             auto_close_seconds INT DEFAULT 0,
             overlay_enabled TINYINT(1) DEFAULT 1,
+            show_title TINYINT(1) DEFAULT 1,
             status ENUM('active', 'inactive') DEFAULT 'inactive',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -276,6 +277,13 @@ $popups = db()->query("SELECT * FROM popups ORDER BY id DESC")->fetchAll(PDO::FE
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" name="overlay_enabled" id="overlay_enabled" value="1" checked>
                             <label class="form-check-label">Mostrar fondo oscurecido (overlay)</label>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="show_title" id="show_title" value="1" checked>
+                            <label class="form-check-label">Mostrar título</label>
                         </div>
                     </div>
                 </div>

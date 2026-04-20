@@ -370,6 +370,8 @@ function renderPopup(): string {
     
     $btnStyle = 'background:' . htmlspecialchars($popup['button_color']) . '; color:' . htmlspecialchars($popup['button_text_color']) . '; border: none; padding: 8px 20px; border-radius: 5px; cursor: pointer; margin-top: 10px;';
     
+    $titleHtml = !empty($popup['show_title']) ? '<h3 style="margin: 0 0 10px 0; font-size: 1.5rem;">' . htmlspecialchars($popup['title']) . '</h3>' : '';
+    
     $html = '
     <div id="globalPopupOverlay" style="' . $overlayStyle . '"></div>
     <div id="globalPopup" class="global-popup ' . ($isNotification ? 'global-notification' : 'global-modal') . '" style="
@@ -386,7 +388,7 @@ function renderPopup(): string {
         display: none;
     ">
         <div style="text-align: center;"' . $onclickAction . '>
-            <h3 style="margin: 0 0 10px 0; font-size: 1.5rem;">' . htmlspecialchars($popup['title']) . '</h3>
+            ' . $titleHtml . '
             ' . $imageHtml . '
             <div style="text-align: left;">' . $popup['content'] . '</div>
         </div>

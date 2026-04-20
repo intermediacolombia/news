@@ -47,6 +47,7 @@ try {
         $action_url = $_POST['action_url'] ?? '';
         $action_new_tab = isset($_POST['action_new_tab']) ? 1 : 0;
         $overlay_enabled = isset($_POST['overlay_enabled']) ? 1 : 0;
+        $show_title = isset($_POST['show_title']) ? 1 : 0;
         $status = $_POST['status'] ?? 'inactive';
         $show_on_pages = $_POST['show_on_pages'] ?? 'all';
         $show_on_all_pages = $show_on_pages === 'all' ? 1 : 0;
@@ -88,10 +89,10 @@ try {
                 title = ?, content = ?, popup_type = ?, position = ?, width = ?,
                 background_color = ?, text_color = ?, delay_seconds = ?, auto_close_seconds = ?,
                 button_text = ?, button_color = ?, button_text_color = ?, action_type = ?, action_url = ?,
-                action_new_tab = ?, overlay_enabled = ?, status = ?, show_on_all_pages = ?, show_once_per_visit = ?";
+                action_new_tab = ?, overlay_enabled = ?, show_title = ?, status = ?, show_on_all_pages = ?, show_once_per_visit = ?";
             $params = [$title, $content, $popup_type, $position, $width, $background_color, $text_color, 
                 $delay_seconds, $auto_close_seconds, $button_text, $button_color, $button_text_color,
-                $action_type, $action_url, $action_new_tab, $overlay_enabled, $status, $show_on_all_pages, $show_once_per_visit];
+                $action_type, $action_url, $action_new_tab, $overlay_enabled, $show_title, $status, $show_on_all_pages, $show_once_per_visit];
             
             if ($imagePath) {
                 $sql .= ", image = ?";
@@ -103,14 +104,14 @@ try {
             $stmt = db()->prepare($sql);
             $stmt->execute($params);
         } else {
-            $sql = "INSERT INTO popups (title, content, image, popup_type, position, width, background_color, text_color,
+$sql = "INSERT INTO popups (title, content, image, popup_type, position, width, background_color, text_color,
                 delay_seconds, auto_close_seconds, button_text, button_color, button_text_color, action_type, action_url,
-                action_new_tab, overlay_enabled, status, show_on_all_pages, show_once_per_visit)
+                action_new_tab, overlay_enabled, show_title, status, show_on_all_pages, show_once_per_visit)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt = db()->prepare($sql);
             $stmt->execute([$title, $content, $imagePath, $popup_type, $position, $width, $background_color, $text_color,
                 $delay_seconds, $auto_close_seconds, $button_text, $button_color, $button_text_color, $action_type, $action_url,
-                $action_new_tab, $overlay_enabled, $status, $show_on_all_pages, $show_once_per_visit]);
+                $action_new_tab, $overlay_enabled, $show_title, $status, $show_on_all_pages, $show_once_per_visit]);
         }
 
         log_system_action($popupAction, json_encode(['id' => $id, 'title' => $title, 'status' => $status]), 'popups', $id);
