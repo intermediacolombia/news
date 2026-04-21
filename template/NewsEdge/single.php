@@ -44,23 +44,28 @@ if (!$categorySlug || !$postSlug) {
     exit;
 }
 
-// Buscar la noticia
+// Buscar la noticia por slug (LEFT JOIN para tolerar posts sin categoría)
 $stmt = db()->prepare("
     SELECT p.*, pc.category_id, c.name AS category_name, c.slug AS category_slug
     FROM blog_posts p
-    INNER JOIN blog_post_category pc ON pc.post_id = p.id
-    INNER JOIN blog_categories c ON c.id = pc.category_id
-    WHERE p.slug = ? AND c.slug = ?
+    LEFT JOIN blog_post_category pc ON pc.post_id = p.id
+    LEFT JOIN blog_categories c ON c.id = pc.category_id
+    WHERE p.slug = ?
       AND p.status='published' AND p.deleted=0
     LIMIT 1
 ");
-$stmt->execute([$postSlug, $categorySlug]);
+$stmt->execute([$postSlug]);
 $post = $stmt->fetch();
 
 if (!$post) {
     http_response_code(404);
-    //include __DIR__ . '/404.php';
-	header('Location: /error_404');
+    header('Location: /error_404');
+    exit;
+}
+
+// Si la categoría en la URL no coincide con la del post, redirigir a la URL correcta
+if (!empty($post['category_slug']) && $categorySlug !== $post['category_slug']) {
+    header('Location: ' . rtrim(URLBASE, '/') . '/' . $post['category_slug'] . '/' . $postSlug . '/', true, 301);
     exit;
 }
 

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/../../inc/config.php';
 
 require_once __DIR__ . '/../login/session.php';  // Inicia la sesión y carga la información del usuario
@@ -122,15 +122,16 @@ function oldv_raw($key, $default = ''){
 
             <!-- Categorías -->
             <div class="mb-3">
-              <label class="form-label">Categorías</label>
-              <select name="categories[]" class="form-select" multiple>
+              <label class="form-label">Categorías *</label>
+              <select name="categories[]" class="form-select<?= isset($errors['categories'])? ' is-invalid' : '' ?>" multiple required>
                 <?php foreach(($cats ?? []) as $c): ?>
-                  <option value="<?= (int)$c['id'] ?>" <?= in_array((int)$c['id'], $postCats, true) ? 'selected' : '' ?>>
+                  <option value="<?= (int)$c['id'] ?>" <?= in_array((int)$c['id'], $selectedCats, true) ? 'selected' : '' ?>>
                     <?= htmlspecialchars($c['name']) ?>
                   </option>
                 <?php endforeach; ?>
               </select>
 				<div class="hint mt-1">Mantén CTRL/⌘ para seleccionar varias</div>
+              <?php if(isset($errors['categories'])): ?><div class="invalid-feedback d-block"><?= htmlspecialchars($errors['categories']) ?></div><?php endif; ?>
             </div>
 
             <div class="mb-3">

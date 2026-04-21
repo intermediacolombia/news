@@ -29,8 +29,9 @@ $imageAlt       = trim($_POST['image_alt']       ?? '');
     $old    = $_POST;
 
     /* ========= Validaciones ========= */
-    if ($title === '')   $errors['title']   = "El título es obligatorio.";
-    if ($content === '') $errors['content'] = "El contenido no puede estar vacío.";
+    if ($title === '')        $errors['title']      = "El título es obligatorio.";
+    if ($content === '')      $errors['content']    = "El contenido no puede estar vacío.";
+    if (empty($catsSel))      $errors['categories'] = "Debes seleccionar al menos una categoría.";
 
     /* ========= Slug ========= */
     if ($slug === '') {

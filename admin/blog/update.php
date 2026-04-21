@@ -36,8 +36,9 @@ $imageFromLib   = trim($_POST['image_path']     ?? ''); // ← ruta desde biblio
 
 /* ========= Validaciones ========= */
 $errors = [];
-if ($title === '')         $errors['title']   = "El título es obligatorio.";
-if (trim($content) === '') $errors['content'] = "El contenido es obligatorio.";
+if ($title === '')         $errors['title']      = "El título es obligatorio.";
+if (trim($content) === '') $errors['content']    = "El contenido es obligatorio.";
+if (empty($cats))          $errors['categories'] = "Debes seleccionar al menos una categoría.";
 
 /* ========= Traer post existente ========= */
 $stmt = db()->prepare("SELECT * FROM blog_posts WHERE id=? AND deleted=0 LIMIT 1");

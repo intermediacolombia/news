@@ -65,8 +65,8 @@ $oldStatus = $old['status'] ?? 'draft';
 
             <!-- Categorías -->
             <div class="mb-3">
-              <label class="form-label">Categorías</label>
-              <select name="categories[]" class="form-select" multiple>
+              <label class="form-label">Categorías *</label>
+              <select name="categories[]" class="form-select<?= isset($errors['categories'])?' is-invalid':'' ?>" multiple required>
                 <?php foreach(($cats ?? []) as $c): ?>
                   <option value="<?= (int)$c['id'] ?>" <?= in_array((int)$c['id'],$oldCats,true) ? 'selected' : '' ?>>
                     <?= htmlspecialchars($c['name']) ?>
@@ -74,6 +74,7 @@ $oldStatus = $old['status'] ?? 'draft';
                 <?php endforeach; ?>
               </select>
               <div class="hint mt-1">Mantén CTRL/⌘ para seleccionar varias</div>
+              <?php if(isset($errors['categories'])): ?><div class="invalid-feedback d-block"><?= htmlspecialchars($errors['categories']) ?></div><?php endif; ?>
             </div>
 
             <div class="mb-3">
