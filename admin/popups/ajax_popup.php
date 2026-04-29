@@ -107,7 +107,7 @@ try {
 $sql = "INSERT INTO popups (title, content, image, popup_type, position, width, background_color, text_color,
                 delay_seconds, auto_close_seconds, button_text, button_color, button_text_color, action_type, action_url,
                 action_new_tab, overlay_enabled, show_title, status, show_on_all_pages, show_once_per_visit)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt = db()->prepare($sql);
             $stmt->execute([$title, $content, $imagePath, $popup_type, $position, $width, $background_color, $text_color,
                 $delay_seconds, $auto_close_seconds, $button_text, $button_color, $button_text_color, $action_type, $action_url,
