@@ -1,7 +1,14 @@
 {
   "permissions": {
     "allow": [
-      "Bash(powershell:*)"
+      "Bash(powershell:*)",
+      "Bash(python3 *)",
+      "Bash(perl -i -0pe 's|<!-- Categor\\\\xc3\\\\xadas -->\\\\n            <div class=\"mb-3\">\\\\n              <label class=\"form-label\">Categor\\\\xc3\\\\xadas</label>\\\\n              <select name=\"categories\\\\[\\\\]\" class=\"form-select\" multiple>\\\\n                \\\\Q<?php foreach\\(\\($cats ?? []\\) as $c\\): ?>\\\\E\\\\n                  <option value=\"\\\\Q<?= \\(int\\)$c[E' 'idQ] ?>\\\\E\" \\\\Q<?= \\\\Ein_array\\\\Q\\(\\(int\\)$c[id], $postCats, true\\) ? selected :  ?>\\\\E>\\\\n                    \\\\Q<?= htmlspecialchars\\($c[name]\\) ?>\\\\E\\\\n                  </option>\\\\n                \\\\Q<?php endforeach; ?>\\\\E\\\\n              </select>\\\\n\\\\t\\\\t\\\\t\\\\t\\\\t<div class=\"hint mt-1\">Mant\\\\xc3\\\\xa9n CTRL\\\\/\\\\xe2\\\\x8c\\\\x98 para seleccionar varias</div>\\\\n            </div>|PLACEHOLDER|' 'D:/DESARROLLO WEB/SOFTWARE EN LA NUBE/NEWS/admin/blog/edit.php')",
+      "Bash(echo \"Exit: $?\")",
+      "Bash(perl -i -0777 -pe ' *)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(git add *)"
     ]
   }
 }
