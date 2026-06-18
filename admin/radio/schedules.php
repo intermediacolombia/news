@@ -170,7 +170,7 @@ function delSlot(id) {
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                 body: 'id=' + id
             }).then(r => r.json()).then(data => {
-                if (data.ok) location.reload();
+                if (data.success) location.reload();
                 else Swal.fire('Error', data.msg, 'error');
             });
         }

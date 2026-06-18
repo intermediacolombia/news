@@ -88,7 +88,7 @@ function confirmDelete(id, title) {
             })
             .then(r => r.json())
             .then(data => {
-                if (data.ok) location.reload();
+                if (data.success) location.reload();
                 else Swal.fire('Error', data.msg, 'error');
             });
         }
