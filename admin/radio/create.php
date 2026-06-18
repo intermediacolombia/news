@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $dir = __DIR__ . '/../../public/images/programs/';
             if (!is_dir($dir)) mkdir($dir, 0755, true);
-            $filename = time() . '_' . preg_replace('/[^a-z0-9\._-]/i','_',$_FILES['image']['name']);
+            $filename = time() . '_' . bin2hex(random_bytes(8)) . '.' . $ext;
             if (move_uploaded_file($_FILES['image']['tmp_name'], $dir . $filename)) {
                 $imagePath = 'public/images/programs/' . $filename;
             }
