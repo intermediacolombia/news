@@ -87,7 +87,7 @@ $msgs   = db()->query("SELECT * FROM contact_messages ORDER BY created_at DESC")
                         <tr><td colspan="7" class="text-center text-muted py-4">Sin mensajes aún</td></tr>
                     <?php else: ?>
                         <?php foreach ($msgs as $m): ?>
-                        <tr>
+                        <tr data-id="<?= (int)$m['id'] ?>">
                             <td><?= htmlspecialchars($m['name']) ?></td>
                             <td><?= htmlspecialchars($m['email']) ?></td>
                             <td><?= $m['phone'] ? htmlspecialchars($m['phone']) : '<span class="text-muted">—</span>' ?></td>
@@ -181,11 +181,18 @@ function openMessage(id, name, email, phone, message, date, isUnread) {
 
     $('#msgModal').modal('show');
 
-    // Auto-mark as read if unread
     if (isUnread) {
-        document.getElementById('actionId').value   = id;
-        document.getElementById('actionName').value = 'mark_read';
-        document.getElementById('actionForm').submit();
+        const fd = new FormData();
+        fd.append('action', 'mark_read');
+        fd.append('id', id);
+        fetch(location.href, { method: 'POST', body: fd })
+            .then(() => {
+                const row = document.querySelector('tr[data-id="' + id + '"]');
+                if (row) {
+                    const badge = row.querySelector('.badge');
+                    if (badge) { badge.className = 'badge badge-secondary'; badge.textContent = 'Leído'; }
+                }
+            });
     }
 }
 
