@@ -363,7 +363,7 @@ global $sys;
             <?php endif; ?>
 
             <li>
-                <a href="<?= URLBASE ?>/contact">
+                <a href="<?= URLBASE ?>/contacto/">
                     <i class="fas fa-phone" aria-hidden="true"></i><?= t_theme('theme_contacto') ?>
                 </a>
             </li>
