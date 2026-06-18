@@ -103,6 +103,14 @@ if ($parts[0] === 'buscar') {
     $templateFile = __DIR__ . "/template/" . THEME . "/author.php";
 
 // ===============================
+// Programa individual: /programas/slug/
+// ===============================
+} elseif ($parts[0] === 'programas' && isset($parts[1]) && !empty($parts[1])) {
+    $_GET['page']         = 'programas';
+    $_GET['program_slug'] = $parts[1];
+    $templateFile         = __DIR__ . "/template/" . THEME . "/programa-single.php";
+
+// ===============================
 // Single post: /categoria/post/
 // IMPORTANTE: DEBE IR DESPUÉS DE TODAS LAS RUTAS ESPECIALES
 // ===============================
