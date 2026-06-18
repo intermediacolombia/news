@@ -87,6 +87,45 @@
         </a>
     <?php endif; ?>
 
+    <!-- RADIO -->
+    <?php if (isset($_SESSION["user_permissions"]) && in_array('Gestionar Radio', $_SESSION["user_permissions"])): ?>
+        <a href="#" class="has-submenu" onclick="toggleSubmenu(event)">
+            <i class="fas fa-broadcast-tower"></i> Radio <i class="fas fa-chevron-down"></i>
+        </a>
+        <div class="submenu">
+            <a href="<?php echo URLBASE; ?>/admin/radio/" onclick="closeSubmenus()"><i class="fas fa-broadcast-tower"></i> Programas</a>
+            <a href="<?php echo URLBASE; ?>/admin/radio/schedules.php" onclick="closeSubmenus()"><i class="fas fa-calendar-alt"></i> Programación</a>
+        </div>
+    <?php endif; ?>
+
+    <!-- SUSCRIPTORES -->
+    <?php if (isset($_SESSION["user_permissions"]) && in_array('Gestionar Suscriptores', $_SESSION["user_permissions"])): ?>
+        <a href="<?php echo URLBASE; ?>/admin/subscribers/" onclick="closeSubmenus()">
+            <i class="fas fa-envelope-open-text"></i> Suscriptores
+        </a>
+    <?php endif; ?>
+
+    <!-- MENSAJES -->
+    <?php if (isset($_SESSION["user_permissions"]) && in_array('Gestionar Mensajes', $_SESSION["user_permissions"])): ?>
+        <?php
+        $unreadStmt = db()->query("SELECT COUNT(*) FROM contact_messages WHERE status = 'unread'");
+        $unreadCount = $unreadStmt->fetchColumn();
+        ?>
+        <a href="<?php echo URLBASE; ?>/admin/contact/" onclick="closeSubmenus()">
+            <i class="fas fa-inbox"></i> Mensajes
+            <?php if ($unreadCount > 0): ?>
+            <span class="badge"><?php echo $unreadCount; ?></span>
+            <?php endif; ?>
+        </a>
+    <?php endif; ?>
+
+    <!-- PÁGINAS LEGALES -->
+    <?php if (isset($_SESSION["user_permissions"]) && in_array('Gestionar Páginas Legales', $_SESSION["user_permissions"])): ?>
+        <a href="<?php echo URLBASE; ?>/admin/legal/" onclick="closeSubmenus()">
+            <i class="fas fa-balance-scale"></i> Páginas Legales
+        </a>
+    <?php endif; ?>
+
     <!-- PUBLICIDAD -->
     <?php if (isset($_SESSION["user_permissions"]) && in_array('Manejar Publicidad', $_SESSION["user_permissions"])): ?>
         <a href="<?php echo URLBASE; ?>/admin/ads/" onclick="closeSubmenus()">
