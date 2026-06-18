@@ -184,7 +184,9 @@ global $sys;
                 </p>
 
                 <?php
-                $legalPages = db()->query("SELECT slug, title FROM legal_pages WHERE content != '' AND content IS NOT NULL")->fetchAll();
+                try {
+                    $legalPages = db()->query("SELECT slug, title FROM legal_pages WHERE content != '' AND content IS NOT NULL")->fetchAll();
+                } catch (Throwable $e) { $legalPages = []; }
                 if (!empty($legalPages)): ?>
                 <p class="mb-1" style="color: var(--text-muted); font-size: 13px;">
                     <?php foreach ($legalPages as $lp): ?>

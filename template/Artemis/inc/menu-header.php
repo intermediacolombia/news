@@ -162,16 +162,19 @@ require_once __DIR__ . '/../../../inc/translations.php';
                     </li>
 
                     <?php
-                    $hasPrograms = (int)db()->query("SELECT COUNT(*) FROM programs WHERE status='active'")->fetchColumn() > 0;
+                    try {
+                        $hasPrograms  = (int)db()->query("SELECT COUNT(*) FROM programs WHERE status='active'")->fetchColumn() > 0;
+                        $hasSchedules = (int)db()->query("SELECT COUNT(*) FROM schedules WHERE status='active'")->fetchColumn() > 0;
+                    } catch (Throwable $e) {
+                        $hasPrograms = $hasSchedules = false;
+                    }
                     if ($hasPrograms): ?>
                     <li class="nav-item">
                         <a class="nav-link" href="<?= URLBASE ?>/programas/">Programas</a>
                     </li>
                     <?php endif; ?>
 
-                    <?php
-                    $hasSchedules = (int)db()->query("SELECT COUNT(*) FROM schedules WHERE status='active'")->fetchColumn() > 0;
-                    if ($hasSchedules): ?>
+                    <?php if ($hasSchedules): ?>
                     <li class="nav-item">
                         <a class="nav-link" href="<?= URLBASE ?>/programacion/">Programación</a>
                     </li>
