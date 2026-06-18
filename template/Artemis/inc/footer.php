@@ -182,6 +182,20 @@ global $sys;
                 <p class="mb-1" style="color: var(--text-muted); font-size: 14px;">
                     © <?= date('Y') ?> <strong style="color: var(--text-color);"><?= htmlspecialchars($sys['site_name']) ?></strong>. <?= t_theme('theme_todos_derechos') ?>.
                 </p>
+
+                <?php
+                $legalPages = db()->query("SELECT slug, title FROM legal_pages WHERE content != '' AND content IS NOT NULL")->fetchAll();
+                if (!empty($legalPages)): ?>
+                <p class="mb-1" style="color: var(--text-muted); font-size: 13px;">
+                    <?php foreach ($legalPages as $lp): ?>
+                    <a href="<?= URLBASE ?>/<?= htmlspecialchars($lp['slug']) ?>/"
+                       style="color: var(--text-muted); text-decoration: none; margin: 0 8px;">
+                        <?= htmlspecialchars($lp['title']) ?>
+                    </a>
+                    <?php endforeach; ?>
+                </p>
+                <?php endif; ?>
+
                 <p style="color: var(--text-muted); font-size: 13px;">
                     <?= t_theme('theme_diseno_por') ?> <a href="https://www.intermediahost.co" target="_blank" style="color: var(--primary); text-decoration: none;">Intermedia Host</a>
                 </p>

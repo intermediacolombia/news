@@ -161,8 +161,28 @@ require_once __DIR__ . '/../../../inc/translations.php';
                         </div>
                     </li>
 
+                    <?php
+                    $hasPrograms = (int)db()->query("SELECT COUNT(*) FROM programs WHERE status='active'")->fetchColumn() > 0;
+                    if ($hasPrograms): ?>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= URLBASE ?>/contact"><?= strtoupper(t_theme('theme_contacto')) ?></a>
+                        <a class="nav-link" href="<?= URLBASE ?>/programas/">Programas</a>
+                    </li>
+                    <?php endif; ?>
+
+                    <?php
+                    $hasSchedules = (int)db()->query("SELECT COUNT(*) FROM schedules WHERE status='active'")->fetchColumn() > 0;
+                    if ($hasSchedules): ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= URLBASE ?>/programacion/">Programación</a>
+                    </li>
+                    <?php endif; ?>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= URLBASE ?>/suscripcion/">Suscripción</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= URLBASE ?>/contacto/"><?= strtoupper(t_theme('theme_contacto')) ?></a>
                     </li>
                         </ul>
                     </nav>
@@ -270,8 +290,30 @@ require_once __DIR__ . '/../../../inc/translations.php';
                     </li>
                 </ul>
             </li>
+            <?php if ($hasPrograms): ?>
             <li>
-                <a href="<?= URLBASE ?>/contact">
+                <a href="<?= URLBASE ?>/programas/">
+                    <i class="fas fa-tv"></i>Programas
+                </a>
+            </li>
+            <?php endif; ?>
+
+            <?php if ($hasSchedules): ?>
+            <li>
+                <a href="<?= URLBASE ?>/programacion/">
+                    <i class="fas fa-calendar-alt"></i>Programación
+                </a>
+            </li>
+            <?php endif; ?>
+
+            <li>
+                <a href="<?= URLBASE ?>/suscripcion/">
+                    <i class="fas fa-bell"></i>Suscripción
+                </a>
+            </li>
+
+            <li>
+                <a href="<?= URLBASE ?>/contacto/">
                     <i class="fas fa-envelope"></i><?= t_theme('theme_contacto') ?>
                 </a>
             </li>
