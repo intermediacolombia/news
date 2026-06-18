@@ -95,6 +95,10 @@ function repair_database(): array {
             [23, 'Ver Logs',         'Sistema'],
             [24, 'Actualizar Sistema', 'Sistema'],
             [25, 'Gestionar Comentarios', 'Contenido'],
+            [26, 'Gestionar Radio',           'Contenido'],
+            [27, 'Gestionar Suscriptores',    'Contenido'],
+            [28, 'Gestionar Mensajes',        'Contenido'],
+            [29, 'Gestionar Páginas Legales', 'Configuración'],
         ];
 
         foreach ($newPermissions as [$id, $name, $category]) {
@@ -155,6 +159,57 @@ function repair_database(): array {
                   KEY `idx_created_at` (`created_at`)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
             ",
+            'programs' => "CREATE TABLE IF NOT EXISTS `programs` (
+                `id`            INT AUTO_INCREMENT PRIMARY KEY,
+                `title`         VARCHAR(255) NOT NULL,
+                `slug`          VARCHAR(255) NOT NULL UNIQUE,
+                `description`   TEXT,
+                `image`         VARCHAR(500),
+                `category`      VARCHAR(100),
+                `hosts`         VARCHAR(255),
+                `schedule_info` VARCHAR(255),
+                `status`        ENUM('active','inactive') DEFAULT 'active',
+                `created_at`    DATETIME DEFAULT CURRENT_TIMESTAMP
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+
+            'schedules' => "CREATE TABLE IF NOT EXISTS `schedules` (
+                `id`          INT AUTO_INCREMENT PRIMARY KEY,
+                `program_id`  INT NOT NULL,
+                `day_of_week` ENUM('lunes','martes','miercoles','jueves','viernes','sabado','domingo') NOT NULL,
+                `start_time`  TIME NOT NULL,
+                `end_time`    TIME NOT NULL,
+                `host`        VARCHAR(255),
+                `status`      ENUM('active','inactive') DEFAULT 'active',
+                `created_at`  DATETIME DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (`program_id`) REFERENCES `programs`(`id`) ON DELETE CASCADE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+
+            'subscribers' => "CREATE TABLE IF NOT EXISTS `subscribers` (
+                `id`               INT AUTO_INCREMENT PRIMARY KEY,
+                `name`             VARCHAR(255) NOT NULL,
+                `email`            VARCHAR(255) NOT NULL UNIQUE,
+                `privacy_accepted` TINYINT(1) DEFAULT 0,
+                `status`           ENUM('active','inactive') DEFAULT 'active',
+                `created_at`       DATETIME DEFAULT CURRENT_TIMESTAMP
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+
+            'contact_messages' => "CREATE TABLE IF NOT EXISTS `contact_messages` (
+                `id`         INT AUTO_INCREMENT PRIMARY KEY,
+                `name`       VARCHAR(255) NOT NULL,
+                `email`      VARCHAR(255) NOT NULL,
+                `phone`      VARCHAR(50),
+                `message`    TEXT NOT NULL,
+                `status`     ENUM('unread','read') DEFAULT 'unread',
+                `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+
+            'legal_pages' => "CREATE TABLE IF NOT EXISTS `legal_pages` (
+                `id`         INT AUTO_INCREMENT PRIMARY KEY,
+                `slug`       VARCHAR(100) NOT NULL UNIQUE,
+                `title`      VARCHAR(255) NOT NULL,
+                `content`    LONGTEXT,
+                `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
         ];
 
         foreach ($tables as $tableName => $sql) {
@@ -165,6 +220,16 @@ function repair_database(): array {
             } else {
                 $results['tables'][] = "Ya existe tabla: $tableName";
             }
+        }
+
+        // Seed filas fijas en legal_pages
+        try {
+            db()->exec("INSERT IGNORE INTO `legal_pages` (`slug`, `title`, `content`) VALUES
+                ('aviso-legal', 'Aviso Legal', ''),
+                ('politica-privacidad', 'Política de Privacidad', '')
+            ");
+        } catch (Exception $e) {
+            $results['errors'][] = "Error seed legal_pages: " . $e->getMessage();
         }
 
         // =====================================================================
