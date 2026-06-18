@@ -106,11 +106,11 @@ $msgs   = db()->query("SELECT * FROM contact_messages ORDER BY created_at DESC")
                                         title="Ver mensaje"
                                         onclick="openMessage(
                                             <?= (int)$m['id'] ?>,
-                                            <?= json_encode($m['name'],    JSON_UNESCAPED_UNICODE) ?>,
-                                            <?= json_encode($m['email'],   JSON_UNESCAPED_UNICODE) ?>,
-                                            <?= json_encode($m['phone'] ?? '', JSON_UNESCAPED_UNICODE) ?>,
-                                            <?= json_encode($m['message'], JSON_UNESCAPED_UNICODE) ?>,
-                                            <?= json_encode(date('d/m/Y H:i', strtotime($m['created_at'])), JSON_UNESCAPED_UNICODE) ?>,
+                                            <?= json_encode($m['name'],    JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_UNESCAPED_UNICODE) ?>,
+                                            <?= json_encode($m['email'],   JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_UNESCAPED_UNICODE) ?>,
+                                            <?= json_encode($m['phone'] ?? '', JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_UNESCAPED_UNICODE) ?>,
+                                            <?= json_encode($m['message'], JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_UNESCAPED_UNICODE) ?>,
+                                            <?= json_encode(date('d/m/Y H:i', strtotime($m['created_at'])), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_UNESCAPED_UNICODE) ?>,
                                             <?= $m['status'] === 'unread' ? 'true' : 'false' ?>
                                         )">
                                     <i class="fas fa-eye"></i>
@@ -118,7 +118,7 @@ $msgs   = db()->query("SELECT * FROM contact_messages ORDER BY created_at DESC")
                                 <button type="button"
                                         class="btn btn-sm btn-outline-danger"
                                         title="Eliminar"
-                                        onclick="confirmDelete(<?= (int)$m['id'] ?>, <?= json_encode($m['name'], JSON_UNESCAPED_UNICODE) ?>)">
+                                        onclick="confirmDelete(<?= (int)$m['id'] ?>, <?= json_encode($m['name'], JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_UNESCAPED_UNICODE) ?>)">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </td>

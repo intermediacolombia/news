@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'save'
         log_system_action('Guardar Página Legal', $slug, 'legal_pages', $page_id);
         setFlash('success', 'Página legal guardada correctamente.');
     } catch (Throwable $e) {
-        setFlash('error', 'Error al guardar: ' . $e->getMessage());
+        setFlash('error', 'Error al guardar la página. Inténtelo de nuevo.');
     }
 
     header('Location: ' . URLBASE . '/admin/legal/?tab=' . urlencode($slug));
@@ -161,7 +161,7 @@ if (!in_array($active_tab, $allowed_slugs, true)) {
 
             <div class="mb-3">
               <label for="content_aviso" class="form-label fw-semibold">Contenido</label>
-              <textarea id="content_aviso" name="content"><?= $pages['aviso-legal']['content'] ?? '' ?></textarea>
+              <textarea id="content_aviso" name="content"><?= htmlspecialchars($pages['aviso-legal']['content'] ?? '') ?></textarea>
             </div>
 
             <button type="submit" class="btn btn-primary">
@@ -199,7 +199,7 @@ if (!in_array($active_tab, $allowed_slugs, true)) {
 
             <div class="mb-3">
               <label for="content_privacidad" class="form-label fw-semibold">Contenido</label>
-              <textarea id="content_privacidad" name="content"><?= $pages['politica-privacidad']['content'] ?? '' ?></textarea>
+              <textarea id="content_privacidad" name="content"><?= htmlspecialchars($pages['politica-privacidad']['content'] ?? '') ?></textarea>
             </div>
 
             <button type="submit" class="btn btn-primary">
