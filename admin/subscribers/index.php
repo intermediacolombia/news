@@ -8,25 +8,33 @@ require_once __DIR__ . '/../inc/flash_helpers.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id     = (int)($_POST['id'] ?? 0);
     $action = $_POST['action'] ?? '';
-    if ($id && $action === 'toggle') {
-        $current = db()->prepare("SELECT status FROM subscribers WHERE id = ?");
-        $current->execute([$id]);
-        $row = $current->fetch();
-        if ($row) {
-            $newStatus = $row['status'] === 'active' ? 'inactive' : 'active';
-            db()->prepare("UPDATE subscribers SET status = ? WHERE id = ?")->execute([$newStatus, $id]);
+    try {
+        if ($id && $action === 'toggle') {
+            $current = db()->prepare("SELECT status FROM subscribers WHERE id = ?");
+            $current->execute([$id]);
+            $row = $current->fetch();
+            if ($row) {
+                $newStatus = $row['status'] === 'active' ? 'inactive' : 'active';
+                db()->prepare("UPDATE subscribers SET status = ? WHERE id = ?")->execute([$newStatus, $id]);
+            }
+        } elseif ($id && $action === 'delete') {
+            db()->prepare("DELETE FROM subscribers WHERE id = ?")->execute([$id]);
+            setFlash('success', 'Suscriptor eliminado');
         }
-    } elseif ($id && $action === 'delete') {
-        db()->prepare("DELETE FROM subscribers WHERE id = ?")->execute([$id]);
-        setFlash('success', 'Suscriptor eliminado');
+    } catch (Throwable $e) {
+        setFlash('error', 'Error al procesar la acción');
     }
     header('Location: ' . URLBASE . '/admin/subscribers/');
     exit;
 }
 
-$total  = db()->query("SELECT COUNT(*) FROM subscribers")->fetchColumn();
-$active = db()->query("SELECT COUNT(*) FROM subscribers WHERE status='active'")->fetchColumn();
-$subs   = db()->query("SELECT * FROM subscribers ORDER BY created_at DESC")->fetchAll();
+try {
+    $total  = db()->query("SELECT COUNT(*) FROM subscribers")->fetchColumn();
+    $active = db()->query("SELECT COUNT(*) FROM subscribers WHERE status='active'")->fetchColumn();
+    $subs   = db()->query("SELECT * FROM subscribers ORDER BY created_at DESC")->fetchAll();
+} catch (Throwable $e) {
+    $total = 0; $active = 0; $subs = [];
+}
 ?>
 <!doctype html>
 <html lang="es">
@@ -64,7 +72,7 @@ $subs   = db()->query("SELECT * FROM subscribers ORDER BY created_at DESC")->fet
         <div class="card shadow-sm">
             <div class="card-body p-0">
                 <table class="table table-hover mb-0">
-                    <thead class="thead-light">
+                    <thead class="table-light">
                         <tr><th>Nombre</th><th>Email</th><th>Privacidad</th><th>Estado</th><th>Fecha</th><th>Acciones</th></tr>
                     </thead>
                     <tbody>
@@ -75,12 +83,12 @@ $subs   = db()->query("SELECT * FROM subscribers ORDER BY created_at DESC")->fet
                         <tr>
                             <td><?= htmlspecialchars($s['name']) ?></td>
                             <td><?= htmlspecialchars($s['email']) ?></td>
-                            <td><?= $s['privacy_accepted'] ? '<span class="badge badge-success">Sí</span>' : '<span class="badge badge-warning">No</span>' ?></td>
+                            <td><?= $s['privacy_accepted'] ? '<span class="badge bg-success">Sí</span>' : '<span class="badge bg-warning text-dark">No</span>' ?></td>
                             <td>
                                 <form method="POST" style="display:inline;">
                                     <input type="hidden" name="id" value="<?= $s['id'] ?>">
                                     <input type="hidden" name="action" value="toggle">
-                                    <button type="submit" class="badge badge-<?= $s['status']==='active'?'success':'secondary' ?> border-0" style="cursor:pointer;">
+                                    <button type="submit" class="badge bg-<?= $s['status']==='active'?'success':'secondary' ?> border-0 text-white" style="cursor:pointer;">
                                         <?= $s['status'] === 'active' ? 'Activo' : 'Inactivo' ?>
                                     </button>
                                 </form>

@@ -5,7 +5,11 @@ $permisopage = 'Gestionar Radio';
 include('../login/restriction.php');
 require_once __DIR__ . '/../inc/flash_helpers.php';
 
-$programs = db()->query("SELECT id, title FROM programs WHERE status='active' ORDER BY title ASC")->fetchAll();
+try {
+    $programs = db()->query("SELECT id, title FROM programs WHERE status='active' ORDER BY title ASC")->fetchAll();
+} catch (Throwable $e) {
+    $programs = [];
+}
 $days = ['lunes','martes','miercoles','jueves','viernes','sabado','domingo'];
 $dayLabels = ['lunes'=>'Lunes','martes'=>'Martes','miercoles'=>'Miércoles','jueves'=>'Jueves','viernes'=>'Viernes','sabado'=>'Sábado','domingo'=>'Domingo'];
 
@@ -67,9 +71,9 @@ try {
                 <form method="POST">
                     <div class="row">
                         <div class="col-md-3">
-                            <div class="form-group">
+                            <div class="mb-3">
                                 <label>Programa *</label>
-                                <select name="program_id" class="form-control" required>
+                                <select name="program_id" class="form-select" required>
                                     <option value="">— Seleccionar —</option>
                                     <?php foreach ($programs as $p): ?>
                                     <option value="<?= $p['id'] ?>"><?= htmlspecialchars($p['title']) ?></option>
@@ -78,9 +82,9 @@ try {
                             </div>
                         </div>
                         <div class="col-md-2">
-                            <div class="form-group">
+                            <div class="mb-3">
                                 <label>Día *</label>
-                                <select name="day_of_week" class="form-control" required>
+                                <select name="day_of_week" class="form-select" required>
                                     <option value="">— Día —</option>
                                     <?php foreach ($days as $d): ?>
                                     <option value="<?= $d ?>"><?= $dayLabels[$d] ?></option>
@@ -89,25 +93,25 @@ try {
                             </div>
                         </div>
                         <div class="col-md-2">
-                            <div class="form-group">
+                            <div class="mb-3">
                                 <label>Inicio *</label>
                                 <input type="time" name="start_time" class="form-control" required>
                             </div>
                         </div>
                         <div class="col-md-2">
-                            <div class="form-group">
+                            <div class="mb-3">
                                 <label>Fin *</label>
                                 <input type="time" name="end_time" class="form-control" required>
                             </div>
                         </div>
                         <div class="col-md-2">
-                            <div class="form-group">
+                            <div class="mb-3">
                                 <label>Conductor</label>
                                 <input type="text" name="host" class="form-control" placeholder="Opcional">
                             </div>
                         </div>
                         <div class="col-md-1 d-flex align-items-end">
-                            <div class="form-group">
+                            <div class="mb-3">
                                 <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i></button>
                             </div>
                         </div>
@@ -120,12 +124,12 @@ try {
         <div class="card shadow-sm mb-3">
             <div class="card-header d-flex justify-content-between">
                 <strong><?= $dayLabels[$day] ?></strong>
-                <span class="badge badge-secondary"><?= count($allSlots[$day] ?? []) ?> slots</span>
+                <span class="badge bg-secondary text-white"><?= count($allSlots[$day] ?? []) ?> slots</span>
             </div>
             <?php if (!empty($allSlots[$day])): ?>
             <div class="card-body p-0">
                 <table class="table table-sm table-hover mb-0">
-                    <thead class="thead-light">
+                    <thead class="table-light">
                         <tr><th>Inicio</th><th>Fin</th><th>Programa</th><th>Conductor</th><th>Estado</th><th></th></tr>
                     </thead>
                     <tbody>
@@ -135,7 +139,7 @@ try {
                         <td><?= substr($slot['end_time'],0,5) ?></td>
                         <td><?= htmlspecialchars($slot['program_title']) ?></td>
                         <td><?= htmlspecialchars($slot['host'] ?? '') ?></td>
-                        <td><span class="badge badge-<?= $slot['status']==='active'?'success':'secondary' ?>"><?= $slot['status'] === 'active' ? 'Activo' : 'Inactivo' ?></span></td>
+                        <td><span class="badge bg-<?= $slot['status']==='active'?'success':'secondary' ?> text-white"><?= $slot['status'] === 'active' ? 'Activo' : 'Inactivo' ?></span></td>
                         <td>
                             <button class="btn btn-sm btn-outline-danger"
                                     onclick="delSlot(<?= $slot['id'] ?>)">
