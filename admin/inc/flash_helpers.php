@@ -20,3 +20,19 @@ if (!function_exists('flash_err')) {
 /*if (!function_exists('flash_info')) {
   function flash_err(string $text, string $title = 'Error'): void { flash_set('info', $text, $title); }
 }*/
+
+if (!function_exists('renderFlashMessages')) {
+  function renderFlashMessages(): void {
+    if (session_status() === PHP_SESSION_NONE) session_start();
+    $flashes = $_SESSION['flash'] ?? [];
+    unset($_SESSION['flash']);
+    $map = ['success' => 'success', 'error' => 'danger', 'warning' => 'warning', 'info' => 'info'];
+    foreach ($flashes as $f) {
+      $cls = $map[$f['type']] ?? 'info';
+      echo '<div class="alert alert-' . $cls . ' alert-dismissible fade show" role="alert">'
+         . $f['msg']
+         . '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>'
+         . '</div>';
+    }
+  }
+}
