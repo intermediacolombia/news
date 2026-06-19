@@ -8,7 +8,19 @@
       "Bash(perl -i -0777 -pe ' *)",
       "Bash(git commit *)",
       "Bash(git push *)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(grep *)",
+      "Bash(php -l admin/inc/db_repair.php)",
+      "Read(//usr/**)",
+      "Read(//usr/local/**)",
+      "Bash(command -v php.exe)",
+      "Read(//mnt/c/**)",
+      "Read(//mnt/c/xampp/**)",
+      "Read(//mnt/**)",
+      "Bash(php -l index.php)",
+      "PowerShell(php -l \"D:/DESARROLLO WEB/SOFTWARE EN LA NUBE/NEWS/index.php\")",
+      "Bash(php *)",
+      "Bash(python -c ' *)"
     ]
   }
 }

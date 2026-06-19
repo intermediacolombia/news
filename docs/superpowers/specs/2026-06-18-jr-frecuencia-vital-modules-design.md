@@ -209,6 +209,12 @@ Agregar enlaces nuevos al nav existente:
 
 El ítem **Escuchar** enlaza al player ya existente en el sistema (URL configurada previamente). No se implementa página nueva.
 
+**Regla: ocultar ítems sin contenido.** Cada ítem del menú se renderiza condicionalmente:
+- **Programación** → solo si existe al menos 1 schedule activo en BD
+- **Programas** → solo si existe al menos 1 programa activo en BD
+- **Aviso Legal** / **Política de Privacidad** (footer) → solo si `content` no está vacío en `legal_pages`
+- Suscripción y Contacto → siempre visibles (son formularios, no dependen de contenido)
+
 ---
 
 ## 8. Orden de implementación sugerido
