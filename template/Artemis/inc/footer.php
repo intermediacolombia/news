@@ -90,15 +90,19 @@ global $sys;
                 <h5 class="mb-4" style="color: var(--text-color); font-family: 'Playfair Display', serif;"><?= t_theme('theme_ultimas_noticias') ?></h5>
                 <ul class="list-unstyled">
                     <?php
-                    $latestNews = db()->query("
-                        SELECT p.title, p.slug, c.slug as category_slug
-                        FROM blog_posts p
-                        LEFT JOIN blog_post_category pc ON pc.post_id = p.id
-                        LEFT JOIN blog_categories c ON c.id = pc.category_id
-                        WHERE p.status='published' AND p.deleted=0
-                        ORDER BY p.created_at DESC
-                        LIMIT 4
-                    ")->fetchAll(PDO::FETCH_ASSOC);
+                    try {
+                        $latestNews = db()->query("
+                            SELECT p.title, p.slug, c.slug as category_slug
+                            FROM blog_posts p
+                            LEFT JOIN blog_post_category pc ON pc.post_id = p.id
+                            LEFT JOIN blog_categories c ON c.id = pc.category_id
+                            WHERE p.status='published' AND p.deleted=0
+                            ORDER BY p.created_at DESC
+                            LIMIT 4
+                        ")->fetchAll(PDO::FETCH_ASSOC);
+                    } catch (Throwable $e) {
+                        $latestNews = [];
+                    }
                     
                     foreach ($latestNews as $news):
                         $postUrl = URLBASE . "/" . htmlspecialchars($news['category_slug']) . "/" . htmlspecialchars($news['slug']) . "/";
@@ -117,18 +121,22 @@ global $sys;
                 <h5 class="mb-4" style="color: var(--text-color); font-family: 'Playfair Display', serif;"><?= t_theme('theme_categorias') ?></h5>
                 <ul class="list-unstyled">
                     <?php
-                    $cats = db()->query("
-                        SELECT c.name, c.slug, COUNT(p.id) AS total
-                        FROM blog_categories c
-                        INNER JOIN blog_post_category pc ON pc.category_id = c.id
-                        INNER JOIN blog_posts p ON p.id = pc.post_id
-                        WHERE c.status='active' AND c.deleted=0
-                          AND p.status='published' AND p.deleted=0
-                        GROUP BY c.id, c.name, c.slug
-                        HAVING total > 0
-                        ORDER BY total DESC
-                        LIMIT 8
-                    ")->fetchAll(PDO::FETCH_ASSOC);
+                    try {
+                        $cats = db()->query("
+                            SELECT c.name, c.slug, COUNT(p.id) AS total
+                            FROM blog_categories c
+                            INNER JOIN blog_post_category pc ON pc.category_id = c.id
+                            INNER JOIN blog_posts p ON p.id = pc.post_id
+                            WHERE c.status='active' AND c.deleted=0
+                              AND p.status='published' AND p.deleted=0
+                            GROUP BY c.id, c.name, c.slug
+                            HAVING total > 0
+                            ORDER BY total DESC
+                            LIMIT 8
+                        ")->fetchAll(PDO::FETCH_ASSOC);
+                    } catch (Throwable $e) {
+                        $cats = [];
+                    }
                     
                     foreach ($cats as $cat): ?>
                         <li class="mb-2">

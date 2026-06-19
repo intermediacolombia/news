@@ -15,44 +15,52 @@ $pageNum = isset($_GET['page_num']) ? max(1, (int)$_GET['page_num']) : 1;
 $perPage = 8;
 $offset  = ($pageNum - 1) * $perPage;
 
-if ($categorySlug) {
-    $stmtCat = db()->prepare("SELECT id, name, slug FROM blog_categories WHERE slug=? AND status='active' AND deleted=0 LIMIT 1");
-    $stmtCat->execute([$categorySlug]);
-    $category = $stmtCat->fetch();
+$posts = [];
+$totalPosts = 0;
+$category = ['name' => t_theme('theme_noticias'), 'slug' => 'noticias'];
 
-    if (!$category) {
-        http_response_code(404);
-        include __DIR__ . '/404.php';
-        return;
+try {
+    if ($categorySlug) {
+        $stmtCat = db()->prepare("SELECT id, name, slug FROM blog_categories WHERE slug=? AND status='active' AND deleted=0 LIMIT 1");
+        $stmtCat->execute([$categorySlug]);
+        $category = $stmtCat->fetch();
+
+        if (!$category) {
+            http_response_code(404);
+            include __DIR__ . '/404.php';
+            return;
+        }
+
+        $stmtCount = db()->prepare("SELECT COUNT(*) FROM blog_posts p INNER JOIN blog_post_category pc ON pc.post_id = p.id WHERE pc.category_id=? AND p.status='published' AND p.deleted=0");
+        $stmtCount->execute([$category['id']]);
+        $totalPosts = $stmtCount->fetchColumn();
+
+        $stmt = db()->prepare("SELECT DISTINCT p.* FROM blog_posts p INNER JOIN blog_post_category pc ON pc.post_id = p.id WHERE pc.category_id=? AND p.status='published' AND p.deleted=0 ORDER BY p.created_at DESC LIMIT $perPage OFFSET $offset");
+        $stmt->execute([$category['id']]);
+        $posts = $stmt->fetchAll();
+        foreach ($posts as &$p) {
+            $p['category_name'] = $category['name'];
+            $p['category_slug'] = $category['slug'];
+        }
+        unset($p);
+    } else {
+        $stmtCount = db()->query("SELECT COUNT(*) FROM blog_posts WHERE status='published' AND deleted=0");
+        $totalPosts = $stmtCount->fetchColumn();
+
+        $stmt = db()->query("
+            SELECT p.*, c.name AS category_name, c.slug AS category_slug
+            FROM blog_posts p
+            LEFT JOIN (SELECT post_id, MIN(category_id) AS category_id FROM blog_post_category GROUP BY post_id) fc ON fc.post_id = p.id
+            LEFT JOIN blog_categories c ON c.id = fc.category_id
+            WHERE p.status='published' AND p.deleted=0
+            ORDER BY p.created_at DESC
+            LIMIT $perPage OFFSET $offset
+        ");
+        $posts = $stmt->fetchAll();
     }
-
-    $stmtCount = db()->prepare("SELECT COUNT(*) FROM blog_posts p INNER JOIN blog_post_category pc ON pc.post_id = p.id WHERE pc.category_id=? AND p.status='published' AND p.deleted=0");
-    $stmtCount->execute([$category['id']]);
-    $totalPosts = $stmtCount->fetchColumn();
-
-    $stmt = db()->prepare("SELECT DISTINCT p.* FROM blog_posts p INNER JOIN blog_post_category pc ON pc.post_id = p.id WHERE pc.category_id=? AND p.status='published' AND p.deleted=0 ORDER BY p.created_at DESC LIMIT $perPage OFFSET $offset");
-    $stmt->execute([$category['id']]);
-    $posts = $stmt->fetchAll();
-    foreach ($posts as &$p) {
-        $p['category_name'] = $category['name'];
-        $p['category_slug'] = $category['slug'];
-    }
-    unset($p);
-} else {
-    $stmtCount = db()->query("SELECT COUNT(*) FROM blog_posts WHERE status='published' AND deleted=0");
-    $totalPosts = $stmtCount->fetchColumn();
-
-    $stmt = db()->query("
-        SELECT p.*, c.name AS category_name, c.slug AS category_slug
-        FROM blog_posts p
-        LEFT JOIN (SELECT post_id, MIN(category_id) AS category_id FROM blog_post_category GROUP BY post_id) fc ON fc.post_id = p.id
-        LEFT JOIN blog_categories c ON c.id = fc.category_id
-        WHERE p.status='published' AND p.deleted=0
-        ORDER BY p.created_at DESC
-        LIMIT $perPage OFFSET $offset
-    ");
-    $posts = $stmt->fetchAll();
-    $category = ['name' => t_theme('theme_noticias'), 'slug' => 'noticias'];
+} catch (Throwable $e) {
+    $posts = [];
+    $totalPosts = 0;
 }
 
 $totalPages = max(1, ceil($totalPosts / $perPage));

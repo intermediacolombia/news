@@ -8,10 +8,13 @@ if(empty($slug)) {
     exit;
 }
 
-$sql = "SELECT * FROM institutional_pages WHERE slug = ? AND status = 'published'";
-$stmt = db()->prepare($sql);
-$stmt->execute([$slug]);
-$page = $stmt->fetch();
+try {
+    $stmt = db()->prepare("SELECT * FROM institutional_pages WHERE slug = ? AND status = 'published'");
+    $stmt->execute([$slug]);
+    $page = $stmt->fetch();
+} catch (Throwable $e) {
+    $page = null;
+}
 
 if(!$page) {
     http_response_code(404);

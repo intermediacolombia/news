@@ -7,15 +7,19 @@ if (!function_exists('img_url')) {
     }
 }
 
-$columnistas = db()->query("
-    SELECT nombre, apellido, username, foto_perfil
-    FROM usuarios
-    WHERE es_columnista = 1
-      AND estado = 0
-      AND borrado = 0
-    ORDER BY nombre ASC, apellido ASC
-    LIMIT 6
-")->fetchAll();
+try {
+    $columnistas = db()->query("
+        SELECT nombre, apellido, username, foto_perfil
+        FROM usuarios
+        WHERE es_columnista = 1
+          AND estado = 0
+          AND borrado = 0
+        ORDER BY nombre ASC, apellido ASC
+        LIMIT 6
+    ")->fetchAll();
+} catch (Throwable $e) {
+    $columnistas = [];
+}
 ?>
 
 <?php if (!empty($columnistas)): ?>

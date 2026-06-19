@@ -1,9 +1,12 @@
 ﻿<?php
 require_once __DIR__ . '/../../inc/config.php';
 
-$sql = "SELECT id, title, slug, page_type, image, seo_description, display_order FROM institutional_pages WHERE status = 'published' ORDER BY display_order ASC, title ASC";
-$stmt = db()->query($sql);
-$pages = $stmt->fetchAll();
+try {
+    $stmt = db()->query("SELECT id, title, slug, page_type, image, seo_description, display_order FROM institutional_pages WHERE status = 'published' ORDER BY display_order ASC, title ASC");
+    $pages = $stmt->fetchAll();
+} catch (Throwable $e) {
+    $pages = [];
+}
 
 $page_title = "Información Institucional | " . NOMBRE_SITIO;
 

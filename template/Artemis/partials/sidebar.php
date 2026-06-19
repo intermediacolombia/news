@@ -19,29 +19,40 @@ if (!function_exists('truncate_text')) {
 
 global $sys;
 
-$categories = db()->query("
-    SELECT c.name, c.slug, COUNT(pc.post_id) AS total
-    FROM blog_categories c
-    LEFT JOIN blog_post_category pc ON c.id = pc.category_id
-    INNER JOIN blog_posts p ON p.id = pc.post_id AND p.status='published' AND p.deleted=0
-    WHERE c.status='active' AND c.deleted=0
-    GROUP BY c.id ORDER BY total DESC LIMIT 6
-")->fetchAll();
+try {
+    $categories = db()->query("
+        SELECT c.name, c.slug, COUNT(pc.post_id) AS total
+        FROM blog_categories c
+        LEFT JOIN blog_post_category pc ON c.id = pc.category_id
+        INNER JOIN blog_posts p ON p.id = pc.post_id AND p.status='published' AND p.deleted=0
+        WHERE c.status='active' AND c.deleted=0
+        GROUP BY c.id ORDER BY total DESC LIMIT 6
+    ")->fetchAll();
+} catch (Throwable $e) {
+    $categories = [];
+}
 
-$popular = db()->query("
-    SELECT p.title, p.slug, p.image, p.created_at, c.name as cat_name, c.slug as category_slug
-    FROM blog_post_views v
-    INNER JOIN blog_posts p ON p.id = v.post_id
-    LEFT JOIN blog_post_category pc ON pc.post_id = p.id
-    LEFT JOIN blog_categories c ON c.id = pc.category_id
-    WHERE p.status='published' AND p.deleted=0
-    GROUP BY p.id ORDER BY COUNT(v.id) DESC LIMIT 4
-")->fetchAll();
+try {
+    $popular = db()->query("
+        SELECT p.title, p.slug, p.image, p.created_at, c.name as cat_name, c.slug as category_slug
+        FROM blog_post_views v
+        INNER JOIN blog_posts p ON p.id = v.post_id
+        LEFT JOIN blog_post_category pc ON pc.post_id = p.id
+        LEFT JOIN blog_categories c ON c.id = pc.category_id
+        WHERE p.status='published' AND p.deleted=0
+        GROUP BY p.id ORDER BY COUNT(v.id) DESC LIMIT 4
+    ")->fetchAll();
+} catch (Throwable $e) {
+    $popular = [];
+}
 
-// 3. Generación de Tags desde títulos (no contenido completo, mucho más liviano)
-$tagsResult = db()->query("
-    SELECT title FROM blog_posts WHERE status='published' ORDER BY created_at DESC LIMIT 50
-")->fetchAll(PDO::FETCH_COLUMN);
+try {
+    $tagsResult = db()->query("
+        SELECT title FROM blog_posts WHERE status='published' ORDER BY created_at DESC LIMIT 50
+    ")->fetchAll(PDO::FETCH_COLUMN);
+} catch (Throwable $e) {
+    $tagsResult = [];
+}
 $palabras = preg_split('/\W+/u', strtolower(implode(' ', $tagsResult)), -1, PREG_SPLIT_NO_EMPTY);
 $stop = ['que','con','para','este','esta','entre','cuando','pero','sobre','nbsp','como','del','las','los'];
 $freq = array_count_values(array_filter($palabras, function($p) use ($stop) {

@@ -40,17 +40,21 @@ if (!$categorySlug || !$postSlug) {
     exit;
 }
 
-$stmt = db()->prepare("
-    SELECT p.*, pc.category_id, c.name AS category_name, c.slug AS category_slug
-    FROM blog_posts p
-    INNER JOIN blog_post_category pc ON pc.post_id = p.id
-    INNER JOIN blog_categories c ON c.id = pc.category_id
-    WHERE p.slug = ? AND c.slug = ?
-      AND p.status='published' AND p.deleted=0
-    LIMIT 1
-");
-$stmt->execute([$postSlug, $categorySlug]);
-$post = $stmt->fetch();
+try {
+    $stmt = db()->prepare("
+        SELECT p.*, pc.category_id, c.name AS category_name, c.slug AS category_slug
+        FROM blog_posts p
+        INNER JOIN blog_post_category pc ON pc.post_id = p.id
+        INNER JOIN blog_categories c ON c.id = pc.category_id
+        WHERE p.slug = ? AND c.slug = ?
+          AND p.status='published' AND p.deleted=0
+        LIMIT 1
+    ");
+    $stmt->execute([$postSlug, $categorySlug]);
+    $post = $stmt->fetch();
+} catch (Throwable $e) {
+    $post = null;
+}
 
 if (!$post) {
     http_response_code(404);
@@ -59,45 +63,55 @@ if (!$post) {
 }
 
 $ipAddress = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
-$stmtView = db()->prepare("SELECT 1 FROM blog_post_views WHERE post_id=? AND ip_address=? LIMIT 1");
-$stmtView->execute([$post['id'], $ipAddress]);
-if (!$stmtView->fetch()) {
-    db()->prepare("INSERT INTO blog_post_views (post_id, ip_address) VALUES (?, ?)")->execute([$post['id'], $ipAddress]);
+try {
+    $stmtView = db()->prepare("SELECT 1 FROM blog_post_views WHERE post_id=? AND ip_address=? LIMIT 1");
+    $stmtView->execute([$post['id'], $ipAddress]);
+    if (!$stmtView->fetch()) {
+        db()->prepare("INSERT INTO blog_post_views (post_id, ip_address) VALUES (?, ?)")->execute([$post['id'], $ipAddress]);
+    }
+    $totalViews = (int)db()->query("SELECT COUNT(*) FROM blog_post_views WHERE post_id={$post['id']}")->fetchColumn();
+} catch (Throwable $e) {
+    $totalViews = 0;
 }
-$totalViews = (int)db()->query("SELECT COUNT(*) FROM blog_post_views WHERE post_id={$post['id']}")->fetchColumn();
 
 $authorData = null;
 if (!empty($post['author'])) {
-    $stmtAuthor = db()->prepare("
-        SELECT u.id, u.nombre, u.apellido, u.foto_perfil
-        FROM usuarios u
-        WHERE CONCAT(u.nombre, ' ', u.apellido) = ? 
-           OR u.username = ?
-        LIMIT 1
-    ");
-    $stmtAuthor->execute([$post['author'], $post['author']]);
-    $authorData = $stmtAuthor->fetch();
+    try {
+        $stmtAuthor = db()->prepare("
+            SELECT u.id, u.nombre, u.apellido, u.foto_perfil
+            FROM usuarios u
+            WHERE CONCAT(u.nombre, ' ', u.apellido) = ?
+               OR u.username = ?
+            LIMIT 1
+        ");
+        $stmtAuthor->execute([$post['author'], $post['author']]);
+        $authorData = $stmtAuthor->fetch();
+    } catch (Throwable $e) {}
 }
 
-$prevPost = db()->query("
-    SELECT p.title, p.slug, c.slug AS category_slug 
-    FROM blog_posts p
-    INNER JOIN blog_post_category pc ON pc.post_id = p.id
-    INNER JOIN blog_categories c ON c.id = pc.category_id
-    WHERE p.id < {$post['id']} AND p.status='published' AND p.deleted=0
-    ORDER BY p.id DESC 
-    LIMIT 1
-")->fetch();
+try {
+    $prevPost = db()->query("
+        SELECT p.title, p.slug, c.slug AS category_slug
+        FROM blog_posts p
+        INNER JOIN blog_post_category pc ON pc.post_id = p.id
+        INNER JOIN blog_categories c ON c.id = pc.category_id
+        WHERE p.id < {$post['id']} AND p.status='published' AND p.deleted=0
+        ORDER BY p.id DESC
+        LIMIT 1
+    ")->fetch();
 
-$nextPost = db()->query("
-    SELECT p.title, p.slug, c.slug AS category_slug 
-    FROM blog_posts p
-    INNER JOIN blog_post_category pc ON pc.post_id = p.id
-    INNER JOIN blog_categories c ON c.id = pc.category_id
-    WHERE p.id > {$post['id']} AND p.status='published' AND p.deleted=0
-    ORDER BY p.id ASC 
-    LIMIT 1
-")->fetch();
+    $nextPost = db()->query("
+        SELECT p.title, p.slug, c.slug AS category_slug
+        FROM blog_posts p
+        INNER JOIN blog_post_category pc ON pc.post_id = p.id
+        INNER JOIN blog_categories c ON c.id = pc.category_id
+        WHERE p.id > {$post['id']} AND p.status='published' AND p.deleted=0
+        ORDER BY p.id ASC
+        LIMIT 1
+    ")->fetch();
+} catch (Throwable $e) {
+    $prevPost = $nextPost = null;
+}
 
 $page_title       = $post['seo_title'] ?: $post['title'];
 $page_description = $post['seo_description'] ?: substr(strip_tags($post['content']), 0, 160);

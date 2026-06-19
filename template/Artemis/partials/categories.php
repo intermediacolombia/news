@@ -1,26 +1,30 @@
 ﻿<?php
-$categories = db()->query("
-    SELECT c.id, c.name, c.slug, COUNT(p.id) AS total,
-           (SELECT p2.image
-            FROM blog_posts p2
-            INNER JOIN blog_post_category pc2 ON pc2.post_id = p2.id
-            WHERE pc2.category_id = c.id
-              AND p2.status = 'published'
-              AND p2.deleted = 0
-              AND p2.image IS NOT NULL
-              AND p2.image != ''
-            ORDER BY RAND()
-            LIMIT 1
-           ) AS random_image
-    FROM blog_categories c
-    LEFT JOIN blog_post_category pc ON c.id = pc.category_id
-    LEFT JOIN blog_posts p ON p.id = pc.post_id AND p.status='published' AND p.deleted=0
-    WHERE c.status='active' AND c.deleted=0
-    GROUP BY c.id
-    HAVING total > 0
-    ORDER BY total DESC
-    LIMIT 6
-")->fetchAll();
+try {
+    $categories = db()->query("
+        SELECT c.id, c.name, c.slug, COUNT(p.id) AS total,
+               (SELECT p2.image
+                FROM blog_posts p2
+                INNER JOIN blog_post_category pc2 ON pc2.post_id = p2.id
+                WHERE pc2.category_id = c.id
+                  AND p2.status = 'published'
+                  AND p2.deleted = 0
+                  AND p2.image IS NOT NULL
+                  AND p2.image != ''
+                ORDER BY RAND()
+                LIMIT 1
+               ) AS random_image
+        FROM blog_categories c
+        LEFT JOIN blog_post_category pc ON c.id = pc.category_id
+        LEFT JOIN blog_posts p ON p.id = pc.post_id AND p.status='published' AND p.deleted=0
+        WHERE c.status='active' AND c.deleted=0
+        GROUP BY c.id
+        HAVING total > 0
+        ORDER BY total DESC
+        LIMIT 6
+    ")->fetchAll();
+} catch (Throwable $e) {
+    $categories = [];
+}
 
 if (!function_exists('img_url')) {
     function img_url(?string $path): string {

@@ -31,41 +31,45 @@ if (!function_exists('truncate_text')) {
     }
 }
 
-$sliderNews = db()->query("
-    SELECT p.id, p.title, p.slug, p.image, p.created_at, p.author,
-           c.name AS category_name, c.slug AS category_slug
-    FROM blog_posts p
-    LEFT JOIN blog_post_category pc ON pc.post_id = p.id
-    LEFT JOIN blog_categories c ON c.id = pc.category_id
-    WHERE p.status = 'published' AND p.deleted = 0
-    GROUP BY p.id
-    ORDER BY p.created_at DESC
-    LIMIT 5
-")->fetchAll();
+try {
+    $sliderNews = db()->query("
+        SELECT p.id, p.title, p.slug, p.image, p.created_at, p.author,
+               c.name AS category_name, c.slug AS category_slug
+        FROM blog_posts p
+        LEFT JOIN blog_post_category pc ON pc.post_id = p.id
+        LEFT JOIN blog_categories c ON c.id = pc.category_id
+        WHERE p.status = 'published' AND p.deleted = 0
+        GROUP BY p.id
+        ORDER BY p.created_at DESC
+        LIMIT 5
+    ")->fetchAll();
 
-$featuredPosts = db()->query("
-    SELECT p.id, p.title, p.slug, p.image, p.created_at, p.author,
-           c.name AS category_name, c.slug AS category_slug
-    FROM blog_posts p
-    LEFT JOIN blog_post_category pc ON pc.post_id = p.id
-    LEFT JOIN blog_categories c ON c.id = pc.category_id
-    WHERE p.status = 'published' AND p.deleted = 0
-    GROUP BY p.id
-    ORDER BY p.created_at DESC
-    LIMIT 8
-")->fetchAll();
+    $featuredPosts = db()->query("
+        SELECT p.id, p.title, p.slug, p.image, p.created_at, p.author,
+               c.name AS category_name, c.slug AS category_slug
+        FROM blog_posts p
+        LEFT JOIN blog_post_category pc ON pc.post_id = p.id
+        LEFT JOIN blog_categories c ON c.id = pc.category_id
+        WHERE p.status = 'published' AND p.deleted = 0
+        GROUP BY p.id
+        ORDER BY p.created_at DESC
+        LIMIT 8
+    ")->fetchAll();
 
-$latestPosts = db()->query("
-    SELECT p.id, p.title, p.slug, p.image, p.created_at, p.author,
-           c.name AS category_name, c.slug AS category_slug
-    FROM blog_posts p
-    LEFT JOIN blog_post_category pc ON pc.post_id = p.id
-    LEFT JOIN blog_categories c ON c.id = pc.category_id
-    WHERE p.status = 'published' AND p.deleted = 0
-    GROUP BY p.id
-    ORDER BY p.created_at DESC
-    LIMIT 6
-")->fetchAll();
+    $latestPosts = db()->query("
+        SELECT p.id, p.title, p.slug, p.image, p.created_at, p.author,
+               c.name AS category_name, c.slug AS category_slug
+        FROM blog_posts p
+        LEFT JOIN blog_post_category pc ON pc.post_id = p.id
+        LEFT JOIN blog_categories c ON c.id = pc.category_id
+        WHERE p.status = 'published' AND p.deleted = 0
+        GROUP BY p.id
+        ORDER BY p.created_at DESC
+        LIMIT 6
+    ")->fetchAll();
+} catch (Throwable $e) {
+    $sliderNews = $featuredPosts = $latestPosts = [];
+}
 ?>
 
 <section class="hero-section py-5">
