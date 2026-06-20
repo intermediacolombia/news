@@ -104,21 +104,13 @@ $msgs   = db()->query("SELECT * FROM contact_messages ORDER BY created_at DESC")
                                 <button type="button"
                                         class="btn btn-sm btn-outline-primary mr-1"
                                         title="Ver mensaje"
-                                        onclick="openMessage(
-                                            <?= (int)$m['id'] ?>,
-                                            <?= json_encode($m['name'],    JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_UNESCAPED_UNICODE) ?>,
-                                            <?= json_encode($m['email'],   JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_UNESCAPED_UNICODE) ?>,
-                                            <?= json_encode($m['phone'] ?? '', JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_UNESCAPED_UNICODE) ?>,
-                                            <?= json_encode($m['message'], JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_UNESCAPED_UNICODE) ?>,
-                                            <?= json_encode(date('d/m/Y H:i', strtotime($m['created_at'])), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_UNESCAPED_UNICODE) ?>,
-                                            <?= $m['status'] === 'unread' ? 'true' : 'false' ?>
-                                        )">
+                                        onclick="openMessage(<?= (int)$m['id'] ?>)">
                                     <i class="fas fa-eye"></i>
                                 </button>
                                 <button type="button"
                                         class="btn btn-sm btn-outline-danger"
                                         title="Eliminar"
-                                        onclick="confirmDelete(<?= (int)$m['id'] ?>, <?= json_encode($m['name'], JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_UNESCAPED_UNICODE) ?>)">
+                                        onclick="confirmDelete(<?= (int)$m['id'] ?>)">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </td>
@@ -170,16 +162,33 @@ $msgs   = db()->query("SELECT * FROM contact_messages ORDER BY created_at DESC")
 </form>
 
 <script>
-function openMessage(id, name, email, phone, message, date, isUnread) {
-    document.getElementById('mdName').textContent    = name;
-    document.getElementById('mdEmail').textContent   = email;
-    document.getElementById('mdPhone').textContent   = phone || '—';
-    document.getElementById('mdDate').textContent    = date;
-    document.getElementById('mdMessage').textContent = message;
+var contactMessages = <?= json_encode(
+    array_reduce($msgs ?? [], function($carry, $m) {
+        $carry[(int)$m['id']] = [
+            'name'    => $m['name'] ?? '',
+            'email'   => $m['email'] ?? '',
+            'phone'   => $m['phone'] ?? '',
+            'message' => $m['message'] ?? '',
+            'date'    => date('d/m/Y H:i', strtotime($m['created_at'])),
+            'unread'  => $m['status'] === 'unread',
+        ];
+        return $carry;
+    }, []),
+    JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP
+) ?>;
 
-    new bootstrap.Modal(document.getElementById('msgModal')).show();
+function openMessage(id) {
+    var msg = contactMessages[id];
+    if (!msg) return;
+    document.getElementById('mdName').textContent    = msg.name;
+    document.getElementById('mdEmail').textContent   = msg.email;
+    document.getElementById('mdPhone').textContent   = msg.phone || '—';
+    document.getElementById('mdDate').textContent    = msg.date;
+    document.getElementById('mdMessage').textContent = msg.message;
 
-    if (isUnread) {
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('msgModal')).show();
+
+    if (msg.unread) {
         const fd = new FormData();
         fd.append('action', 'mark_read');
         fd.append('id', id);
@@ -194,7 +203,9 @@ function openMessage(id, name, email, phone, message, date, isUnread) {
     }
 }
 
-function confirmDelete(id, name) {
+function confirmDelete(id) {
+    var msg = contactMessages[id];
+    var name = msg ? msg.name : '';
     Swal.fire({
         title: '¿Eliminar mensaje de "' + name + '"?',
         text: 'Esta acción no se puede deshacer.',
