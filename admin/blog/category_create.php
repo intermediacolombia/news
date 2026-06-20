@@ -22,7 +22,7 @@ require_once __DIR__ . '/../login/restriction.php';
 <body>
 <?php require_once __DIR__ . '/../inc/menu.php'; ?>
 
-<div class="container" style="max-width:800px;">
+<div class="main-content"><div class="container-fluid" style="max-width:800px;">
   <div class="page-header mb-4">
     <h4><i class="fas fa-tags me-2" style="color:var(--primary-color)"></i>Nueva Categoría de Blog</h4>
     <a href="<?= URLBASE ?>/admin/blog/categories.php" class="btn btn-sm btn-outline-secondary">
@@ -58,7 +58,7 @@ require_once __DIR__ . '/../login/restriction.php';
       </form>
     </div>
   </div>
-</div>
+</div></div>
 
 <?php require_once __DIR__ . '/../inc/menu-footer.php'; ?>
 <?php require_once __DIR__ . '/../inc/flash_simple.php'; ?>

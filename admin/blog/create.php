@@ -29,7 +29,7 @@ $oldStatus = $old['status'] ?? 'draft';
 <body>
 <?php require_once __DIR__ . '/../inc/menu.php'; ?>
 
-<div class="wrap">
+<div class="main-content">
   <div class="page-header mb-4">
     <h4><i class="fas fa-newspaper me-2" style="color:var(--primary-color)"></i>Nueva Entrada</h4>
     <a href="<?= URLBASE ?>/admin/blog/" class="btn btn-sm btn-outline-secondary">
