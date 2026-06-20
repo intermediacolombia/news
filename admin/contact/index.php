@@ -44,7 +44,7 @@ $msgs   = db()->query("SELECT * FROM contact_messages ORDER BY created_at DESC")
 </head>
 <body>
 <?php include('../inc/menu.php'); ?>
-<div class="main-content">
+<div class="page-wrapper">
     <div class="container-fluid">
         <div class="page-header">
             <h4><i class="fas fa-inbox me-2" style="color:var(--primary-color)"></i>Mensajes de Contacto</h4>

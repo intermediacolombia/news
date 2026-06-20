@@ -44,7 +44,7 @@ $oldType   = $old['page_type'] ?? $page['page_type'] ?? 'general';
 <body>
 <?php require_once __DIR__ . '/../inc/menu.php'; ?>
 
-<div class="main-content">
+<div class="page-wrapper">
   <div class="page-header mb-4">
     <h4><i class="fas fa-building me-2" style="color:var(--primary-color)"></i>Editar Página Institucional</h4>
     <a href="<?= URLBASE ?>/admin/institutional/" class="btn btn-sm btn-outline-secondary">

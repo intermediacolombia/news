@@ -45,7 +45,7 @@ try {
 </head>
 <body>
 <?php include('../inc/menu.php'); ?>
-<div class="main-content">
+<div class="page-wrapper">
     <div class="container-fluid">
         <div class="page-header">
             <h4><i class="fas fa-envelope-open-text me-2" style="color:var(--primary-color)"></i>Suscriptores</h4>
