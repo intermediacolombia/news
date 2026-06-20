@@ -62,7 +62,10 @@ try {
 <?php include('../inc/menu.php'); ?>
 <div class="main-content">
     <div class="container-fluid">
-        <h1 class="h3 mb-4">Parrilla de Programación</h1>
+        <div class="page-header">
+            <h4><i class="fas fa-calendar-alt me-2" style="color:var(--primary-color)"></i>Parrilla de Programación</h4>
+            <span class="badge" style="background:var(--primary-color);font-size:.85rem;padding:.45em .9em;border-radius:8px;"><?= count($programs) ?> programas</span>
+        </div>
         <?php renderFlashMessages(); ?>
 
         <div class="card shadow-sm mb-4">

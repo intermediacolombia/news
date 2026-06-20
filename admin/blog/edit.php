@@ -79,14 +79,15 @@ function oldv_raw($key, $default = ''){
   <?php require_once __DIR__ . '/../inc/header.php'; ?>
 </head>
 <body>
-<div class="container" style="padding: 0px; background:rgba(0,0,0,0.00)">
-  <div class="portada">
-    <h1 class="mb-4"><i class="bi bi-layout-text-window-reverse"></i> Editar Entrada</h1>
-  </div>
-</div>
 <?php require_once __DIR__ . '/../inc/menu.php'; ?>
 
 <div class="wrap">
+  <div class="page-header mb-4">
+    <h4><i class="fas fa-newspaper me-2" style="color:var(--primary-color)"></i>Editar Entrada</h4>
+    <a href="<?= URLBASE ?>/admin/blog/" class="btn btn-sm btn-outline-secondary">
+      <i class="fas fa-arrow-left me-1"></i> Volver
+    </a>
+  </div>
   <div class="card">
     <div class="card-header d-flex align-items-center justify-content-between">
       <h5 class="mb-0">Editar entrada</h5>

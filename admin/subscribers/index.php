@@ -47,7 +47,10 @@ try {
 <?php include('../inc/menu.php'); ?>
 <div class="main-content">
     <div class="container-fluid">
-        <h1 class="h3 mb-4">Suscriptores</h1>
+        <div class="page-header">
+            <h4><i class="fas fa-envelope-open-text me-2" style="color:var(--primary-color)"></i>Suscriptores</h4>
+            <span class="badge" style="background:var(--primary-color);font-size:.85rem;padding:.45em .9em;border-radius:8px;"><?= (int)$total ?> suscriptores</span>
+        </div>
         <?php renderFlashMessages(); ?>
 
         <div class="row mb-4">

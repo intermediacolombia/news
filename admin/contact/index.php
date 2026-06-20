@@ -46,7 +46,10 @@ $msgs   = db()->query("SELECT * FROM contact_messages ORDER BY created_at DESC")
 <?php include('../inc/menu.php'); ?>
 <div class="main-content">
     <div class="container-fluid">
-        <h1 class="h3 mb-4">Mensajes de Contacto</h1>
+        <div class="page-header">
+            <h4><i class="fas fa-inbox me-2" style="color:var(--primary-color)"></i>Mensajes de Contacto</h4>
+            <span class="badge" style="background:var(--primary-color);font-size:.85rem;padding:.45em .9em;border-radius:8px;"><?= $total ?> mensajes</span>
+        </div>
         <?php if (function_exists('renderFlashMessages')) renderFlashMessages(); ?>
 
         <div class="row mb-4">

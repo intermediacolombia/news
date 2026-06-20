@@ -86,11 +86,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <?php include('../inc/menu.php'); ?>
 <div class="main-content">
     <div class="container-fluid">
-        <div class="d-flex align-items-center mb-4">
-            <a href="<?= URLBASE ?>/admin/radio/" class="btn btn-sm btn-outline-secondary mr-3">
-                <i class="fas fa-arrow-left"></i>
+        <div class="page-header">
+            <h4><i class="fas fa-broadcast-tower me-2" style="color:var(--primary-color)"></i>Editar: <?= htmlspecialchars($program['title']) ?></h4>
+            <a href="<?= URLBASE ?>/admin/radio/" class="btn btn-sm btn-outline-secondary">
+                <i class="fas fa-arrow-left me-1"></i> Volver
             </a>
-            <h1 class="h3 mb-0">Editar: <?= htmlspecialchars($program['title']) ?></h1>
         </div>
         <?php renderFlashMessages(); ?>
         <div class="card shadow-sm">

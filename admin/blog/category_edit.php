@@ -23,14 +23,15 @@ if (!$cat) { die("Categoría no encontrada"); }
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<div class="container" style="padding: 0px; background:rgba(0,0,0,0.00)">
-  <div class="portada">
-    <h1 class="mb-4"><i class="bi bi-layout-text-window-reverse"></i> Editar Categoría</h1>
-  </div>
-</div>
 <?php require_once __DIR__ . '/../inc/menu.php'; ?>
 
 <div class="container" style="max-width:800px;">
+  <div class="page-header mb-4">
+    <h4><i class="fas fa-tags me-2" style="color:var(--primary-color)"></i>Editar Categoría</h4>
+    <a href="<?= URLBASE ?>/admin/blog/categories.php" class="btn btn-sm btn-outline-secondary">
+      <i class="fas fa-arrow-left me-1"></i> Volver
+    </a>
+  </div>
   <div class="card">
     <div class="card-header"><h5 class="mb-0">Editar Categoría</h5></div>
     <div class="card-body">

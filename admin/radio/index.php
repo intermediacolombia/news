@@ -18,11 +18,14 @@ $programs = db()->query("SELECT * FROM programs ORDER BY title ASC")->fetchAll()
 <?php include('../inc/menu.php'); ?>
 <div class="main-content">
     <div class="container-fluid">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="h3">Programas de Radio</h1>
-            <a href="<?= URLBASE ?>/admin/radio/create.php" class="btn btn-primary">
-                <i class="fas fa-plus mr-1"></i> Nuevo Programa
-            </a>
+        <div class="page-header">
+            <h4><i class="fas fa-broadcast-tower me-2" style="color:var(--primary-color)"></i>Programas de Radio</h4>
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge" style="background:var(--primary-color);font-size:.85rem;padding:.45em .9em;border-radius:8px;"><?= count($programs) ?> programas</span>
+                <a href="<?= URLBASE ?>/admin/radio/create.php" class="btn btn-primary btn-sm">
+                    <i class="fas fa-plus me-1"></i> Nuevo Programa
+                </a>
+            </div>
         </div>
         <?php renderFlashMessages(); ?>
         <div class="card shadow-sm">

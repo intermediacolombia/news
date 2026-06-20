@@ -148,3 +148,20 @@ body {
 
 
 
+
+/* ── Page Header ─────────────────────────────────────────────────────── */
+.page-header {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.2rem 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,.07);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.page-header h4 {
+  margin: 0;
+  font-weight: 700;
+  color: #1e293b;
+}
