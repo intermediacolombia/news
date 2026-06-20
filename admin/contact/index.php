@@ -138,9 +138,7 @@ $msgs   = db()->query("SELECT * FROM contact_messages ORDER BY created_at DESC")
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="msgModalLabel">Detalle del mensaje</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
                 <dl class="row">
@@ -159,7 +157,7 @@ $msgs   = db()->query("SELECT * FROM contact_messages ORDER BY created_at DESC")
                 </dl>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
@@ -179,7 +177,7 @@ function openMessage(id, name, email, phone, message, date, isUnread) {
     document.getElementById('mdDate').textContent    = date;
     document.getElementById('mdMessage').textContent = message;
 
-    $('#msgModal').modal('show');
+    new bootstrap.Modal(document.getElementById('msgModal')).show();
 
     if (isUnread) {
         const fd = new FormData();
