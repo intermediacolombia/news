@@ -24,7 +24,7 @@ require_once __DIR__ . '/../../../inc/translations.php';
                         <img src="<?= URLBASE . SITE_LOGO ?>?<?= time() ?>"
                              alt="Logo"
                              class="img-fluid"
-                             style="max-height: 50px;">
+                             style="max-width: 150px; max-height: 60px;">
                     </a>
                 </div>
 
@@ -34,7 +34,7 @@ require_once __DIR__ . '/../../../inc/translations.php';
                         <img src="<?= URLBASE . SITE_LOGO ?>?<?= time() ?>"
                              alt="Logo"
                              class="img-fluid artemis-logo"
-                             style="max-height: 42px;">
+                             style="max-height: 50px;">
                     </a>
                 </div>
 
@@ -216,7 +216,7 @@ require_once __DIR__ . '/../../../inc/translations.php';
     <div id="artemis-mobile-menu" class="artemis-mobile-menu">
         <div class="artemis-mobile-menu-header">
             <a href="<?= URLBASE ?>">
-                <img src="<?= URLBASE . SITE_LOGO ?>?<?= time() ?>" alt="Logo" style="max-height: 38px;">
+                <img src="<?= URLBASE . SITE_LOGO ?>?<?= time() ?>" alt="Logo" style="max-height: 50px;">
             </a>
             <button type="button" class="artemis-menu-close" onclick="toggleMobileMenu()" aria-label="Cerrar menú">
                 <i class="fas fa-times"></i>
