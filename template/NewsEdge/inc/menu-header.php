@@ -198,9 +198,22 @@
                                             </ul>
                                         </li>
 
+                                        <?php if ((int)db()->query("SELECT COUNT(*) FROM programs WHERE status='active'")->fetchColumn() > 0): ?>
+                                        <li>
+                                            <a href="<?= URLBASE ?>/programas/"><?= strtoupper(t_theme('theme_programas')) ?></a>
+                                        </li>
+                                        <?php endif; ?>
+                                        <?php if ((int)db()->query("SELECT COUNT(*) FROM schedules WHERE status='active'")->fetchColumn() > 0): ?>
+                                        <li>
+                                            <a href="<?= URLBASE ?>/programacion/"><?= strtoupper(t_theme('theme_programacion')) ?></a>
+                                        </li>
+                                        <?php endif; ?>
+                                        <li>
+                                            <a href="<?= URLBASE ?>/suscripcion/"><?= strtoupper(t_theme('theme_suscripcion')) ?></a>
+                                        </li>
                                         <!-- CONTACTO -->
                                         <li>
-                                            <a href="<?= URLBASE ?>/contact"><?= strtoupper(t_theme('theme_contacto')) ?></a>
+                                            <a href="<?= URLBASE ?>/contacto/"><?= strtoupper(t_theme('theme_contacto')) ?></a>
                                         </li>
                                         
                                     </ul>

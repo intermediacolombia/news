@@ -123,7 +123,33 @@ $cats = $st->fetchAll(PDO::FETCH_ASSOC);
 
 
 
-                    <a href="<?= URLBASE ?>/contact" class="nav-item nav-link"><?= strtoupper(t_theme('theme_contacto')) ?></a>
+                    <?php
+                    $stCols2 = db()->query("SELECT nombre, apellido, username FROM usuarios WHERE es_columnista = 1 AND estado = 0 AND borrado = 0 ORDER BY nombre ASC, apellido ASC");
+                    $colsMenu = $stCols2->fetchAll(PDO::FETCH_ASSOC);
+                    if (count($colsMenu) === 1):
+                        $c = $colsMenu[0];
+                    ?>
+                        <a href="<?= URLBASE ?>/columnista/<?= htmlspecialchars($c['username']) ?>/" class="nav-item nav-link"><?= strtoupper(t_theme('theme_columnistas')) ?></a>
+                    <?php elseif (count($colsMenu) > 1): ?>
+                        <div class="nav-item dropdown">
+                            <a href="<?= URLBASE ?>/columnista/" class="nav-link dropdown-toggle" data-toggle="dropdown"><?= strtoupper(t_theme('theme_columnistas')) ?></a>
+                            <div class="dropdown-menu rounded-0 m-0">
+                                <?php foreach ($colsMenu as $c): ?>
+                                    <a href="<?= URLBASE ?>/columnista/<?= htmlspecialchars($c['username']) ?>/" class="dropdown-item">
+                                        <?= htmlspecialchars(trim($c['nombre'] . ' ' . $c['apellido'])) ?>
+                                    </a>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                    <?php if ((int)db()->query("SELECT COUNT(*) FROM programs WHERE status='active'")->fetchColumn() > 0): ?>
+                        <a href="<?= URLBASE ?>/programas/" class="nav-item nav-link"><?= strtoupper(t_theme('theme_programas')) ?></a>
+                    <?php endif; ?>
+                    <?php if ((int)db()->query("SELECT COUNT(*) FROM schedules WHERE status='active'")->fetchColumn() > 0): ?>
+                        <a href="<?= URLBASE ?>/programacion/" class="nav-item nav-link"><?= strtoupper(t_theme('theme_programacion')) ?></a>
+                    <?php endif; ?>
+                    <a href="<?= URLBASE ?>/suscripcion/" class="nav-item nav-link"><?= strtoupper(t_theme('theme_suscripcion')) ?></a>
+                    <a href="<?= URLBASE ?>/contacto/" class="nav-item nav-link"><?= strtoupper(t_theme('theme_contacto')) ?></a>
                 </div>
 				
 				

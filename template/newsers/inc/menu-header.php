@@ -74,7 +74,7 @@ $columnistasMenu = $stCol->fetchAll(PDO::FETCH_ASSOC);
             <?php foreach ($columnistasMenu as $col): 
                 $nombreCompleto = htmlspecialchars(ucwords(strtolower($col['nombre'] . ' ' . $col['apellido'])));
             ?>
-                <a href="<?= URLBASE ?>/columnistas/<?= htmlspecialchars($col['username']) ?>/" class="dropdown-item text-white">
+                <a href="<?= URLBASE ?>/columnista/<?= htmlspecialchars($col['username']) ?>/" class="dropdown-item text-white">
                     <?= $nombreCompleto ?>
                 </a>
             <?php endforeach; ?>
@@ -112,7 +112,14 @@ $columnistasMenu = $stCol->fetchAll(PDO::FETCH_ASSOC);
                             </div>
                         </div>
 
-                        <a href="<?= URLBASE ?>/contact" class="nav-item nav-link"><?= t_theme('theme_contacto') ?></a>
+                        <?php if ((int)db()->query("SELECT COUNT(*) FROM programs WHERE status='active'")->fetchColumn() > 0): ?>
+                            <a href="<?= URLBASE ?>/programas/" class="nav-item nav-link"><?= t_theme('theme_programas') ?></a>
+                        <?php endif; ?>
+                        <?php if ((int)db()->query("SELECT COUNT(*) FROM schedules WHERE status='active'")->fetchColumn() > 0): ?>
+                            <a href="<?= URLBASE ?>/programacion/" class="nav-item nav-link"><?= t_theme('theme_programacion') ?></a>
+                        <?php endif; ?>
+                        <a href="<?= URLBASE ?>/suscripcion/" class="nav-item nav-link"><?= t_theme('theme_suscripcion') ?></a>
+                        <a href="<?= URLBASE ?>/contacto/" class="nav-item nav-link"><?= t_theme('theme_contacto') ?></a>
                     </div>
 
                    <div class="d-flex flex-nowrap border-top pt-3 pt-xl-0">                             
