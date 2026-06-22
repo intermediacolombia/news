@@ -24,7 +24,7 @@ require_once __DIR__ . '/../../../inc/translations.php';
                         <img src="<?= URLBASE . SITE_LOGO ?>?<?= time() ?>"
                              alt="Logo"
                              class="img-fluid"
-                             style="max-width: 200px; max-height: 60px;">
+                             style="max-width: 200px; max-height: 100px;">
                     </a>
                 </div>
 
