@@ -246,6 +246,9 @@ function t(string $key, string $lang = null): string {
         'theme_logo' => 'Logo',
         'theme_publicidad' => 'Publicidad',
         'theme_pagina_no_encontrada' => 'Página no encontrada',
+        'theme_programas'     => 'Programas',
+        'theme_programacion'  => 'Programación',
+        'theme_suscripcion'   => 'Suscripción',
     ];
 
     return $spanishDefaults[$key] ?? $key;
@@ -390,6 +393,9 @@ function init_default_theme_translations(): void {
         'theme_sign_up' => 'Registrarse',
         'theme_home' => 'Inicio',
         'theme_nuestros_columnistas' => 'Nuestros Columnistas',
+        'theme_programas'    => 'Programas',
+        'theme_programacion' => 'Programación',
+        'theme_suscripcion'  => 'Suscripción',
     ];
 
     $defaultEnKeys = [
@@ -554,6 +560,9 @@ function init_default_theme_translations(): void {
         'theme_logo' => 'Logo',
         'theme_publicidad' => 'Advertising',
         'theme_pagina_no_encontrada' => 'Page not found',
+        'theme_programas'    => 'Programs',
+        'theme_programacion' => 'Schedule',
+        'theme_suscripcion'  => 'Subscribe',
     ];
 
     try {
