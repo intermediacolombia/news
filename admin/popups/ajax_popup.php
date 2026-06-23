@@ -55,7 +55,19 @@ try {
 
         $imagePath = $_POST['existing_image'] ?? '';
         $uploadDir = __DIR__ . '/../../public/uploads/popups/';
-        
+
+        if (!empty($_FILES['image']['error']) && $_FILES['image']['error'] !== UPLOAD_ERR_NO_FILE) {
+            $uploadErrors = [
+                UPLOAD_ERR_INI_SIZE   => 'El archivo supera el límite del servidor (upload_max_filesize en php.ini)',
+                UPLOAD_ERR_FORM_SIZE  => 'El archivo supera el límite del formulario',
+                UPLOAD_ERR_PARTIAL    => 'El archivo se subió de forma incompleta',
+                UPLOAD_ERR_NO_TMP_DIR => 'No se encontró la carpeta temporal del servidor',
+                UPLOAD_ERR_CANT_WRITE => 'Error al escribir el archivo en disco',
+                UPLOAD_ERR_EXTENSION  => 'Una extensión de PHP bloqueó la subida',
+            ];
+            throw new Exception($uploadErrors[$_FILES['image']['error']] ?? 'Error desconocido al subir la imagen');
+        }
+
         if (!empty($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK && !empty($_FILES['image']['name'])) {
             if (!is_dir($uploadDir)) {
                 if (!mkdir($uploadDir, 0755, true)) {
