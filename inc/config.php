@@ -222,6 +222,31 @@ define('VERIFY_META',          $sys['verify_meta']          ?? '');
 define('VERIFY_PINTEREST',     $sys['verify_pinterest']     ?? '');
 
 
+/* ========= Helper: conversión automática a WebP ========= */
+if (!function_exists('convert_image_to_webp')) {
+    function convert_image_to_webp(string $filePath): string {
+        if (!function_exists('imagewebp') || !file_exists($filePath)) return $filePath;
+        $info = @getimagesize($filePath);
+        if (!$info) return $filePath;
+        $mime = $info['mime'];
+        $img  = null;
+        if ($mime === 'image/jpeg') {
+            $img = @imagecreatefromjpeg($filePath);
+        } elseif ($mime === 'image/png') {
+            $img = @imagecreatefrompng($filePath);
+            if ($img) { imagepalettetotruecolor($img); imagealphablending($img, true); imagesavealpha($img, true); }
+        } elseif ($mime === 'image/gif') {
+            $img = @imagecreatefromgif($filePath);
+        }
+        if (!$img) return $filePath;
+        $webpPath = preg_replace('/\.[^.]+$/', '.webp', $filePath);
+        $ok = @imagewebp($img, $webpPath, 85);
+        imagedestroy($img);
+        if ($ok) { @unlink($filePath); return $webpPath; }
+        return $filePath;
+    }
+}
+
 /* ========= Helpers ========= */
 if (!function_exists('setFlash')) {
     function setFlash(string $type, string $message): void {

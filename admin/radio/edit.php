@@ -48,6 +48,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if ($program['image'] && file_exists(__DIR__ . '/../../' . $program['image'])) {
                     @unlink(__DIR__ . '/../../' . $program['image']);
                 }
+                $fullPath  = convert_image_to_webp($dir . $filename);
+                $filename  = basename($fullPath);
                 $imagePath = 'public/images/programs/' . $filename;
             }
         }

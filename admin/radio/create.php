@@ -36,6 +36,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!is_dir($dir)) mkdir($dir, 0755, true);
             $filename = time() . '_' . bin2hex(random_bytes(8)) . '.' . $ext;
             if (move_uploaded_file($_FILES['image']['tmp_name'], $dir . $filename)) {
+                $fullPath  = convert_image_to_webp($dir . $filename);
+                $filename  = basename($fullPath);
                 $imagePath = 'public/images/programs/' . $filename;
             }
         }

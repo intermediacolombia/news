@@ -77,6 +77,8 @@ try {
             }
             
             if (move_uploaded_file($_FILES['image']['tmp_name'], $dest)) {
+                $dest      = convert_image_to_webp($dest);
+                $filename  = basename($dest);
                 $imagePath = 'public/uploads/popups/' . $filename;
             } else {
                 throw new Exception('Error al mover el archivo subido');

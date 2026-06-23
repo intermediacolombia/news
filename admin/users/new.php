@@ -44,6 +44,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $uploadPath = $uploadDir . $newFileName;
                 
                 if (move_uploaded_file($file['tmp_name'], $uploadPath)) {
+                    $uploadPath  = convert_image_to_webp($uploadPath);
+                    $newFileName = basename($uploadPath);
                     $foto_perfil = 'public/images/users/' . $newFileName;
                 }
             } else {

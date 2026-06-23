@@ -93,6 +93,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
         header("Location: index.php"); exit;
     }
 
+    if ($fileType === 'image') {
+        $newPath = convert_image_to_webp($uploadDir . $fileName);
+        if ($newPath !== $uploadDir . $fileName) {
+            $fileName = basename($newPath);
+            $filePath = $subDir . $fileName;
+            $mime     = 'image/webp';
+        }
+    }
+
     $width = $height = null;
     if ($fileType === 'image') {
         $info   = @getimagesize($uploadDir . $fileName);
@@ -100,12 +109,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
         $height = $info[1] ?? null;
     }
 
+    $actualSize = file_exists($uploadDir . $fileName) ? filesize($uploadDir . $fileName) : $file['size'];
+
     db()->prepare("INSERT INTO multimedia
         (file_name, file_path, file_type, mime_type, file_size, width, height, alt_text, caption, uploaded_by, origin)
         VALUES (?,?,?,?,?,?,?,?,?,?,'manual')")
         ->execute([
             $fileName, $filePath, $fileType, $mime,
-            $file['size'], $width, $height, $altText, $caption,
+            $actualSize, $width, $height, $altText, $caption,
             $id_user
         ]);
 

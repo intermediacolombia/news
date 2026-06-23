@@ -78,7 +78,8 @@ $imageAlt       = trim($_POST['image_alt']       ?? '');
             $dest     = $uploadDir . $fileName;
 
             if (move_uploaded_file($file['tmp_name'], $dest)) {
-                $imagePath = 'public/images/blog/' . $fileName;
+                $dest      = convert_image_to_webp($dest);
+                $imagePath = 'public/images/blog/' . basename($dest);
             } else {
                 $errors['image'] = "No se pudo guardar la imagen.";
             }

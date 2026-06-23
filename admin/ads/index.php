@@ -54,8 +54,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['position'])) {
             $dir = __DIR__ . '/../../public/images/ads/';
             if (!is_dir($dir)) mkdir($dir, 0777, true);
             $file = "ad_{$pos}_" . time() . ".$ext";
-            if (move_uploaded_file($_FILES['image']['tmp_name'], $dir . $file))
+            if (move_uploaded_file($_FILES['image']['tmp_name'], $dir . $file)) {
+                $fullPath = convert_image_to_webp($dir . $file);
+                $file     = basename($fullPath);
                 $imageUrl = "/public/images/ads/$file";
+            }
         }
     }
 
@@ -126,6 +129,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_gallery'])) {
             if (!is_dir($dir)) mkdir($dir, 0777, true);
             $file = "gallery{$section}_" . time() . "_$i.$ext";
             if (!move_uploaded_file($f['tmp_name'][$i], $dir . $file)) continue;
+            $fullPath = convert_image_to_webp($dir . $file);
+            $file     = basename($fullPath);
             db()->prepare("INSERT INTO ads_gallery (section,title,type,image_url,target_url,status) VALUES (?,?,?,?,?,?)")
                 ->execute([$section, '', $type, "/public/images/ads/$file",
                            trim($_POST["url_{$type}_{$section}"][$i] ?? ''),

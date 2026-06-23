@@ -277,6 +277,8 @@ function handleImageUpload($file) {
     $destino = $uploadDir . $fileName;
     
     if(move_uploaded_file($file['tmp_name'], $destino)) {
+        $destino  = convert_image_to_webp($destino);
+        $fileName = basename($destino);
         return ['success' => true, 'path' => '/public/images/institutional/' . $fileName];
     }
     

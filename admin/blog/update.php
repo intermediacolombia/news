@@ -107,6 +107,9 @@ if ($hasNewFile) {
         header("Location: edit.php?id=" . $id); exit;
     }
 
+    $dest     = convert_image_to_webp($dest);
+    $fileName = basename($dest);
+
     // Registrar en multimedia
     try {
         $info = @getimagesize($dest);
@@ -116,8 +119,8 @@ if ($hasNewFile) {
             ->execute([
                 $fileName,
                 'public/images/blog/' . $fileName,
-                mime_content_type($dest),
-                $file['size'],
+                'image/webp',
+                filesize($dest),
                 $info[0] ?? null,
                 $info[1] ?? null,
                 $_SESSION['user']['id'],
