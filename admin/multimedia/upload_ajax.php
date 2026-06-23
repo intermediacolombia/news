@@ -102,9 +102,40 @@ if (!move_uploaded_file($file['tmp_name'], $uploadDir . $fileName)) {
     echo json_encode(['success' => false, 'message' => 'move_uploaded_file falló. tmp: ' . $file['tmp_name'] . ' dest: ' . $uploadDir . $fileName]); exit;
 }
 
+// Convertir a WebP si es JPG, PNG o GIF y GD está disponible
+$convertibleMimes = ['image/jpeg', 'image/png', 'image/gif'];
+if (in_array($mime, $convertibleMimes) && function_exists('imagewebp')) {
+    $srcPath = $uploadDir . $fileName;
+    $img = null;
+    if ($mime === 'image/jpeg') {
+        $img = @imagecreatefromjpeg($srcPath);
+    } elseif ($mime === 'image/png') {
+        $img = @imagecreatefrompng($srcPath);
+        if ($img) {
+            imagepalettetotruecolor($img);
+            imagealphablending($img, true);
+            imagesavealpha($img, true);
+        }
+    } elseif ($mime === 'image/gif') {
+        $img = @imagecreatefromgif($srcPath);
+    }
+    if ($img) {
+        $webpName = preg_replace('/\.[^.]+$/', '.webp', $fileName);
+        if (@imagewebp($img, $uploadDir . $webpName, 85)) {
+            @unlink($srcPath);
+            $fileName = $webpName;
+            $filePath = $subDir . $fileName;
+            $mime     = 'image/webp';
+        }
+        imagedestroy($img);
+    }
+}
+
 $info   = @getimagesize($uploadDir . $fileName);
 $width  = $info[0] ?? null;
 $height = $info[1] ?? null;
+
+$actualSize = file_exists($uploadDir . $fileName) ? filesize($uploadDir . $fileName) : $file['size'];
 
 $newId = null;
 try {
@@ -115,7 +146,7 @@ try {
             $fileName,
             $filePath,
             $mime,
-            $file['size'],
+            $actualSize,
             $width,
             $height,
             $alt,
@@ -137,7 +168,7 @@ echo json_encode([
     'alt'       => $alt,
     'caption'   => $caption,
     'file_type' => 'image',
-    'file_size' => $file['size'],
+    'file_size' => $actualSize,
     'width'     => $width,
     'height'    => $height,
 ]);
