@@ -42,7 +42,7 @@ global $sys;
 </div>
 
 <footer class="footer-section pt-5 pb-4">
-    <div class="container">
+    <div class="container footer-area-bottom">
         <div class="row">
             <div class="col-lg-4 col-md-6 mb-4">
                 <h5 class="mb-4" style="color: var(--text-color); font-family: 'Playfair Display', serif;"><?= t_theme('theme_contactanos') ?></h5>
