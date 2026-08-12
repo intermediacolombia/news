@@ -154,6 +154,11 @@ global $sys;
             </div>
         </div>
 
+        <?php
+        require_once BASE_PATH . '/inc/visit_counter.php';
+        visit_counter_widget();
+        ?>
+
         <div class="row mt-4 pt-4" style="border-top: 1px solid rgba(255,255,255,0.08);">
             <div class="col-12 text-center">
                 <a href="<?= URLBASE ?>" class="footer-logo mb-3 d-inline-block">

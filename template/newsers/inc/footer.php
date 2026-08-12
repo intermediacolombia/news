@@ -59,7 +59,10 @@
           </div>
 			
 			
-<?php //include __DIR__ . '/../partials/visit-counter.php'; ?>
+<?php
+require_once BASE_PATH . '/inc/visit_counter.php';
+visit_counter_widget();
+?>
 			
         </div>
       </div>

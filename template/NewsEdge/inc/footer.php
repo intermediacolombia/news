@@ -172,6 +172,15 @@ global $sys;
         </div>
     </div>
 
+    <div class="footer-visit-counter" style="background: rgba(0,0,0,0.2); padding: 0 0 16px;">
+        <div class="container">
+            <?php
+            require_once BASE_PATH . '/inc/visit_counter.php';
+            visit_counter_widget();
+            ?>
+        </div>
+    </div>
+
     <div class="footer-area-bottom">
         <div class="container">
             <div class="row">
