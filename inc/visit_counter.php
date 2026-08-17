@@ -58,7 +58,7 @@ function visit_counter_track(): array {
             $data['days'][$today]++;
         }
 
-        setcookie('vc_tracked', '1', time() + 86400, '/');
+        if (!headers_sent()) setcookie('vc_tracked', '1', time() + 86400, '/');
     }
 
     // ponytail: mantener solo 90 días y 24 meses de historial
