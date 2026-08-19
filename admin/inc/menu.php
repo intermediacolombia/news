@@ -169,7 +169,9 @@
         </a>
         <div class="submenu">
             <a href="<?php echo URLBASE; ?>/admin/herramientas/migrar-wordpress.php" onclick="closeSubmenus()"><i class="fab fa-wordpress"></i> <?php echo t('menu_migrar_wp'); ?></a>
-            <a href="#" onclick="checkForUpdates(event)"><i class="fas fa-sync-alt"></i> Verificar actualizaciones</a>            
+            <?php if (in_array('Actualizar Sistema', $_SESSION['user_permissions'] ?? [])): ?>
+            <a href="#" onclick="checkForUpdates(event)"><i class="fas fa-sync-alt"></i> Verificar actualizaciones</a>
+            <?php endif; ?>
         </div>
     <?php endif; ?>
 
