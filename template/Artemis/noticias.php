@@ -121,23 +121,64 @@ $page_title = $categorySlug ? $category['name'] . " | " . NOMBRE_SITIO : "Notici
 
         <?php if ($totalPages > 1):
             $pageBase = URLBASE . '/noticias' . ($categorySlug ? '/' . $categorySlug : '') . '/page/';
+
+            // páginas a mostrar: siempre 1, últma, y ±2 alrededor de la actual
+            $show = array_unique(array_filter(array_merge(
+                [1, $totalPages],
+                range(max(1, $pageNum - 2), min($totalPages, $pageNum + 2))
+            )));
+            sort($show);
+
+            $btnBase  = 'display:inline-flex;align-items:center;justify-content:center;min-width:38px;height:38px;padding:0 10px;border-radius:8px;text-decoration:none;font-size:.9rem;transition:opacity .15s;';
+            $btnNorm  = $btnBase . 'background:var(--dark-secondary);color:var(--text-color);border:1px solid var(--border-color);';
+            $btnActiv = $btnBase . 'background:var(--primary-color);color:#fff;border:1px solid var(--primary-color);font-weight:700;';
+            $btnNav   = $btnBase . 'background:var(--dark-secondary);color:var(--text-color);border:1px solid var(--border-color);';
+            $btnDis   = $btnBase . 'background:var(--dark-secondary);color:var(--text-muted);border:1px solid var(--border-color);opacity:.45;pointer-events:none;';
         ?>
         <div class="row mt-4">
             <div class="col-12 text-center">
-                <nav>
-                    <ul class="pagination justify-content-center" style="display: flex; gap: 8px; list-style: none; padding: 0;">
-                        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                <nav aria-label="Paginación">
+                    <ul style="display:flex;gap:6px;list-style:none;padding:0;margin:0;justify-content:center;flex-wrap:wrap;">
+
+                        <!-- Anterior -->
                         <li>
-                            <a href="<?= $pageBase . $i ?>/" 
-                               class="<?= $i == $pageNum ? 'btn-artemis' : 'btn' ?>"
-                               style="<?= $i == $pageNum ? '' : 'background: var(--dark-secondary); color: var(--text-color); border: 1px solid var(--border-color);' ?> padding: 10px 16px; border-radius: 8px; text-decoration: none; display: inline-block;">
-                                <?= $i ?>
+                            <?php if ($pageNum > 1): ?>
+                            <a href="<?= $pageBase . ($pageNum - 1) ?>/" style="<?= $btnNav ?>" aria-label="Anterior">
+                                <i class="fas fa-chevron-left"></i>
                             </a>
+                            <?php else: ?>
+                            <span style="<?= $btnDis ?>"><i class="fas fa-chevron-left"></i></span>
+                            <?php endif; ?>
                         </li>
-                        <?php endfor; ?>
+
+                        <!-- Números con elipsis -->
+                        <?php $prev = 0; foreach ($show as $i):
+                            if ($prev && $i - $prev > 1): ?>
+                            <li><span style="<?= $btnDis ?>">…</span></li>
+                            <?php endif; ?>
+                            <li>
+                                <a href="<?= $pageBase . $i ?>/"
+                                   style="<?= $i == $pageNum ? $btnActiv : $btnNorm ?>"
+                                   <?= $i == $pageNum ? 'aria-current="page"' : '' ?>>
+                                    <?= $i ?>
+                                </a>
+                            </li>
+                        <?php $prev = $i; endforeach; ?>
+
+                        <!-- Siguiente -->
+                        <li>
+                            <?php if ($pageNum < $totalPages): ?>
+                            <a href="<?= $pageBase . ($pageNum + 1) ?>/" style="<?= $btnNav ?>" aria-label="Siguiente">
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                            <?php else: ?>
+                            <span style="<?= $btnDis ?>"><i class="fas fa-chevron-right"></i></span>
+                            <?php endif; ?>
+                        </li>
+
                     </ul>
                 </nav>
-                <p style="color: var(--text-muted); margin-top: 15px;">Página <?= $pageNum ?> de <?= $totalPages ?></p>
+                <p style="color:var(--text-muted);margin-top:12px;font-size:.85rem;">Página <?= $pageNum ?> de <?= $totalPages ?></p>
             </div>
         </div>
         <?php endif; ?>
