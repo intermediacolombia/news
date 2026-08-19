@@ -59,10 +59,11 @@ function visit_counter_track(): array {
     $data['months'][$month] = $data['months'][$month] ?? 0;
     $data['days'][$today]   = $data['days'][$today]   ?? 0;
 
-    // Si el archivo se reinició (total bajo), restaurar desde DB
-    $dbTotal = _vc_db_total();
-    if ($dbTotal > $data['total']) {
-        $data['total'] = $dbTotal;
+    // Si el archivo se reinició (total = 0), restaurar desde DB una sola vez
+    $restored = false;
+    if ($data['total'] === 0) {
+        $dbTotal = _vc_db_total();
+        if ($dbTotal > 0) { $data['total'] = $dbTotal; $restored = true; }
     }
 
     if (!_vc_is_bot() && !isset($_COOKIE['vc_tracked'])) {
@@ -98,8 +99,10 @@ function visit_counter_track(): array {
     flock($fp, LOCK_UN);
     fclose($fp);
 
-    // Sincronizar total a DB (GREATEST evita bajar el valor guardado)
-    _vc_db_save_total($data['total']);
+    // Solo escribe a DB en múltiplos de 100 visitas o cuando se acaba de restaurar
+    if ($restored || $data['total'] % 100 === 0) {
+        _vc_db_save_total($data['total']);
+    }
 
     return [
         'today' => $data['days'][$today]   ?? 0,
