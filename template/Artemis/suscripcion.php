@@ -18,7 +18,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
             <div class="col-lg-6 mx-auto">
                 <div style="background: var(--dark-secondary); border-radius: 20px; padding: 40px; text-align:center;">
 
-                    <i class="fas fa-envelope-open-text" style="font-size:3rem; color: var(--primary-color, #e21f0c); margin-bottom:20px;"></i>
+                    <i class="fas fa-envelope-open-text" style="font-size:3rem; color: var(--secondary); margin-bottom:20px;"></i>
 
                     <div id="sub-message" class="mb-3" style="display:none;"></div>
 
@@ -39,7 +39,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                                 <input type="checkbox" name="privacy" required style="margin-top:3px; flex-shrink:0;">
                                 <span style="font-size:.9em;">
                                     He leído y acepto la
-                                    <a href="<?= URLBASE ?>/politica-privacidad/" style="color: var(--primary-color, #e21f0c);" target="_blank">Política de Privacidad</a>
+                                    <a href="<?= URLBASE ?>/politica-privacidad/" style="color: var(--secondary);" target="_blank">Política de Privacidad</a>
                                     y consiento el tratamiento de mis datos personales. *
                                 </span>
                             </label>

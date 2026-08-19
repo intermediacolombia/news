@@ -41,7 +41,7 @@ if (!empty($usuario['foto_perfil'])) {
     $iniciales = strtoupper(substr($usuario['nombre'], 0, 1) . substr($usuario['apellido'], 0, 1));
     $fotoPerfil = 'data:image/svg+xml;base64,' . base64_encode("
         <svg width='200' height='200' xmlns='http://www.w3.org/2000/svg'>
-            <rect width='200' height='200' fill='#e63946'/>
+            <rect width='200' height='200' fill='" . htmlspecialchars($sys['color-hover-link'] ?? '#e63946') . "'/>
             <text x='50%' y='50%' font-size='60' fill='white' text-anchor='middle' dy='.35em' font-family='Arial'>
                 {$iniciales}
             </text>

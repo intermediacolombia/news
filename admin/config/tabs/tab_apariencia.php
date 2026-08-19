@@ -51,7 +51,7 @@
                value="<?= htmlspecialchars($configs['primary'] ?? '#5fca00', ENT_QUOTES, 'UTF-8') ?>">
       </div>
       <div class="col-md-3">
-        <label class="form-label fw-semibold">Hover Links</label>
+        <label class="form-label fw-semibold">Color Secundario</label>
         <input type="color" name="color-hover-link" class="form-control form-control-color w-100"
                value="<?= htmlspecialchars($configs['color-hover-link'] ?? '#214A82', ENT_QUOTES, 'UTF-8') ?>">
       </div>

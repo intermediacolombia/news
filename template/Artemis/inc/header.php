@@ -115,8 +115,8 @@
         /* === Variables: Modo Claro (default) === */
         :root {
             --primary: <?= htmlspecialchars($sys['primary'] ?? '#e63946', ENT_QUOTES, 'UTF-8') ?>;
-            --primary-dark: #c1121f;
-            --secondary: #1d3557;
+            --primary-dark: color-mix(in srgb, var(--primary) 80%, #000);
+            --secondary: <?= htmlspecialchars($sys['color-hover-link'] ?? '#e63946', ENT_QUOTES, 'UTF-8') ?>;
             --accent: #f4a261;
             --bg-color: #ffffff;
             --bg-secondary: #f8f9fa;
@@ -128,7 +128,7 @@
             --dark-secondary: #f8f9fa;
             --gradient-hero: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #dee2e6 100%);
             --gradient-card: linear-gradient(145deg, #f8f9fa 0%, #ffffff 100%);
-            --shadow-glow: 0 0 40px rgba(230, 57, 70, 0.15);
+            --shadow-glow: 0 0 40px color-mix(in srgb, var(--secondary) 15%, transparent);
         }
 
         /* === Variables: Modo Oscuro === */
@@ -143,7 +143,7 @@
             --dark-secondary: #161b22;
             --gradient-hero: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #1d3557 100%);
             --gradient-card: linear-gradient(145deg, #1d3557 0%, #0d1117 100%);
-            --shadow-glow: 0 0 40px rgba(230, 57, 70, 0.25);
+            --shadow-glow: 0 0 40px color-mix(in srgb, var(--secondary) 25%, transparent);
         }
 
         /* === Base === */

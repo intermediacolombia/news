@@ -91,7 +91,7 @@ $page_description = "Artículos y publicaciones de $authorFullName en " . NOMBRE
                             ? img_url($authorData['foto_perfil'])
                             : 'data:image/svg+xml;base64,' . base64_encode('
                             <svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">
-                                <rect width="100" height="100" fill="#e63946"/>
+                                <rect width="100" height="100" fill="var(--secondary)"/>
                                 <text x="50%" y="50%" font-size="40" fill="white" text-anchor="middle" dy=".35em" font-family="Arial">
                                     ' . strtoupper(substr($authorData['nombre'], 0, 1) . substr($authorData['apellido'], 0, 1)) . '
                                 </text>
