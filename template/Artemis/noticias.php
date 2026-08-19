@@ -131,7 +131,7 @@ $page_title = $categorySlug ? $category['name'] . " | " . NOMBRE_SITIO : "Notici
 
             $btnBase  = 'display:inline-flex;align-items:center;justify-content:center;min-width:38px;height:38px;padding:0 10px;border-radius:8px;text-decoration:none;font-size:.9rem;transition:opacity .15s;';
             $btnNorm  = $btnBase . 'background:var(--dark-secondary);color:var(--text-color);border:1px solid var(--border-color);';
-            $btnActiv = $btnBase . 'background:var(--primary-color);color:#fff;border:1px solid var(--primary-color);font-weight:700;';
+            $btnActiv = $btnBase . 'background:var(--primary);color:#fff;border:1px solid var(--primary);font-weight:700;';
             $btnNav   = $btnBase . 'background:var(--dark-secondary);color:var(--text-color);border:1px solid var(--border-color);';
             $btnDis   = $btnBase . 'background:var(--dark-secondary);color:var(--text-muted);border:1px solid var(--border-color);opacity:.45;pointer-events:none;';
         ?>
