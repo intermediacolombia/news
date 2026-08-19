@@ -1,7 +1,8 @@
 <?php
 /**
  * Contador de visitas basado en archivo JSON local.
- * Sin BD externa — persiste en disco, no se reinicia solo.
+ * DB actúa como respaldo: se lee solo si el archivo se reinicia,
+ * se escribe solo en múltiplos de 100 visitas o tras restauración.
  */
 
 function _vc_data_file(): string {
@@ -24,19 +25,25 @@ function _vc_client_ip(): string {
     return '0.0.0.0';
 }
 
-/** Lee el total guardado en DB como respaldo ante pérdida del archivo JSON. */
-function _vc_db_total(): int {
+function _vc_db_read(): array {
     try {
-        $r = db()->query("SELECT value FROM system_settings WHERE setting_name='vc_total' LIMIT 1")->fetchColumn();
-        return $r !== false ? (int)$r : 0;
-    } catch (Throwable $e) { return 0; }
+        $r = db()->query("SELECT value FROM system_settings WHERE setting_name='vc_backup' LIMIT 1")->fetchColumn();
+        return $r ? (json_decode($r, true) ?: []) : [];
+    } catch (Throwable $e) { return []; }
 }
 
-function _vc_db_save_total(int $total): void {
+function _vc_db_save(array $data, string $today, string $month): void {
     try {
-        db()->prepare("INSERT INTO system_settings (setting_name, value) VALUES ('vc_total', ?)
-                       ON DUPLICATE KEY UPDATE value = GREATEST(value, ?)")
-            ->execute([$total, $total]);
+        $backup = json_encode([
+            'total' => $data['total'],
+            'today' => $data['days'][$today] ?? 0,
+            'today_date' => $today,
+            'month' => $data['months'][$month] ?? 0,
+            'month_key' => $month,
+        ]);
+        db()->prepare("INSERT INTO system_settings (setting_name, value) VALUES ('vc_backup', ?)
+                       ON DUPLICATE KEY UPDATE value = ?")
+            ->execute([$backup, $backup]);
     } catch (Throwable $e) {}
 }
 
@@ -46,7 +53,14 @@ function visit_counter_track(): array {
     $month = date('Y-m');
 
     $fp = fopen($file, 'c+');
-    if (!$fp) return ['today' => 0, 'month' => 0, 'total' => _vc_db_total()];
+    if (!$fp) {
+        $bk = _vc_db_read();
+        return [
+            'today' => ($bk['today_date'] ?? '') === $today ? (int)($bk['today'] ?? 0) : 0,
+            'month' => ($bk['month_key']  ?? '') === $month ? (int)($bk['month'] ?? 0) : 0,
+            'total' => (int)($bk['total'] ?? 0),
+        ];
+    }
 
     flock($fp, LOCK_EX);
     $data = json_decode(stream_get_contents($fp), true) ?: [];
@@ -59,11 +73,16 @@ function visit_counter_track(): array {
     $data['months'][$month] = $data['months'][$month] ?? 0;
     $data['days'][$today]   = $data['days'][$today]   ?? 0;
 
-    // Si el archivo se reinició (total = 0), restaurar desde DB una sola vez
+    // Restaurar desde DB si el archivo se reinició
     $restored = false;
     if ($data['total'] === 0) {
-        $dbTotal = _vc_db_total();
-        if ($dbTotal > 0) { $data['total'] = $dbTotal; $restored = true; }
+        $bk = _vc_db_read();
+        if (!empty($bk['total'])) {
+            $data['total'] = (int)$bk['total'];
+            if (($bk['today_date'] ?? '') === $today) $data['days'][$today]   = (int)$bk['today'];
+            if (($bk['month_key']  ?? '') === $month) $data['months'][$month] = (int)$bk['month'];
+            $restored = true;
+        }
     }
 
     if (!_vc_is_bot() && !isset($_COOKIE['vc_tracked'])) {
@@ -99,9 +118,8 @@ function visit_counter_track(): array {
     flock($fp, LOCK_UN);
     fclose($fp);
 
-    // Solo escribe a DB en múltiplos de 100 visitas o cuando se acaba de restaurar
     if ($restored || $data['total'] % 100 === 0) {
-        _vc_db_save_total($data['total']);
+        _vc_db_save($data, $today, $month);
     }
 
     return [
