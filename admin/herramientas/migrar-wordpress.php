@@ -238,7 +238,57 @@ if (in_array($action, ['start','batch','finish'], true)) {
       flex-wrap: wrap; gap: .5rem;
     }
     .page-header h4 { margin: 0; font-weight: 700; color: #1e293b; }
-    #progreso-wrap { display:none; }
+
+    /* ── barra de progreso ── */
+    .wp-mig-bar-wrap {
+      background: #e9ecef; border-radius: 999px; height: 22px;
+      overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,.08);
+    }
+    .wp-mig-bar {
+      height: 100%; border-radius: 999px; position: relative; overflow: hidden;
+      background: linear-gradient(90deg, var(--primary-color, #6366f1), #818cf8);
+      transition: width .4s cubic-bezier(.4,0,.2,1);
+      min-width: 0;
+    }
+    .wp-mig-bar-shine {
+      position: absolute; top: 0; left: -60%; width: 40%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.35), transparent);
+      animation: shine 1.6s infinite;
+    }
+    @keyframes shine { to { left: 120%; } }
+
+    /* ── spinner ── */
+    .wp-mig-spinner {
+      display: inline-block; width: 18px; height: 18px; border-radius: 50%;
+      border: 3px solid #e2e8f0;
+      border-top-color: var(--primary-color, #6366f1);
+      animation: spin .7s linear infinite; flex-shrink: 0;
+    }
+    .wp-mig-spinner.done { animation: none; border-color: #22c55e; border-top-color: #22c55e; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── stat cards ── */
+    .wp-stat-card {
+      background: #fff; border: 1px solid #e9ecef; border-radius: 10px;
+      padding: .7rem .8rem; text-align: center;
+      box-shadow: 0 1px 4px rgba(0,0,0,.05);
+      transition: transform .15s;
+    }
+    .wp-stat-card:hover { transform: translateY(-2px); }
+    .wp-stat-icon { font-size: 1.3rem; margin-bottom: .2rem; }
+    .wp-stat-val  { font-size: 1.5rem; font-weight: 700; line-height: 1.1; }
+    .wp-stat-lbl  { font-size: .72rem; color: #64748b; text-transform: uppercase; letter-spacing: .04em; }
+
+    /* ── log en vivo ── */
+    .wp-mig-log {
+      background: #0f172a; color: #94a3b8; border-radius: 8px;
+      padding: .75rem 1rem; font-family: monospace; font-size: .78rem;
+      max-height: 140px; overflow-y: auto; line-height: 1.6;
+    }
+    .wp-mig-log .log-ok   { color: #4ade80; }
+    .wp-mig-log .log-skip { color: #fbbf24; }
+    .wp-mig-log .log-err  { color: #f87171; }
+    .wp-mig-log .log-info { color: #60a5fa; }
     </style>
 </head>
 <body>
@@ -267,16 +317,53 @@ if (in_array($action, ['start','batch','finish'], true)) {
             <div id="resultado-wrap"></div>
 
             <!-- Progreso -->
-            <div id="progreso-wrap" class="mb-4">
-                <div class="d-flex justify-content-between mb-1">
-                    <span id="progreso-label">Migrando…</span>
-                    <span id="progreso-pct">0%</span>
+            <div id="progreso-wrap" class="mb-4" style="display:none">
+                <div class="wp-mig-header d-flex align-items-center gap-2 mb-3">
+                    <span class="wp-mig-spinner"></span>
+                    <span id="progreso-label" class="fw-semibold">Preparando migración…</span>
+                    <span id="progreso-pct" class="ms-auto badge" style="background:var(--primary-color);font-size:.95rem;min-width:52px;text-align:center">0%</span>
                 </div>
-                <div class="progress" style="height:20px">
-                    <div id="progreso-bar" class="progress-bar progress-bar-striped progress-bar-animated"
-                         style="width:0%"></div>
+
+                <div class="wp-mig-bar-wrap mb-3">
+                    <div id="progreso-bar" class="wp-mig-bar" style="width:0%">
+                        <span class="wp-mig-bar-shine"></span>
+                    </div>
                 </div>
-                <small id="progreso-detalle" class="text-muted mt-1 d-block"></small>
+
+                <!-- stats en tiempo real -->
+                <div class="row g-2 mb-3" id="stats-row">
+                    <div class="col-6 col-md-3">
+                        <div class="wp-stat-card">
+                            <div class="wp-stat-icon" style="color:#22c55e"><i class="fas fa-check-circle"></i></div>
+                            <div class="wp-stat-val" id="stat-migrados">0</div>
+                            <div class="wp-stat-lbl">Migrados</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="wp-stat-card">
+                            <div class="wp-stat-icon" style="color:#f59e0b"><i class="fas fa-copy"></i></div>
+                            <div class="wp-stat-val" id="stat-existentes">0</div>
+                            <div class="wp-stat-lbl">Ya existían</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="wp-stat-card">
+                            <div class="wp-stat-icon" style="color:#3b82f6"><i class="fas fa-image"></i></div>
+                            <div class="wp-stat-val" id="stat-imagenes">0</div>
+                            <div class="wp-stat-lbl">Imágenes</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="wp-stat-card">
+                            <div class="wp-stat-icon" style="color:#8b5cf6"><i class="fas fa-layer-group"></i></div>
+                            <div class="wp-stat-val" id="stat-lote">0</div>
+                            <div class="wp-stat-lbl">Lote actual</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- log en vivo -->
+                <div id="mig-log" class="wp-mig-log"></div>
             </div>
 
             <form id="form-migrar" autocomplete="off">
@@ -362,18 +449,35 @@ document.getElementById('copiar_imagenes').addEventListener('change', function()
 document.getElementById('btn-migrar').addEventListener('click', async function() {
     if (!confirm('¿Confirmas iniciar la migración? Los posts ya existentes se omitirán automáticamente.')) return;
 
-    const form     = document.getElementById('form-migrar');
-    const btn      = this;
-    const wrap     = document.getElementById('progreso-wrap');
-    const bar      = document.getElementById('progreso-bar');
-    const pct      = document.getElementById('progreso-pct');
-    const label    = document.getElementById('progreso-label');
-    const detalle  = document.getElementById('progreso-detalle');
-    const resWrap  = document.getElementById('resultado-wrap');
-    const url      = window.location.href;
+    const form    = document.getElementById('form-migrar');
+    const btn     = this;
+    const wrap    = document.getElementById('progreso-wrap');
+    const bar     = document.getElementById('progreso-bar');
+    const pct     = document.getElementById('progreso-pct');
+    const label   = document.getElementById('progreso-label');
+    const spinner = wrap.querySelector('.wp-mig-spinner');
+    const resWrap = document.getElementById('resultado-wrap');
+    const log     = document.getElementById('mig-log');
+    const url     = window.location.href;
+
+    const setCounter = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val.toLocaleString();
+    };
+    const addLog = (msg, cls = '') => {
+        const line = document.createElement('div');
+        line.className = cls;
+        line.textContent = msg;
+        log.appendChild(line);
+        log.scrollTop = log.scrollHeight;
+    };
 
     resWrap.innerHTML = '';
+    log.innerHTML = '';
     btn.disabled = true;
+    wrap.style.display = '';
+
+    addLog('⟳ Conectando a la base de datos de WordPress…', 'log-info');
 
     /* ── start ── */
     const fd = new FormData(form);
@@ -383,20 +487,24 @@ document.getElementById('btn-migrar').addEventListener('click', async function()
         res = await fetch(url, {method:'POST', body:fd}).then(r => r.json());
     } catch(e) {
         resWrap.innerHTML = `<div class="alert alert-danger">Error de red: ${e.message}</div>`;
+        wrap.style.display = 'none';
         btn.disabled = false;
         return;
     }
     if (!res.ok) {
         resWrap.innerHTML = `<div class="alert alert-danger">${res.error}</div>`;
+        wrap.style.display = 'none';
         btn.disabled = false;
         return;
     }
 
     const total = res.total;
-    wrap.style.display = '';
-    label.textContent = `Migrando ${total} posts en lotes de 50…`;
+    addLog(`✔ Conexión OK — ${res.cats_nuevas} categorías nuevas importadas.`, 'log-ok');
+    addLog(`⟳ Iniciando migración de ${total.toLocaleString()} posts en lotes de 50…`, 'log-info');
+    label.textContent = `Migrando ${total.toLocaleString()} posts…`;
+    setCounter('stat-lote', 1);
 
-    let offset = 0, totalMigrados = 0, totalExistentes = 0, totalImagenes = 0, allErrors = [];
+    let offset = 0, totalMigrados = 0, totalExistentes = 0, totalImagenes = 0, allErrors = [], lote = 1;
 
     /* ── batches ── */
     while (true) {
@@ -409,43 +517,54 @@ document.getElementById('btn-migrar').addEventListener('click', async function()
             batch = await fetch(url, {method:'POST', body:bfd}).then(r => r.json());
         } catch(e) {
             allErrors.push('Error de red en offset ' + offset + ': ' + e.message);
+            addLog('✖ ' + e.message, 'log-err');
             break;
         }
-        if (!batch.ok) { allErrors.push(batch.error); break; }
+        if (!batch.ok) { allErrors.push(batch.error); addLog('✖ ' + batch.error, 'log-err'); break; }
 
         totalMigrados   += batch.migrados;
         totalExistentes += batch.existentes;
         totalImagenes   += batch.imagenes;
-        allErrors        = allErrors.concat(batch.errors || []);
-        offset           = batch.offset;
+        (batch.errors || []).forEach(e => { allErrors.push(e); addLog('⚠ ' + e, 'log-err'); });
+        offset = batch.offset;
 
-        const p = total > 0 ? Math.round((offset / total) * 100) : 100;
+        const p = total > 0 ? Math.min(Math.round((offset / total) * 100), 99) : 99;
         bar.style.width = p + '%';
         pct.textContent = p + '%';
-        detalle.textContent = `Procesados: ${offset}/${total} — Migrados: ${totalMigrados}, Ya existían: ${totalExistentes}`;
+        setCounter('stat-migrados',   totalMigrados);
+        setCounter('stat-existentes', totalExistentes);
+        setCounter('stat-imagenes',   totalImagenes);
+        setCounter('stat-lote',       ++lote);
+
+        if (batch.migrados > 0)
+            addLog(`✔ Lote ${lote}: ${batch.migrados} migrados, ${batch.existentes} omitidos${batch.imagenes ? ', '+batch.imagenes+' imgs' : ''}`, 'log-ok');
+        else
+            addLog(`↷ Lote ${lote}: ${batch.existentes} ya existían, se omitieron`, 'log-skip');
 
         if (batch.done) break;
     }
 
     /* ── finish ── */
-    await fetch(url, {method:'POST', body: (() => { const f=new FormData(); f.append('action','finish'); return f; })()}).then(r=>r.json()).catch(()=>{});
+    const ff = new FormData(); ff.append('action','finish');
+    await fetch(url, {method:'POST', body:ff}).then(r=>r.json()).catch(()=>{});
 
     bar.style.width = '100%';
     pct.textContent = '100%';
-    bar.classList.remove('progress-bar-animated');
+    spinner.classList.add('done');
     label.textContent = 'Migración completada';
+    addLog(`✔ Listo — ${totalMigrados} posts migrados, ${totalExistentes} omitidos, ${totalImagenes} imágenes.`, 'log-ok');
 
-    let html = `<div class="alert alert-success">
-        <strong><i class="fa fa-check-circle me-1"></i> Migración completada:</strong>
-        <ul class="mb-0 mt-2">
-            <li>Posts migrados: <strong>${totalMigrados}</strong></li>
-            <li>Ya existían: <strong>${totalExistentes}</strong></li>
-            <li>Imágenes copiadas: <strong>${totalImagenes}</strong></li>
-            <li>Categorías nuevas: <strong>${res.cats_nuevas}</strong></li>
-        </ul>
+    let html = `<div class="alert alert-success mt-3">
+        <strong><i class="fa fa-check-circle me-1"></i> Migración completada</strong>
+        <div class="row g-2 mt-2">
+            <div class="col-6 col-md-3"><strong>${totalMigrados.toLocaleString()}</strong><br><small>Posts migrados</small></div>
+            <div class="col-6 col-md-3"><strong>${totalExistentes.toLocaleString()}</strong><br><small>Ya existían</small></div>
+            <div class="col-6 col-md-3"><strong>${totalImagenes.toLocaleString()}</strong><br><small>Imágenes</small></div>
+            <div class="col-6 col-md-3"><strong>${res.cats_nuevas}</strong><br><small>Categorías nuevas</small></div>
+        </div>
     </div>`;
     if (allErrors.length) {
-        html += `<div class="alert alert-warning"><strong>Advertencias:</strong><ul class="mb-0 mt-2">${allErrors.map(e=>`<li>${e}</li>`).join('')}</ul></div>`;
+        html += `<div class="alert alert-warning"><strong>Advertencias (${allErrors.length}):</strong><ul class="mb-0 mt-2">${allErrors.map(e=>`<li>${e}</li>`).join('')}</ul></div>`;
     }
     resWrap.innerHTML = html;
     btn.disabled = false;
