@@ -24,13 +24,29 @@ function _vc_client_ip(): string {
     return '0.0.0.0';
 }
 
+/** Lee el total guardado en DB como respaldo ante pérdida del archivo JSON. */
+function _vc_db_total(): int {
+    try {
+        $r = db()->query("SELECT value FROM system_settings WHERE setting_name='vc_total' LIMIT 1")->fetchColumn();
+        return $r !== false ? (int)$r : 0;
+    } catch (Throwable $e) { return 0; }
+}
+
+function _vc_db_save_total(int $total): void {
+    try {
+        db()->prepare("INSERT INTO system_settings (setting_name, value) VALUES ('vc_total', ?)
+                       ON DUPLICATE KEY UPDATE value = GREATEST(value, ?)")
+            ->execute([$total, $total]);
+    } catch (Throwable $e) {}
+}
+
 function visit_counter_track(): array {
     $file  = _vc_data_file();
     $today = date('Y-m-d');
     $month = date('Y-m');
 
     $fp = fopen($file, 'c+');
-    if (!$fp) return ['today' => 0, 'month' => 0, 'total' => 0];
+    if (!$fp) return ['today' => 0, 'month' => 0, 'total' => _vc_db_total()];
 
     flock($fp, LOCK_EX);
     $data = json_decode(stream_get_contents($fp), true) ?: [];
@@ -43,10 +59,15 @@ function visit_counter_track(): array {
     $data['months'][$month] = $data['months'][$month] ?? 0;
     $data['days'][$today]   = $data['days'][$today]   ?? 0;
 
+    // Si el archivo se reinició (total bajo), restaurar desde DB
+    $dbTotal = _vc_db_total();
+    if ($dbTotal > $data['total']) {
+        $data['total'] = $dbTotal;
+    }
+
     if (!_vc_is_bot() && !isset($_COOKIE['vc_tracked'])) {
-        // Resetear tabla de IPs al cambiar de día
         if ($data['ip_date'] !== $today) {
-            $data['ips']    = [];
+            $data['ips']     = [];
             $data['ip_date'] = $today;
         }
 
@@ -76,6 +97,9 @@ function visit_counter_track(): array {
     fwrite($fp, json_encode($data));
     flock($fp, LOCK_UN);
     fclose($fp);
+
+    // Sincronizar total a DB (GREATEST evita bajar el valor guardado)
+    _vc_db_save_total($data['total']);
 
     return [
         'today' => $data['days'][$today]   ?? 0,
