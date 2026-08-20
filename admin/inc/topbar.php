@@ -1,5 +1,10 @@
+<div class="menu-overlay" id="menuOverlay" onclick="closeMobileMenu()"></div>
+
 <div class="topbar">
     <div class="topbar-left">
+        <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileMenu()" aria-label="Menú">
+            <i class="fas fa-bars"></i>
+        </button>
         <div class="site-logo">
             <i class="fas fa-newspaper"></i>
             <span class="site-name">SysNews</span>
@@ -194,11 +199,42 @@ body {
     margin-left: 70px;
 }
 
+/* Hamburger — solo visible en móvil */
+.hamburger-btn {
+    display: none;
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: var(--sidebar-hover);
+    color: var(--sidebar-text);
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* Overlay oscuro detrás del menú en móvil */
+.menu-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.5);
+    z-index: 999;
+}
+.menu-overlay.active { display: block; }
+
 @media (max-width: 768px) {
+    .hamburger-btn { display: flex; }
+    .topbar { margin-left: 0 !important; }
     .main-content {
         margin-left: 0;
         padding: 15px;
     }
+    /* tablas no desbordan */
+    .table-responsive-auto { overflow-x: auto; }
+    .dataTables_wrapper { overflow-x: auto; }
 }
 </style>
 
@@ -240,5 +276,15 @@ document.addEventListener('click', function(e) {
         document.querySelectorAll('.user-dropdown').forEach(d => d.classList.remove('open'));
     }
 });
+
+// Mobile menu
+function toggleMobileMenu() {
+    document.querySelector('.menu').classList.toggle('open');
+    document.getElementById('menuOverlay').classList.toggle('active');
+}
+function closeMobileMenu() {
+    document.querySelector('.menu').classList.remove('open');
+    document.getElementById('menuOverlay').classList.remove('active');
+}
 
 </script>

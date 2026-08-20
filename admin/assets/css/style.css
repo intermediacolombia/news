@@ -11,6 +11,9 @@ body {
     padding-left: 240px; /* En lugar de margin-left en .container */
 }
 
+@media (max-width: 768px) {
+    body { padding-left: 0 !important; }
+}
 
 
 .portada {

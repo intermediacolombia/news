@@ -379,11 +379,11 @@
 /* Responsive */
 @media (max-width: 768px) {
     .menu {
-        width: 100%;
+        width: 280px;
         transform: translateX(-100%);
         transition: var(--transition);
+        z-index: 1000;
     }
-    
     .menu.open {
         transform: translateX(0);
     }

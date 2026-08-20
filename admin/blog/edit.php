@@ -104,7 +104,7 @@ function oldv_raw($key, $default = ''){
         <input type="hidden" name="id" value="<?= (int)$post['id'] ?>">
 
         <div class="row g-4">
-          <div class="col-lg-8">
+          <div class="col-12 col-lg-8">
             <div class="mb-3">
               <label class="form-label">Título *</label>
               <input type="text" class="form-control<?= isset($errors['title'])?' is-invalid':'' ?>" 
@@ -131,7 +131,7 @@ function oldv_raw($key, $default = ''){
                   </option>
                 <?php endforeach; ?>
               </select>
-				<div class="hint mt-1">Mantén CTRL/⌘ para seleccionar varias</div>
+              <div class="hint mt-1">En PC mantén CTRL/⌘; en móvil toca cada opción.</div>
               <?php if(isset($errors['categories'])): ?><div class="invalid-feedback d-block"><?= htmlspecialchars($errors['categories']) ?></div><?php endif; ?>
             </div>
 
@@ -196,7 +196,7 @@ function oldv_raw($key, $default = ''){
 
           </div>
 
-          <div class="col-lg-4">
+          <div class="col-12 col-lg-4">
             <div class="mb-3">
               <label class="form-label">Estado</label>
               <select class="form-select<?= isset($errors['status'])?' is-invalid':'' ?>" name="status">
@@ -375,7 +375,7 @@ document.addEventListener("DOMContentLoaded", function(){
               </div>
 
               <!-- Panel detalle imagen seleccionada -->
-              <div class="col-lg-4">
+              <div class="col-12 col-lg-4">
                 <div id="media-detail-panel"
                      class="border rounded p-3 h-100"
                      style="background:#f8f9fa; min-height:300px;">
