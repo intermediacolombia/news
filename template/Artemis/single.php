@@ -299,6 +299,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                                     <!-- Honeypot anti-spam (oculto para usuarios reales) -->
                                     <input type="text" name="website" style="display:none;" tabindex="-1" autocomplete="off">
                                     <input type="text" name="phone" style="display:none;" tabindex="-1" autocomplete="off">
+                                    <input type="hidden" name="ct" value="<?= base64_encode(time() . ':' . hash_hmac('sha256', (string)time(), APP_KEY ?? 'sysnews')) ?>">
                                     
                                     <div class="row">
                                         <div class="col-md-6 mb-3">

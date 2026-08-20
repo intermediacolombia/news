@@ -16,7 +16,25 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // ANTI-SPAM: Honeypot field
 // ========================================
 if (!empty($_POST['website']) || !empty($_POST['phone'])) {
-    // Bot detected, silently ignore
+    echo json_encode(['success' => true, 'message' => 'Comentario enviado']);
+    exit;
+}
+
+// ========================================
+// ANTI-SPAM: Token de tiempo (mínimo 4 s, máximo 2 h)
+// Bots envían el form instantáneamente sin leer la página.
+// ========================================
+$ctRaw = base64_decode($_POST['ct'] ?? '', true);
+$ctValid = false;
+if ($ctRaw && strpos($ctRaw, ':') !== false) {
+    [$ctTime, $ctHash] = explode(':', $ctRaw, 2);
+    $secret = defined('APP_KEY') ? APP_KEY : 'sysnews';
+    $elapsed = time() - (int)$ctTime;
+    if (hash_equals(hash_hmac('sha256', $ctTime, $secret), $ctHash) && $elapsed >= 4 && $elapsed <= 7200) {
+        $ctValid = true;
+    }
+}
+if (!$ctValid) {
     echo json_encode(['success' => true, 'message' => 'Comentario enviado']);
     exit;
 }
@@ -87,13 +105,22 @@ if (!$stmt->fetch()) {
 }
 
 // ========================================
-// Anti-spam: Check for suspicious patterns
+// Anti-spam: patrones y límite de URLs
 // ========================================
+
+// Más de 2 URLs en el contenido = spam
+if (preg_match_all('/https?:\/\//i', $contenido) > 2) {
+    echo json_encode(['success' => false, 'message' => 'Comentario rechazado por contener demasiados enlaces']);
+    exit;
+}
+
 $spamPatterns = [
-    '/\[url=.*\]/i',
-    '/<a href.*>/i',
-    '/https?:\/\/.*\s.*https?:\/\//i',  // Multiple URLs
-    '/viagra|cialis|pharmacy|casino|lottery/i'  // Common spam keywords
+    '/\[url=/i',
+    '/<a\s+href/i',
+    '/viagra|cialis|levitra|pharmacy|casino|lottery|bitcoin|crypto|forex|loan|debt|weight.?loss|diet.?pill/i',
+    '/buy\s+(cheap|online|now)|click\s+here|earn\s+money|make\s+money|work\s+from\s+home/i',
+    '/\b(SEO|backlink|ranking|traffic)\b.*\b(service|agency|boost|guarant)/i',
+    '/(.)\1{6,}/',   // Mismo carácter repetido 6+ veces seguidas
 ];
 
 foreach ($spamPatterns as $pattern) {
