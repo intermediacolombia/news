@@ -91,9 +91,9 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                 <!-- Metadata -->
                 <div class="d-flex justify-content-between align-items-center text-secondary small mb-3 border-bottom pb-2 flex-wrap">
                     <div class="d-flex align-items-center flex-wrap gap-3">
-                        <span><i class="fa fa-calendar-alt me-1 text-primary"></i> <?= fecha_espanol(date("F d, Y", strtotime($post['created_at']))) ?></span>
+                        <span><i class="fas fa-calendar-alt me-1 text-primary"></i> <?= fecha_espanol(date("F d, Y", strtotime($post['created_at']))) ?></span>
                         <?php if (!empty($post['author'])): ?>
-                            <span><i class="fa fa-user-edit me-1 text-primary"></i> <a href="<?= URLBASE ?>/autor/<?= urlencode($post['author']) ?>/" class="text-decoration-none"><?= htmlspecialchars($post['author']) ?></a></span>
+                            <span><i class="fas fa-user-edit me-1 text-primary"></i> <a href="<?= URLBASE ?>/autor/<?= urlencode($post['author']) ?>/" class="text-decoration-none"><?= htmlspecialchars($post['author']) ?></a></span>
                         <?php endif; ?>
                     </div>
                     <span><i class="fa fa-eye me-1 text-primary"></i> <?= number_format($totalViews) ?> <?= t_theme('theme_vistas') ?></span>
@@ -286,7 +286,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                                             <a href="<?= URLBASE ?>/<?= htmlspecialchars($rel['category_slug']) ?>/<?= htmlspecialchars($rel['slug']) ?>/" class="h6 mb-2 text-dark link-hover">
                                                 <?= htmlspecialchars($rel['title']) ?>
                                             </a>
-                                            <p class="text-body small mb-0"><i class="fa fa-calendar-alt me-1"></i><?= fecha_espanol(date("F d, Y", strtotime($rel['created_at']))) ?></p>
+                                            <p class="text-body small mb-0"><i class="fas fa-calendar-alt me-1"></i><?= fecha_espanol(date("F d, Y", strtotime($rel['created_at']))) ?></p>
                                         </div>
                                     </div>
                                 </div>

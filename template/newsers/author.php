@@ -159,7 +159,7 @@ $page_canonical = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                         </a>
                       </span>
                       <span>
-                        <i class="fa fa-calendar-alt text-primary me-1"></i>
+                        <i class="fas fa-calendar-alt text-primary me-1"></i>
                         <?= fecha_espanol(date("F d, Y", strtotime($p['created_at']))) ?>
                       </span>
                     </div>

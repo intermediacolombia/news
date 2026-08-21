@@ -98,7 +98,7 @@ visit_counter_widget();
               <div class="ps-3">
                 <p class="text-uppercase small mb-1 text-primary"><?= htmlspecialchars($post['category_name']) ?></p>
                 <span class="text-white fw-semibold d-block"><?= htmlspecialchars($post['title']) ?></span>
-                <small class="text-white-50"><i class="fa fa-calendar-alt me-1"></i><?= strftime('%d %b %Y', strtotime($post['created_at'])) ?></small>
+                <small class="text-white-50"><i class="fas fa-calendar-alt me-1"></i><?= strftime('%d %b %Y', strtotime($post['created_at'])) ?></small>
               </div>
             </div>
           </a>
