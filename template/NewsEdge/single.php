@@ -392,7 +392,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
                                 <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
                                 <input type="text" name="website" style="display:none;" tabindex="-1" autocomplete="off">
                                 <input type="text" name="phone" style="display:none;" tabindex="-1" autocomplete="off">
-                                <input type="hidden" name="ct" value="<?= base64_encode(time() . ':' . hash_hmac('sha256', (string)time(), APP_KEY ?? 'sysnews')) ?>">
+                                <input type="hidden" name="ct" value="<?= base64_encode(time() . ':' . hash_hmac('sha256', (string)time(), defined('APP_KEY') ? APP_KEY : 'sysnews')) ?>">
 
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
