@@ -55,7 +55,7 @@ $themeColors = ['color-apple', 'color-pomegranate', 'color-java', 'color-mandy',
                         <img src="<?= img_url($cat['last_post_image']) ?>" 
                              alt="<?= htmlspecialchars($cat['name']) ?>" 
                              class="img-fluid width-100" 
-                             style="height: 350px; object-fit: cover;">
+                             style="height: auto;">
                         
                         <div class="content p-30-r">
                             <!-- Usamos la clase de color dinámica del tema -->

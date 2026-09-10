@@ -146,7 +146,7 @@ $page_canonical   = rtrim(URLBASE, '/') . '/' . ltrim($currentPath, '/');
     <img src="<?= img_url($post['image']) ?>" 
          alt="<?= htmlspecialchars(get_post_image_alt($post)) ?>" 
          class="img-fluid"
-         style="width: 100%; height: 450px; object-fit: cover; display: block;">
+         style="width: 100%; height: auto; display: block;">
     <?php endif; ?>
     <div class="topic-box-top-sm">
         <div class="topic-box-sm color-cinnabar mb-20">

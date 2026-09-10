@@ -32,7 +32,7 @@ $latestNews = db()->query($sqlLatest)->fetchAll();
                             <img src="<?= img_url($news['image']) ?>" 
                                  alt="<?= htmlspecialchars($news['title']) ?>" 
                                  class="img-fluid"
-                                 style="height: 150px; object-fit: cover;">
+                                 style="height: auto;">
                         </a>
                         <div class="topic-box-top-xs">
                             <div class="topic-box-sm color-cod-gray mb-20">
