@@ -43,7 +43,8 @@ h4 {
     font-family: Roboto, sans-serif;
     margin: 0 0 20px;
     color: #111;
-    text-transform: capitalize;
+    /* Respetar las mayúsculas y minúsculas originales de los títulos */
+    text-transform: none;
 }
 h1 {
     font-size: 24px;
