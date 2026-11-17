@@ -350,12 +350,6 @@ $usuarios = db()->query("SELECT id, nombre, apellido, username, foto_perfil
 <?php include('../inc/menu-footer.php'); ?>
 <?php include('../inc/flash_simple.php'); ?>
 
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 <script>
 $(document).ready(function () {
 
@@ -363,6 +357,8 @@ $(document).ready(function () {
   const table = $('#postsTable').DataTable({
     processing : true,
     serverSide : true,
+    searching  : true,
+    ordering   : true,
     ajax       : { url: '<?= $url ?>/admin/blog/ajax_posts.php', type: 'POST' },
     columns    : [
       { orderable:false, searchable:false },
@@ -374,7 +370,18 @@ $(document).ready(function () {
       { orderable:true  },
       { orderable:false, searchable:false }
     ],
-    language   : { url:'//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json', processing:'Cargando...' },
+    language   : {
+      processing: 'Procesando...',
+      search: 'Buscar:',
+      searchPlaceholder: 'Título o autor',
+      lengthMenu: 'Mostrar _MENU_ entradas',
+      info: 'Mostrando _START_ a _END_ de _TOTAL_ entradas',
+      infoEmpty: 'No hay entradas para mostrar',
+      infoFiltered: '(filtrado de _MAX_ entradas)',
+      zeroRecords: 'No se encontraron entradas',
+      emptyTable: 'No hay entradas disponibles',
+      paginate: { first: 'Primero', last: 'Último', next: 'Siguiente', previous: 'Anterior' }
+    },
     order      : [[6,'desc']],
     pageLength : 25,
     columnDefs : [{ targets:-1, className:'text-end no-click' }]

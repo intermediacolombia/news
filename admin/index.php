@@ -595,7 +595,7 @@ function img_url_dashboard($path) {
   <?php require_once __DIR__ . '/inc/menu.php'; ?>
   
   <?php if (isset($_SESSION['error'])): ?>
-    <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0 mt-3 mx-auto" role="alert" style="max-width:600px;">
+    <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0 mt-3 mx-auto dashboard-alert" role="alert" style="max-width:600px;">
       <i class="fa fa-exclamation-triangle me-2"></i>
       <?= $_SESSION['error'] ?>
       <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
@@ -603,26 +603,30 @@ function img_url_dashboard($path) {
     <?php unset($_SESSION['error']); ?>
   <?php endif; ?>
   
-  <div class="container-fluid px-4 py-4">
+  <div class="container-fluid px-4 py-4 dashboard-page">
     
     <!-- ===== HEADER BIENVENIDA ===== -->
     <div class="dashboard-header">
-      <h1>
-        Bienvenido, <br>
-        <span class="user-name"><?= htmlspecialchars($nombre . " " . $apellido) ?></span>
-      </h1>
-      <div class="welcome-date">
-        <i class="fa fa-calendar"></i>
-        <?= strftime("%A, %d de %B de %Y", time()) ?>
+      <div class="dashboard-header-copy">
+        <span class="dashboard-eyebrow">PANEL DE ADMINISTRACIÓN</span>
+        <h1>Bienvenido, <span class="user-name"><?= htmlspecialchars($nombre . " " . $apellido) ?></span></h1>
+        <p class="dashboard-subtitle">Aquí tienes el resumen de actividad de tu sitio.</p>
+        <div class="welcome-date">
+          <i class="fa fa-calendar"></i>
+          <?= strftime("%A, %d de %B de %Y", time()) ?>
+        </div>
       </div>
+      <div class="dashboard-header-actions">
       <?php if (hasAnyPermission(['Ver Blogs', 'Crear Entrada'])): ?>
-      <div style="position: absolute; top: 20px; right: 20px; z-index: 10;">
-        <span class="badge" style="background: rgba(255,255,255,0.2); padding: 8px 15px; font-size: 13px; border-radius: 20px;">
+        <span class="dashboard-view-badge">
           <i class="fa <?= $verSoloMisPosts ? 'fa-user' : 'fa-users' ?>"></i>
           <?= $verSoloMisPosts ? 'Vista Personal' : 'Vista Global' ?>
         </span>
-      </div>
+        <?php if (hasPermission('Crear Entrada')): ?>
+          <a class="dashboard-create-link" href="<?= URLBASE ?>/admin/blog/create.php"><i class="fa fa-plus"></i> Nueva entrada</a>
+        <?php endif; ?>
       <?php endif; ?>
+      </div>
     </div>
     
     <?php if (empty($userPermissions)): ?>
@@ -637,7 +641,7 @@ function img_url_dashboard($path) {
     
     <!-- ===== STAT CARDS ===== -->
     <?php if (hasAnyPermission(['Ver Blogs', 'Crear Entrada', 'Ver Categorias', 'Ver y Editar Usuarios'])): ?>
-    <div class="row mb-4">
+    <div class="row mb-4 dashboard-stats">
       <?php if (hasAnyPermission(['Ver Blogs', 'Crear Entrada'])): ?>
       <div class="col-xl-3 col-md-6 mb-4">
         <div class="stat-card primary">
@@ -658,7 +662,7 @@ function img_url_dashboard($path) {
           <div class="stat-card-label"><?= $verSoloMisPosts ? 'Mis Publicados' : 'Publicados' ?></div>
         </div>
       </div>
-      
+
       <div class="col-xl-3 col-md-6 mb-4">
         <div class="stat-card warning">
           <div class="stat-card-icon">
