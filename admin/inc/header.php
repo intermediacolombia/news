@@ -20,7 +20,7 @@
 <link rel="stylesheet" href="<?= htmlspecialchars($url) ?>/admin/assets/css/menu.css?cache=<?= time(); ?>">
 <link rel="stylesheet" href="<?= htmlspecialchars($url) ?>/admin/assets/css/style.css?cache=<?= time(); ?>">
 <link rel="stylesheet" href="<?= htmlspecialchars($url) ?>/admin/assets/css/cards.css?cache=<?= time(); ?>">
-<link rel="stylesheet" href="<?= htmlspecialchars($url) ?>/admin/assets/css/admin-modern.css?cache=<?= time(); ?>">
+<link rel="stylesheet" href="/admin/assets/css/admin-modern.css?cache=<?= time(); ?>">
 
 <!-- Font Awesome 6 -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">

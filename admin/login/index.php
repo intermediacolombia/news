@@ -110,7 +110,7 @@ exit();
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <style>:root { --primary-color: <?= htmlspecialchars(COLOR_PRIMARY ?? '#e21f0c', ENT_QUOTES, 'UTF-8') ?>; --primary-hover: <?= htmlspecialchars(COLOR_PRIMARY_HOVER_LINK ?? '#c4180c', ENT_QUOTES, 'UTF-8') ?>; }</style>
-  <link rel="stylesheet" href="<?= htmlspecialchars($url) ?>/admin/assets/css/admin-auth.css?cache=<?= time(); ?>">
+  <link rel="stylesheet" href="/admin/assets/css/admin-auth.css?cache=<?= time(); ?>">
 </head>
 <body>
 	

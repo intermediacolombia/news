@@ -590,6 +590,7 @@ function img_url_dashboard($path) {
     [data-theme="dark"] .badge-published { background: rgba(25,135,84,.2) !important; color: #75b798 !important; }
     [data-theme="dark"] .badge-draft     { background: rgba(255,193,7,.15) !important; color: #ffda6a !important; }
   </style>
+  <link rel="stylesheet" href="/admin/assets/css/admin-dashboard.css?cache=<?= time(); ?>">
 </head>
 <body>
   <?php require_once __DIR__ . '/inc/menu.php'; ?>
