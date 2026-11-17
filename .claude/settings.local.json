@@ -20,7 +20,21 @@
       "Bash(php -l index.php)",
       "PowerShell(php -l \"D:/DESARROLLO WEB/SOFTWARE EN LA NUBE/NEWS/index.php\")",
       "Bash(php *)",
-      "Bash(python -c ' *)"
+      "Bash(python -c ' *)",
+      "Bash(sed -n '55,80p' admin/radio/create.php)",
+      "Bash(sed -n '65,90p' admin/radio/edit.php)",
+      "Bash(sed -n '88,92p' admin/radio/edit.php)",
+      "Bash(sed -n '28,40p' admin/blog/create.php)",
+      "Bash(sed -n '80,95p' admin/blog/edit.php)",
+      "Bash(sed -n '22,35p' admin/blog/category_create.php)",
+      "Bash(sed -n '25,38p' admin/blog/category_edit.php)",
+      "Bash(sed -n '26,40p' admin/institutional/create.php)",
+      "Bash(sed -n '43,57p' admin/institutional/edit.php)",
+      "Bash(findstr /i \"main-content wrap margin padding\")",
+      "Bash(awk -F'template/' '{print $2}')",
+      "Bash(sed -n '30,45p' \"D:/DESARROLLO WEB/SOFTWARE EN LA NUBE/NEWS/template/news/inc/footer.php\")",
+      "Bash(sed -n '55,70p' \"D:/DESARROLLO WEB/SOFTWARE EN LA NUBE/NEWS/template/newsers/inc/footer.php\")",
+      "Bash(xargs ls *)"
     ]
   }
 }
