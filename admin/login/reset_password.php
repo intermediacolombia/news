@@ -61,30 +61,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <style>
-    body {
-      background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url("<?php echo $url;?>/admin/images/background.jpg") no-repeat center center fixed;
-      background-size: cover;
-    }
-    .login-card {
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      border-radius: 10px;
-      padding: 20px;
-      background-color: #fff;
-    }
-    .input-group-text {
-      cursor: pointer;
-    }
-    #passwordError {
-      color: red;
-      font-size: 14px;
-      display: none;
-    }
-  </style>
+  <style>:root { --primary-color: <?= htmlspecialchars(COLOR_PRIMARY ?? '#e21f0c', ENT_QUOTES, 'UTF-8') ?>; --primary-hover: <?= htmlspecialchars(COLOR_PRIMARY_HOVER_LINK ?? '#c4180c', ENT_QUOTES, 'UTF-8') ?>; }</style>
+  <link rel="stylesheet" href="<?= htmlspecialchars($url) ?>/admin/assets/css/admin-auth.css?cache=<?= time(); ?>">
 </head>
 <body>
  <div class="container d-flex align-items-center justify-content-center" style="min-height: 100vh;">
-    <div class="login-card w-100" style="max-width: 400px;">
+    <div class="login-card is-recovery w-100" style="max-width: 400px;">
       <div class="text-center">
         <img src="<?php echo URLBASE; ?><?php echo SITE_LOGO; ?>?<?php echo time()?>" alt="Logo" class="img-fluid mb-3" style="max-width:150px;">
       </div>

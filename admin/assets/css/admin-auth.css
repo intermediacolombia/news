@@ -1,0 +1,31 @@
+/* Shared authentication screens, visually aligned with the Tabler inspired admin */
+:root { --login-accent: var(--primary-color, #e21f0c); --login-hover: var(--primary-hover, #c4180c); }
+* { box-sizing: border-box; }
+body { min-height: 100vh; margin: 0; color: #182230; font-family: Inter, "Segoe UI", system-ui, sans-serif; background: radial-gradient(ellipse at 10% 0%, color-mix(in srgb, var(--login-accent) 18%, #f3f5f9), transparent 42%), #f3f5f9; }
+.login-card { position: relative; width: 100%; max-width: 940px !important; min-height: 550px; padding: 54px 7% 48px calc(45% + 50px); overflow: hidden; border: 1px solid rgba(226,232,240,.9); border-radius: 24px; background: #fff; box-shadow: 0 24px 80px rgba(24,34,48,.13); }
+.login-card::before { content: "NEWSROOM  /  ADMIN"; position: absolute; inset: 0 auto 0 0; width: 40%; display: flex; align-items: flex-end; padding: 38px; color: rgba(255,255,255,.88); font-size: 12px; font-weight: 700; letter-spacing: .18em; background: linear-gradient(150deg, color-mix(in srgb, var(--login-accent) 82%, #182230), var(--login-accent) 58%, color-mix(in srgb, var(--login-accent) 70%, #111827)); }
+.login-card::after { content: ""; position: absolute; left: 40%; top: 11%; width: 270px; height: 270px; border: 1px solid rgba(255,255,255,.2); border-radius: 50%; transform: translateX(-50%); box-shadow: 0 0 0 38px rgba(255,255,255,.06), 0 0 0 78px rgba(255,255,255,.045); pointer-events: none; }
+.login-card > * { position: relative; z-index: 1; }
+.login-card .text-center img { max-height: 74px; object-fit: contain; margin: 0 auto 22px !important; }
+.login-card h3 { margin-bottom: 8px !important; color: #17212f; font-size: 28px; font-weight: 750; letter-spacing: -.04em; }
+.login-card h3::after { content: "Ingresa tus datos para continuar"; display: block; margin-top: 9px; color: #7a8494; font-size: 13px; font-weight: 400; letter-spacing: 0; }
+.login-card.is-recovery h3::after { content: "Te enviaremos instrucciones para recuperar el acceso"; }
+.login-card label { color: #344054; font-size: 13px; font-weight: 650; }
+.login-card .input-group-text { color: #7a8494; background: #f8f9fb; border-color: #e2e7ef; }
+.login-card .form-control { min-height: 46px; border-color: #e2e7ef; box-shadow: none; }
+.login-card .form-control:focus { border-color: var(--login-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--login-accent) 14%, transparent); }
+.login-card .input-group .form-control { border-left: 0; }
+.login-card .input-group-append .btn { border-color: #e2e7ef; }
+.login-card .input-group-text { cursor: pointer; }
+.login-card .btn-primary { min-height: 48px; margin-top: 8px; border: 0; border-radius: 10px; background: var(--login-accent); font-weight: 700; box-shadow: 0 8px 18px color-mix(in srgb, var(--login-accent) 24%, transparent); }
+.login-card .btn-primary:hover { background: var(--login-hover); transform: translateY(-1px); }
+.login-card a { color: var(--login-accent); font-weight: 600; }
+.login-card .alert { border-radius: 10px; font-size: 13px; }
+.login-card .btn-block { display: block; width: 100%; }
+.auth-back-link { margin: 18px 0 0; text-align: center; font-size: 13px; }
+#passwordError { color: #dc3545; font-size: 13px; }
+@media (max-width: 767px) {
+  .container { padding: 22px 14px; }
+  .login-card { min-height: 0; max-width: 480px !important; padding: 34px 24px 28px; }
+  .login-card::before, .login-card::after { display: none; }
+}

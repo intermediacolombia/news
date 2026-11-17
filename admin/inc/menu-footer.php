@@ -1,3 +1,11 @@
+<script>
+(function () {
+    var modernStylesheet = document.querySelector('link[href*="/admin/assets/css/admin-modern.css"]');
+    if (modernStylesheet && modernStylesheet.parentNode === document.head) {
+        document.head.appendChild(modernStylesheet);
+    }
+})();
+</script>
 </div>
     
      <script>

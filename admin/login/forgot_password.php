@@ -52,23 +52,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-	<style>
-    body {
-  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("<?php echo $url;?>/admin/images/background.jpg") no-repeat center center fixed;
-  background-size: cover;
-}
-
-    .login-card {
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      border-radius: 10px;
-      padding: 20px;
-      background-color: #fff;
-    }
-  </style>
+<style>:root { --primary-color: <?= htmlspecialchars(COLOR_PRIMARY ?? '#e21f0c', ENT_QUOTES, 'UTF-8') ?>; --primary-hover: <?= htmlspecialchars(COLOR_PRIMARY_HOVER_LINK ?? '#c4180c', ENT_QUOTES, 'UTF-8') ?>; }</style>
+<link rel="stylesheet" href="<?= htmlspecialchars($url) ?>/admin/assets/css/admin-auth.css?cache=<?= time(); ?>">
 </head>
 <body>
  <div class="container d-flex align-items-center justify-content-center" style="min-height: 100vh;">
-    <div class="login-card w-100" style="max-width: 400px;">
+    <div class="login-card is-recovery w-100" style="max-width: 400px;">
       <div class="text-center">
         <img src="<?php echo URLBASE;?><?php echo SITE_LOGO;?>" alt="Logo" class="img-fluid mb-3" style="max-width:150px;">
       </div>
@@ -87,7 +76,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <label for="correo">Ingresa tu correo electrónico</label>
         <input type="email" class="form-control" id="correo" name="correo" required>
       </div>
-      <button type="submit" class="btn btn-primary">Enviar Instrucciones</button>
+      <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-paper-plane mr-2"></i>Enviar Instrucciones</button>
+      <p class="auth-back-link"><a href="<?php echo $url;?>/admin/login/"><i class="fas fa-arrow-left mr-1"></i>Volver al acceso</a></p>
     </form>
   
 		
